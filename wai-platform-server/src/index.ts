@@ -1,3 +1,4 @@
+import "dotenv/config";
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
@@ -8,6 +9,11 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+import { verify } from "jsonwebtoken";
+import { User } from "./entities/User";
+import { sendRefreshToken } from "./sendRefreshToken";
+import { createAccessToken, createRefreshToken } from "./auth";
+import cookieParser from "cookie-parser";
 
 const main = async () => {
   // Connect to DB
@@ -18,13 +24,48 @@ const main = async () => {
   // Create Express app
   const app = express();
 
+  app.use(cookieParser());
+
+  // Create refresh token route
+  app.post("/refresh_token", async (req, res) => {
+    console.log("received refresh token request");
+    const token = req.cookies.jid;
+    if (!token) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    let payload: any = null;
+    try {
+      payload = verify(token, process.env.REFRESH_TOKEN_SECRET!);
+    } catch (err) {
+      console.log(err);
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    // token is valid and
+    // we can send back an access token
+    const user = await orm.em.findOne(User, { _id: payload.userId });
+
+    if (!user) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    if (user.tokenVersion !== payload.tokenVersion) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    sendRefreshToken(res, createRefreshToken(user));
+
+    return res.send({ ok: true, accessToken: createAccessToken(user) });
+  });
+
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: () => ({ em: orm.em }), // Object accessible by resolvers
+    context: ({ req, res }) => ({ req, res, em: orm.em }), // Object accessible by resolvers
   });
 
   await apolloServer.start();

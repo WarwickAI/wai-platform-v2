@@ -23,4 +23,8 @@ export class User {
   // No field property since don't want it selected in GraphQL
   @Property({ type: "text" })
   password!: string;
+
+  @Field()
+  @Property()
+  tokenVersion: number = 0;
 }

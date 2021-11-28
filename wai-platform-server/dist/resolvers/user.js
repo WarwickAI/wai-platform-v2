@@ -19,6 +19,10 @@ exports.UserResolver = void 0;
 const User_1 = require("../entities/User");
 const type_graphql_1 = require("type-graphql");
 const argon2_1 = __importDefault(require("argon2"));
+const sendRefreshToken_1 = require("../sendRefreshToken");
+const auth_1 = require("../auth");
+const isAuth_1 = require("../isAuth");
+const jsonwebtoken_1 = require("jsonwebtoken");
 let UsernamePasswordInput = class UsernamePasswordInput {
 };
 __decorate([
@@ -55,11 +59,18 @@ __decorate([
     (0, type_graphql_1.Field)(() => User_1.User, { nullable: true }),
     __metadata("design:type", User_1.User)
 ], UserResponse.prototype, "user", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => String, { nullable: true }),
+    __metadata("design:type", String)
+], UserResponse.prototype, "accessToken", void 0);
 UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
 let UserResolver = class UserResolver {
-    async register(options, { em }) {
+    async users({ em }) {
+        return em.find(User_1.User, {});
+    }
+    async register(options, { em, res }) {
         if (options.username.length <= 2) {
             return {
                 errors: [
@@ -99,10 +110,14 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
+            else {
+                console.log(err);
+            }
         }
-        return { user };
+        (0, sendRefreshToken_1.sendRefreshToken)(res, (0, auth_1.createRefreshToken)(user));
+        return { user, accessToken: (0, auth_1.createAccessToken)(user) };
     }
-    async login(options, { em }) {
+    async login(options, { em, res }) {
         const user = await em.findOne(User_1.User, { username: options.username });
         if (!user) {
             return {
@@ -117,9 +132,53 @@ let UserResolver = class UserResolver {
                 errors: [{ field: "password", message: "incorrect password" }],
             };
         }
-        return { user };
+        (0, sendRefreshToken_1.sendRefreshToken)(res, (0, auth_1.createRefreshToken)(user));
+        return { user, accessToken: (0, auth_1.createAccessToken)(user) };
+    }
+    async logout({ res }) {
+        (0, sendRefreshToken_1.sendRefreshToken)(res, "");
+        return true;
+    }
+    async revokeRefreshTokensForUser(id, { em }) {
+        const user = await em.findOne(User_1.User, { _id: id });
+        if (!user) {
+            return false;
+        }
+        user.tokenVersion = user.tokenVersion + 1;
+        em.persistAndFlush(user);
+        return true;
+    }
+    async deleteAllUsers({ em }) {
+        em.nativeDelete(User_1.User, {});
+        return true;
+    }
+    testJWT({ payload }) {
+        console.log(payload);
+        return `your user id is: ${payload.userId}`;
+    }
+    me({ em, req }) {
+        const authorization = req.headers["authorization"];
+        if (!authorization) {
+            return null;
+        }
+        try {
+            const token = authorization;
+            const payload = (0, jsonwebtoken_1.verify)(token, process.env.ACCESS_TOKEN_SECRET);
+            return em.findOne(User_1.User, payload.userId);
+        }
+        catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 };
+__decorate([
+    (0, type_graphql_1.Query)(() => [User_1.User]),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "users", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => UserResponse),
     __param(0, (0, type_graphql_1.Arg)("options")),
@@ -136,6 +195,43 @@ __decorate([
     __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "logout", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __param(1, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "revokeRefreshTokensForUser", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "deleteAllUsers", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => String),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserResolver.prototype, "testJWT", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => User_1.User, { nullable: true }),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserResolver.prototype, "me", null);
 UserResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], UserResolver);
