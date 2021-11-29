@@ -14,6 +14,7 @@ import { User } from "./entities/User";
 import { sendRefreshToken } from "./sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "./auth";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const main = async () => {
   // Connect to DB
@@ -23,6 +24,13 @@ const main = async () => {
 
   // Create Express app
   const app = express();
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
 
   app.use(cookieParser());
 
@@ -71,7 +79,10 @@ const main = async () => {
   await apolloServer.start();
 
   // Created a GraphQL endpoint on express, localhost:4000/graphql
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.listen(4000, () => {
     console.log("server sarted on localhost:4000");

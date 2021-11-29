@@ -110,9 +110,6 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            else {
-                console.log(err);
-            }
         }
         (0, sendRefreshToken_1.sendRefreshToken)(res, (0, auth_1.createRefreshToken)(user));
         return { user, accessToken: (0, auth_1.createAccessToken)(user) };

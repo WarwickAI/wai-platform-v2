@@ -102,9 +102,10 @@ export class UserResolver {
             },
           ],
         };
-      } else {
-        console.log(err);
       }
+      // } else {
+      //   console.log(err);
+      // }
     }
 
     sendRefreshToken(res, createRefreshToken(user));

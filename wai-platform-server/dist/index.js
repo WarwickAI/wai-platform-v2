@@ -18,10 +18,15 @@ const User_1 = require("./entities/User");
 const sendRefreshToken_1 = require("./sendRefreshToken");
 const auth_1 = require("./auth");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const cors_1 = __importDefault(require("cors"));
 const main = async () => {
     const orm = await core_1.MikroORM.init(mikro_orm_config_1.default);
     await orm.getMigrator().up();
     const app = (0, express_1.default)();
+    app.use((0, cors_1.default)({
+        origin: "http://localhost:3000",
+        credentials: true,
+    }));
     app.use((0, cookie_parser_1.default)());
     app.post("/refresh_token", async (req, res) => {
         console.log("received refresh token request");
@@ -55,7 +60,10 @@ const main = async () => {
         context: ({ req, res }) => ({ req, res, em: orm.em }),
     });
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({
+        app,
+        cors: false,
+    });
     app.listen(4000, () => {
         console.log("server sarted on localhost:4000");
     });
