@@ -22,7 +22,6 @@ const argon2_1 = __importDefault(require("argon2"));
 const sendRefreshToken_1 = require("../sendRefreshToken");
 const auth_1 = require("../auth");
 const isAuth_1 = require("../isAuth");
-const jsonwebtoken_1 = require("jsonwebtoken");
 let UsernamePasswordInput = class UsernamePasswordInput {
 };
 __decorate([
@@ -110,6 +109,9 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
+            else {
+                console.log(err);
+            }
         }
         (0, sendRefreshToken_1.sendRefreshToken)(res, (0, auth_1.createRefreshToken)(user));
         return { user, accessToken: (0, auth_1.createAccessToken)(user) };
@@ -153,20 +155,17 @@ let UserResolver = class UserResolver {
         console.log(payload);
         return `your user id is: ${payload.userId}`;
     }
-    me({ em, req }) {
-        const authorization = req.headers["authorization"];
-        if (!authorization) {
+    async me({ em, payload }) {
+        if (!payload || !payload.userId) {
+            console.log("access token invalid");
             return null;
         }
-        try {
-            const token = authorization;
-            const payload = (0, jsonwebtoken_1.verify)(token, process.env.ACCESS_TOKEN_SECRET);
-            return em.findOne(User_1.User, payload.userId);
-        }
-        catch (err) {
-            console.log(err);
+        const user = await em.findOne(User_1.User, { _id: parseInt(payload.userId) });
+        if (!user) {
+            console.log("user id in access token invalid");
             return null;
         }
+        return user;
     }
 };
 __decorate([
@@ -224,10 +223,11 @@ __decorate([
 ], UserResolver.prototype, "testJWT", null);
 __decorate([
     (0, type_graphql_1.Query)(() => User_1.User, { nullable: true }),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "me", null);
 UserResolver = __decorate([
     (0, type_graphql_1.Resolver)()

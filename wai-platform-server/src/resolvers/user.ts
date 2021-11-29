@@ -15,7 +15,6 @@ import argon2 from "argon2";
 import { sendRefreshToken } from "../sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "../auth";
 import { isAuth } from "../isAuth";
-import { verify } from "jsonwebtoken";
 
 @InputType()
 class UsernamePasswordInput {
@@ -102,10 +101,10 @@ export class UserResolver {
             },
           ],
         };
+        // }
+      } else {
+        console.log(err);
       }
-      // } else {
-      //   console.log(err);
-      // }
     }
 
     sendRefreshToken(res, createRefreshToken(user));
@@ -178,20 +177,18 @@ export class UserResolver {
   }
 
   @Query(() => User, { nullable: true })
-  me(@Ctx() { em, req }: MyContext) {
-    const authorization = req.headers["authorization"];
-
-    if (!authorization) {
+  @UseMiddleware(isAuth)
+  async me(@Ctx() { em, payload }: MyContext) {
+    if (!payload || !payload.userId) {
+      console.log("access token invalid");
       return null;
     }
+    const user = await em.findOne(User, { _id: parseInt(payload.userId) });
 
-    try {
-      const token = authorization;
-      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
-      return em.findOne(User, payload.userId);
-    } catch (err) {
-      console.log(err);
+    if (!user) {
+      console.log("user id in access token invalid");
       return null;
     }
+    return user;
   }
 }

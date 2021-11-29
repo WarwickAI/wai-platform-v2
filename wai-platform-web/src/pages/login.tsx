@@ -13,6 +13,7 @@ import { InputField } from "../components/InputField";
 import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { setAccessToken } from "../utils/accesToken";
 
 interface LoginProps {}
 
@@ -27,8 +28,12 @@ export const Login: React.FC<LoginProps> = ({}) => {
           const response = await login({ options: values });
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
-          } else if (response.data?.login.user) {
+          } else if (
+            response.data?.login.user &&
+            response.data.login.accessToken
+          ) {
             // Registration worked, route to different page
+            setAccessToken(response.data.login.accessToken);
             router.push("/");
           }
         }}

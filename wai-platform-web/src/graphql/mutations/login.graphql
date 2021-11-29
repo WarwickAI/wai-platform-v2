@@ -1,8 +1,7 @@
 mutation Login($options: UsernamePasswordInput!) {
   login(options: $options) {
     user {
-      _id
-      username
+      ...RegularUser
     }
     accessToken
     errors {

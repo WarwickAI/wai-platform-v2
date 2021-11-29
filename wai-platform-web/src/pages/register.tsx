@@ -13,6 +13,7 @@ import { InputField } from "../components/InputField";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { setAccessToken } from "../utils/accesToken";
 
 interface RegisterProps {}
 
@@ -27,8 +28,12 @@ export const Register: React.FC<RegisterProps> = ({}) => {
           const response = await register(values);
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data.register.errors));
-          } else if (response.data?.register.user) {
+          } else if (
+            response.data?.register.user &&
+            response.data.register.accessToken
+          ) {
             // Registration worked, route to different page
+            setAccessToken(response.data.register.accessToken);
             router.push("/");
           }
         }}

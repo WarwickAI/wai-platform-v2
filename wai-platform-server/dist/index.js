@@ -24,7 +24,7 @@ const main = async () => {
     await orm.getMigrator().up();
     const app = (0, express_1.default)();
     app.use((0, cors_1.default)({
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "https://studio.apollographql.com"],
         credentials: true,
     }));
     app.use((0, cookie_parser_1.default)());
