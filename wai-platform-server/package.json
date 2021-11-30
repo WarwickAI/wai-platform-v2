@@ -29,6 +29,7 @@
     "@mikro-orm/core": "^4.5.9",
     "@mikro-orm/migrations": "^4.5.9",
     "@mikro-orm/postgresql": "^4.5.9",
+    "apollo-server-errors": "^3.3.0",
     "apollo-server-express": "^3.5.0",
     "argon2": "^0.28.3",
     "cookie-parser": "^1.4.6",

@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuth = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
+const apollo_server_express_1 = require("apollo-server-express");
 const isAuth = ({ context }, next) => {
     const authorization = context.req.headers["authorization"];
     if (!authorization) {
-        throw new Error("not authenticated");
+        throw new apollo_server_express_1.ForbiddenError("not authenticated");
     }
     try {
         const token = authorization;
@@ -14,7 +15,7 @@ const isAuth = ({ context }, next) => {
     }
     catch (err) {
         console.log(err);
-        throw new Error("not authenticated");
+        throw new apollo_server_express_1.ForbiddenError("not authenticated");
     }
     return next();
 };

@@ -7,4 +7,5 @@ export default function Home() {
       <div>hello world</div>
     </>
   );
+  
 }

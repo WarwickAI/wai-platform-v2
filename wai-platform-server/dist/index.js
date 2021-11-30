@@ -31,6 +31,7 @@ const main = async () => {
     app.post("/refresh_token", async (req, res) => {
         console.log("received refresh token request");
         const token = req.cookies.jid;
+        console.log(token);
         if (!token) {
             return res.send({ ok: false, accessToken: "" });
         }
@@ -43,6 +44,7 @@ const main = async () => {
             return res.send({ ok: false, accessToken: "" });
         }
         const user = await orm.em.findOne(User_1.User, { _id: payload.userId });
+        console.log(user);
         if (!user) {
             return res.send({ ok: false, accessToken: "" });
         }

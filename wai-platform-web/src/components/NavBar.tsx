@@ -1,14 +1,23 @@
 import { Box, Button, Grid, Link } from "@mui/material";
 import React from "react";
 import NextLink from "next/link";
-import { useMeQuery } from "../generated/graphql";
+import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 import { setAccessToken } from "../utils/accesToken";
+import Router from "next/router";
 
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
   const [{ data, fetching }] = useMeQuery();
+  const [, logoutMutation] = useLogoutMutation();
   let body = null;
+
+  const logout = async () => {
+    // This will reset the refresh token cookie
+    await logoutMutation();
+    // Overwrite the access token
+    setAccessToken("");
+  };
 
   if (fetching) {
     //   Data is loading
@@ -32,13 +41,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           <Box>{data?.me.username}</Box>
         </Grid>
         <Grid item>
-          <Button
-            onClick={() => {
-              setAccessToken("");
-            }}
-          >
-            logout
-          </Button>
+          <Button onClick={logout}>logout</Button>
         </Grid>
       </Grid>
     );
