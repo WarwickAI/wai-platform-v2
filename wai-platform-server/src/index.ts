@@ -15,6 +15,7 @@ import { sendRefreshToken } from "./sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "./auth";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+// import { samlMetadataIDP, samlMetadataSP } from "./utils/samlMetadata";
 
 const main = async () => {
   // Connect to DB
@@ -43,7 +44,6 @@ const main = async () => {
       return res.send({ ok: false, accessToken: "" });
     }
 
-
     let payload: any = null;
     try {
       payload = verify(token, process.env.REFRESH_TOKEN_SECRET!);
@@ -69,6 +69,29 @@ const main = async () => {
 
     return res.send({ ok: true, accessToken: createAccessToken(user) });
   });
+
+  // const saml = require("samlify");
+  // const sp = saml.ServiceProvider({
+  //   metadata: samlMetadataSP,
+  // });
+  // const idp = saml.IdentityProvider({
+  //   metadata: samlMetadataIDP,
+  // });
+
+  // app.get("/spinitsso-redirect", async (req, res) => {
+  //   const { id, context } = sp.createLoginRequest(idp, "redirect");
+  //   console.log("Context: ", context);
+  //   return res.redirect(context);
+  // });
+
+  // app.post("/acs", (req, res) => {
+  //   sp.parseLoginResponse(idp, "post", req)
+  //     .then((parseResult) => {
+  //       // Use the parseResult can do customized action
+  //       console.log(parseResult);
+  //     })
+  //     .catch(console.error);
+  // });
 
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
