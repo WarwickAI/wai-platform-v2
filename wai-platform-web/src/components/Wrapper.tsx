@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@chakra-ui/react";
 import React from "react";
 
 interface WrapperProps {
@@ -11,9 +11,7 @@ export const Wrapper: React.FC<WrapperProps> = ({
 }) => {
   return (
     <Box
-      mt={8}
-      mx="auto"
-      maxWidth={variant === "regular" ? "800px" : "400px"}
+      p={10}
       width="100%"
     >
       {children}

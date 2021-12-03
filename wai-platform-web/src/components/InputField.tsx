@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input, Typography } from "@mui/material";
+import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 import { useField } from "formik";
 import React from "react";
 
@@ -23,7 +23,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         id={field.name}
         placeholder={props.placeholder}
       ></Input>
-      {error ? <Typography>{error}</Typography> : null}
+      {error ? <div>{error}</div> : null}
     </FormControl>
   );
 };

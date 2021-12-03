@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Link } from "@mui/material";
+import { Box, Button, Flex, Grid, Link } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
 import { useMeQuery, useLogoutMutation } from "../generated/graphql";
@@ -38,22 +38,16 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   } else {
     // User logged in
     body = (
-      <Grid direction="row" container>
-        <Grid item>
-          <Box>{data?.me.username}</Box>
-        </Grid>
-        <Grid item>
-          <Button onClick={logout}>logout</Button>
-        </Grid>
-      </Grid>
+      <Flex>
+        <Box>{data?.me.username}</Box>
+        <Button onClick={logout}>logout</Button>
+      </Flex>
     );
   }
 
   return (
-    <Grid p={4} ml="auto" bgcolor={"red"} container>
-      <Grid ml="auto" item>
-        <Box>{body}</Box>
-      </Grid>
-    </Grid>
+    <Flex p={4} ml="auto" bg="tan">
+      <Box ml="auto">{body}</Box>
+    </Flex>
   );
 };

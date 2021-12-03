@@ -6,8 +6,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Typography,
-} from "@mui/material";
+} from "@chakra-ui/react";
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
 import { useRegisterMutation } from "../generated/graphql";
