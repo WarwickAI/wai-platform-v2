@@ -50,7 +50,7 @@ const Index = () => {
                 size="lg"
                 variant="primary"
                 onClick={() => {
-                  router.push("/login");
+                  router.push("/projects");
                 }}
               >
                 <ArrowForwardIcon width={22} height={22} />

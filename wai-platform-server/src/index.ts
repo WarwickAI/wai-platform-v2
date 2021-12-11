@@ -20,6 +20,8 @@ import cors from "cors";
 const main = async () => {
   // Connect to DB
   const orm = await MikroORM.init(mikroConfig);
+
+  // orm.em.nativeDelete(User, {});
   // Run migration
   await orm.getMigrator().up();
 
