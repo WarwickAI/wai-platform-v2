@@ -17,16 +17,20 @@ export class User {
   updatedAt: Date = new Date();
 
   @Field()
-  @Property({ type: "text", unique: true })
-  username!: string;
+  @Property({ type: "text" })
+  firstName!: string;
+
+  @Field()
+  @Property({ type: "text" })
+  lastName!: string;
 
   @Field()
   @Property({ type: "text", unique: true })
   email!: string;
 
-  // No field property since don't want it selected in GraphQL
-  @Property({ type: "text" })
-  password!: string;
+  @Field()
+  @Property({ type: "text", unique: true })
+  cognitoUsername!: string;
 
   @Field()
   @Property()

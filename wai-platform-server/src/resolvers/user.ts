@@ -46,82 +46,82 @@ export class UserResolver {
     return em.find(User, {});
   }
 
-  @Mutation(() => UserResponse) // Defining query type
-  async register(
-    // Create an object argument type
-    @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { em, res }: MyContext
-  ): Promise<UserResponse> {
-    const errors = validateRegister(options);
-    if (errors) {
-      return { errors };
-    }
+  // @Mutation(() => UserResponse) // Defining query type
+  // async register(
+  //   // Create an object argument type
+  //   @Arg("options") options: UsernamePasswordInput,
+  //   @Ctx() { em, res }: MyContext
+  // ): Promise<UserResponse> {
+  //   const errors = validateRegister(options);
+  //   if (errors) {
+  //     return { errors };
+  //   }
 
-    const hashedPassword = await argon2.hash(options.password);
-    const user = em.create(User, {
-      username: options.username,
-      email: options.email,
-      password: hashedPassword,
-    });
-    try {
-      await em.persistAndFlush(user);
-    } catch (err) {
-      if (err.code === "23505") {
-        // || err.detail.includes("already exists")) {
-        // Duplicate username error
-        return {
-          errors: [
-            {
-              field: "username",
-              message: "username already taken",
-            },
-          ],
-        };
-        // }
-      } else {
-        console.log(err);
-      }
-    }
+  //   const hashedPassword = await argon2.hash(options.password);
+  //   const user = em.create(User, {
+  //     username: options.username,
+  //     email: options.email,
+  //     password: hashedPassword,
+  //   });
+  //   try {
+  //     await em.persistAndFlush(user);
+  //   } catch (err) {
+  //     if (err.code === "23505") {
+  //       // || err.detail.includes("already exists")) {
+  //       // Duplicate username error
+  //       return {
+  //         errors: [
+  //           {
+  //             field: "username",
+  //             message: "username already taken",
+  //           },
+  //         ],
+  //       };
+  //       // }
+  //     } else {
+  //       console.log(err);
+  //     }
+  //   }
 
-    sendRefreshToken(res, createRefreshToken(user));
+  //   sendRefreshToken(res, createRefreshToken(user));
 
-    return { user, accessToken: createAccessToken(user) };
-  }
+  //   return { user, accessToken: createAccessToken(user) };
+  // }
 
-  @Mutation(() => UserResponse) // Defining query type
-  async login(
-    // Create an object argument type
-    @Arg("usernameOrEmail") usernameOrEmail: string,
-    @Arg("password") password: string,
-    @Ctx() { em, res }: MyContext
-  ): Promise<UserResponse> {
-    const user = await em.findOne(
-      User,
-      usernameOrEmail.includes("@")
-        ? { email: usernameOrEmail }
-        : { username: usernameOrEmail }
-    );
-    if (!user) {
-      return {
-        errors: [
-          { field: "usernameOrEmail", message: "that useranme doesn't exists" },
-        ],
-      };
-    }
+  // @Mutation(() => UserResponse) // Defining query type
+  // async login(
+  //   // Create an object argument type
+  //   @Arg("usernameOrEmail") usernameOrEmail: string,
+  //   @Arg("password") password: string,
+  //   @Ctx() { em, res }: MyContext
+  // ): Promise<UserResponse> {
+  //   const user = await em.findOne(
+  //     User,
+  //     usernameOrEmail.includes("@")
+  //       ? { email: usernameOrEmail }
+  //       : { username: usernameOrEmail }
+  //   );
+  //   if (!user) {
+  //     return {
+  //       errors: [
+  //         { field: "usernameOrEmail", message: "that useranme doesn't exists" },
+  //       ],
+  //     };
+  //   }
 
-    const valid = await argon2.verify(user.password, password);
-    if (!valid) {
-      return {
-        errors: [{ field: "password", message: "incorrect password" }],
-      };
-    }
+  //   const valid = await argon2.verify(user.password, password);
+  //   if (!valid) {
+  //     return {
+  //       errors: [{ field: "password", message: "incorrect password" }],
+  //     };
+  //   }
 
-    // Login successful
+  //   // Login successful
 
-    sendRefreshToken(res, createRefreshToken(user));
+  //   sendRefreshToken(res, createRefreshToken(user));
 
-    return { user, accessToken: createAccessToken(user) };
-  }
+  //   return { user, accessToken: createAccessToken(user) };
+  // }
 
   // @Mutation(() => Boolean)
   // async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {

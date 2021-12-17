@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 
 const Index = () => {
   const router = useRouter();
+
   return (
     <LogoOnlyPage>
       <Box pt={10} maxWidth={700} margin="auto" textAlign="center">
