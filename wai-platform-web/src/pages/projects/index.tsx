@@ -1,13 +1,13 @@
 import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
+import { createUrqlClient } from "../../utils/createUrqlClient";
 import { Text, SimpleGrid, Badge } from "@chakra-ui/react";
-import Dashboard from "../components/Dashboard";
-import Card from "../components/Card";
+import Dashboard from "../../components/Dashboard";
+import Card from "../../components/Card";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import { setAccessToken } from "../utils/accesToken";
-import { UserInfoContext } from "../utils/userContext";
-import { useProjectsQuery } from "../generated/graphql";
+import { setAccessToken } from "../../utils/accesToken";
+import { UserInfoContext } from "../../utils/userContext";
+import { useProjectsQuery } from "../../generated/graphql";
 
 const projectsDummy = [
   {
