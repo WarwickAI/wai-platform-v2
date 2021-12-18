@@ -16,14 +16,15 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Heading,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import sidebarConfig from "./SidebarConfig";
 import NextLink from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { getAccessToken } from "../utils/accesToken";
 import { UserInfoContext } from "../utils/userContext";
 import { useRouter } from "next/router";
+import { capitalizeFirstLetter } from "../utils/stringUtils";
 
 const DRAWER_WIDTH = 280;
 
@@ -31,24 +32,43 @@ interface NavItemProps {
   title: string;
   path: string;
   icon: any;
+  isHighlighted: boolean;
 }
 
 const NavItem: React.FC<NavItemProps> = (props) => {
   return (
     <Link key={props.title} href={props.path} as={NextLink}>
-      <Flex mx={-5} pl={10}>
+      <Flex
+        mx={-5}
+        pl={10}
+        h={12}
+        alignItems="center"
+        color={props.isHighlighted ? "rgb(0, 171, 85)" : "rgb(99, 115, 129)"}
+        bgColor={props.isHighlighted ? "rgba(0, 171, 85, 0.08)" : ""}
+        borderRightWidth={props.isHighlighted ? 3 : 0}
+        borderRightColor="rgb(0, 171, 85)"
+        _hover={{
+          backgroundColor: "rgba(145, 158, 171, 0.08)",
+          cursor: "pointer",
+        }}
+      >
         {props.icon && props.icon}
-        <Text>{props.title}</Text>
+        <Text pl={5}>{capitalizeFirstLetter(props.title)}</Text>
       </Flex>
     </Link>
   );
 };
 
-const Dashboard: React.FC = (props) => {
+interface DashboardProps {
+  title: string;
+  narrow?: boolean;
+}
+
+const Dashboard: React.FC<DashboardProps> = (props) => {
   const router = useRouter();
   const [isOpen, setOpen] = useState<boolean>(false);
   const { userInfo } = useContext(UserInfoContext);
-  console.log(sidebarConfig);
+
   return (
     <Box p={4}>
       <Flex direction="row" justifyContent="space-between">
@@ -88,23 +108,21 @@ const Dashboard: React.FC = (props) => {
         </Popover>
         {/* <Button onClick={() => setOpen(true)}>Account</Button> */}
       </Flex>
-      {props.children}
+      <Box px={props.narrow ? [5, 20, 40] : [5, 10, 20]} py={10}>
+        <Heading size="lg" pb={10}>
+          {props.title}
+        </Heading>
+        {props.children}
+      </Box>
       <>
         <Drawer isOpen={isOpen} placement="left" onClose={() => setOpen(false)}>
           <DrawerOverlay />
-          <DrawerContent>
+          <DrawerContent px={5} py={3} w={DRAWER_WIDTH}>
             <DrawerCloseButton />
-            <Box
-              px={5}
-              py={3}
-              w={DRAWER_WIDTH}
-              borderRightColor="rgba(145, 158, 171, 0.24)"
-              borderRightWidth={1}
-            >
-              <Box w={20}>
+            <Box>
+              <Box w={20} pt={2} pb={10}>
                 <Image src="static/logo2.png" alt="WAI Logo" />
               </Box>
-              <Text>Account</Text>
               <Box>
                 {sidebarConfig.map(({ title, path, icon }) => {
                   // console.log(title);
@@ -114,6 +132,7 @@ const Dashboard: React.FC = (props) => {
                       title={title}
                       path={path}
                       icon={icon}
+                      isHighlighted={router.pathname === path}
                     />
                   );
                 })}

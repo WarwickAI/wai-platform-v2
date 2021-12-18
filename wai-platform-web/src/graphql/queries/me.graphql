@@ -1,5 +1,5 @@
-query Me {
-  me {
-    ...RegularUser
-  }
-}
+# query Me {
+#   me {
+#     ...RegularUser
+#   }
+# }

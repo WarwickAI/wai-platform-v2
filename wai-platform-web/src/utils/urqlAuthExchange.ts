@@ -57,7 +57,7 @@ export const addAuthToOperation = ({ authState, operation }) => {
       headers: {
         ...fetchOptions.headers,
         // Add token to header
-        authorization: authState.token,
+        "authorization": authState.token,
       },
     },
   });

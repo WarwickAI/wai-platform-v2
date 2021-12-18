@@ -13,7 +13,7 @@ import {
 import argon2 from "argon2";
 import { sendRefreshToken } from "../sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "../auth";
-import { isAuth } from "../isAuth";
+import { isAuth, isExec } from "../isAuth";
 import { UsernamePasswordInput } from "../utils/UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 
@@ -42,7 +42,9 @@ export class UserResolver {
   // Add functions here, can be queries or mutatations
 
   @Query(() => [User])
+  @UseMiddleware(isExec)
   async users(@Ctx() { em }: MyContext): Promise<User[]> {
+    console.log("HERE");
     return em.find(User, {});
   }
 

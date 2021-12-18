@@ -17,6 +17,7 @@ let User = class User {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.tokenVersion = 0;
+        this.role = "none";
     }
 };
 __decorate([
@@ -59,6 +60,11 @@ __decorate([
     (0, core_1.Property)(),
     __metadata("design:type", Number)
 ], User.prototype, "tokenVersion", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    (0, core_1.Property)({ type: "text" }),
+    __metadata("design:type", String)
+], User.prototype, "role", void 0);
 User = __decorate([
     (0, type_graphql_1.ObjectType)(),
     (0, core_1.Entity)()

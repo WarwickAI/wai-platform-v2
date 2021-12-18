@@ -35,4 +35,8 @@ export class User {
   @Field()
   @Property()
   tokenVersion: number = 0;
+
+  @Field()
+  @Property({ type: "text" })
+  role: string = "none";
 }

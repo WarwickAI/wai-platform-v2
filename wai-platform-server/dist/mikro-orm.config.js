@@ -7,8 +7,9 @@ const constants_1 = require("./constants");
 const Post_1 = require("./entities/Post");
 const path_1 = __importDefault(require("path"));
 const User_1 = require("./entities/User");
+const Project_1 = require("./entities/Project");
 exports.default = {
-    entities: [Post_1.Post, User_1.User],
+    entities: [Post_1.Post, User_1.User, Project_1.Project],
     migrations: {
         path: path_1.default.join(__dirname, "./migrations"),
         pattern: /^[\w-]+\d+\.[tj]s$/,

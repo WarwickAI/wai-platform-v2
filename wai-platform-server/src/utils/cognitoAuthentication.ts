@@ -42,6 +42,7 @@ const setupCognitoAuthentication = (app: Express, em: EntityManager<any> & Entit
                     lastName: userInfo.family_name,
                     email: userInfo.email,
                     cognitoUsername: userInfo["cognito:username"],
+                    role: "none"
                 });
                 try {
                     await em.persistAndFlush(user);

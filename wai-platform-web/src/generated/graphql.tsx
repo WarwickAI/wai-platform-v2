@@ -15,21 +15,12 @@ export type Scalars = {
   Float: number;
 };
 
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
   deleteAllUsers: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
-  forgotPassword: Scalars['Boolean'];
-  login: UserResponse;
   logout: Scalars['Boolean'];
-  register: UserResponse;
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updatePost?: Maybe<Post>;
 };
@@ -42,22 +33,6 @@ export type MutationCreatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['Float'];
-};
-
-
-export type MutationForgotPasswordArgs = {
-  email: Scalars['String'];
-};
-
-
-export type MutationLoginArgs = {
-  password: Scalars['String'];
-  usernameOrEmail: Scalars['String'];
-};
-
-
-export type MutationRegisterArgs = {
-  options: UsernamePasswordInput;
 };
 
 
@@ -79,12 +54,27 @@ export type Post = {
   updatedAt: Scalars['String'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  _id: Scalars['Float'];
+  cover: Scalars['String'];
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  difficulty: Scalars['String'];
+  display: Scalars['Boolean'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: Array<Post>;
+  projectByShortName?: Maybe<Project>;
+  projects: Array<Project>;
   testJWT: Scalars['String'];
   users: Array<User>;
 };
@@ -94,134 +84,91 @@ export type QueryPostArgs = {
   id: Scalars['Float'];
 };
 
+
+export type QueryProjectByShortNameArgs = {
+  shortName: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['Float'];
+  cognitoUsername: Scalars['String'];
   createdAt: Scalars['String'];
   email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  role: Scalars['String'];
   tokenVersion: Scalars['Float'];
   updatedAt: Scalars['String'];
-  username: Scalars['String'];
 };
 
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  accessToken?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
-};
+export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export type UsernamePasswordInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  username: Scalars['String'];
-};
 
-export type RegularUserFragment = { __typename?: 'User', _id: number, username: string };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', _id: number, display: boolean, title: string, shortName: string, difficulty: string, cover: string }> };
 
-export type LoginMutationVariables = Exact<{
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
+export type ProjectByShortNameQueryVariables = Exact<{
+  shortName: Scalars['String'];
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', _id: number, username: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', _id: number, display: boolean, title: string, shortName: string, difficulty: string, description: string, cover: string } | null | undefined };
 
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
-
-export type RegisterMutationVariables = Exact<{
-  options: UsernamePasswordInput;
-}>;
+export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', _id: number, username: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', _id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', _id: number, username: string } | null | undefined };
-
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', _id: number, createdAt: string, updatedAt: string, title: string }> };
-
-export const RegularUserFragmentDoc = gql`
-    fragment RegularUser on User {
-  _id
-  username
-}
-    `;
-export const LoginDocument = gql`
-    mutation Login($usernameOrEmail: String!, $password: String!) {
-  login(usernameOrEmail: $usernameOrEmail, password: $password) {
-    user {
-      ...RegularUser
-    }
-    accessToken
-    errors {
-      field
-      message
-    }
+export const ProjectsDocument = gql`
+    query Projects {
+  projects {
+    _id
+    display
+    title
+    shortName
+    difficulty
+    cover
   }
-}
-    ${RegularUserFragmentDoc}`;
-
-export function useLoginMutation() {
-  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
-};
-export const LogoutDocument = gql`
-    mutation Logout {
-  logout
 }
     `;
 
-export function useLogoutMutation() {
-  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProjectsQuery>({ query: ProjectsDocument, ...options });
 };
-export const RegisterDocument = gql`
-    mutation Register($options: UsernamePasswordInput!) {
-  register(options: $options) {
-    user {
-      ...RegularUser
-    }
-    accessToken
-    errors {
-      field
-      message
-    }
+export const ProjectByShortNameDocument = gql`
+    query ProjectByShortName($shortName: String!) {
+  projectByShortName(shortName: $shortName) {
+    _id
+    display
+    title
+    shortName
+    difficulty
+    description
+    cover
   }
 }
-    ${RegularUserFragmentDoc}`;
+    `;
 
-export function useRegisterMutation() {
-  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<ProjectByShortNameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProjectByShortNameQuery>({ query: ProjectByShortNameDocument, ...options });
 };
-export const MeDocument = gql`
-    query Me {
-  me {
-    ...RegularUser
-  }
-}
-    ${RegularUserFragmentDoc}`;
-
-export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
-};
-export const PostsDocument = gql`
-    query Posts {
-  posts {
+export const UsersDocument = gql`
+    query Users {
+  users {
     _id
     createdAt
     updatedAt
-    title
+    firstName
+    lastName
+    email
+    cognitoUsername
+    tokenVersion
+    role
   }
 }
     `;
 
-export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
+export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });
 };

@@ -20,6 +20,7 @@ const auth_1 = require("./auth");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const cognitoAuthentication_1 = __importDefault(require("./utils/cognitoAuthentication"));
+const project_1 = require("./resolvers/project");
 const main = async () => {
     const orm = await core_1.MikroORM.init(mikro_orm_config_1.default);
     await orm.getMigrator().up();
@@ -58,7 +59,7 @@ const main = async () => {
     (0, cognitoAuthentication_1.default)(app, orm.em);
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: await (0, type_graphql_1.buildSchema)({
-            resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
+            resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver, project_1.ProjectResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({ req, res, em: orm.em }),

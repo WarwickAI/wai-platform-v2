@@ -49,6 +49,7 @@ UserResponse = __decorate([
 ], UserResponse);
 let UserResolver = class UserResolver {
     async users({ em }) {
+        console.log("HERE");
         return em.find(User_1.User, {});
     }
     async logout({ res }) {
@@ -87,6 +88,7 @@ let UserResolver = class UserResolver {
 };
 __decorate([
     (0, type_graphql_1.Query)(() => [User_1.User]),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isExec),
     __param(0, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

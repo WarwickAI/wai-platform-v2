@@ -1,0 +1,13 @@
+query Users {
+  users {
+    _id
+    createdAt
+    updatedAt
+    firstName
+    lastName
+    email
+    cognitoUsername
+    tokenVersion
+    role
+  }
+}

@@ -1,0 +1,22 @@
+query Projects {
+  projects {
+    _id
+    display
+    title
+    shortName
+    difficulty
+    cover
+  }
+}
+
+query ProjectByShortName($shortName: String!) {
+  projectByShortName(shortName: $shortName) {
+    _id
+    display
+    title
+    shortName
+    difficulty
+    description
+    cover
+  }
+}
