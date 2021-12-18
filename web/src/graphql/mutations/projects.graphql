@@ -17,3 +17,23 @@ mutation CreateProject($projectInfo: ProjectInput!) {
     }
   }
 }
+
+mutation EditProject($projectInfo: ProjectInput!, $shortName: String!) {
+  editProject(projectInfo: $projectInfo, shortName: $shortName) {
+    errors {
+      field
+      message
+    }
+    project {
+      _id
+      createdAt
+      updatedAt
+      display
+      shortName
+      difficulty
+      cover
+      description
+      title
+    }
+  }
+}

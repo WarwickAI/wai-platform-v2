@@ -1,36 +1,47 @@
 import React from "react";
-import Dashboard from "../../components/Dashboard";
+import Dashboard from "../../../components/Dashboard";
 import { Formik, Form } from "formik";
-import { toErrorMap } from "../../utils/toErrorMap";
-import { InputField } from "../../components/InputField";
+import { toErrorMap } from "../../../utils/toErrorMap";
+import { InputField } from "../../../components/InputField";
 import { Box, Button } from "@chakra-ui/react";
-import { useCreateProjectMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
-import { createUrqlClient } from "../../utils/createUrqlClient";
+import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import ReactMarkdown from "react-markdown";
+import {
+  useEditProjectMutation,
+  useProjectByShortNameQuery,
+} from "../../../generated/graphql";
 
-interface CreateProjectProps {}
+interface EditProjectProps {}
 
-const CreateProject: React.FC<CreateProjectProps> = ({}) => {
+const EditProject: React.FC<EditProjectProps> = ({}) => {
   const router = useRouter();
-  const [, createProject] = useCreateProjectMutation();
+  const { project } = router.query;
+  const [{ data }] = useProjectByShortNameQuery({
+    variables: { shortName: project as string },
+  });
+  console.log(data);
+  const [, editProject] = useEditProjectMutation();
   return (
-    <Dashboard title="Create Project">
+    <Dashboard title="Edit Project" narrow={true}>
       <Formik
         initialValues={{
-          title: "",
-          shortName: "",
-          description: "",
-          cover: "",
-          display: false,
-          difficulty: "",
+          title: data?.projectByShortName?.title || "",
+          shortName: data?.projectByShortName?.shortName || "",
+          description: data?.projectByShortName?.description || "",
+          cover: data?.projectByShortName?.cover || "",
+          display: data?.projectByShortName?.display || false,
+          difficulty: data?.projectByShortName?.difficulty || "",
         }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await createProject({ projectInfo: values });
-          if (response.data?.createProject.errors) {
-            setErrors(toErrorMap(response.data.createProject.errors));
-          } else if (response.data?.createProject.project) {
+          const response = await editProject({
+            projectInfo: values,
+            shortName: project as string,
+          });
+          if (response.data?.editProject.errors) {
+            setErrors(toErrorMap(response.data.editProject.errors));
+          } else if (response.data?.editProject.project) {
             // Project submitted
             router.push("/projects");
           }
@@ -96,4 +107,4 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(CreateProject);
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditProject);

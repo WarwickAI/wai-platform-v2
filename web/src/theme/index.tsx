@@ -23,6 +23,16 @@ const SECONDARY = {
 
 // 2. Call `extendTheme` and pass your custom values
 const theme = extendTheme({
+  styles: {
+    global: {
+      a: {
+        color: "primary.main",
+      },
+      html: {
+        overflowY: "scroll",
+      },
+    },
+  },
   fonts: {
     heading: "Public Sans",
     body: "Public Sans",

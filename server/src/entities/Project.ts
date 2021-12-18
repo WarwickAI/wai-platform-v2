@@ -16,9 +16,9 @@ export class Project {
     @Property({ type: "date", onUpdate: () => new Date() })
     updatedAt: Date = new Date();
 
-    @Field()
+    @Field(() => Boolean, { defaultValue: false })
     @Property()
-    display: Boolean = false;
+    display!: boolean;
 
     @Field(() => String)
     @Property({ type: "text" })

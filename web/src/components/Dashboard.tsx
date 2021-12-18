@@ -119,7 +119,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
         </Popover>
         {/* <Button onClick={() => setOpen(true)}>Account</Button> */}
       </Flex>
-      <Box px={props.narrow ? [5, 20, 40] : [5, 10, 20]} py={10}>
+      <Box px={props.narrow ? [5, 10, 20, 48, 80] : [5, 10, 20]} py={10}>
         <Flex direction="row" justifyContent="space-between">
           <Heading size="lg" pb={10}>
             {props.title}

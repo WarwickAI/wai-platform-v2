@@ -9,6 +9,17 @@ query Projects {
   }
 }
 
+query AllProjects {
+  allProjects {
+    _id
+    display
+    title
+    shortName
+    difficulty
+    cover
+  }
+}
+
 query ProjectByShortName($shortName: String!) {
   projectByShortName(shortName: $shortName) {
     _id
