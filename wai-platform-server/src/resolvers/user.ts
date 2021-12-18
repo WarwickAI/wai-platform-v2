@@ -48,6 +48,22 @@ export class UserResolver {
     return em.find(User, {});
   }
 
+  @Mutation(() => User, { nullable: true })
+  @UseMiddleware(isAuth)
+  async verifyLogin(@Ctx() { em, payload }: MyContext) {
+    if (!payload || !payload.userId) {
+      console.log("access token invalid");
+      return null;
+    }
+    const user = await em.findOne(User, { _id: parseInt(payload.userId) });
+
+    if (!user) {
+      console.log("user id in access token invalid");
+      return null;
+    }
+    return user;
+  }
+
   // @Mutation(() => UserResponse) // Defining query type
   // async register(
   //   // Create an object argument type

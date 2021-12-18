@@ -29,4 +29,4 @@ const Project: React.FC<ProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Project);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Project);

@@ -15,6 +15,7 @@ import ParticleBackground from "../utils/particles/particleBackground";
 import LogoOnlyPage from "../components/LogoOnlyPage";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Index = () => {
   const router = useRouter();

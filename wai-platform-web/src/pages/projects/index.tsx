@@ -1,51 +1,47 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
-import { Text, SimpleGrid, Badge } from "@chakra-ui/react";
+import { Text, SimpleGrid, Badge, Button } from "@chakra-ui/react";
 import Dashboard from "../../components/Dashboard";
 import Card from "../../components/Card";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import { setAccessToken } from "../../utils/accesToken";
 import { UserInfoContext } from "../../utils/userContext";
-import { useProjectsQuery } from "../../generated/graphql";
-
-const projectsDummy = [
-  {
-    title: "first",
-    backgroundImg:
-      "https://amplify-waiplatform-dev-222739-deployment.s3.eu-west-2.amazonaws.com/projects/counting-fingers.jpg",
-    description: (
-      <Badge colorScheme="green" borderRadius="lg">
-        Success
-      </Badge>
-    ),
-    extraInfo: "26 September 2021",
-    shortName: "hello",
-  },
-  { title: "second" },
-  { title: "third" },
-  { title: "fourth" },
-  { title: "fifth" },
-  { title: "sixth" },
-  { title: "seventh" },
-  { title: "eighth" },
-];
+import {
+  useMeQuery,
+  useProjectsQuery,
+  useVerifyLoginMutation,
+} from "../../generated/graphql";
+import { isServer } from "../../utils/isServer";
 
 const Projects = () => {
-  const { query } = useRouter();
-  const { setUserInfo } = useContext(UserInfoContext);
-  const [{ data }] = useProjectsQuery();
+  const router = useRouter();
+  const [{ data: projectData }] = useProjectsQuery();
+  const [{ data: userData }] = useMeQuery({pause: isServer()});
 
   useEffect(() => {
-    if (query.accessToken && query.accessToken.length > 0) {
-      const userInfo = setAccessToken(query.accessToken as string);
-      setUserInfo(userInfo);
+    if (router.query.accessToken && router.query.accessToken.length > 0) {
+      setAccessToken(router.query.accessToken as string);
     }
-  }, [query, setUserInfo]);
+  }, [router.query]);
   return (
-    <Dashboard title="Projects">
+    <Dashboard
+      title="Projects"
+      options={
+        userData?.me?.role === "exec" ? (
+          <Button
+            variant="primary"
+            onClick={() => router.push("/projects/create")}
+          >
+            Create
+          </Button>
+        ) : (
+          <></>
+        )
+      }
+    >
       <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={3}>
-        {data?.projects.map(
+        {projectData?.projects.map(
           ({ title, cover, difficulty, shortName }, index) => (
             <Card
               key={index}
@@ -66,4 +62,4 @@ const Projects = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(Projects);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Projects);

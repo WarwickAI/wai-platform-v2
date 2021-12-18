@@ -1,0 +1,19 @@
+mutation CreateProject($projectInfo: ProjectInput!) {
+  createProject(projectInfo: $projectInfo) {
+    project {
+      _id
+      createdAt
+      updatedAt
+      display
+      title
+      shortName
+      description
+      cover
+      difficulty
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

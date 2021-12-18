@@ -15,19 +15,32 @@ export type Scalars = {
   Float: number;
 };
 
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
+  createProject: ProjectResponse;
   deleteAllUsers: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updatePost?: Maybe<Post>;
+  verifyLogin?: Maybe<User>;
 };
 
 
 export type MutationCreatePostArgs = {
   title: Scalars['String'];
+};
+
+
+export type MutationCreateProjectArgs = {
+  projectInfo: ProjectInput;
 };
 
 
@@ -67,6 +80,21 @@ export type Project = {
   updatedAt: Scalars['String'];
 };
 
+export type ProjectInput = {
+  cover: Scalars['String'];
+  description: Scalars['String'];
+  difficulty: Scalars['String'];
+  display: Scalars['Boolean'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type ProjectResponse = {
+  __typename?: 'ProjectResponse';
+  errors?: Maybe<Array<FieldError>>;
+  project?: Maybe<Project>;
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
@@ -102,6 +130,30 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
+export type RegularUserFragment = { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string };
+
+export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type CreateProjectMutationVariables = Exact<{
+  projectInfo: ProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', _id: number, createdAt: string, updatedAt: string, display: boolean, title: string, shortName: string, description: string, cover: string, difficulty: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
+
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -119,7 +171,71 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', _id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
 
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  _id
+  firstName
+  lastName
+  email
+  role
+}
+    `;
+export const VerifyLoginDocument = gql`
+    mutation VerifyLogin {
+  verifyLogin {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
 
+export function useVerifyLoginMutation() {
+  return Urql.useMutation<VerifyLoginMutation, VerifyLoginMutationVariables>(VerifyLoginDocument);
+};
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const CreateProjectDocument = gql`
+    mutation CreateProject($projectInfo: ProjectInput!) {
+  createProject(projectInfo: $projectInfo) {
+    project {
+      _id
+      createdAt
+      updatedAt
+      display
+      title
+      shortName
+      description
+      cover
+      difficulty
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useCreateProjectMutation() {
+  return Urql.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument);
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
 export const ProjectsDocument = gql`
     query Projects {
   projects {

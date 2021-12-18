@@ -22,9 +22,11 @@ import React, { useContext, useState } from "react";
 import sidebarConfig from "./SidebarConfig";
 import NextLink from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { UserInfoContext } from "../utils/userContext";
 import { useRouter } from "next/router";
 import { capitalizeFirstLetter } from "../utils/stringUtils";
+import { useLogoutMutation, useMeQuery } from "../generated/graphql";
+import { setAccessToken } from "../utils/accesToken";
+import { isServer } from "../utils/isServer";
 
 const DRAWER_WIDTH = 280;
 
@@ -62,12 +64,14 @@ const NavItem: React.FC<NavItemProps> = (props) => {
 interface DashboardProps {
   title: string;
   narrow?: boolean;
+  options?: JSX.Element;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
   const router = useRouter();
   const [isOpen, setOpen] = useState<boolean>(false);
-  const { userInfo } = useContext(UserInfoContext);
+  const [{ data }] = useMeQuery({ pause: isServer() });
+  const [, logout] = useLogoutMutation();
 
   return (
     <Box p={4}>
@@ -83,15 +87,22 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             <PopoverArrow />
             <PopoverCloseButton />
             <PopoverHeader>
-              {userInfo.isLoggedIn
-                ? `Hello ${userInfo.firstName}`
-                : "Not Logged In"}
+              {data?.me ? `Hello ${data.me.firstName}` : "Not Logged In"}
             </PopoverHeader>
             <PopoverBody>
-              {userInfo.isLoggedIn ? (
+              {data && data.me ? (
                 <>
                   <Button variant="primary">Account Settings</Button>
-                  <Button variant="primary">Logout</Button>
+                  <Button
+                    variant="primary"
+                    onClick={async () => {
+                      setAccessToken("");
+                      await logout();
+                      router.push("/");
+                    }}
+                  >
+                    Logout
+                  </Button>
                 </>
               ) : (
                 <Button
@@ -109,9 +120,12 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
         {/* <Button onClick={() => setOpen(true)}>Account</Button> */}
       </Flex>
       <Box px={props.narrow ? [5, 20, 40] : [5, 10, 20]} py={10}>
-        <Heading size="lg" pb={10}>
-          {props.title}
-        </Heading>
+        <Flex direction="row" justifyContent="space-between">
+          <Heading size="lg" pb={10}>
+            {props.title}
+          </Heading>
+          {props.options}
+        </Flex>
         {props.children}
       </Box>
       <>
@@ -121,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             <DrawerCloseButton />
             <Box>
               <Box w={20} pt={2} pb={10}>
-                <Image src="static/logo2.png" alt="WAI Logo" />
+                <Image src="/static/logo2.png" alt="WAI Logo" />
               </Box>
               <Box>
                 {sidebarConfig.map(({ title, path, icon }) => {

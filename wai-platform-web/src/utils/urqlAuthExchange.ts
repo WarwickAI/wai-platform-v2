@@ -1,6 +1,7 @@
 import { makeOperation } from "urql";
 import { getAccessToken, setAccessToken } from "../utils/accesToken";
 import { decode } from "jsonwebtoken";
+import { Data, Variables } from "@urql/exchange-graphcache";
 
 export const getAuth = async ({ authState }) => {
   if (!authState) {
@@ -36,7 +37,7 @@ export const getAuth = async ({ authState }) => {
       token: accessToken,
     };
   }
-
+  
   return null;
 };
 

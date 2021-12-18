@@ -76,7 +76,6 @@ const main = async () => {
     // token is valid and
     // we can send back an access token
     const user = await orm.em.findOne(User, { _id: payload.userId });
-    console.log(user);
 
     if (!user) {
       return res.send({ ok: false, accessToken: "" });

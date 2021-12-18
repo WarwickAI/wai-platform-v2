@@ -4,7 +4,8 @@ exports.sendRefreshToken = void 0;
 const sendRefreshToken = (res, token) => {
     res.cookie("jid", token, {
         httpOnly: true,
-        path: "/refresh_token"
+        path: "/refresh_token",
+        sameSite: "strict"
     });
 };
 exports.sendRefreshToken = sendRefreshToken;

@@ -1,4 +1,7 @@
-# fragment RegularUser on User {
-#   _id
-#   username
-# }
+fragment RegularUser on User {
+  _id
+  firstName
+  lastName
+  email
+  role
+}

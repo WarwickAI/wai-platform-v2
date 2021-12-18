@@ -2,11 +2,18 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
-  LoginMutation,
+  // LoginMutation,
+  // LogoutMutation,
+  // MeDocument,
+  // MeQuery,
+  // RegisterMutation,
+  CreateProjectMutation,
+  ProjectsQuery,
+  ProjectsDocument,
   LogoutMutation,
-  MeDocument,
   MeQuery,
-  RegisterMutation,
+  MeDocument,
+  VerifyLoginMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -15,6 +22,7 @@ import {
   willAuthError,
   didAuthError,
 } from "./urqlAuthExchange";
+import projects from "../pages/projects";
 
 export const createUrqlClient = (ssrExchange: any) => ({
   url: "http://localhost:4000/graphql",
@@ -32,43 +40,43 @@ export const createUrqlClient = (ssrExchange: any) => ({
         Mutation: {
           // Updates cache when login or register run, specifically
           // updating the cache for the Me query to the result just got
-          login: (_result, args, cache, info) => {
-            betterUpdateQuery<LoginMutation, MeQuery>(
+          // login: (_result, args, cache, info) => {
+          //   betterUpdateQuery<LoginMutation, MeQuery>(
+          //     cache,
+          //     {
+          //       query: MeDocument,
+          //     },
+          //     _result,
+          //     (result, query) => {
+          //       if (result.login.errors) {
+          //         return query;
+          //       } else {
+          //         return {
+          //           me: result.login.user,
+          //         };
+          //       }
+          //     }
+          //   );
+          // },
+
+          verifyLogin: (_result, args, cache, info) => {
+            // me query make return null
+            betterUpdateQuery<VerifyLoginMutation, MeQuery>(
               cache,
-              {
-                query: MeDocument,
-              },
+              { query: MeDocument },
               _result,
               (result, query) => {
-                if (result.login.errors) {
+                if (!result.verifyLogin) {
                   return query;
                 } else {
                   return {
-                    me: result.login.user,
+                    me: result.verifyLogin,
                   };
                 }
               }
             );
           },
 
-          register: (_result, args, cache, info) => {
-            betterUpdateQuery<RegisterMutation, MeQuery>(
-              cache,
-              {
-                query: MeDocument,
-              },
-              _result,
-              (result, query) => {
-                if (result.register.errors) {
-                  return query;
-                } else {
-                  return {
-                    me: result.register.user,
-                  };
-                }
-              }
-            );
-          },
 
           logout: (_result, args, cache, info) => {
             // me query make return null

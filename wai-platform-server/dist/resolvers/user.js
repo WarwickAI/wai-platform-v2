@@ -52,6 +52,18 @@ let UserResolver = class UserResolver {
         console.log("HERE");
         return em.find(User_1.User, {});
     }
+    async verifyLogin({ em, payload }) {
+        if (!payload || !payload.userId) {
+            console.log("access token invalid");
+            return null;
+        }
+        const user = await em.findOne(User_1.User, { _id: parseInt(payload.userId) });
+        if (!user) {
+            console.log("user id in access token invalid");
+            return null;
+        }
+        return user;
+    }
     async logout({ res }) {
         (0, sendRefreshToken_1.sendRefreshToken)(res, "");
         return true;
@@ -94,6 +106,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "users", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => User_1.User, { nullable: true }),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "verifyLogin", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
     __param(0, (0, type_graphql_1.Ctx)()),

@@ -46,7 +46,6 @@ const main = async () => {
             return res.send({ ok: false, accessToken: "" });
         }
         const user = await orm.em.findOne(User_1.User, { _id: payload.userId });
-        console.log(user);
         if (!user) {
             return res.send({ ok: false, accessToken: "" });
         }
