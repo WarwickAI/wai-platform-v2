@@ -1,0 +1,24 @@
+mutation VerifyLogin {
+    verifyLogin {
+        ...RegularUser
+    }
+}
+
+mutation Logout {
+  logout
+}
+
+
+mutation UpdateUserRole($role: String!, $email: String!) {
+  updateUserRole(role: $role, email: $email) {
+    _id
+    createdAt
+    updatedAt
+    firstName
+    lastName
+    email
+    cognitoUsername
+    tokenVersion
+    role
+  }
+}

@@ -42,7 +42,7 @@ export class UserResolver {
   // Add functions here, can be queries or mutatations
 
   @Query(() => [User])
-  @UseMiddleware(isExec)
+  @UseMiddleware(isAuth, isExec)
   async users(@Ctx() { em }: MyContext): Promise<User[]> {
     console.log("HERE");
     return em.find(User, {});
@@ -62,6 +62,28 @@ export class UserResolver {
       return null;
     }
     return user;
+  }
+
+  @Mutation(() => User, { nullable: true })
+  @UseMiddleware(isAuth, isExec)
+  async updateUserRole(
+    @Arg("email") email: string,
+    @Arg("role") newRole: string,
+    @Ctx() { em, payload }: MyContext
+  ) {
+    const user = await em.findOne(User, { email: email });
+    if (!user) {
+      console.log("No user found with that email");
+      return null;
+    }
+    user.role = newRole;
+    try {
+      await em.persistAndFlush(user);
+      return user;
+    } catch (err) {
+      console.log(err);
+      return user;
+    }
   }
 
   // @Mutation(() => UserResponse) // Defining query type
