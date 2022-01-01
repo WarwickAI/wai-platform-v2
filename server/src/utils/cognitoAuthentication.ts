@@ -2,7 +2,6 @@ import { Express } from 'express';
 import { stringify } from "querystring";
 import axios from "axios";
 import { decode } from "jsonwebtoken";
-import { Connection, EntityManager, IDatabaseDriver } from '@mikro-orm/core';
 import { sendRefreshToken } from '../sendRefreshToken';
 import { createAccessToken, createRefreshToken } from '../auth';
 import { User } from '../entities/User';
