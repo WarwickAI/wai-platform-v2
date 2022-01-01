@@ -11,7 +11,7 @@ const particlesConfig = {
       value: '#5F5F5F'
     },
     shape: {
-      type: 'circle',
+      type: 'circle' as const,
       stroke: {
         width: 0,
         color: '#5F5F5F'
@@ -55,10 +55,10 @@ const particlesConfig = {
     move: {
       enable: true,
       speed: 3,
-      direction: 'none',
+      direction: 'none' as const,
       random: true,
       straight: false,
-      out_mode: 'out',
+      out_mode: 'out' as const,
       bounce: false,
       attract: {
         enable: false,
@@ -68,15 +68,15 @@ const particlesConfig = {
     }
   },
   interactivity: {
-    detect_on: 'canvas',
+    detect_on: 'canvas' as const,
     events: {
       onhover: {
         enable: false,
-        mode: 'bubble'
+        mode: 'bubble' as const
       },
       onclick: {
         enable: true,
-        mode: 'repulse'
+        mode: 'repulse' as const
       },
       resize: true
     },

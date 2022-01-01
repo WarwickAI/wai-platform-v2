@@ -1,8 +1,6 @@
 import "dotenv/config";
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-import mikroConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -11,45 +9,39 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { verify } from "jsonwebtoken";
 import { User } from "./entities/User";
+import { Project } from "./entities/Project";
 import { sendRefreshToken } from "./sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "./auth";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import setupCognitoAuthentication from "./utils/cognitoAuthentication";
 import { ProjectResolver } from "./resolvers/project";
-import { Project } from "./entities/Project";
-// import { samlMetadataIDP, samlMetadataSP } from "./utils/samlMetadata";
+import { createConnection } from "typeorm";
+import path from "path";
+
 
 const main = async () => {
   // Connect to DB
-  const orm = await MikroORM.init(mikroConfig);
+  const conn = await createConnection({
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    logging: true,
+    synchronize: !__prod__,
+    migrations: __prod__ ? [path.join(__dirname, "./migrations/*")] : [],
+    entities: [User, Project]
+  })
 
-
-  // orm.em.nativeDelete(User, {});
-  // Run migration
-  await orm.getMigrator().up();
-
-  // const user = await orm.em.findOne(User, { firstName: "Edward" });
-  // if (user) {
-  //   user.role = "exec";
-  //   await orm.em.persistAndFlush(user);
-  // }
-
-  // const projectExample = orm.em.create(Project, {
-  //   title: "Marketplace Matching",
-  //   description: "Large online markets struggle to efficiently match buyers and sellers. The problem grows in complexity when matching Business to Business rather than Business to Customer.A team of students will be recruited to research and implement a solution to this problem, involving advanced NLP and recommendation algorithms. Students wanting to join this course require a passion for NLP, algorithms or research.",
-  //   cover: "https://amplify-waiplatform-dev-222739-deployment.s3.eu-west-2.amazonaws.com/projects/market-place-match.jpg",
-  //   shortName: "market-place-match",
-  //   difficulty: "ADVANCED"
-  // });
-  // await orm.em.persistAndFlush(projectExample);
+  await conn.runMigrations();
 
   // Create Express app
   const app = express();
 
+  // Since we have NGINX in front in prod
+  app.set("proxy", 1);
+
   app.use(
     cors({
-      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+      origin: [process.env.CORS_ORIGIN!, "https://warwickaiv2.auth.eu-west-2.amazoncognito.com", "https://studio.apollographql.com"],
       credentials: true,
     })
   );
@@ -75,7 +67,7 @@ const main = async () => {
 
     // token is valid and
     // we can send back an access token
-    const user = await orm.em.findOne(User, { _id: payload.userId });
+    const user = await User.findOne(parseInt(payload.userId));
 
     if (!user) {
       return res.send({ ok: false, accessToken: "" });
@@ -91,7 +83,7 @@ const main = async () => {
   });
 
   // Setup cognito authentication
-  setupCognitoAuthentication(app, orm.em);
+  setupCognitoAuthentication(app);
 
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
@@ -99,7 +91,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver, ProjectResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, em: orm.em }), // Object accessible by resolvers
+    context: ({ req, res }) => ({ req, res }), // Object accessible by resolvers
   });
 
   await apolloServer.start();
@@ -110,7 +102,7 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
+  app.listen(parseInt(process.env.PORT!), () => {
     console.log("server sarted on localhost:4000");
   });
 };

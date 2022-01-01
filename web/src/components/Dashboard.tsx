@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
   Heading,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import sidebarConfig from "./SidebarConfig";
 import NextLink from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";

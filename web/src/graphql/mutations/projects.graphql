@@ -1,7 +1,7 @@
 mutation CreateProject($projectInfo: ProjectInput!) {
   createProject(projectInfo: $projectInfo) {
     project {
-      _id
+      id
       createdAt
       updatedAt
       display
@@ -25,7 +25,7 @@ mutation EditProject($projectInfo: ProjectInput!, $shortName: String!) {
       message
     }
     project {
-      _id
+      id
       createdAt
       updatedAt
       display

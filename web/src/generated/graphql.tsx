@@ -75,20 +75,20 @@ export type MutationUpdateUserRoleArgs = {
 
 export type Post = {
   __typename?: 'Post';
-  _id: Scalars['Float'];
   createdAt: Scalars['String'];
+  id: Scalars['Float'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
 export type Project = {
   __typename?: 'Project';
-  _id: Scalars['Float'];
   cover: Scalars['String'];
   createdAt: Scalars['String'];
   description: Scalars['String'];
   difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
+  id: Scalars['Float'];
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -134,25 +134,25 @@ export type QueryProjectByShortNameArgs = {
 
 export type User = {
   __typename?: 'User';
-  _id: Scalars['Float'];
   cognitoUsername: Scalars['String'];
   createdAt: Scalars['String'];
   email: Scalars['String'];
   firstName: Scalars['String'];
+  id: Scalars['Float'];
   lastName: Scalars['String'];
   role: Scalars['String'];
   tokenVersion: Scalars['Float'];
   updatedAt: Scalars['String'];
 };
 
-export type RegularUserFragment = { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string };
+export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
 
 export type CreateProjectMutationVariables = Exact<{
   projectInfo: ProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', _id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditProjectMutationVariables = Exact<{
   projectInfo: ProjectInput;
@@ -160,12 +160,12 @@ export type EditProjectMutationVariables = Exact<{
 }>;
 
 
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', _id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string } | null | undefined } };
+export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string } | null | undefined } };
 
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
+export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -178,38 +178,38 @@ export type UpdateUserRoleMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?: { __typename?: 'User', _id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string } | null | undefined };
+export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?: { __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', _id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', _id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string }> };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string }> };
 
 export type AllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', _id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string }> };
+export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string }> };
 
 export type ProjectByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', _id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string } | null | undefined };
+export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string } | null | undefined };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', _id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
 
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
-  _id
+  id
   firstName
   lastName
   email
@@ -220,7 +220,7 @@ export const CreateProjectDocument = gql`
     mutation CreateProject($projectInfo: ProjectInput!) {
   createProject(projectInfo: $projectInfo) {
     project {
-      _id
+      id
       createdAt
       updatedAt
       display
@@ -249,7 +249,7 @@ export const EditProjectDocument = gql`
       message
     }
     project {
-      _id
+      id
       createdAt
       updatedAt
       display
@@ -289,7 +289,7 @@ export function useLogoutMutation() {
 export const UpdateUserRoleDocument = gql`
     mutation UpdateUserRole($role: String!, $email: String!) {
   updateUserRole(role: $role, email: $email) {
-    _id
+    id
     createdAt
     updatedAt
     firstName
@@ -319,7 +319,7 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
 export const ProjectsDocument = gql`
     query Projects {
   projects {
-    _id
+    id
     display
     title
     shortName
@@ -335,7 +335,7 @@ export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVa
 export const AllProjectsDocument = gql`
     query AllProjects {
   allProjects {
-    _id
+    id
     display
     title
     shortName
@@ -351,7 +351,7 @@ export function useAllProjectsQuery(options: Omit<Urql.UseQueryArgs<AllProjectsQ
 export const ProjectByShortNameDocument = gql`
     query ProjectByShortName($shortName: String!) {
   projectByShortName(shortName: $shortName) {
-    _id
+    id
     display
     title
     shortName
@@ -368,7 +368,7 @@ export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<Proje
 export const UsersDocument = gql`
     query Users {
   users {
-    _id
+    id
     createdAt
     updatedAt
     firstName

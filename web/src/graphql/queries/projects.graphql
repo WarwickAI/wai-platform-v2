@@ -1,6 +1,6 @@
 query Projects {
   projects {
-    _id
+    id
     display
     title
     shortName
@@ -11,7 +11,7 @@ query Projects {
 
 query AllProjects {
   allProjects {
-    _id
+    id
     display
     title
     shortName
@@ -22,7 +22,7 @@ query AllProjects {
 
 query ProjectByShortName($shortName: String!) {
   projectByShortName(shortName: $shortName) {
-    _id
+    id
     display
     title
     shortName

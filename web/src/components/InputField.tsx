@@ -27,11 +27,14 @@ export const InputField: React.FC<InputFieldProps> = ({
   ...props
 }) => {
   const [field, { error }] = useField(props);
+  // @ts-ignore
   return (
     <FormControl error={!!error}>
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
       {textarea ? (
         <>
+          {/*
+ // @ts-ignore */}
           <Textarea
             {...field}
             {...props}
@@ -46,12 +49,16 @@ export const InputField: React.FC<InputFieldProps> = ({
           <ReactMarkdown linkTarget="_self">{field.value}</ReactMarkdown>
         </>
       ) : props.type === "switch" ? (
-        <Switch
-          {...field}
-          {...props}
-          isChecked={field.value}
-          id={field.name}
-        ></Switch>
+        <>
+          {/*
+ // @ts-ignore */}
+          <Switch
+            {...field}
+            {...props}
+            isChecked={field.value}
+            id={field.name}
+          ></Switch>
+        </>
       ) : (
         <Input
           {...field}

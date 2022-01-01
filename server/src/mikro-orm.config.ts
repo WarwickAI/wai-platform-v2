@@ -11,10 +11,11 @@ export default {
     path: path.join(__dirname, "./migrations"), // path to the folder with migrations
     pattern: /^[\w-]+\d+\.[tj]s$/, // regex pattern for the migration files
   },
-  dbName: "wai-platform",
-  port: 5433,
-  user: "postgres",
-  password: "postgres",
+  // dbName: "wai-platform",
+  // port: 5433,
+  // user: "postgres",
+  // password: "postgres",
+  clientUrl: process.env.DATABASE_URL,
   type: "postgresql",
   debug: !__prod__,
 } as Parameters<typeof MikroORM.init>[0]; // Get type that init expects, and cast object to that type

@@ -1,42 +1,43 @@
-import { PrimaryKey, Property, Entity } from "@mikro-orm/core";
 import { Field, ObjectType } from "type-graphql";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class Project {
+export class Project extends BaseEntity {
     @Field()
-    @PrimaryKey()
-    _id!: number;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
     @Field(() => String)  // Specify as field in GraphQL
-    @Property({ type: "date" }) // Specify as row in DB
-    createdAt: Date = new Date();
+    @CreateDateColumn() // Specify as row in DB
+    createdAt: Date;
 
     @Field(() => String)
-    @Property({ type: "date", onUpdate: () => new Date() })
-    updatedAt: Date = new Date();
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @Field(() => Boolean, { defaultValue: false })
-    @Property()
+    @Column()
     display!: boolean;
 
     @Field(() => String)
-    @Property({ type: "text" })
+    @Column()
     title!: String;
 
     @Field(() => String)
-    @Property({ type: "text" })
+    @Column()
     shortName!: String;
 
     @Field(() => String)
-    @Property({ type: "text" })
+    @Column()
     description: String;
 
     @Field(() => String)
-    @Property({ type: "text" })
+    @Column()
     difficulty: String;
 
     @Field(() => String)
-    @Property({ type: "text" })
+    @Column()
     cover: String;
 }

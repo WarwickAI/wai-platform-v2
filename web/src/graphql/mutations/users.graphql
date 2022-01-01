@@ -11,7 +11,7 @@ mutation Logout {
 
 mutation UpdateUserRole($role: String!, $email: String!) {
   updateUserRole(role: $role, email: $email) {
-    _id
+    id
     createdAt
     updatedAt
     firstName

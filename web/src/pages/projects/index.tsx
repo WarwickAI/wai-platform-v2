@@ -15,7 +15,6 @@ import Card from "../../components/Card";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { setAccessToken } from "../../utils/accesToken";
-import { UserInfoContext } from "../../utils/userContext";
 import {
   useMeQuery,
   useProjectsQuery,
@@ -66,9 +65,9 @@ const Projects = () => {
     >
       <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={3}>
         {(showHidden ? allProjectData?.allProjects : projectData?.projects)?.map(
-          ({ title, cover, difficulty, shortName }, index) => (
+          ({ title, cover, difficulty, shortName, id }) => (
             <Card
-              key={index}
+              key={id}
               title={title}
               backgroundImg={cover}
               description={

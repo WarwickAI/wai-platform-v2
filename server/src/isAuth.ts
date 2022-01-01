@@ -30,7 +30,7 @@ export const isExec: MiddlewareFn<MyContext> = async ({ context }, next) => {
   }
 
   try {
-    const user = await context.em.findOne(User, { _id: parseInt(userId) })
+    const user = await User.findOne(parseInt(userId));
     if (!user) {
       throw new ForbiddenError("not authenticated");
     }

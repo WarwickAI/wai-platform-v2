@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
     "start": "node dist/index.js",
@@ -43,7 +44,8 @@
     "nodemailer": "^6.7.2",
     "pg": "^8.7.1",
     "samlify": "^2.8.2",
-    "type-graphql": "^1.1.1"
+    "type-graphql": "^1.1.1",
+    "typeorm": "^0.2.41"
   },
   "mikro-orm": {
     "useTsNode": true,

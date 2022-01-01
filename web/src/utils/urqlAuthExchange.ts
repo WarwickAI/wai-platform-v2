@@ -3,10 +3,11 @@ import { getAccessToken, setAccessToken } from "../utils/accesToken";
 import { decode } from "jsonwebtoken";
 import { Data, Variables } from "@urql/exchange-graphcache";
 
+// @ts-ignore
 export const getAuth = async ({ authState }) => {
   if (!authState) {
     // Initial load
-    const refreshResponse = await fetch("http://localhost:4000/refresh_token", {
+    const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh_token`, {
       method: "POST",
       credentials: "include",
     });
@@ -41,6 +42,7 @@ export const getAuth = async ({ authState }) => {
   return null;
 };
 
+// @ts-ignore
 export const addAuthToOperation = ({ authState, operation }) => {
   if (!authState || !authState.token) {
     return operation;
@@ -64,20 +66,22 @@ export const addAuthToOperation = ({ authState, operation }) => {
   });
 };
 
+// @ts-ignore
 export const didAuthError = ({ error }) => {
-  return error.graphQLErrors.some((e) => e.extensions?.code === "FORBIDDEN");
+  return error.graphQLErrors.some((e: any) => e.extensions?.code === "FORBIDDEN");
 };
 
+// @ts-ignore
 export const willAuthError = ({ operation, authState }) => {
   if (!authState) {
     // Detect our login mutation and let this operation through:
     return !(
       operation.kind === "mutation" &&
       // Here we find any mutation definition with the "login" field
-      operation.query.definitions.some((definition) => {
+      operation.query.definitions.some((definition: any) => {
         return (
           definition.kind === "OperationDefinition" &&
-          definition.selectionSet.selections.some((node) => {
+          definition.selectionSet.selections.some((node: any) => {
             // The field name is just an example, since signup may also be an exception
             return node.kind === "Field" && node.name.value === "login";
           })

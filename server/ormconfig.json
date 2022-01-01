@@ -1,0 +1,6 @@
+{
+    "type": "postgres",
+    "url": "postgresql://postgres:postgres@localhost:5433/wai-platform-empty",
+    "entities": ["dist/entities/*.js"],
+    "migrations": ["src/migrations/*.js"]
+}

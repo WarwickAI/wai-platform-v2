@@ -43,19 +43,18 @@ export class UserResolver {
 
   @Query(() => [User])
   @UseMiddleware(isAuth, isExec)
-  async users(@Ctx() { em }: MyContext): Promise<User[]> {
-    console.log("HERE");
-    return em.find(User, {});
+  async users(): Promise<User[]> {
+    return User.find();
   }
 
   @Mutation(() => User, { nullable: true })
   @UseMiddleware(isAuth)
-  async verifyLogin(@Ctx() { em, payload }: MyContext) {
+  async verifyLogin(@Ctx() { payload }: MyContext) {
     if (!payload || !payload.userId) {
       console.log("access token invalid");
       return null;
     }
-    const user = await em.findOne(User, { _id: parseInt(payload.userId) });
+    const user = await User.findOne(parseInt(payload.userId));
 
     if (!user) {
       console.log("user id in access token invalid");
@@ -68,17 +67,15 @@ export class UserResolver {
   @UseMiddleware(isAuth, isExec)
   async updateUserRole(
     @Arg("email") email: string,
-    @Arg("role") newRole: string,
-    @Ctx() { em, payload }: MyContext
+    @Arg("role") newRole: string
   ) {
-    const user = await em.findOne(User, { email: email });
+    const user = await User.findOne({ email });
     if (!user) {
       console.log("No user found with that email");
       return null;
     }
-    user.role = newRole;
     try {
-      await em.persistAndFlush(user);
+      await User.update({ email }, { role: newRole });
       return user;
     } catch (err) {
       console.log(err);
@@ -188,22 +185,21 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async revokeRefreshTokensForUser(
-    @Arg("id") id: number,
-    @Ctx() { em }: MyContext
+    @Arg("id") id: number
   ) {
-    const user = await em.findOne(User, { _id: id });
+    const user = await User.findOne(id);
     if (!user) {
       return false;
     }
 
     user.tokenVersion = user.tokenVersion + 1;
-    em.persistAndFlush(user);
+    await user.save();
     return true;
   }
 
   @Mutation(() => Boolean)
-  async deleteAllUsers(@Ctx() { em }: MyContext): Promise<boolean> {
-    em.nativeDelete(User, {});
+  async deleteAllUsers(): Promise<boolean> {
+    await User.delete({});
     return true;
   }
 
@@ -216,12 +212,12 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   @UseMiddleware(isAuth)
-  async me(@Ctx() { em, payload }: MyContext) {
+  async me(@Ctx() { payload }: MyContext) {
     if (!payload || !payload.userId) {
       console.log("access token invalid");
       return null;
     }
-    const user = await em.findOne(User, { _id: parseInt(payload.userId) });
+    const user = User.findOne(parseInt(payload.userId));
 
     if (!user) {
       console.log("user id in access token invalid");

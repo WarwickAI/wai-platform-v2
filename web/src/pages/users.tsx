@@ -40,7 +40,7 @@ const Users: React.FC<UsersProps> = ({}) => {
         <Tbody>
           {data?.users.map((user) => {
             return (
-              <Tr key={user._id}>
+              <Tr key={user.id}>
                 <Td>{user.firstName}</Td>
                 <Td>{user.lastName}</Td>
                 <Td>{user.email}</Td>

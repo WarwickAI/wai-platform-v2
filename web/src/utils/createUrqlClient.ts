@@ -24,73 +24,76 @@ import {
 } from "./urqlAuthExchange";
 import projects from "../pages/projects";
 
-export const createUrqlClient = (ssrExchange: any) => ({
-  url: "http://localhost:4000/graphql",
-  fetchOptions: { credentials: "include" as const },
-  exchanges: [
-    dedupExchange,
-    authExchange({
-      getAuth,
-      addAuthToOperation,
-      willAuthError,
-      didAuthError,
-    }),
-    cacheExchange({
-      updates: {
-        Mutation: {
-          // Updates cache when login or register run, specifically
-          // updating the cache for the Me query to the result just got
-          // login: (_result, args, cache, info) => {
-          //   betterUpdateQuery<LoginMutation, MeQuery>(
-          //     cache,
-          //     {
-          //       query: MeDocument,
-          //     },
-          //     _result,
-          //     (result, query) => {
-          //       if (result.login.errors) {
-          //         return query;
-          //       } else {
-          //         return {
-          //           me: result.login.user,
-          //         };
-          //       }
-          //     }
-          //   );
-          // },
+export const createUrqlClient = (ssrExchange: any) => {
+  console.log("api url:", `${process.env.NEXT_PUBLIC_API_URL}/graphql`);
+  return {
+    url: `${process.env.NEXT_PUBLIC_API_URL as string}/graphql`,
+    fetchOptions: { credentials: "include" as const },
+    exchanges: [
+      dedupExchange,
+      authExchange({
+        getAuth,
+        addAuthToOperation,
+        willAuthError,
+        didAuthError,
+      }),
+      cacheExchange({
+        updates: {
+          Mutation: {
+            // Updates cache when login or register run, specifically
+            // updating the cache for the Me query to the result just got
+            // login: (_result, args, cache, info) => {
+            //   betterUpdateQuery<LoginMutation, MeQuery>(
+            //     cache,
+            //     {
+            //       query: MeDocument,
+            //     },
+            //     _result,
+            //     (result, query) => {
+            //       if (result.login.errors) {
+            //         return query;
+            //       } else {
+            //         return {
+            //           me: result.login.user,
+            //         };
+            //       }
+            //     }
+            //   );
+            // },
 
-          verifyLogin: (_result, args, cache, info) => {
-            // me query make return null
-            betterUpdateQuery<VerifyLoginMutation, MeQuery>(
-              cache,
-              { query: MeDocument },
-              _result,
-              (result, query) => {
-                if (!result.verifyLogin) {
-                  return query;
-                } else {
-                  return {
-                    me: result.verifyLogin,
-                  };
+            verifyLogin: (_result, args, cache, info) => {
+              // me query make return null
+              betterUpdateQuery<VerifyLoginMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (!result.verifyLogin) {
+                    return query;
+                  } else {
+                    return {
+                      me: result.verifyLogin,
+                    };
+                  }
                 }
-              }
-            );
-          },
+              );
+            },
 
 
-          logout: (_result, args, cache, info) => {
-            // me query make return null
-            betterUpdateQuery<LogoutMutation, MeQuery>(
-              cache,
-              { query: MeDocument },
-              _result,
-              () => ({ me: null })
-            );
+            logout: (_result, args, cache, info) => {
+              // me query make return null
+              betterUpdateQuery<LogoutMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                () => ({ me: null })
+              );
+            },
           },
         },
-      },
-    }),
-    ssrExchange,
-    fetchExchange,
-  ],
-});
+      }),
+      ssrExchange,
+      fetchExchange,
+    ],
+  }
+};
