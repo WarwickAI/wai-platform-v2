@@ -19,4 +19,7 @@ export class ProjectInput {
 
     @Field()
     display: boolean;
+
+    @Field()
+    redirect: string;
 }

@@ -25,6 +25,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
           cover: "",
           display: false,
           difficulty: "",
+          redirect: "",
         }}
         onSubmit={async (values, { setErrors }) => {
           const response = await createProject({ projectInfo: values });
@@ -78,6 +79,13 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
                 name="display"
                 label="Display"
                 type="switch"
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="redirect"
+                label="Redirect"
+                placeholder="redirect"
               ></InputField>
             </Box>
             <Box mt={4}>

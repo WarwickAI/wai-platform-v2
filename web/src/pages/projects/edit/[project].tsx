@@ -33,6 +33,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
           cover: data?.projectByShortName?.cover || "",
           display: data?.projectByShortName?.display || false,
           difficulty: data?.projectByShortName?.difficulty || "",
+          redirect: data?.projectByShortName?.redirect || "",
         }}
         onSubmit={async (values, { setErrors }) => {
           const response = await editProject({
@@ -89,6 +90,13 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                 name="display"
                 label="Display"
                 type="switch"
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="redirect"
+                label="Redirect"
+                placeholder="redirect"
               ></InputField>
             </Box>
             <Box mt={4}>

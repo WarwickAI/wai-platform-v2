@@ -10,6 +10,7 @@ mutation CreateProject($projectInfo: ProjectInput!) {
       description
       cover
       difficulty
+      redirect
     }
     errors {
       field
@@ -34,6 +35,7 @@ mutation EditProject($projectInfo: ProjectInput!, $shortName: String!) {
       cover
       description
       title
+      redirect
     }
   }
 }

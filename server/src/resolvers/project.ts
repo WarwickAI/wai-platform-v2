@@ -83,6 +83,7 @@ export class ProjectResolver {
         project.cover = projectInfo.cover || "";
         project.difficulty = projectInfo.difficulty || "";
         project.display = projectInfo.display || false;
+        project.redirect = projectInfo.redirect || "";
 
         await project.save();
 

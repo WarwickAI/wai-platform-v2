@@ -40,4 +40,8 @@ export class Project extends BaseEntity {
     @Field(() => String)
     @Column()
     cover: String;
+
+    @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
+    redirect: String;
 }

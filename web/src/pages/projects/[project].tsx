@@ -1,7 +1,7 @@
 import { Heading, Button } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import Dashboard from "../../components/Dashboard";
 import {
   useMeQuery,
@@ -19,7 +19,22 @@ const Project: React.FC<ProjectProps> = ({}) => {
   const [{ data }] = useProjectByShortNameQuery({
     variables: { shortName: project as string },
   });
-  const [{ data: userInfo }] = useMeQuery({ pause: isServer() });
+  const [{ data: userInfo, fetching: fetchingUser }] = useMeQuery({
+    pause: isServer(),
+  });
+
+  useEffect(() => {
+    if (
+      !fetchingUser &&
+      data?.projectByShortName?.redirect &&
+      data?.projectByShortName?.redirect.length > 0
+    ) {
+      if (userInfo?.me?.role !== "exec") {
+        router.replace(data.projectByShortName.redirect);
+      }
+    }
+  }, [data, fetchingUser, router, userInfo?.me?.role]);
+
   return (
     <Dashboard
       title={
@@ -28,24 +43,55 @@ const Project: React.FC<ProjectProps> = ({}) => {
       narrow={true}
       options={
         userInfo?.me?.role === "exec" ? (
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(
-                `/projects/edit/${data?.projectByShortName?.shortName}`
-              )
-            }
-          >
-            Edit
-          </Button>
+          <>
+            {data?.projectByShortName?.redirect &&
+              data?.projectByShortName?.redirect.length > 0 && (
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    data?.projectByShortName?.redirect
+                      ? router.push(data.projectByShortName.redirect)
+                      : {}
+                  }
+                >
+                  Follow Redirect
+                </Button>
+              )}
+            <Button
+              variant="primary"
+              onClick={() =>
+                router.push(
+                  `/projects/edit/${data?.projectByShortName?.shortName}`
+                )
+              }
+            >
+              Edit
+            </Button>
+          </>
         ) : (
-          <></>
+          <>
+            {data?.projectByShortName?.redirect &&
+              data?.projectByShortName?.redirect.length > 0 && (
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    data?.projectByShortName?.redirect
+                      ? router.push(data.projectByShortName.redirect)
+                      : {}
+                  }
+                >
+                  Follow Redirect
+                </Button>
+              )}
+          </>
         )
       }
     >
-      {data?.projectByShortName?.description && (
-        <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
-      )}
+      {data?.projectByShortName?.redirect &&
+        data?.projectByShortName?.redirect.length === 0 &&
+        data?.projectByShortName?.description && (
+          <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
+        )}
     </Dashboard>
   );
 };
