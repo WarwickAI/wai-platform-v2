@@ -61,6 +61,24 @@ export const createUrqlClient = (ssrExchange: any) => {
             //   );
             // },
 
+            createProject: (_result, args, cache, info) => {
+              betterUpdateQuery<CreateProjectMutation, ProjectsQuery>(
+                cache,
+                { query: ProjectsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createProject.project) {
+                    return query;
+                  } else {
+                    query.projects.push(result.createProject.project);
+                    return {
+                      projects: query.projects
+                    };
+                  }
+                }
+              );
+            },
+
             verifyLogin: (_result, args, cache, info) => {
               // me query make return null
               betterUpdateQuery<VerifyLoginMutation, MeQuery>(
