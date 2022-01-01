@@ -14,6 +14,9 @@ import {
   MeQuery,
   MeDocument,
   VerifyLoginMutation,
+  AllProjectsQuery,
+  AllProjectsDocument,
+  EditProjectMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -73,6 +76,56 @@ export const createUrqlClient = (ssrExchange: any) => {
                     query.projects.push(result.createProject.project);
                     return {
                       projects: query.projects
+                    };
+                  }
+                }
+              );
+              betterUpdateQuery<CreateProjectMutation, AllProjectsQuery>(
+                cache,
+                { query: AllProjectsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createProject.project) {
+                    return query;
+                  } else {
+                    query.allProjects.push(result.createProject.project);
+                    return {
+                      allProjects: query.allProjects
+                    };
+                  }
+                }
+              );
+            },
+
+            edit: (_result, args, cache, info) => {
+              betterUpdateQuery<EditProjectMutation, ProjectsQuery>(
+                cache,
+                { query: ProjectsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editProject.project) {
+                    return query;
+                  } else {
+                    const index = query.projects.findIndex((val) => val.id === result.editProject.project?.id);
+                    query.projects[index] = result.editProject.project;
+                    return {
+                      projects: query.projects
+                    };
+                  }
+                }
+              );
+              betterUpdateQuery<EditProjectMutation, AllProjectsQuery>(
+                cache,
+                { query: AllProjectsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editProject.project) {
+                    return query;
+                  } else {
+                    const index = query.allProjects.findIndex((val) => val.id === result.editProject.project?.id);
+                    query.allProjects[index] = result.editProject.project;
+                    return {
+                      allProjects: query.allProjects
                     };
                   }
                 }
