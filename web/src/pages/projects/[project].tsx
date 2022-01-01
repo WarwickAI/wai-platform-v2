@@ -87,9 +87,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
         )
       }
     >
-      {data?.projectByShortName?.redirect &&
-        data?.projectByShortName?.redirect.length === 0 &&
-        data?.projectByShortName?.description && (
+      {data?.projectByShortName?.description && (
           <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
         )}
     </Dashboard>
