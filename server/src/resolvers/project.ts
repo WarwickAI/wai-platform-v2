@@ -51,42 +51,21 @@ export class ProjectResolver {
             return { errors };
         }
         const project = await Project.create(projectInfo).save();
-
         return { project };
     }
 
     @Mutation(() => ProjectResponse)
     @UseMiddleware(isAuth, isExec)
     async editProject(
-        @Arg("shortName") shortName: string,
+        @Arg("id") id: number,
         @Arg("projectInfo") projectInfo: ProjectInput
     ): Promise<ProjectResponse> {
         const errors = validateProject(projectInfo);
         if (errors) {
             return { errors };
         }
-        var project = await Project.findOne({ shortName });
-        if (!project) {
-            return {
-                errors: [
-                    {
-                        field: "shortName",
-                        message: "no project found with that short name",
-                    },
-                ],
-            };
-        }
-
-        project.title = projectInfo.title;
-        project.shortName = projectInfo.shortName;
-        project.description = projectInfo.description || "";
-        project.cover = projectInfo.cover || "";
-        project.difficulty = projectInfo.difficulty || "";
-        project.display = projectInfo.display || false;
-        project.redirect = projectInfo.redirect || "";
-
-        await project.save();
-
+        await Project.update(id, projectInfo);
+        const project = await Project.findOne(id);
         return { project };
     }
 }

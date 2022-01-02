@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",
     "dev2": "nodemon --exec ts-node src/index.ts",
-    "create:migration": "npx mikro-orm migration:create"
+    "create:migration": "npx typeorm migration:generate -n Initial"
   },
   "keywords": [],
   "author": "",

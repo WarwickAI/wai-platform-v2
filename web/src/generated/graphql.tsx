@@ -52,8 +52,8 @@ export type MutationDeletePostArgs = {
 
 
 export type MutationEditProjectArgs = {
+  id: Scalars['Float'];
   projectInfo: ProjectInput;
-  shortName: Scalars['String'];
 };
 
 
@@ -89,7 +89,7 @@ export type Project = {
   difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
   id: Scalars['Float'];
-  redirect?: Maybe<Scalars['String']>;
+  redirect: Scalars['String'];
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -154,15 +154,15 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect?: string | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditProjectMutationVariables = Exact<{
   projectInfo: ProjectInput;
-  shortName: Scalars['String'];
+  id: Scalars['Float'];
 }>;
 
 
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect?: string | null | undefined } | null | undefined } };
+export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string } | null | undefined } };
 
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -190,19 +190,19 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect?: string | null | undefined }> };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string }> };
 
 export type AllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect?: string | null | undefined }> };
+export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string }> };
 
 export type ProjectByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect?: string | null | undefined } | null | undefined };
+export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string } | null | undefined };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -245,8 +245,8 @@ export function useCreateProjectMutation() {
   return Urql.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument);
 };
 export const EditProjectDocument = gql`
-    mutation EditProject($projectInfo: ProjectInput!, $shortName: String!) {
-  editProject(projectInfo: $projectInfo, shortName: $shortName) {
+    mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
+  editProject(projectInfo: $projectInfo, id: $id) {
     errors {
       field
       message

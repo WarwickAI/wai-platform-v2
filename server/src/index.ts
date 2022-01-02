@@ -31,11 +31,20 @@ const main = async () => {
   //   entities: [User, Project]
   // })
 
+  // const conn = await createConnection({
+  //   type: 'postgres',
+  //   url: process.env.DATABASE_URL,
+  //   logging: true,
+  //   synchronize: false,
+  //   migrations: [path.join(__dirname, "./migrations/*")],
+  //   entities: [User, Project]
+  // })
+
   const conn = await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: !false,
+    synchronize: true,
     migrations: [],
     entities: [User, Project]
   })

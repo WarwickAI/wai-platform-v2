@@ -6,7 +6,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, U
 export class User extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Field(() => String) // Specify as field in GraphQL
   @CreateDateColumn() // Specify as row in DB
@@ -18,19 +18,19 @@ export class User extends BaseEntity {
 
   @Field()
   @Column()
-  firstName!: string;
+  firstName: string;
 
   @Field()
   @Column()
-  lastName!: string;
+  lastName: string;
 
   @Field()
   @Column({ unique: true })
-  email!: string;
+  email: string;
 
   @Field()
   @Column({ unique: true })
-  cognitoUsername!: string;
+  cognitoUsername: string;
 
   @Field()
   @Column()

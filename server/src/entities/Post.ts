@@ -6,7 +6,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, U
 export class Post extends BaseEntity {
   @Field()  
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Field(() => String)  // Specify as field in GraphQL
   @CreateDateColumn() // Specify as row in DB
@@ -18,5 +18,5 @@ export class Post extends BaseEntity {
 
   @Field()
   @Column()
-  title!: string;
+  title: string;
 }

@@ -7,7 +7,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, U
 export class Project extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Field(() => String)  // Specify as field in GraphQL
     @CreateDateColumn() // Specify as row in DB
@@ -17,31 +17,31 @@ export class Project extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @Field(() => Boolean, { defaultValue: false })
+    @Field({ defaultValue: false })
     @Column()
-    display!: boolean;
+    display: boolean;
 
-    @Field(() => String)
+    @Field()
     @Column()
-    title!: String;
+    title: string;
 
-    @Field(() => String)
+    @Field()
     @Column()
-    shortName!: String;
+    shortName: string;
 
-    @Field(() => String)
+    @Field()
     @Column()
-    description: String;
+    description: string;
 
-    @Field(() => String)
+    @Field()
     @Column()
-    difficulty: String;
+    difficulty: string;
 
-    @Field(() => String)
+    @Field()
     @Column()
-    cover: String;
+    cover: string;
 
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
+    @Field()
+    @Column({ default: '' })
     redirect: String;
 }

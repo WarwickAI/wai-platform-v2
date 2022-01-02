@@ -26,8 +26,8 @@ const Project: React.FC<ProjectProps> = ({}) => {
   useEffect(() => {
     if (
       !fetchingUser &&
-      data?.projectByShortName?.redirect &&
-      data?.projectByShortName?.redirect.length > 0
+      data?.projectByShortName &&
+      data?.projectByShortName.redirect.length > 0
     ) {
       if (userInfo?.me?.role !== "exec") {
         router.replace(data.projectByShortName.redirect);
@@ -37,15 +37,13 @@ const Project: React.FC<ProjectProps> = ({}) => {
 
   return (
     <Dashboard
-      title={
-        data?.projectByShortName?.title ? data?.projectByShortName?.title : ""
-      }
+      title={data?.projectByShortName ? data?.projectByShortName.title : ""}
       narrow={true}
       options={
         userInfo?.me?.role === "exec" ? (
           <>
-            {data?.projectByShortName?.redirect &&
-              data?.projectByShortName?.redirect.length > 0 && (
+            {data?.projectByShortName &&
+              data?.projectByShortName.redirect.length > 0 && (
                 <Button
                   variant="primary"
                   onClick={() =>
@@ -70,8 +68,8 @@ const Project: React.FC<ProjectProps> = ({}) => {
           </>
         ) : (
           <>
-            {data?.projectByShortName?.redirect &&
-              data?.projectByShortName?.redirect.length > 0 && (
+            {data?.projectByShortName &&
+              data?.projectByShortName.redirect.length > 0 && (
                 <Button
                   variant="primary"
                   onClick={() =>
@@ -88,8 +86,8 @@ const Project: React.FC<ProjectProps> = ({}) => {
       }
     >
       {data?.projectByShortName?.description && (
-          <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
-        )}
+        <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
+      )}
     </Dashboard>
   );
 };

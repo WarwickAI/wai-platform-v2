@@ -38,7 +38,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
         onSubmit={async (values, { setErrors }) => {
           const response = await editProject({
             projectInfo: values,
-            shortName: project as string,
+            id: data?.projectByShortName ? data.projectByShortName.id : 0,
           });
           if (response.data?.editProject.errors) {
             setErrors(toErrorMap(response.data.editProject.errors));

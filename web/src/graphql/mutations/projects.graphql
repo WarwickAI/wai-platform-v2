@@ -19,8 +19,8 @@ mutation CreateProject($projectInfo: ProjectInput!) {
   }
 }
 
-mutation EditProject($projectInfo: ProjectInput!, $shortName: String!) {
-  editProject(projectInfo: $projectInfo, shortName: $shortName) {
+mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
+  editProject(projectInfo: $projectInfo, id: $id) {
     errors {
       field
       message
