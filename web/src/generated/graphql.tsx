@@ -23,21 +23,15 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: Post;
   createProject: ProjectResponse;
+  createTalk: TalkResponse;
   deleteAllUsers: Scalars['Boolean'];
-  deletePost: Scalars['Boolean'];
   editProject: ProjectResponse;
+  editTalk: TalkResponse;
   logout: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
-  updatePost?: Maybe<Post>;
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
-};
-
-
-export type MutationCreatePostArgs = {
-  title: Scalars['String'];
 };
 
 
@@ -46,8 +40,8 @@ export type MutationCreateProjectArgs = {
 };
 
 
-export type MutationDeletePostArgs = {
-  id: Scalars['Float'];
+export type MutationCreateTalkArgs = {
+  talkInfo: TalkInput;
 };
 
 
@@ -57,28 +51,20 @@ export type MutationEditProjectArgs = {
 };
 
 
-export type MutationRevokeRefreshTokensForUserArgs = {
+export type MutationEditTalkArgs = {
   id: Scalars['Float'];
+  talkInfo: TalkInput;
 };
 
 
-export type MutationUpdatePostArgs = {
+export type MutationRevokeRefreshTokensForUserArgs = {
   id: Scalars['Float'];
-  title?: InputMaybe<Scalars['String']>;
 };
 
 
 export type MutationUpdateUserRoleArgs = {
   email: Scalars['String'];
   role: Scalars['String'];
-};
-
-export type Post = {
-  __typename?: 'Post';
-  createdAt: Scalars['String'];
-  id: Scalars['Float'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type Project = {
@@ -114,24 +100,53 @@ export type ProjectResponse = {
 export type Query = {
   __typename?: 'Query';
   allProjects: Array<Project>;
+  allTalks: Array<Talk>;
   hello: Scalars['String'];
   me?: Maybe<User>;
-  post?: Maybe<Post>;
-  posts: Array<Post>;
   projectByShortName?: Maybe<Project>;
   projects: Array<Project>;
+  talkByShortName?: Maybe<Talk>;
+  talks: Array<Talk>;
   testJWT: Scalars['String'];
   users: Array<User>;
 };
 
 
-export type QueryPostArgs = {
-  id: Scalars['Float'];
+export type QueryProjectByShortNameArgs = {
+  shortName: Scalars['String'];
 };
 
 
-export type QueryProjectByShortNameArgs = {
+export type QueryTalkByShortNameArgs = {
   shortName: Scalars['String'];
+};
+
+export type Talk = {
+  __typename?: 'Talk';
+  cover: Scalars['String'];
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  display?: Maybe<Scalars['Boolean']>;
+  id: Scalars['Float'];
+  redirect: Scalars['String'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type TalkInput = {
+  cover: Scalars['String'];
+  description: Scalars['String'];
+  display: Scalars['Boolean'];
+  redirect: Scalars['String'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type TalkResponse = {
+  __typename?: 'TalkResponse';
+  errors?: Maybe<Array<FieldError>>;
+  talk?: Maybe<Talk>;
 };
 
 export type User = {
@@ -163,6 +178,21 @@ export type EditProjectMutationVariables = Exact<{
 
 
 export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string } | null | undefined } };
+
+export type CreateTalksMutationVariables = Exact<{
+  talkInfo: TalkInput;
+}>;
+
+
+export type CreateTalksMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+
+export type EditTalkMutationVariables = Exact<{
+  talkInfo: TalkInput;
+  id: Scalars['Float'];
+}>;
+
+
+export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'TalkResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, cover: string, description: string, title: string, redirect: string } | null | undefined } };
 
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -203,6 +233,23 @@ export type ProjectByShortNameQueryVariables = Exact<{
 
 
 export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string } | null | undefined };
+
+export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TalksQuery = { __typename?: 'Query', talks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, cover: string, redirect: string }> };
+
+export type AllTalksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllTalksQuery = { __typename?: 'Query', allTalks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, cover: string, redirect: string }> };
+
+export type TalkByShortNameQueryVariables = Exact<{
+  shortName: Scalars['String'];
+}>;
+
+
+export type TalkByShortNameQuery = { __typename?: 'Query', talkByShortName?: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string } | null | undefined };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -269,6 +316,56 @@ export const EditProjectDocument = gql`
 
 export function useEditProjectMutation() {
   return Urql.useMutation<EditProjectMutation, EditProjectMutationVariables>(EditProjectDocument);
+};
+export const CreateTalksDocument = gql`
+    mutation CreateTalks($talkInfo: TalkInput!) {
+  createTalk(talkInfo: $talkInfo) {
+    talk {
+      id
+      createdAt
+      updatedAt
+      display
+      title
+      shortName
+      description
+      cover
+      redirect
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useCreateTalksMutation() {
+  return Urql.useMutation<CreateTalksMutation, CreateTalksMutationVariables>(CreateTalksDocument);
+};
+export const EditTalkDocument = gql`
+    mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {
+  editTalk(talkInfo: $talkInfo, id: $id) {
+    errors {
+      field
+      message
+    }
+    talk {
+      id
+      createdAt
+      updatedAt
+      display
+      shortName
+      cover
+      description
+      title
+      redirect
+    }
+  }
+}
+    `;
+
+export function useEditTalkMutation() {
+  return Urql.useMutation<EditTalkMutation, EditTalkMutationVariables>(EditTalkDocument);
 };
 export const VerifyLoginDocument = gql`
     mutation VerifyLogin {
@@ -371,6 +468,55 @@ export const ProjectByShortNameDocument = gql`
 
 export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<ProjectByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectByShortNameQuery>({ query: ProjectByShortNameDocument, ...options });
+};
+export const TalksDocument = gql`
+    query Talks {
+  talks {
+    id
+    display
+    title
+    shortName
+    cover
+    redirect
+  }
+}
+    `;
+
+export function useTalksQuery(options: Omit<Urql.UseQueryArgs<TalksQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TalksQuery>({ query: TalksDocument, ...options });
+};
+export const AllTalksDocument = gql`
+    query AllTalks {
+  allTalks {
+    id
+    display
+    title
+    shortName
+    cover
+    redirect
+  }
+}
+    `;
+
+export function useAllTalksQuery(options: Omit<Urql.UseQueryArgs<AllTalksQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllTalksQuery>({ query: AllTalksDocument, ...options });
+};
+export const TalkByShortNameDocument = gql`
+    query TalkByShortName($shortName: String!) {
+  talkByShortName(shortName: $shortName) {
+    id
+    display
+    title
+    shortName
+    description
+    cover
+    redirect
+  }
+}
+    `;
+
+export function useTalkByShortNameQuery(options: Omit<Urql.UseQueryArgs<TalkByShortNameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TalkByShortNameQuery>({ query: TalkByShortNameDocument, ...options });
 };
 export const UsersDocument = gql`
     query Users {

@@ -4,14 +4,8 @@ import { Project } from "../entities/Project";
 import { ProjectInput } from "../utils/ProjectInput";
 import { validateProject } from "../utils/validateProject";
 import { isAuth, isExec } from "../isAuth";
+import FieldError from "../utils/FieldError";
 
-@ObjectType()
-class FieldError {
-    @Field()
-    field: string;
-    @Field()
-    message: string;
-}
 @ObjectType()
 class ProjectResponse {
     @Field(() => [FieldError], { nullable: true })

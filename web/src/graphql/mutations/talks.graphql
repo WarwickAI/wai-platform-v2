@@ -1,0 +1,39 @@
+mutation CreateTalks($talkInfo: TalkInput!) {
+  createTalk(talkInfo: $talkInfo) {
+    talk {
+      id
+      createdAt
+      updatedAt
+      display
+      title
+      shortName
+      description
+      cover
+      redirect
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {
+  editTalk(talkInfo: $talkInfo, id: $id) {
+    errors {
+      field
+      message
+    }
+    talk {
+      id
+      createdAt
+      updatedAt
+      display
+      shortName
+      cover
+      description
+      title
+      redirect
+    }
+  }
+}

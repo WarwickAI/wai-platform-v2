@@ -17,6 +17,11 @@ import {
   AllProjectsQuery,
   AllProjectsDocument,
   EditProjectMutation,
+  TalksDocument,
+  TalksQuery,
+  EditTalkMutation,
+  AllTalksQuery,
+  AllTalksDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -97,7 +102,7 @@ export const createUrqlClient = (ssrExchange: any) => {
               );
             },
 
-            edit: (_result, args, cache, info) => {
+            editProject: (_result, args, cache, info) => {
               betterUpdateQuery<EditProjectMutation, ProjectsQuery>(
                 cache,
                 { query: ProjectsDocument },
@@ -126,6 +131,41 @@ export const createUrqlClient = (ssrExchange: any) => {
                     query.allProjects[index] = result.editProject.project;
                     return {
                       allProjects: query.allProjects
+                    };
+                  }
+                }
+              );
+            },
+
+            editTalk: (_result, args, cache, info) => {
+              betterUpdateQuery<EditTalkMutation, TalksQuery>(
+                cache,
+                { query: TalksDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editTalk.talk) {
+                    return query;
+                  } else {
+                    const index = query.talks.findIndex((val) => val.id === result.editTalk.talk?.id);
+                    query.talks[index] = result.editTalk.talk;
+                    return {
+                      talks: query.talks
+                    };
+                  }
+                }
+              );
+              betterUpdateQuery<EditTalkMutation, AllTalksQuery>(
+                cache,
+                { query: AllTalksDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editTalk.talk) {
+                    return query;
+                  } else {
+                    const index = query.allTalks.findIndex((val) => val.id === result.editTalk.talk?.id);
+                    query.allTalks[index] = result.editTalk.talk;
+                    return {
+                      allTalks: query.allTalks
                     };
                   }
                 }

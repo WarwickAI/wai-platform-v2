@@ -5,7 +5,6 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
-import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { verify } from "jsonwebtoken";
 import { User } from "./entities/User";
@@ -18,6 +17,8 @@ import setupCognitoAuthentication from "./utils/cognitoAuthentication";
 import { ProjectResolver } from "./resolvers/project";
 import { createConnection } from "typeorm";
 import path from "path";
+import { Talk } from "./entities/Talk";
+import { TalkResolver } from "./resolvers/talk";
 
 
 const main = async () => {
@@ -46,7 +47,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project]
+    entities: [User, Project, Talk]
   })
 
   await conn.runMigrations();
@@ -106,7 +107,7 @@ const main = async () => {
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver, ProjectResolver],
+      resolvers: [HelloResolver, UserResolver, ProjectResolver, TalkResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }), // Object accessible by resolvers

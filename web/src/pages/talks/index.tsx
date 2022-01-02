@@ -17,29 +17,23 @@ import { useContext, useEffect, useState } from "react";
 import { setAccessToken } from "../../utils/accesToken";
 import {
   useMeQuery,
-  useProjectsQuery,
+  useTalksQuery,
   useVerifyLoginMutation,
-  useAllProjectsQuery,
+  useAllTalksQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
 
-const Projects = () => {
+const Talks = () => {
   const router = useRouter();
-  const [{ data: projectData }] = useProjectsQuery();
-  const [{ data: allProjectData }] = useAllProjectsQuery({ pause: isServer() });
+  const [{ data: talkData }] = useTalksQuery();
+  const [{ data: allTalkData }] = useAllTalksQuery({ pause: isServer() });
   const [{ data: userData }] = useMeQuery({ pause: isServer() });
 
   const [showHidden, setShowHidden] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (router.query.accessToken && router.query.accessToken.length > 0) {
-      setAccessToken(router.query.accessToken as string);
-      router.push("/projects");
-    }
-  }, [router, router.query]);
   return (
     <Dashboard
-      title="Projects"
+      title="Talks"
       options={
         userData?.me?.role === "exec" ? (
           <HStack spacing={4}>
@@ -53,7 +47,7 @@ const Projects = () => {
             </HStack>
             <Button
               variant="primary"
-              onClick={() => router.push("/projects/create")}
+              onClick={() => router.push("/talks/create")}
             >
               Create
             </Button>
@@ -64,20 +58,15 @@ const Projects = () => {
       }
     >
       <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={3}>
-        {(showHidden ? allProjectData?.allProjects : projectData?.projects)?.map(
-          ({ title, cover, difficulty, shortName, id }) => (
+        {(showHidden ? allTalkData?.allTalks : talkData?.talks)?.map(
+          ({ title, cover, shortName, id }) => (
             <Card
               key={id}
               title={title}
               backgroundImg={cover}
-              description={
-                <Badge colorScheme="green" borderRadius="lg">
-                  {difficulty}
-                </Badge>
-              }
               extraInfo=""
               shortName={shortName}
-              linkPrefix="projects"
+              linkPrefix="talks"
             />
           )
         )}
@@ -86,4 +75,4 @@ const Projects = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Projects);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Talks);

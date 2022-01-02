@@ -8,6 +8,7 @@ interface CardProps {
   extraInfo?: string | JSX.Element;
   backgroundImg?: string | JSX.Element;
   shortName?: string;
+  linkPrefix?: string;
 }
 
 const Card: React.FC<CardProps> = (props) => {
@@ -30,7 +31,8 @@ const Card: React.FC<CardProps> = (props) => {
       _hover={{ cursor: props.shortName ? "pointer" : "default" }}
       onClick={
         props.shortName
-          ? () => router.push(`/projects/${props.shortName}`)
+          ? () =>
+              router.push(`/${props.linkPrefix ? props.linkPrefix : ""}/${props.shortName}`)
           : () => {}
       }
     >

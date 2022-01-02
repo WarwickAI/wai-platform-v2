@@ -1,0 +1,33 @@
+query Talks {
+  talks {
+    id
+    display
+    title
+    shortName
+    cover
+    redirect
+  }
+}
+
+query AllTalks {
+  allTalks {
+    id
+    display
+    title
+    shortName
+    cover
+    redirect
+  }
+}
+
+query TalkByShortName($shortName: String!) {
+  talkByShortName(shortName: $shortName) {
+    id
+    display
+    title
+    shortName
+    description
+    cover
+    redirect
+  }
+}
