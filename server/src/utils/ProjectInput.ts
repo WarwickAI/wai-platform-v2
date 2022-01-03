@@ -22,4 +22,7 @@ export class ProjectInput {
 
     @Field()
     redirect: string;
+
+    @Field()
+    joinButton: boolean;
 }

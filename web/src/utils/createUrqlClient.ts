@@ -2,11 +2,6 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
-  // LoginMutation,
-  // LogoutMutation,
-  // MeDocument,
-  // MeQuery,
-  // RegisterMutation,
   CreateProjectMutation,
   ProjectsQuery,
   ProjectsDocument,
@@ -31,7 +26,6 @@ import {
   willAuthError,
   didAuthError,
 } from "./urqlAuthExchange";
-import projects from "../pages/projects";
 
 export const createUrqlClient = (ssrExchange: any) => {
   console.log("api url:", `${process.env.NEXT_PUBLIC_API_URL}/graphql`);
@@ -217,7 +211,6 @@ export const createUrqlClient = (ssrExchange: any) => {
                 }
               );
             },
-
 
             logout: (_result, args, cache, info) => {
               // me query make return null

@@ -34,6 +34,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
           display: data?.projectByShortName?.display || false,
           difficulty: data?.projectByShortName?.difficulty || "",
           redirect: data?.projectByShortName?.redirect || "",
+          joinButton: data?.projectByShortName?.joinButton || false,
         }}
         onSubmit={async (values, { setErrors }) => {
           const response = await editProject({
@@ -97,6 +98,13 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                 name="redirect"
                 label="Redirect"
                 placeholder="redirect"
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="joinButton"
+                label="Join Button"
+                type="switch"
               ></InputField>
             </Box>
             <Box mt={4}>

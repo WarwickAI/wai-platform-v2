@@ -43,5 +43,9 @@ export class Project extends BaseEntity {
 
     @Field()
     @Column({ default: '' })
-    redirect: String;
+    redirect: string;
+
+    @Field({defaultValue: false})
+    @Column({ default: false})
+    joinButton: boolean;
 }

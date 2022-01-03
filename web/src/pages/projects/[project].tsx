@@ -1,4 +1,4 @@
-import { Heading, Button } from "@chakra-ui/react";
+import { Heading, Button, HStack } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -40,21 +40,22 @@ const Project: React.FC<ProjectProps> = ({}) => {
       title={data?.projectByShortName ? data?.projectByShortName.title : ""}
       narrow={true}
       options={
-        userInfo?.me?.role === "exec" ? (
-          <>
-            {data?.projectByShortName &&
-              data?.projectByShortName.redirect.length > 0 && (
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    data?.projectByShortName?.redirect
-                      ? router.push(data.projectByShortName.redirect)
-                      : {}
-                  }
-                >
-                  Follow Redirect
-                </Button>
-              )}
+        <HStack>
+          {userInfo?.me?.role === "exec" &&
+            data?.projectByShortName &&
+            data?.projectByShortName.redirect.length > 0 && (
+              <Button
+                variant="primary"
+                onClick={() =>
+                  data?.projectByShortName?.redirect
+                    ? router.push(data.projectByShortName.redirect)
+                    : {}
+                }
+              >
+                Follow Redirect
+              </Button>
+            )}
+          {userInfo?.me?.role === "exec" && (
             <Button
               variant="primary"
               onClick={() =>
@@ -65,24 +66,11 @@ const Project: React.FC<ProjectProps> = ({}) => {
             >
               Edit
             </Button>
-          </>
-        ) : (
-          <>
-            {data?.projectByShortName &&
-              data?.projectByShortName.redirect.length > 0 && (
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    data?.projectByShortName?.redirect
-                      ? router.push(data.projectByShortName.redirect)
-                      : {}
-                  }
-                >
-                  Follow Redirect
-                </Button>
-              )}
-          </>
-        )
+          )}
+          {data?.projectByShortName && data.projectByShortName.joinButton && (
+            <Button variant="primary">Join</Button>
+          )}
+        </HStack>
       }
     >
       {data?.projectByShortName?.description && (

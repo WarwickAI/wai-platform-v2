@@ -11,6 +11,7 @@ mutation CreateProject($projectInfo: ProjectInput!) {
       cover
       difficulty
       redirect
+      joinButton
     }
     errors {
       field
@@ -36,6 +37,7 @@ mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
       description
       title
       redirect
+      joinButton
     }
   }
 }

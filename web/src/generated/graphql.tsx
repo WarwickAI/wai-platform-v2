@@ -75,6 +75,7 @@ export type Project = {
   difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
   id: Scalars['Float'];
+  joinButton?: Maybe<Scalars['Boolean']>;
   redirect: Scalars['String'];
   shortName: Scalars['String'];
   title: Scalars['String'];
@@ -86,6 +87,7 @@ export type ProjectInput = {
   description: Scalars['String'];
   difficulty: Scalars['String'];
   display: Scalars['Boolean'];
+  joinButton: Scalars['Boolean'];
   redirect: Scalars['String'];
   shortName: Scalars['String'];
   title: Scalars['String'];
@@ -169,7 +171,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditProjectMutationVariables = Exact<{
   projectInfo: ProjectInput;
@@ -177,7 +179,7 @@ export type EditProjectMutationVariables = Exact<{
 }>;
 
 
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string } | null | undefined } };
+export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
 
 export type CreateTalkMutationVariables = Exact<{
   talkInfo: TalkInput;
@@ -220,19 +222,19 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string }> };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
 
 export type AllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string }> };
+export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
 
 export type ProjectByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string } | null | undefined };
+export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
 
 export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -279,6 +281,7 @@ export const CreateProjectDocument = gql`
       cover
       difficulty
       redirect
+      joinButton
     }
     errors {
       field
@@ -309,6 +312,7 @@ export const EditProjectDocument = gql`
       description
       title
       redirect
+      joinButton
     }
   }
 }
@@ -427,6 +431,7 @@ export const ProjectsDocument = gql`
     difficulty
     cover
     redirect
+    joinButton
   }
 }
     `;
@@ -444,6 +449,7 @@ export const AllProjectsDocument = gql`
     difficulty
     cover
     redirect
+    joinButton
   }
 }
     `;
@@ -462,6 +468,7 @@ export const ProjectByShortNameDocument = gql`
     description
     cover
     redirect
+    joinButton
   }
 }
     `;

@@ -22,6 +22,7 @@ import {
   useAllTalksQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
+import ItemGrid from "../../components/ItemGrid";
 
 const Talks = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ const Talks = () => {
         )
       }
     >
-      <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={3}>
+      <ItemGrid>
         {(showHidden ? allTalkData?.allTalks : talkData?.talks)?.map(
           ({ title, cover, shortName, id }) => (
             <Card
@@ -70,7 +71,7 @@ const Talks = () => {
             />
           )
         )}
-      </SimpleGrid>
+      </ItemGrid>
     </Dashboard>
   );
 };
