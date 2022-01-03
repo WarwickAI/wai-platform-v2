@@ -7,7 +7,6 @@ import {
   useJoinProjectMutation,
   useMeQuery,
   useProjectByShortNameQuery,
-  useProjectRequestedUsersQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import ReactMarkdown from "react-markdown";
@@ -25,7 +24,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
     pause: isServer(),
   });
   const [, joinProject] = useJoinProjectMutation();
-
+  console.log(userInfo);
   useEffect(() => {
     if (
       !fetchingUser &&
@@ -77,12 +76,12 @@ const Project: React.FC<ProjectProps> = ({}) => {
               disabled={
                 userInfo?.me?.projects.findIndex(
                   ({ shortName }) => shortName == project
-                ) !== 1
+                ) !== -1
               }
             >
               {userInfo?.me?.projects.findIndex(
                 ({ shortName }) => shortName == project
-              ) !== 1
+              ) !== -1
                 ? "Joined"
                 : "Join"}
             </Button>

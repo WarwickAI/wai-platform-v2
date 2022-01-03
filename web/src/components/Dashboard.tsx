@@ -21,6 +21,7 @@ import {
 import React, { useState } from "react";
 import sidebarConfig from "./SidebarConfig";
 import NextLink from "next/link";
+import Head from "next/head";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { capitalizeFirstLetter } from "../utils/stringUtils";
@@ -75,6 +76,9 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
 
   return (
     <Box p={4}>
+      <Head>
+        <title>{props.title}</title>
+      </Head>
       <Flex direction="row" justifyContent="space-between">
         <Button onClick={() => setOpen(true)} variant="primary">
           <HamburgerIcon />

@@ -45,3 +45,15 @@ mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
 mutation JoinProject($projectId: Float!) {
   joinProject(projectId: $projectId)
 }
+
+mutation RemoveUserFromProject(
+  $userId: Float!
+  $projectId: Float
+  $shortName: String
+) {
+  removeUserFromProject(
+    userId: $userId
+    projectId: $projectId
+    shortName: $shortName
+  )
+}
