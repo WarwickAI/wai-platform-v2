@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import { toErrorMap } from "../../utils/toErrorMap";
 import { InputField } from "../../components/InputField";
 import { Box, Button } from "@chakra-ui/react";
-import { useCreateTalksMutation } from "../../generated/graphql";
+import { useCreateTalkMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
@@ -14,7 +14,7 @@ interface CreateTalkProps {}
 
 const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
   const router = useRouter();
-  const [, createTalk] = useCreateTalksMutation();
+  const [, createTalk] = useCreateTalkMutation();
   return (
     <Dashboard title="Create Talk">
       <Formik

@@ -1,4 +1,4 @@
-mutation CreateTalks($talkInfo: TalkInput!) {
+mutation CreateTalk($talkInfo: TalkInput!) {
   createTalk(talkInfo: $talkInfo) {
     talk {
       id

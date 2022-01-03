@@ -22,6 +22,7 @@ import {
   useAllProjectsQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
+import ItemGrid from "../../components/ItemGrid";
 
 const Projects = () => {
   const router = useRouter();
@@ -63,9 +64,9 @@ const Projects = () => {
         )
       }
     >
-      <SimpleGrid columns={[1, 2, 3, 4, 5, 6]} spacing={3}>
+      <ItemGrid>
         {(showHidden ? allProjectData?.allProjects : projectData?.projects)?.map(
-          ({ title, cover, difficulty, shortName, id }) => (
+          ({ title, cover, difficulty, shortName, id, redirect }) => (
             <Card
               key={id}
               title={title}
@@ -78,10 +79,11 @@ const Projects = () => {
               extraInfo=""
               shortName={shortName}
               linkPrefix="projects"
+              redirect={redirect}
             />
           )
         )}
-      </SimpleGrid>
+      </ItemGrid>
     </Dashboard>
   );
 };

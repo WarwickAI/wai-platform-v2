@@ -179,12 +179,12 @@ export type EditProjectMutationVariables = Exact<{
 
 export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string } | null | undefined } };
 
-export type CreateTalksMutationVariables = Exact<{
+export type CreateTalkMutationVariables = Exact<{
   talkInfo: TalkInput;
 }>;
 
 
-export type CreateTalksMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditTalkMutationVariables = Exact<{
   talkInfo: TalkInput;
@@ -317,8 +317,8 @@ export const EditProjectDocument = gql`
 export function useEditProjectMutation() {
   return Urql.useMutation<EditProjectMutation, EditProjectMutationVariables>(EditProjectDocument);
 };
-export const CreateTalksDocument = gql`
-    mutation CreateTalks($talkInfo: TalkInput!) {
+export const CreateTalkDocument = gql`
+    mutation CreateTalk($talkInfo: TalkInput!) {
   createTalk(talkInfo: $talkInfo) {
     talk {
       id
@@ -339,8 +339,8 @@ export const CreateTalksDocument = gql`
 }
     `;
 
-export function useCreateTalksMutation() {
-  return Urql.useMutation<CreateTalksMutation, CreateTalksMutationVariables>(CreateTalksDocument);
+export function useCreateTalkMutation() {
+  return Urql.useMutation<CreateTalkMutation, CreateTalkMutationVariables>(CreateTalkDocument);
 };
 export const EditTalkDocument = gql`
     mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {

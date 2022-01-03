@@ -1,6 +1,8 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
+import { useMeQuery } from "../generated/graphql";
+import { isServer } from "../utils/isServer";
 
 interface CardProps {
   title: string | JSX.Element;
@@ -9,10 +11,13 @@ interface CardProps {
   backgroundImg?: string | JSX.Element;
   shortName?: string;
   linkPrefix?: string;
+  redirect?: string;
 }
 
 const Card: React.FC<CardProps> = (props) => {
   const router = useRouter();
+  const [{ data: meData }] = useMeQuery({ pause: isServer() });
+
   return (
     <Box
       maxW="sm"
@@ -31,8 +36,21 @@ const Card: React.FC<CardProps> = (props) => {
       _hover={{ cursor: props.shortName ? "pointer" : "default" }}
       onClick={
         props.shortName
-          ? () =>
-              router.push(`/${props.linkPrefix ? props.linkPrefix : ""}/${props.shortName}`)
+          ? () => {
+              if (
+                meData?.me?.role !== "exec" &&
+                props.redirect &&
+                props.redirect.length > 0
+              ) {
+                router.push(props.redirect);
+              } else {
+                router.push(
+                  `/${props.linkPrefix ? props.linkPrefix : ""}/${
+                    props.shortName
+                  }`
+                );
+              }
+            }
           : () => {}
       }
     >

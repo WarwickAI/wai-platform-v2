@@ -22,6 +22,7 @@ import {
   EditTalkMutation,
   AllTalksQuery,
   AllTalksDocument,
+  CreateTalkMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -48,26 +49,6 @@ export const createUrqlClient = (ssrExchange: any) => {
       cacheExchange({
         updates: {
           Mutation: {
-            // Updates cache when login or register run, specifically
-            // updating the cache for the Me query to the result just got
-            // login: (_result, args, cache, info) => {
-            //   betterUpdateQuery<LoginMutation, MeQuery>(
-            //     cache,
-            //     {
-            //       query: MeDocument,
-            //     },
-            //     _result,
-            //     (result, query) => {
-            //       if (result.login.errors) {
-            //         return query;
-            //       } else {
-            //         return {
-            //           me: result.login.user,
-            //         };
-            //       }
-            //     }
-            //   );
-            // },
 
             createProject: (_result, args, cache, info) => {
               betterUpdateQuery<CreateProjectMutation, ProjectsQuery>(
@@ -78,10 +59,11 @@ export const createUrqlClient = (ssrExchange: any) => {
                   if (!result.createProject.project) {
                     return query;
                   } else {
-                    query.projects.push(result.createProject.project);
-                    return {
-                      projects: query.projects
-                    };
+                    if (result.createProject.project.display) {
+                      // Display set to true, add
+                      query.projects.push(result.createProject.project);
+                    }
+                    return query;
                   }
                 }
               );
@@ -94,9 +76,7 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   } else {
                     query.allProjects.push(result.createProject.project);
-                    return {
-                      allProjects: query.allProjects
-                    };
+                    return query;
                   }
                 }
               );
@@ -112,10 +92,17 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   } else {
                     const index = query.projects.findIndex((val) => val.id === result.editProject.project?.id);
-                    query.projects[index] = result.editProject.project;
-                    return {
-                      projects: query.projects
-                    };
+                    if (index === -1 && result.editProject.project.display) {
+                      // Display set to true, add to list.
+                      query.projects.push(result.editProject.project);
+                    } else if (index !== -1 && !result.editProject.project.display) {
+                      // Display set to false, remove from list
+                      query.projects.splice(index, 1)
+                    } else if (index !== -1) {
+                      // Update
+                      query.projects[index] = result.editProject.project;
+                    }
+                    return query;
                   }
                 }
               );
@@ -128,10 +115,43 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   } else {
                     const index = query.allProjects.findIndex((val) => val.id === result.editProject.project?.id);
-                    query.allProjects[index] = result.editProject.project;
-                    return {
-                      allProjects: query.allProjects
-                    };
+                    if (index !== -1) {
+                      // Update
+                      query.allProjects[index] = result.editProject.project;
+                    }
+                    return query;
+                  }
+                }
+              );
+            },
+
+            createTalk: (_result, args, cache, info) => {
+              betterUpdateQuery<CreateTalkMutation, TalksQuery>(
+                cache,
+                { query: TalksDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createTalk.talk) {
+                    return query;
+                  } else {
+                    if (result.createTalk.talk.display) {
+                      // Display set to true, add
+                      query.talks.push(result.createTalk.talk);
+                    }
+                    return query;
+                  }
+                }
+              );
+              betterUpdateQuery<CreateTalkMutation, AllTalksQuery>(
+                cache,
+                { query: AllTalksDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createTalk.talk) {
+                    return query;
+                  } else {
+                    query.allTalks.push(result.createTalk.talk);
+                    return query;
                   }
                 }
               );
@@ -147,10 +167,17 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   } else {
                     const index = query.talks.findIndex((val) => val.id === result.editTalk.talk?.id);
-                    query.talks[index] = result.editTalk.talk;
-                    return {
-                      talks: query.talks
-                    };
+                    if (index === -1 && result.editTalk.talk.display) {
+                      // Display set to true, add to list.
+                      query.talks.push(result.editTalk.talk);
+                    } else if (index !== -1 && !result.editTalk.talk.display) {
+                      // Display set to false, remove from list
+                      query.talks.splice(index, 1)
+                    } else if (index !== -1) {
+                      // Update
+                      query.talks[index] = result.editTalk.talk;
+                    }
+                    return query;
                   }
                 }
               );
@@ -163,10 +190,11 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   } else {
                     const index = query.allTalks.findIndex((val) => val.id === result.editTalk.talk?.id);
-                    query.allTalks[index] = result.editTalk.talk;
-                    return {
-                      allTalks: query.allTalks
-                    };
+                    if (index !== -1) {
+                      // Update
+                      query.allTalks[index] = result.editTalk.talk;
+                    }
+                    return query;
                   }
                 }
               );
