@@ -37,3 +37,9 @@ query ProjectByShortName($shortName: String!) {
     joinButton
   }
 }
+
+query ProjectUsers($projectId: Float, $shortName: String) {
+  projectUsers(projectId: $projectId, shortName: $shortName) {
+    ...RegularUser
+  }
+}

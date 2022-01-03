@@ -21,7 +21,6 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   const [{ data }] = useProjectByShortNameQuery({
     variables: { shortName: project as string },
   });
-  console.log(data);
   const [, editProject] = useEditProjectMutation();
   return (
     <Dashboard title="Edit Project" narrow={true}>

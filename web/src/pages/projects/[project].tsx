@@ -1,11 +1,13 @@
-import { Heading, Button, HStack } from "@chakra-ui/react";
+import { Heading, Button, HStack, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import Dashboard from "../../components/Dashboard";
 import {
+  useJoinProjectMutation,
   useMeQuery,
   useProjectByShortNameQuery,
+  useProjectRequestedUsersQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import ReactMarkdown from "react-markdown";
@@ -16,12 +18,13 @@ interface ProjectProps {}
 const Project: React.FC<ProjectProps> = ({}) => {
   const router = useRouter();
   const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
+  const [{ data, fetching: fetchingProject }] = useProjectByShortNameQuery({
     variables: { shortName: project as string },
   });
   const [{ data: userInfo, fetching: fetchingUser }] = useMeQuery({
     pause: isServer(),
   });
+  const [, joinProject] = useJoinProjectMutation();
 
   useEffect(() => {
     if (
@@ -55,6 +58,35 @@ const Project: React.FC<ProjectProps> = ({}) => {
                 Follow Redirect
               </Button>
             )}
+          {data?.projectByShortName && data.projectByShortName.joinButton && (
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (data.projectByShortName) {
+                  console.log(data.projectByShortName.id);
+                  const response = await joinProject({
+                    projectId: data.projectByShortName.id,
+                  });
+                  if (response.data?.joinProject) {
+                    console.log("JOINED PROJECT");
+                  } else {
+                    console.log("FAILED JOINING PROJECT");
+                  }
+                }
+              }}
+              disabled={
+                userInfo?.me?.projects.findIndex(
+                  ({ shortName }) => shortName == project
+                ) !== 1
+              }
+            >
+              {userInfo?.me?.projects.findIndex(
+                ({ shortName }) => shortName == project
+              ) !== 1
+                ? "Joined"
+                : "Join"}
+            </Button>
+          )}
           {userInfo?.me?.role === "exec" && (
             <Button
               variant="primary"
@@ -67,8 +99,17 @@ const Project: React.FC<ProjectProps> = ({}) => {
               Edit
             </Button>
           )}
-          {data?.projectByShortName && data.projectByShortName.joinButton && (
-            <Button variant="primary">Join</Button>
+          {userInfo?.me?.role === "exec" && (
+            <Button
+              variant="primary"
+              onClick={() =>
+                router.push(
+                  `/projects/manage/${data?.projectByShortName?.shortName}`
+                )
+              }
+            >
+              Manage
+            </Button>
           )}
         </HStack>
       }
@@ -80,4 +121,4 @@ const Project: React.FC<ProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Project);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Project);

@@ -1,5 +1,9 @@
 query Me {
   me {
     ...RegularUser
+    projects {
+      id
+      shortName
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Project } from "./Project";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -39,4 +40,9 @@ export class User extends BaseEntity {
   @Field()
   @Column()
   role: string = "none";
+
+  @Field(() => [Project])
+  @ManyToMany(() => Project, { cascade: true })
+  @JoinTable()
+  projects: Project[]
 }

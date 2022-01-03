@@ -28,6 +28,7 @@ export type Mutation = {
   deleteAllUsers: Scalars['Boolean'];
   editProject: ProjectResponse;
   editTalk: TalkResponse;
+  joinProject: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updateUserRole?: Maybe<User>;
@@ -57,6 +58,11 @@ export type MutationEditTalkArgs = {
 };
 
 
+export type MutationJoinProjectArgs = {
+  projectId: Scalars['Float'];
+};
+
+
 export type MutationRevokeRefreshTokensForUserArgs = {
   id: Scalars['Float'];
 };
@@ -80,6 +86,7 @@ export type Project = {
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+  users: Array<User>;
 };
 
 export type ProjectInput = {
@@ -106,6 +113,7 @@ export type Query = {
   hello: Scalars['String'];
   me?: Maybe<User>;
   projectByShortName?: Maybe<Project>;
+  projectUsers: Array<User>;
   projects: Array<Project>;
   talkByShortName?: Maybe<Talk>;
   talks: Array<Talk>;
@@ -116,6 +124,12 @@ export type Query = {
 
 export type QueryProjectByShortNameArgs = {
   shortName: Scalars['String'];
+};
+
+
+export type QueryProjectUsersArgs = {
+  projectId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -159,6 +173,7 @@ export type User = {
   firstName: Scalars['String'];
   id: Scalars['Float'];
   lastName: Scalars['String'];
+  projects: Array<Project>;
   role: Scalars['String'];
   tokenVersion: Scalars['Float'];
   updatedAt: Scalars['String'];
@@ -180,6 +195,13 @@ export type EditProjectMutationVariables = Exact<{
 
 
 export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
+
+export type JoinProjectMutationVariables = Exact<{
+  projectId: Scalars['Float'];
+}>;
+
+
+export type JoinProjectMutation = { __typename?: 'Mutation', joinProject: boolean };
 
 export type CreateTalkMutationVariables = Exact<{
   talkInfo: TalkInput;
@@ -217,7 +239,7 @@ export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?:
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }> } | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -235,6 +257,14 @@ export type ProjectByShortNameQueryVariables = Exact<{
 
 
 export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
+
+export type ProjectUsersQueryVariables = Exact<{
+  projectId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
 
 export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -320,6 +350,15 @@ export const EditProjectDocument = gql`
 
 export function useEditProjectMutation() {
   return Urql.useMutation<EditProjectMutation, EditProjectMutationVariables>(EditProjectDocument);
+};
+export const JoinProjectDocument = gql`
+    mutation JoinProject($projectId: Float!) {
+  joinProject(projectId: $projectId)
+}
+    `;
+
+export function useJoinProjectMutation() {
+  return Urql.useMutation<JoinProjectMutation, JoinProjectMutationVariables>(JoinProjectDocument);
 };
 export const CreateTalkDocument = gql`
     mutation CreateTalk($talkInfo: TalkInput!) {
@@ -414,6 +453,10 @@ export const MeDocument = gql`
     query Me {
   me {
     ...RegularUser
+    projects {
+      id
+      shortName
+    }
   }
 }
     ${RegularUserFragmentDoc}`;
@@ -475,6 +518,17 @@ export const ProjectByShortNameDocument = gql`
 
 export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<ProjectByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectByShortNameQuery>({ query: ProjectByShortNameDocument, ...options });
+};
+export const ProjectUsersDocument = gql`
+    query ProjectUsers($projectId: Float, $shortName: String) {
+  projectUsers(projectId: $projectId, shortName: $shortName) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useProjectUsersQuery(options: Omit<Urql.UseQueryArgs<ProjectUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProjectUsersQuery>({ query: ProjectUsersDocument, ...options });
 };
 export const TalksDocument = gql`
     query Talks {

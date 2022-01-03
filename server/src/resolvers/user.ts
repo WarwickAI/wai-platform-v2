@@ -217,7 +217,7 @@ export class UserResolver {
       console.log("access token invalid");
       return null;
     }
-    const user = User.findOne(parseInt(payload.userId));
+    const user = User.findOne(parseInt(payload.userId), { relations: ["projects"] });
 
     if (!user) {
       console.log("user id in access token invalid");

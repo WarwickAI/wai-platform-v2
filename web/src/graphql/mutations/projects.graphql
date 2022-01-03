@@ -41,3 +41,7 @@ mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
     }
   }
 }
+
+mutation JoinProject($projectId: Float!) {
+  joinProject(projectId: $projectId)
+}
