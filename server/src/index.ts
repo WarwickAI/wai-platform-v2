@@ -20,7 +20,6 @@ import path from "path";
 import { Talk } from "./entities/Talk";
 import { TalkResolver } from "./resolvers/talk";
 
-
 const main = async () => {
   // Connect to DB
   // const conn = await createConnection({
@@ -42,14 +41,14 @@ const main = async () => {
   // })
 
   const conn = await createConnection({
-    type: 'postgres',
+    type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk]
-  })
-
+    entities: [User, Project, Talk],
+  });
+  // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
 
   // Create Express app
@@ -60,7 +59,11 @@ const main = async () => {
 
   app.use(
     cors({
-      origin: [process.env.CORS_ORIGIN!, "https://warwickaiv2.auth.eu-west-2.amazoncognito.com", "https://studio.apollographql.com"],
+      origin: [
+        process.env.CORS_ORIGIN!,
+        "https://warwickaiv2.auth.eu-west-2.amazoncognito.com",
+        "https://studio.apollographql.com",
+      ],
       credentials: true,
     })
   );

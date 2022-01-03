@@ -30,6 +30,7 @@ export type Mutation = {
   editTalk: TalkResponse;
   joinProject: Scalars['Boolean'];
   logout: Scalars['Boolean'];
+  removeUserFromProject: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
@@ -60,6 +61,13 @@ export type MutationEditTalkArgs = {
 
 export type MutationJoinProjectArgs = {
   projectId: Scalars['Float'];
+};
+
+
+export type MutationRemoveUserFromProjectArgs = {
+  projectId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+  userId: Scalars['Float'];
 };
 
 
@@ -202,6 +210,15 @@ export type JoinProjectMutationVariables = Exact<{
 
 
 export type JoinProjectMutation = { __typename?: 'Mutation', joinProject: boolean };
+
+export type RemoveUserFromProjectMutationVariables = Exact<{
+  userId: Scalars['Float'];
+  projectId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type RemoveUserFromProjectMutation = { __typename?: 'Mutation', removeUserFromProject: boolean };
 
 export type CreateTalkMutationVariables = Exact<{
   talkInfo: TalkInput;
@@ -359,6 +376,19 @@ export const JoinProjectDocument = gql`
 
 export function useJoinProjectMutation() {
   return Urql.useMutation<JoinProjectMutation, JoinProjectMutationVariables>(JoinProjectDocument);
+};
+export const RemoveUserFromProjectDocument = gql`
+    mutation RemoveUserFromProject($userId: Float!, $projectId: Float, $shortName: String) {
+  removeUserFromProject(
+    userId: $userId
+    projectId: $projectId
+    shortName: $shortName
+  )
+}
+    `;
+
+export function useRemoveUserFromProjectMutation() {
+  return Urql.useMutation<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>(RemoveUserFromProjectDocument);
 };
 export const CreateTalkDocument = gql`
     mutation CreateTalk($talkInfo: TalkInput!) {
