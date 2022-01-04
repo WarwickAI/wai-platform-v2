@@ -23,7 +23,7 @@ export const getAuth = async ({ authState }) => {
   }
 
   // Try and refresh access token
-  const refreshResponse = await fetch("http://localhost:4000/refresh_token", {
+  const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh_token`, {
     method: "POST",
     credentials: "include",
   });
