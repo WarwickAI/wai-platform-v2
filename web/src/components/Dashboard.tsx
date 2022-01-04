@@ -17,6 +17,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Heading,
+  HStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import sidebarConfig from "./SidebarConfig";
@@ -94,30 +95,34 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
               {data?.me ? `Hello ${data.me.firstName}` : "Not Logged In"}
             </PopoverHeader>
             <PopoverBody>
-              {data && data.me ? (
-                <>
-                  <Button variant="primary">Account Settings</Button>
+              <HStack>
+                {data && data.me ? (
+                  <>
+                    <Button variant="primary" disabled={true}>
+                      Account Settings
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={async () => {
+                        setAccessToken("");
+                        await logout();
+                        router.push("/");
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
                   <Button
                     variant="primary"
-                    onClick={async () => {
-                      setAccessToken("");
-                      await logout();
-                      router.push("/");
+                    onClick={() => {
+                      router.push("/login");
                     }}
                   >
-                    Logout
+                    Log In
                   </Button>
-                </>
-              ) : (
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    router.push("/login");
-                  }}
-                >
-                  Log In
-                </Button>
-              )}
+                )}
+              </HStack>
             </PopoverBody>
           </PopoverContent>
         </Popover>
