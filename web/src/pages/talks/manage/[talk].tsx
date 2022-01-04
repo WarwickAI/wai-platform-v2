@@ -73,6 +73,7 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
                         userId: user.id,
                         shortName: talk as string,
                       });
+                      router.reload();
                     }}
                   >
                     Remove

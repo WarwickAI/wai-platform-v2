@@ -73,6 +73,7 @@ const EditCourse: React.FC<EditCourseProps> = ({}) => {
                         userId: user.id,
                         shortName: course as string,
                       });
+                      router.reload();
                     }}
                   >
                     Remove

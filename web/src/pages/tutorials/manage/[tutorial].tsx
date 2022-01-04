@@ -73,6 +73,7 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
                         userId: user.id,
                         shortName: tutorial as string,
                       });
+                      router.reload();
                     }}
                   >
                     Remove

@@ -67,6 +67,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                         userId: user.id,
                         shortName: project as string,
                       });
+                      router.reload();
                     }}
                   >
                     Remove
