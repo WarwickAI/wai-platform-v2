@@ -84,8 +84,9 @@ export class ProjectResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async joinProject(
-    @Arg("projectId") projectId: number,
-    @Ctx() { payload }: MyContext
+    @Ctx() { payload }: MyContext,
+    @Arg("projectId", { nullable: true }) projectId?: number,
+    @Arg("shortName", { nullable: true }) shortName?: string
   ): Promise<Boolean> {
     const user = await User.findOne(payload?.userId, {
       relations: ["projects"],
@@ -94,17 +95,15 @@ export class ProjectResolver {
       return false;
     }
 
-    const project = await Project.findOne(projectId, { relations: ["users"] });
+    const project = await getProjectByIdOrName(projectId, shortName, true);
+
     if (!project || !project.joinButton) {
       return false;
     }
 
-    console.log(project);
     try {
       project.users.push(user);
-      user.projects.push(project);
       project.save();
-      user.save();
       return true;
     } catch (e) {
       console.log(e);
@@ -119,48 +118,20 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    var project: Project | undefined;
-    if (projectId) {
-      project = await Project.findOne(projectId, {
-        relations: ["users"],
-      });
-    } else if (shortName) {
-      project = await Project.findOne(
-        { shortName },
-        {
-          relations: ["users"],
-        }
-      );
-    } else {
-      return false;
-    }
+
+    const project = await getProjectByIdOrName(projectId, shortName, true);
 
     if (!project) {
       return false;
     }
 
-    const user = await User.findOne(userId, { relations: ["projects"] });
-
-    if (!user) {
-      return false;
-    }
-
-    const userIndex = project.users.findIndex((us) => us.id === user.id);
+    const userIndex = project.users.findIndex((us) => us.id === userId);
     if (userIndex === -1) {
       return false;
     }
 
-    const projectIndex = user.projects.findIndex(
-      (proj) => proj.id === project!.id
-    );
-    if (projectIndex === -1) {
-      return false;
-    }
-
     project.users.splice(userIndex, 1);
-    user.projects.splice(projectIndex, 1);
     project.save();
-    user.save();
 
     return true;
   }
@@ -171,25 +142,21 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    if (projectId) {
-      const project = await Project.findOne(projectId, {
-        relations: ["users"],
-      });
-      if (!project) {
-        return [];
-      }
-      return project.users;
-    } else if (shortName) {
-      const project = await Project.findOne(
-        { shortName },
-        { relations: ["users"] }
-      );
-      if (!project) {
-        return [];
-      }
-      return project.users;
-    } else {
+    const project = await getProjectByIdOrName(projectId, shortName, true);
+
+    if (!project) {
       return [];
     }
+    return project.users;
+  }
+}
+
+const getProjectByIdOrName = async (projectId?: number, shortName?: string, relations?: boolean) => {
+  if (projectId) {
+    return await Project.findOne(projectId, relations ? { relations: ["users"] } : {});
+  } else if (shortName) {
+    return await Project.findOne({ shortName }, relations ? { relations: ["users"] } : {});
+  } else {
+    return undefined;
   }
 }

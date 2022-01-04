@@ -10,6 +10,7 @@ mutation CreateTalk($talkInfo: TalkInput!) {
       description
       cover
       redirect
+      joinButton
     }
     errors {
       field
@@ -34,6 +35,23 @@ mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {
       description
       title
       redirect
+      joinButton
     }
   }
+}
+
+mutation JoinTalk($talkId: Float, $shortName: String) {
+  joinTalk(talkId: $talkId, shortName: $shortName)
+}
+
+mutation RemoveUserFromTalk(
+  $userId: Float!
+  $talkId: Float
+  $shortName: String
+) {
+  removeUserFromTalk(
+    userId: $userId
+    talkId: $talkId
+    shortName: $shortName
+  )
 }

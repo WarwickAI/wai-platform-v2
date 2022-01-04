@@ -1,6 +1,6 @@
-mutation CreateProject($projectInfo: ProjectInput!) {
-  createProject(projectInfo: $projectInfo) {
-    project {
+mutation CreateTutorial($tutorialInfo: TutorialInput!) {
+  createTutorial(tutorialInfo: $tutorialInfo) {
+    tutorial {
       id
       createdAt
       updatedAt
@@ -20,13 +20,13 @@ mutation CreateProject($projectInfo: ProjectInput!) {
   }
 }
 
-mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
-  editProject(projectInfo: $projectInfo, id: $id) {
+mutation EditTutorial($tutorialInfo: TutorialInput!, $id: Float!) {
+  editTutorial(tutorialInfo: $tutorialInfo, id: $id) {
     errors {
       field
       message
     }
-    project {
+    tutorial {
       id
       createdAt
       updatedAt
@@ -42,18 +42,18 @@ mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
   }
 }
 
-mutation JoinProject($projectId: Float, $shortName: String) {
-  joinProject(projectId: $projectId, shortName: $shortName)
+mutation JoinTutorial($tutorialId: Float, $shortName: String) {
+  joinTutorial(tutorialId: $tutorialId, shortName: $shortName)
 }
 
-mutation RemoveUserFromProject(
+mutation RemoveUserFromTutorial(
   $userId: Float!
-  $projectId: Float
+  $tutorialId: Float
   $shortName: String
 ) {
-  removeUserFromProject(
+  removeUserFromTutorial(
     userId: $userId
-    projectId: $projectId
+    tutorialId: $tutorialId
     shortName: $shortName
   )
 }

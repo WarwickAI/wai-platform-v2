@@ -4,87 +4,87 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Dashboard from "../../components/Dashboard";
 import {
-  useJoinProjectMutation,
+  useJoinCourseMutation,
   useMeQuery,
-  useProjectByShortNameQuery,
+  useCourseByShortNameQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import ReactMarkdown from "react-markdown";
 import { isServer } from "../../utils/isServer";
 
-interface ProjectProps {}
+interface CourseProps {}
 
-const Project: React.FC<ProjectProps> = ({}) => {
+const Course: React.FC<CourseProps> = ({}) => {
   const router = useRouter();
-  const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
-    variables: { shortName: project as string },
+  const { course } = router.query;
+  const [{ data }] = useCourseByShortNameQuery({
+    variables: { shortName: course as string },
   });
   const [{ data: userInfo, fetching: fetchingUser }, fetchMe] = useMeQuery({
     pause: isServer(),
   });
   
-  const [, joinProject] = useJoinProjectMutation();
+  const [, joinCourse] = useJoinCourseMutation();
 
   useEffect(() => {
-    // Redirect if project has a redirect and not exec
+    // Redirect if course has a redirect and not exec
     if (
       !fetchingUser &&
-      data?.projectByShortName &&
-      data?.projectByShortName.redirect.length > 0
+      data?.courseByShortName &&
+      data?.courseByShortName.redirect.length > 0
     ) {
       if (userInfo?.me?.role !== "exec") {
-        router.replace(data.projectByShortName.redirect);
+        router.replace(data.courseByShortName.redirect);
       }
     }
   }, [data, fetchingUser, router, userInfo?.me?.role]);
 
   return (
     <Dashboard
-      title={data?.projectByShortName ? data?.projectByShortName.title : ""}
+      title={data?.courseByShortName ? data?.courseByShortName.title : ""}
       narrow={true}
       options={
         <HStack>
           {userInfo?.me?.role === "exec" &&
-            data?.projectByShortName &&
-            data?.projectByShortName.redirect.length > 0 && (
+            data?.courseByShortName &&
+            data?.courseByShortName.redirect.length > 0 && (
               <Button
                 variant="primary"
                 onClick={() =>
-                  data?.projectByShortName?.redirect
-                    ? router.push(data.projectByShortName.redirect)
+                  data?.courseByShortName?.redirect
+                    ? router.push(data.courseByShortName.redirect)
                     : {}
                 }
               >
                 Follow Redirect
               </Button>
             )}
-          {data?.projectByShortName && data.projectByShortName.joinButton && (
+          {data?.courseByShortName && data.courseByShortName.joinButton && (
             <Button
               variant="primary"
               onClick={async () => {
-                if (data.projectByShortName) {
-                  console.log(data.projectByShortName.id);
-                  const response = await joinProject({
-                    projectId: data.projectByShortName.id,
-                    shortName: data.projectByShortName.shortName,
+                if (data.courseByShortName) {
+                  console.log(data.courseByShortName.id);
+                  const response = await joinCourse({
+                    courseId: data.courseByShortName.id,
+                    shortName: data.courseByShortName.shortName,
                   });
-                  if (response.data?.joinProject) {
-                    console.log("JOINED PROJECT");
+                  if (response.data?.joinCourse) {
+                    console.log("JOINED COURSE");
                     fetchMe();
                   } else {
-                    console.log("FAILED JOINING PROJECT");
+                    console.log("FAILED JOINING COURSE");
                   }
                 }
               }}
               disabled={
-                userInfo?.me?.projects.findIndex(
-                  ({ shortName }) => shortName == project
+                userInfo?.me?.courses.findIndex(
+                  ({ shortName }) => shortName == course
                 ) !== -1
               }
             >
-              {userInfo?.me?.projects.findIndex(
-                ({ shortName }) => shortName == project
+              {userInfo?.me?.courses.findIndex(
+                ({ shortName }) => shortName == course
               ) !== -1
                 ? "Joined"
                 : "Join"}
@@ -95,7 +95,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
               variant="primary"
               onClick={() =>
                 router.push(
-                  `/projects/edit/${data?.projectByShortName?.shortName}`
+                  `/courses/edit/${data?.courseByShortName?.shortName}`
                 )
               }
             >
@@ -107,7 +107,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
               variant="primary"
               onClick={() =>
                 router.push(
-                  `/projects/manage/${data?.projectByShortName?.shortName}`
+                  `/courses/manage/${data?.courseByShortName?.shortName}`
                 )
               }
             >
@@ -117,11 +117,11 @@ const Project: React.FC<ProjectProps> = ({}) => {
         </HStack>
       }
     >
-      {data?.projectByShortName?.description && (
-        <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
+      {data?.courseByShortName?.description && (
+        <ReactMarkdown>{data?.courseByShortName?.description}</ReactMarkdown>
       )}
     </Dashboard>
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Project);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Course);

@@ -1,5 +1,5 @@
-query Projects {
-  projects {
+query Courses {
+  courses {
     id
     display
     title
@@ -11,8 +11,8 @@ query Projects {
   }
 }
 
-query AllProjects {
-  allProjects {
+query AllCourses {
+  allCourses {
     id
     display
     title
@@ -24,8 +24,8 @@ query AllProjects {
   }
 }
 
-query ProjectByShortName($shortName: String!) {
-  projectByShortName(shortName: $shortName) {
+query CourseByShortName($shortName: String!) {
+  courseByShortName(shortName: $shortName) {
     id
     display
     title
@@ -38,8 +38,8 @@ query ProjectByShortName($shortName: String!) {
   }
 }
 
-query ProjectUsers($projectId: Float, $shortName: String) {
-  projectUsers(projectId: $projectId, shortName: $shortName) {
+query CourseUsers($courseId: Float, $shortName: String) {
+  courseUsers(courseId: $courseId, shortName: $shortName) {
     ...RegularUser
   }
 }

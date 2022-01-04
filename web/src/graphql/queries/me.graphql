@@ -5,5 +5,17 @@ query Me {
       id
       shortName
     }
+    talks {
+      id
+      shortName
+    }
+    courses {
+      id
+      shortName
+    }
+    tutorials {
+      id
+      shortName
+    }
   }
 }

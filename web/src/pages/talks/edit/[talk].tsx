@@ -33,6 +33,7 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
           cover: data?.talkByShortName?.cover || "",
           display: data?.talkByShortName?.display || false,
           redirect: data?.talkByShortName?.redirect || "",
+          joinButton: data?.talkByShortName?.joinButton || false,
         }}
         onSubmit={async (values, { setErrors }) => {
           const response = await editTalk({
@@ -89,6 +90,13 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
                 name="redirect"
                 label="Redirect"
                 placeholder="redirect"
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="joinButton"
+                label="Join Button"
+                type="switch"
               ></InputField>
             </Box>
             <Box mt={4}>

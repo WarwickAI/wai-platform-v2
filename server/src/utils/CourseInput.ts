@@ -1,7 +1,7 @@
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class TalkInput {
+export class CourseInput {
     @Field()
     title: string;
 
@@ -9,17 +9,20 @@ export class TalkInput {
     shortName: string;
 
     @Field()
-    description: string;
+    description?: string;
 
     @Field()
-    cover: string;
+    difficulty?: string;
+
+    @Field()
+    cover?: string;
 
     @Field()
     display: boolean;
 
     @Field()
     redirect: string;
-    
+
     @Field()
     joinButton: boolean;
 }

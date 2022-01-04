@@ -51,7 +51,7 @@ export class Project extends BaseEntity {
     joinButton: boolean;
 
     @Field(() => [User])
-    @ManyToMany(() => User, { cascade: true })
+    @ManyToMany(() => User, user => user.projects, { cascade: true })
     @JoinTable()
     users: User[]
 }

@@ -6,6 +6,7 @@ query Talks {
     shortName
     cover
     redirect
+    joinButton
   }
 }
 
@@ -17,6 +18,7 @@ query AllTalks {
     shortName
     cover
     redirect
+    joinButton
   }
 }
 
@@ -29,5 +31,12 @@ query TalkByShortName($shortName: String!) {
     description
     cover
     redirect
+    joinButton
+  }
+}
+
+query TalkUsers($talkId: Float, $shortName: String) {
+  talkUsers(talkId: $talkId, shortName: $shortName) {
+    ...RegularUser
   }
 }

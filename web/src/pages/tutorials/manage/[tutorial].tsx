@@ -19,35 +19,35 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  useEditProjectMutation,
-  useProjectByShortNameQuery,
-  useProjectUsersQuery,
-  useRemoveUserFromProjectMutation,
+  useEditTutorialMutation,
+  useTutorialByShortNameQuery,
+  useTutorialUsersQuery,
+  useRemoveUserFromTutorialMutation,
 } from "../../../generated/graphql";
 import { isServer } from "../../../utils/isServer";
 
-interface EditProjectProps {}
+interface EditTutorialProps {}
 
-const EditProject: React.FC<EditProjectProps> = ({}) => {
+const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
   const router = useRouter();
-  const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
-    variables: { shortName: project as string },
+  const { tutorial } = router.query;
+  const [{ data }] = useTutorialByShortNameQuery({
+    variables: { shortName: tutorial as string },
   });
-  const [{ data: projectUsers, stale }, fetchProjectUsers] = useProjectUsersQuery({
-    variables: { shortName: project as string },
+  const [{ data: tutorialUsers, stale }, fetchTutorialUsers] = useTutorialUsersQuery({
+    variables: { shortName: tutorial as string },
     pause: isServer(),
   });
-  const [, removeUserFromProject] = useRemoveUserFromProjectMutation();
+  const [, removeUserFromTutorial] = useRemoveUserFromTutorialMutation();
 
   useEffect(() => {
     if (stale) {
-      fetchProjectUsers();
+      fetchTutorialUsers();
     }
-  }, [fetchProjectUsers, stale])
+  }, [fetchTutorialUsers, stale])
 
   return (
-    <Dashboard title="Manage Project" narrow={true}>
+    <Dashboard title="Manage Tutorial" narrow={true}>
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>
@@ -59,7 +59,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
           </Tr>
         </Thead>
         <Tbody>
-          {projectUsers?.projectUsers.map((user) => {
+          {tutorialUsers?.tutorialUsers.map((user) => {
             return (
               <Tr key={user.id}>
                 <Td>{user.firstName}</Td>
@@ -69,9 +69,9 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      await removeUserFromProject({
+                      await removeUserFromTutorial({
                         userId: user.id,
-                        shortName: project as string,
+                        shortName: tutorial as string,
                       });
                     }}
                   >
@@ -87,4 +87,4 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(EditProject);
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditTutorial);

@@ -56,7 +56,7 @@ const Card: React.FC<CardProps> = (props) => {
     >
       <Flex p={5} h="100%" justifyContent="flex-end" direction="column">
         {props.extraInfo && (
-          <Text fontSize="xs" color="rgb(145, 158, 171)" pb={3}>
+          <Text fontSize="xs" color="rgb(165, 178, 191)" pb={3}>
             {props.extraInfo}
           </Text>
         )}

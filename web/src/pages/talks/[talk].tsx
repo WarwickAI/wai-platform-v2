@@ -1,9 +1,10 @@
-import { Heading, Button } from "@chakra-ui/react";
+import { Heading, Button, HStack } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import Dashboard from "../../components/Dashboard";
 import {
+  useJoinTalkMutation,
   useMeQuery,
   useTalkByShortNameQuery,
 } from "../../generated/graphql";
@@ -19,9 +20,11 @@ const Talk: React.FC<TalkProps> = ({}) => {
   const [{ data }] = useTalkByShortNameQuery({
     variables: { shortName: talk as string },
   });
-  const [{ data: userInfo, fetching: fetchingUser }] = useMeQuery({
+  const [{ data: userInfo, fetching: fetchingUser }, fetchMe] = useMeQuery({
     pause: isServer(),
   });
+
+  const [, joinTalk] = useJoinTalkMutation();
 
   useEffect(() => {
     if (
@@ -40,21 +43,53 @@ const Talk: React.FC<TalkProps> = ({}) => {
       title={data?.talkByShortName ? data?.talkByShortName.title : ""}
       narrow={true}
       options={
-        userInfo?.me?.role === "exec" ? (
-          <>
-            {data?.talkByShortName &&
-              data?.talkByShortName.redirect.length > 0 && (
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    data?.talkByShortName?.redirect
-                      ? router.push(data.talkByShortName.redirect)
-                      : {}
+        <HStack>
+          {userInfo?.me?.role === "exec" &&
+            data?.talkByShortName &&
+            data?.talkByShortName.redirect.length > 0 && (
+              <Button
+                variant="primary"
+                onClick={() =>
+                  data?.talkByShortName?.redirect
+                    ? router.push(data.talkByShortName.redirect)
+                    : {}
+                }
+              >
+                Follow Redirect
+              </Button>
+            )}
+          {data?.talkByShortName && data.talkByShortName.joinButton && (
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (data.talkByShortName) {
+                  console.log(data.talkByShortName.id);
+                  const response = await joinTalk({
+                    talkId: data.talkByShortName.id,
+                    shortName: data.talkByShortName.shortName,
+                  });
+                  if (response.data?.joinTalk) {
+                    console.log("JOINED TALK");
+                    fetchMe();
+                  } else {
+                    console.log("FAILED JOINING TALK");
                   }
-                >
-                  Follow Redirect
-                </Button>
-              )}
+                }
+              }}
+              disabled={
+                userInfo?.me?.talks.findIndex(
+                  ({ shortName }) => shortName == talk
+                ) !== -1
+              }
+            >
+              {userInfo?.me?.talks.findIndex(
+                ({ shortName }) => shortName == talk
+              ) !== -1
+                ? "Joined"
+                : "Join"}
+            </Button>
+          )}
+          {userInfo?.me?.role === "exec" && (
             <Button
               variant="primary"
               onClick={() =>
@@ -65,24 +100,20 @@ const Talk: React.FC<TalkProps> = ({}) => {
             >
               Edit
             </Button>
-          </>
-        ) : (
-          <>
-            {data?.talkByShortName &&
-              data?.talkByShortName.redirect.length > 0 && (
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    data?.talkByShortName?.redirect
-                      ? router.push(data.talkByShortName.redirect)
-                      : {}
-                  }
-                >
-                  Follow Redirect
-                </Button>
-              )}
-          </>
-        )
+          )}
+          {userInfo?.me?.role === "exec" && (
+            <Button
+              variant="primary"
+              onClick={() =>
+                router.push(
+                  `/talks/manage/${data?.talkByShortName?.shortName}`
+                )
+              }
+            >
+              Manage
+            </Button>
+          )}
+        </HStack>
       }
     >
       {data?.talkByShortName?.description && (
