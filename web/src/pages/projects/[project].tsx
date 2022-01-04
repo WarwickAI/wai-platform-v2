@@ -71,7 +71,6 @@ const Project: React.FC<ProjectProps> = ({}) => {
                   });
                   if (response.data?.joinProject) {
                     console.log("JOINED PROJECT");
-                    fetchMe();
                   } else {
                     console.log("FAILED JOINING PROJECT");
                   }

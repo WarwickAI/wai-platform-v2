@@ -25,6 +25,19 @@ import {
   JoinTalkMutation,
   JoinTutorialMutation,
   JoinCourseMutation,
+  JoinProjectMutationVariables,
+  CreateCourseMutation,
+  CoursesQuery,
+  CoursesDocument,
+  AllCoursesQuery,
+  AllCoursesDocument,
+  EditCourseMutation,
+  AllTutorialsDocument,
+  AllTutorialsQuery,
+  CreateTutorialMutation,
+  EditTutorialMutation,
+  TutorialsDocument,
+  TutorialsQuery,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -201,6 +214,156 @@ export const createUrqlClient = (ssrExchange: any) => {
               );
             },
 
+            createCourse: (_result, args, cache, info) => {
+              betterUpdateQuery<CreateCourseMutation, CoursesQuery>(
+                cache,
+                { query: CoursesDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createCourse.course) {
+                    return query;
+                  } else {
+                    if (result.createCourse.course.display) {
+                      // Display set to true, add
+                      query.courses.push(result.createCourse.course);
+                    }
+                    return query;
+                  }
+                }
+              );
+              betterUpdateQuery<CreateCourseMutation, AllCoursesQuery>(
+                cache,
+                { query: AllCoursesDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createCourse.course) {
+                    return query;
+                  } else {
+                    query.allCourses.push(result.createCourse.course);
+                    return query;
+                  }
+                }
+              );
+            },
+
+            editCourse: (_result, args, cache, info) => {
+              betterUpdateQuery<EditCourseMutation, CoursesQuery>(
+                cache,
+                { query: CoursesDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editCourse.course) {
+                    return query;
+                  } else {
+                    const index = query.courses.findIndex((val) => val.id === result.editCourse.course?.id);
+                    if (index === -1 && result.editCourse.course.display) {
+                      // Display set to true, add to list.
+                      query.courses.push(result.editCourse.course);
+                    } else if (index !== -1 && !result.editCourse.course.display) {
+                      // Display set to false, remove from list
+                      query.courses.splice(index, 1)
+                    } else if (index !== -1) {
+                      // Update
+                      query.courses[index] = result.editCourse.course;
+                    }
+                    return query;
+                  }
+                }
+              );
+              betterUpdateQuery<EditCourseMutation, AllCoursesQuery>(
+                cache,
+                { query: AllCoursesDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editCourse.course) {
+                    return query;
+                  } else {
+                    const index = query.allCourses.findIndex((val) => val.id === result.editCourse.course?.id);
+                    if (index !== -1) {
+                      // Update
+                      query.allCourses[index] = result.editCourse.course;
+                    }
+                    return query;
+                  }
+                }
+              );
+            },
+
+            createTutorial: (_result, args, cache, info) => {
+              betterUpdateQuery<CreateTutorialMutation, TutorialsQuery>(
+                cache,
+                { query: TutorialsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createTutorial.tutorial) {
+                    return query;
+                  } else {
+                    if (result.createTutorial.tutorial.display) {
+                      // Display set to true, add
+                      query.tutorials.push(result.createTutorial.tutorial);
+                    }
+                    return query;
+                  }
+                }
+              );
+              betterUpdateQuery<CreateTutorialMutation, AllTutorialsQuery>(
+                cache,
+                { query: AllTutorialsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.createTutorial.tutorial) {
+                    return query;
+                  } else {
+                    query.allTutorials.push(result.createTutorial.tutorial);
+                    return query;
+                  }
+                }
+              );
+            },
+
+            editTutorial: (_result, args, cache, info) => {
+              betterUpdateQuery<EditTutorialMutation, TutorialsQuery>(
+                cache,
+                { query: TutorialsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editTutorial.tutorial) {
+                    return query;
+                  } else {
+                    const index = query.tutorials.findIndex((val) => val.id === result.editTutorial.tutorial?.id);
+                    if (index === -1 && result.editTutorial.tutorial.display) {
+                      // Display set to true, add to list.
+                      query.tutorials.push(result.editTutorial.tutorial);
+                    } else if (index !== -1 && !result.editTutorial.tutorial.display) {
+                      // Display set to false, remove from list
+                      query.tutorials.splice(index, 1)
+                    } else if (index !== -1) {
+                      // Update
+                      query.tutorials[index] = result.editTutorial.tutorial;
+                    }
+                    return query;
+                  }
+                }
+              );
+              betterUpdateQuery<EditTutorialMutation, AllTutorialsQuery>(
+                cache,
+                { query: AllTutorialsDocument },
+                _result,
+                (result, query) => {
+                  if (!result.editTutorial.tutorial) {
+                    return query;
+                  } else {
+                    const index = query.allTutorials.findIndex((val) => val.id === result.editTutorial.tutorial?.id);
+                    if (index !== -1) {
+                      // Update
+                      query.allTutorials[index] = result.editTutorial.tutorial;
+                    }
+                    return query;
+                  }
+                }
+              );
+            },
+
             joinProject: (_result, args, cache, info) => {
               betterUpdateQuery<JoinProjectMutation, MeQuery>(
                 cache,
@@ -262,7 +425,18 @@ export const createUrqlClient = (ssrExchange: any) => {
             },
 
             removeUserFromProject: (_result, args, cache, info) => {
-
+              betterUpdateQuery<RemoveUserFromProjectMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.removeUserFromProject) {
+                    // Successfully removed, update projects in me
+                    query.me?.projects.splice(query.me.projects.findIndex(proj => proj.shortName === args.shortName as string), 1);
+                  }
+                  return query;
+                }
+              )
             },
 
             removeUserFromTalk: (_result, args, cache, info) => {

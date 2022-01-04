@@ -34,17 +34,11 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   const [{ data }] = useProjectByShortNameQuery({
     variables: { shortName: project as string },
   });
-  const [{ data: projectUsers, stale }, fetchProjectUsers] = useProjectUsersQuery({
+  const [{ data: projectUsers }, fetchProjectUsers] = useProjectUsersQuery({
     variables: { shortName: project as string },
     pause: isServer(),
   });
   const [, removeUserFromProject] = useRemoveUserFromProjectMutation();
-
-  useEffect(() => {
-    if (stale) {
-      fetchProjectUsers();
-    }
-  }, [fetchProjectUsers, stale])
 
   return (
     <Dashboard title="Manage Project" narrow={true}>
