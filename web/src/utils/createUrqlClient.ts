@@ -38,6 +38,9 @@ import {
   EditTutorialMutation,
   TutorialsDocument,
   TutorialsQuery,
+  RemoveUserFromTalkMutation,
+  RemoveUserFromCourseMutation,
+  RemoveUserFromTutorialMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -440,18 +443,49 @@ export const createUrqlClient = (ssrExchange: any) => {
             },
 
             removeUserFromTalk: (_result, args, cache, info) => {
-
+              betterUpdateQuery<RemoveUserFromTalkMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.removeUserFromTalk) {
+                    // Successfully removed, update projects in me
+                    query.me?.talks.splice(query.me.talks.findIndex(talk => talk.shortName === args.shortName as string), 1);
+                  }
+                  return query;
+                }
+              )
             },
 
             removeUserFromCourse: (_result, args, cache, info) => {
-
+              betterUpdateQuery<RemoveUserFromCourseMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.removeUserFromCourse) {
+                    // Successfully removed, update projects in me
+                    query.me?.courses.splice(query.me.courses.findIndex(course => course.shortName === args.shortName as string), 1);
+                  }
+                  return query;
+                }
+              )
             },
 
             removeUserFromTutorial: (_result, args, cache, info) => {
-
+              betterUpdateQuery<RemoveUserFromTutorialMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.removeUserFromTutorial) {
+                    // Successfully removed, update projects in me
+                    query.me?.tutorials.splice(query.me.tutorials.findIndex(tutorial => tutorial.shortName === args.shortName as string), 1);
+                  }
+                  return query;
+                }
+              )
             },
-
-
 
             verifyLogin: (_result, args, cache, info) => {
               // me query make return null
