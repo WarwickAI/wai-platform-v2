@@ -12,6 +12,7 @@ interface CardProps {
   shortName?: string;
   linkPrefix?: string;
   redirect?: string;
+  execRedirect?: boolean;
 }
 
 const Card: React.FC<CardProps> = (props) => {
@@ -38,7 +39,7 @@ const Card: React.FC<CardProps> = (props) => {
         props.shortName
           ? () => {
               if (
-                meData?.me?.role !== "exec" &&
+                (meData?.me?.role !== "exec" || props.execRedirect) &&
                 props.redirect &&
                 props.redirect.length > 0
               ) {
