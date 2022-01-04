@@ -19,35 +19,35 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  useEditProjectMutation,
-  useProjectByShortNameQuery,
-  useProjectUsersQuery,
-  useRemoveUserFromProjectMutation,
+  useEditCourseMutation,
+  useCourseByShortNameQuery,
+  useCourseUsersQuery,
+  useRemoveUserFromCourseMutation,
 } from "../../../generated/graphql";
 import { isServer } from "../../../utils/isServer";
 
-interface EditProjectProps {}
+interface EditCourseProps {}
 
-const EditProject: React.FC<EditProjectProps> = ({}) => {
+const EditCourse: React.FC<EditCourseProps> = ({}) => {
   const router = useRouter();
-  const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
-    variables: { shortName: project as string },
+  const { course } = router.query;
+  const [{ data }] = useCourseByShortNameQuery({
+    variables: { shortName: course as string },
   });
-  const [{ data: projectUsers, stale }, fetchProjectUsers] = useProjectUsersQuery({
-    variables: { shortName: project as string },
+  const [{ data: courseUsers, stale }, fetchCourseUsers] = useCourseUsersQuery({
+    variables: { shortName: course as string },
     pause: isServer(),
   });
-  const [, removeUserFromProject] = useRemoveUserFromProjectMutation();
+  const [, removeUserFromCourse] = useRemoveUserFromCourseMutation();
 
   useEffect(() => {
     if (stale) {
-      fetchProjectUsers();
+      fetchCourseUsers();
     }
-  }, [fetchProjectUsers, stale])
+  }, [fetchCourseUsers, stale])
 
   return (
-    <Dashboard title="Manage Project" narrow={true}>
+    <Dashboard title="Manage Course" narrow={true}>
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>
@@ -59,7 +59,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
           </Tr>
         </Thead>
         <Tbody>
-          {projectUsers?.projectUsers.map((user) => {
+          {courseUsers?.courseUsers.map((user) => {
             return (
               <Tr key={user.id}>
                 <Td>{user.firstName}</Td>
@@ -69,9 +69,9 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      await removeUserFromProject({
+                      await removeUserFromCourse({
                         userId: user.id,
-                        shortName: project as string,
+                        shortName: course as string,
                       });
                     }}
                   >
@@ -87,4 +87,4 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(EditProject);
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditCourse);

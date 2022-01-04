@@ -4,19 +4,19 @@ import { Formik, Form } from "formik";
 import { toErrorMap } from "../../utils/toErrorMap";
 import { InputField } from "../../components/InputField";
 import { Box, Button } from "@chakra-ui/react";
-import { useCreateTalkMutation } from "../../generated/graphql";
+import { useCreateCourseMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import ReactMarkdown from "react-markdown";
 
-interface CreateTalkProps {}
+interface CreateCourseProps {}
 
-const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
+const CreateCourse: React.FC<CreateCourseProps> = ({}) => {
   const router = useRouter();
-  const [, createTalk] = useCreateTalkMutation();
+  const [, createCourse] = useCreateCourseMutation();
   return (
-    <Dashboard title="Create Talk">
+    <Dashboard title="Create Course">
       <Formik
         initialValues={{
           title: "",
@@ -24,16 +24,17 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
           description: "",
           cover: "",
           display: false,
+          difficulty: "",
           redirect: "",
           joinButton: false,
         }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await createTalk({ talkInfo: values });
-          if (response.data?.createTalk.errors) {
-            setErrors(toErrorMap(response.data.createTalk.errors));
-          } else if (response.data?.createTalk.talk) {
-            // Talk submitted
-            router.push("/talks");
+          const response = await createCourse({ courseInfo: values });
+          if (response.data?.createCourse.errors) {
+            setErrors(toErrorMap(response.data.createCourse.errors));
+          } else if (response.data?.createCourse.course) {
+            // Course submitted
+            router.push("/courses");
           }
         }}
       >
@@ -58,6 +59,13 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
                 label="Description"
                 textarea
                 render
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="difficulty"
+                placeholder="difficulty"
+                label="Difficulty"
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -104,4 +112,4 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(CreateTalk);
+export default withUrqlClient(createUrqlClient, { ssr: false })(CreateCourse);

@@ -18,6 +18,13 @@ import {
   AllTalksQuery,
   AllTalksDocument,
   CreateTalkMutation,
+  JoinProjectMutation,
+  RemoveUserFromProjectMutation,
+  ProjectUsersQuery,
+  ProjectUsersDocument,
+  JoinTalkMutation,
+  JoinTutorialMutation,
+  JoinCourseMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -193,6 +200,84 @@ export const createUrqlClient = (ssrExchange: any) => {
                 }
               );
             },
+
+            joinProject: (_result, args, cache, info) => {
+              betterUpdateQuery<JoinProjectMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.joinProject) {
+                    // Successfully joined, update projects in me
+                    query.me?.projects.push({ id: args.projectId as number, shortName: args.shortName as string })
+                  }
+                  return query;
+                }
+              )
+            },
+
+            joinTalk: (_result, args, cache, info) => {
+              betterUpdateQuery<JoinTalkMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.joinTalk) {
+                    // Successfully joined, update projects in me
+                    query.me?.talks.push({ id: args.talkId as number, shortName: args.shortName as string })
+                  }
+                  return query;
+                }
+              )
+            },
+
+            joinCourse: (_result, args, cache, info) => {
+              betterUpdateQuery<JoinCourseMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.joinCourse) {
+                    // Successfully joined, update projects in me
+                    query.me?.courses.push({ id: args.courseId as number, shortName: args.shortName as string })
+                  }
+                  return query;
+                }
+              )
+            },
+
+            joinTutorial: (_result, args, cache, info) => {
+              betterUpdateQuery<JoinTutorialMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.joinTutorial) {
+                    // Successfully joined, update projects in me
+                    query.me?.tutorials.push({ id: args.tutorialId as number, shortName: args.shortName as string })
+                  }
+                  return query;
+                }
+              )
+            },
+
+            removeUserFromProject: (_result, args, cache, info) => {
+
+            },
+
+            removeUserFromTalk: (_result, args, cache, info) => {
+
+            },
+
+            removeUserFromCourse: (_result, args, cache, info) => {
+
+            },
+
+            removeUserFromTutorial: (_result, args, cache, info) => {
+
+            },
+
+
 
             verifyLogin: (_result, args, cache, info) => {
               // me query make return null

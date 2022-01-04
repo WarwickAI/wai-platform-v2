@@ -4,87 +4,87 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Dashboard from "../../components/Dashboard";
 import {
-  useJoinProjectMutation,
+  useJoinTutorialMutation,
   useMeQuery,
-  useProjectByShortNameQuery,
+  useTutorialByShortNameQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import ReactMarkdown from "react-markdown";
 import { isServer } from "../../utils/isServer";
 
-interface ProjectProps {}
+interface TutorialProps {}
 
-const Project: React.FC<ProjectProps> = ({}) => {
+const Tutorial: React.FC<TutorialProps> = ({}) => {
   const router = useRouter();
-  const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
-    variables: { shortName: project as string },
+  const { tutorial } = router.query;
+  const [{ data }] = useTutorialByShortNameQuery({
+    variables: { shortName: tutorial as string },
   });
   const [{ data: userInfo, fetching: fetchingUser }, fetchMe] = useMeQuery({
     pause: isServer(),
   });
   
-  const [, joinProject] = useJoinProjectMutation();
+  const [, joinTutorial] = useJoinTutorialMutation();
 
   useEffect(() => {
-    // Redirect if project has a redirect and not exec
+    // Redirect if tutorial has a redirect and not exec
     if (
       !fetchingUser &&
-      data?.projectByShortName &&
-      data?.projectByShortName.redirect.length > 0
+      data?.tutorialByShortName &&
+      data?.tutorialByShortName.redirect.length > 0
     ) {
       if (userInfo?.me?.role !== "exec") {
-        router.replace(data.projectByShortName.redirect);
+        router.replace(data.tutorialByShortName.redirect);
       }
     }
   }, [data, fetchingUser, router, userInfo?.me?.role]);
 
   return (
     <Dashboard
-      title={data?.projectByShortName ? data?.projectByShortName.title : ""}
+      title={data?.tutorialByShortName ? data?.tutorialByShortName.title : ""}
       narrow={true}
       options={
         <HStack>
           {userInfo?.me?.role === "exec" &&
-            data?.projectByShortName &&
-            data?.projectByShortName.redirect.length > 0 && (
+            data?.tutorialByShortName &&
+            data?.tutorialByShortName.redirect.length > 0 && (
               <Button
                 variant="primary"
                 onClick={() =>
-                  data?.projectByShortName?.redirect
-                    ? router.push(data.projectByShortName.redirect)
+                  data?.tutorialByShortName?.redirect
+                    ? router.push(data.tutorialByShortName.redirect)
                     : {}
                 }
               >
                 Follow Redirect
               </Button>
             )}
-          {data?.projectByShortName && data.projectByShortName.joinButton && (
+          {data?.tutorialByShortName && data.tutorialByShortName.joinButton && (
             <Button
               variant="primary"
               onClick={async () => {
-                if (data.projectByShortName) {
-                  console.log(data.projectByShortName.id);
-                  const response = await joinProject({
-                    projectId: data.projectByShortName.id,
-                    shortName: data.projectByShortName.shortName,
+                if (data.tutorialByShortName) {
+                  console.log(data.tutorialByShortName.id);
+                  const response = await joinTutorial({
+                    tutorialId: data.tutorialByShortName.id,
+                    shortName: data.tutorialByShortName.shortName,
                   });
-                  if (response.data?.joinProject) {
-                    console.log("JOINED PROJECT");
+                  if (response.data?.joinTutorial) {
+                    console.log("JOINED TUTORIAL");
                     fetchMe();
                   } else {
-                    console.log("FAILED JOINING PROJECT");
+                    console.log("FAILED JOINING TUTORIAL");
                   }
                 }
               }}
               disabled={
-                userInfo?.me?.projects.findIndex(
-                  ({ shortName }) => shortName == project
+                userInfo?.me?.tutorials.findIndex(
+                  ({ shortName }) => shortName == tutorial
                 ) !== -1
               }
             >
-              {userInfo?.me?.projects.findIndex(
-                ({ shortName }) => shortName == project
+              {userInfo?.me?.tutorials.findIndex(
+                ({ shortName }) => shortName == tutorial
               ) !== -1
                 ? "Joined"
                 : "Join"}
@@ -95,7 +95,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
               variant="primary"
               onClick={() =>
                 router.push(
-                  `/projects/edit/${data?.projectByShortName?.shortName}`
+                  `/tutorials/edit/${data?.tutorialByShortName?.shortName}`
                 )
               }
             >
@@ -107,7 +107,7 @@ const Project: React.FC<ProjectProps> = ({}) => {
               variant="primary"
               onClick={() =>
                 router.push(
-                  `/projects/manage/${data?.projectByShortName?.shortName}`
+                  `/tutorials/manage/${data?.tutorialByShortName?.shortName}`
                 )
               }
             >
@@ -117,11 +117,11 @@ const Project: React.FC<ProjectProps> = ({}) => {
         </HStack>
       }
     >
-      {data?.projectByShortName?.description && (
-        <ReactMarkdown>{data?.projectByShortName?.description}</ReactMarkdown>
+      {data?.tutorialByShortName?.description && (
+        <ReactMarkdown>{data?.tutorialByShortName?.description}</ReactMarkdown>
       )}
     </Dashboard>
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Project);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Tutorial);

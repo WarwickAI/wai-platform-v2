@@ -19,35 +19,35 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  useEditProjectMutation,
-  useProjectByShortNameQuery,
-  useProjectUsersQuery,
-  useRemoveUserFromProjectMutation,
+  useEditTalkMutation,
+  useTalkByShortNameQuery,
+  useTalkUsersQuery,
+  useRemoveUserFromTalkMutation,
 } from "../../../generated/graphql";
 import { isServer } from "../../../utils/isServer";
 
-interface EditProjectProps {}
+interface EditTalkProps {}
 
-const EditProject: React.FC<EditProjectProps> = ({}) => {
+const EditTalk: React.FC<EditTalkProps> = ({}) => {
   const router = useRouter();
-  const { project } = router.query;
-  const [{ data }] = useProjectByShortNameQuery({
-    variables: { shortName: project as string },
+  const { talk } = router.query;
+  const [{ data }] = useTalkByShortNameQuery({
+    variables: { shortName: talk as string },
   });
-  const [{ data: projectUsers, stale }, fetchProjectUsers] = useProjectUsersQuery({
-    variables: { shortName: project as string },
+  const [{ data: talkUsers, stale }, fetchTalkUsers] = useTalkUsersQuery({
+    variables: { shortName: talk as string },
     pause: isServer(),
   });
-  const [, removeUserFromProject] = useRemoveUserFromProjectMutation();
+  const [, removeUserFromTalk] = useRemoveUserFromTalkMutation();
 
   useEffect(() => {
     if (stale) {
-      fetchProjectUsers();
+      fetchTalkUsers();
     }
-  }, [fetchProjectUsers, stale])
+  }, [fetchTalkUsers, stale])
 
   return (
-    <Dashboard title="Manage Project" narrow={true}>
+    <Dashboard title="Manage Talk" narrow={true}>
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>
@@ -59,7 +59,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
           </Tr>
         </Thead>
         <Tbody>
-          {projectUsers?.projectUsers.map((user) => {
+          {talkUsers?.talkUsers.map((user) => {
             return (
               <Tr key={user.id}>
                 <Td>{user.firstName}</Td>
@@ -69,9 +69,9 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      await removeUserFromProject({
+                      await removeUserFromTalk({
                         userId: user.id,
-                        shortName: project as string,
+                        shortName: talk as string,
                       });
                     }}
                   >
@@ -87,4 +87,4 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(EditProject);
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditTalk);

@@ -1,39 +1,50 @@
 import React from "react";
-import Dashboard from "../../components/Dashboard";
+import Dashboard from "../../../components/Dashboard";
 import { Formik, Form } from "formik";
-import { toErrorMap } from "../../utils/toErrorMap";
-import { InputField } from "../../components/InputField";
+import { toErrorMap } from "../../../utils/toErrorMap";
+import { InputField } from "../../../components/InputField";
 import { Box, Button } from "@chakra-ui/react";
-import { useCreateTalkMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
-import { createUrqlClient } from "../../utils/createUrqlClient";
+import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import ReactMarkdown from "react-markdown";
+import {
+  useEditCourseMutation,
+  useCourseByShortNameQuery,
+} from "../../../generated/graphql";
 
-interface CreateTalkProps {}
+interface EditCourseProps {}
 
-const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
+const EditCourse: React.FC<EditCourseProps> = ({}) => {
   const router = useRouter();
-  const [, createTalk] = useCreateTalkMutation();
+  const { course } = router.query;
+  const [{ data }] = useCourseByShortNameQuery({
+    variables: { shortName: course as string },
+  });
+  const [, editCourse] = useEditCourseMutation();
   return (
-    <Dashboard title="Create Talk">
+    <Dashboard title="Edit Course" narrow={true}>
       <Formik
         initialValues={{
-          title: "",
-          shortName: "",
-          description: "",
-          cover: "",
-          display: false,
-          redirect: "",
-          joinButton: false,
+          title: data?.courseByShortName?.title || "",
+          shortName: data?.courseByShortName?.shortName || "",
+          description: data?.courseByShortName?.description || "",
+          cover: data?.courseByShortName?.cover || "",
+          display: data?.courseByShortName?.display || false,
+          difficulty: data?.courseByShortName?.difficulty || "",
+          redirect: data?.courseByShortName?.redirect || "",
+          joinButton: data?.courseByShortName?.joinButton || false,
         }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await createTalk({ talkInfo: values });
-          if (response.data?.createTalk.errors) {
-            setErrors(toErrorMap(response.data.createTalk.errors));
-          } else if (response.data?.createTalk.talk) {
-            // Talk submitted
-            router.push("/talks");
+          const response = await editCourse({
+            courseInfo: values,
+            id: data?.courseByShortName ? data.courseByShortName.id : 0,
+          });
+          if (response.data?.editCourse.errors) {
+            setErrors(toErrorMap(response.data.editCourse.errors));
+          } else if (response.data?.editCourse.course) {
+            // Course submitted
+            router.push("/courses");
           }
         }}
       >
@@ -58,6 +69,13 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
                 label="Description"
                 textarea
                 render
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="difficulty"
+                placeholder="difficulty"
+                label="Difficulty"
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -104,4 +122,4 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(CreateTalk);
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditCourse);

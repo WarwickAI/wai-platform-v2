@@ -5,7 +5,7 @@ import { User } from "./User";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class Talk extends BaseEntity {
+export class Course extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id: number;
@@ -36,18 +36,22 @@ export class Talk extends BaseEntity {
 
     @Field()
     @Column()
+    difficulty: string;
+
+    @Field()
+    @Column()
     cover: string;
 
     @Field()
     @Column({ default: '' })
-    redirect: String;
-    
+    redirect: string;
+
     @Field({ defaultValue: false })
     @Column({ default: false })
     joinButton: boolean;
 
     @Field(() => [User])
-    @ManyToMany(() => User, user => user.talks, { cascade: true })
+    @ManyToMany(() => User, user => user.courses, { cascade: true })
     @JoinTable()
     users: User[]
 }

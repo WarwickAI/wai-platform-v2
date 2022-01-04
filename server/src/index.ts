@@ -19,6 +19,10 @@ import { createConnection } from "typeorm";
 import path from "path";
 import { Talk } from "./entities/Talk";
 import { TalkResolver } from "./resolvers/talk";
+import { Course } from "./entities/Course";
+import { Tutorial } from "./entities/Tutorial";
+import { CourseResolver } from "./resolvers/course";
+import { TutorialResolver } from "./resolvers/tutorial";
 
 const main = async () => {
   // Connect to DB
@@ -46,7 +50,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk],
+    entities: [User, Project, Talk, Course, Tutorial],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -110,7 +114,7 @@ const main = async () => {
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, ProjectResolver, TalkResolver],
+      resolvers: [HelloResolver, UserResolver, ProjectResolver, TalkResolver, CourseResolver, TutorialResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }), // Object accessible by resolvers

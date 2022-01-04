@@ -17,24 +17,30 @@ import { useContext, useEffect, useState } from "react";
 import { setAccessToken } from "../../utils/accesToken";
 import {
   useMeQuery,
-  useTalksQuery,
+  useTutorialsQuery,
   useVerifyLoginMutation,
-  useAllTalksQuery,
+  useAllTutorialsQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
 import ItemGrid from "../../components/ItemGrid";
 
-const Talks = () => {
+const Tutorials = () => {
   const router = useRouter();
-  const [{ data: talkData }] = useTalksQuery();
-  const [{ data: allTalkData }] = useAllTalksQuery({ pause: isServer() });
+  const [{ data: tutorialData }] = useTutorialsQuery();
+  const [{ data: allTutorialData }] = useAllTutorialsQuery({ pause: isServer() });
   const [{ data: userData }] = useMeQuery({ pause: isServer() });
 
   const [showHidden, setShowHidden] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (router.query.accessToken && router.query.accessToken.length > 0) {
+      setAccessToken(router.query.accessToken as string);
+      router.push("/tutorials");
+    }
+  }, [router, router.query]);
   return (
     <Dashboard
-      title="Talks"
+      title="Tutorials"
       options={
         userData?.me?.role === "exec" ? (
           <HStack spacing={4}>
@@ -48,7 +54,7 @@ const Talks = () => {
             </HStack>
             <Button
               variant="primary"
-              onClick={() => router.push("/talks/create")}
+              onClick={() => router.push("/tutorials/create")}
             >
               Create
             </Button>
@@ -59,15 +65,20 @@ const Talks = () => {
       }
     >
       <ItemGrid>
-        {(showHidden ? allTalkData?.allTalks : talkData?.talks)?.map(
-          ({ title, cover, shortName, id, redirect }) => (
+        {(showHidden ? allTutorialData?.allTutorials : tutorialData?.tutorials)?.map(
+          ({ title, cover, difficulty, shortName, id, redirect }) => (
             <Card
               key={id}
               title={title}
               backgroundImg={cover}
+              description={
+                <Badge colorScheme="green" borderRadius="lg">
+                  {difficulty}
+                </Badge>
+              }
               extraInfo=""
               shortName={shortName}
-              linkPrefix="talks"
+              linkPrefix="tutorials"
               redirect={redirect}
             />
           )
@@ -77,4 +88,4 @@ const Talks = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Talks);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Tutorials);

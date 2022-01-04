@@ -1,13 +1,28 @@
 mutation VerifyLogin {
-    verifyLogin {
-        ...RegularUser
+  verifyLogin {
+    ...RegularUser
+    projects {
+      id
+      shortName
     }
+    talks {
+      id
+      shortName
+    }
+    courses {
+      id
+      shortName
+    }
+    tutorials {
+      id
+      shortName
+    }
+  }
 }
 
 mutation Logout {
   logout
 }
-
 
 mutation UpdateUserRole($role: String!, $email: String!) {
   updateUserRole(role: $role, email: $email) {
