@@ -65,6 +65,7 @@ const Blog = () => {
                 extraInfo={fDate(createdAt) + " - " + author.name}
                 linkPrefix="projects"
                 redirect={link}
+                execRedirect={true}
                 shortName="toMakeWork"
               />
             );
