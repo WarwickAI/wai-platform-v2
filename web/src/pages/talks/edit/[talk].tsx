@@ -67,8 +67,8 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
                 name="description"
                 placeholder="description"
                 label="Description"
-                textarea
-                render
+                type="textarea"
+                renderMarkdown
               ></InputField>
             </Box>
             <Box mt={4}>
