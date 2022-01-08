@@ -51,7 +51,6 @@ import {
 } from "./urqlAuthExchange";
 
 export const createUrqlClient = (ssrExchange: any) => {
-  console.log("api url:", `${process.env.NEXT_PUBLIC_API_URL}/graphql`);
   return {
     url: `${process.env.NEXT_PUBLIC_API_URL as string}/graphql`,
     fetchOptions: { credentials: "include" as const },
