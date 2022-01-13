@@ -1,4 +1,12 @@
-import { Heading, Button, HStack, Text, Box } from "@chakra-ui/react";
+import {
+  Heading,
+  Button,
+  HStack,
+  Text,
+  Box,
+  SimpleGrid,
+  Image,
+} from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -39,25 +47,36 @@ const Merch: React.FC<MerchProps> = ({}) => {
         </HStack>
       }
     >
-      {data?.merchByShortName?.description && (
-        <ReactMarkdown>{data?.merchByShortName?.description}</ReactMarkdown>
-      )}
-      <Heading my={6} size="md">
-        Buy
-      </Heading>
-      <Box>
-        <HStack>
-          {data?.merchByShortName?.variants.map((variant) => (
-            <Button
-              key={variant.name}
-              variant="primary"
-              onClick={() => router.push(variant.link)}
-            >
-              {variant.name}
-            </Button>
-          ))}
-        </HStack>
-      </Box>
+      <SimpleGrid columns={[1, 2]} spacing={3}>
+        <Box>
+          {data?.merchByShortName?.description && (
+            <ReactMarkdown>{data?.merchByShortName?.description}</ReactMarkdown>
+          )}
+          <Heading my={6} size="md">
+            Buy
+          </Heading>
+          <Box>
+            <HStack>
+              {data?.merchByShortName?.variants.map((variant) => (
+                <Button
+                  key={variant.name}
+                  variant="primary"
+                  onClick={() => router.push(variant.link)}
+                >
+                  {variant.name}
+                </Button>
+              ))}
+            </HStack>
+          </Box>
+        </Box>
+        <Box>
+          <Image
+            alt="Item Image"
+            src={data?.merchByShortName?.image}
+            width="100%"
+          />
+        </Box>
+      </SimpleGrid>
     </Dashboard>
   );
 };

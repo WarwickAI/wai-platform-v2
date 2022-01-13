@@ -9,6 +9,7 @@ import {
   Switch,
   FormLabel,
   FormControl,
+  Heading,
 } from "@chakra-ui/react";
 import Dashboard from "../../components/Dashboard";
 import Card from "../../components/Card";
@@ -30,6 +31,8 @@ const Merch = () => {
   const [{ data: userData }] = useMeQuery({ pause: isServer() });
 
   const [showHidden, setShowHidden] = useState<boolean>(false);
+
+  const merchItems = showHidden ? allMerchData?.allMerch : merchData?.merch;
 
   return (
     <Dashboard
@@ -57,20 +60,24 @@ const Merch = () => {
         )
       }
     >
-      <ItemGrid>
-        {(showHidden ? allMerchData?.allMerch : merchData?.merch)?.map(
-          ({ title, shortName, id, image }) => (
-            <Card
-              key={id}
-              title={title}
-              backgroundImg={image}
-              extraInfo=""
-              shortName={shortName}
-              linkPrefix="merch"
-            />
-          )
-        )}
-      </ItemGrid>
+      {merchItems && merchItems.length > 0 ? (
+        <ItemGrid>
+          {(showHidden ? allMerchData?.allMerch : merchData?.merch)?.map(
+            ({ title, shortName, id, image }) => (
+              <Card
+                key={id}
+                title={title}
+                backgroundImg={image}
+                extraInfo=""
+                shortName={shortName}
+                linkPrefix="merch"
+              />
+            )
+          )}
+        </ItemGrid>
+      ) : (
+        <Heading size="md">Coming Soon...</Heading>
+      )}
     </Dashboard>
   );
 };
