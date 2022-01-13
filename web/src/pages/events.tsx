@@ -4,6 +4,8 @@ import Calendar from "@ericz1803/react-google-calendar";
 import Dashboard from "../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { useRouter } from "next/router";
+import { Button } from "@chakra-ui/react";
 
 // ID for WAI public calendar
 const calendarId = "16gnvov94ele73k1e7ekbaqr08@group.calendar.google.com";
@@ -23,12 +25,28 @@ const calendarStyles = {
 interface eventsProps {}
 
 const Events: React.FC<eventsProps> = ({}) => {
+  const router = useRouter();
   return (
-    <Dashboard title="Events">
+    <Dashboard
+      title="Events"
+      options={
+        <Button
+          variant="primary"
+          onClick={() =>
+            router.push(
+              `https://calendar.google.com/calendar/u/0/r?cid=${calendarId}`
+            )
+          }
+        >
+          Add Calendar
+        </Button>
+      }
+    >
       <Calendar
         calendars={calendars}
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}
         styles={calendarStyles}
+        footer={false}
       />
     </Dashboard>
   );
