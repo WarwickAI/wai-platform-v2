@@ -23,6 +23,8 @@ import { Course } from "./entities/Course";
 import { Tutorial } from "./entities/Tutorial";
 import { CourseResolver } from "./resolvers/course";
 import { TutorialResolver } from "./resolvers/tutorial";
+import { MerchResolver } from "./resolvers/merch";
+import { Merch } from "./entities/Merch";
 
 const main = async () => {
   // Connect to DB
@@ -50,7 +52,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial],
+    entities: [User, Project, Talk, Course, Tutorial, Merch],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -114,7 +116,15 @@ const main = async () => {
   // Create Apollo server, building the schema also
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, ProjectResolver, TalkResolver, CourseResolver, TutorialResolver],
+      resolvers: [
+        HelloResolver,
+        UserResolver,
+        ProjectResolver,
+        TalkResolver,
+        CourseResolver,
+        TutorialResolver,
+        MerchResolver,
+      ],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }), // Object accessible by resolvers
