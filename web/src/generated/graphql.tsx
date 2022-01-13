@@ -54,14 +54,44 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type Merch = {
+  __typename?: 'Merch';
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  display?: Maybe<Scalars['Boolean']>;
+  id: Scalars['Float'];
+  image: Scalars['String'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  variants: Array<Variant>;
+};
+
+export type MerchInput = {
+  description: Scalars['String'];
+  display: Scalars['Boolean'];
+  image: Scalars['String'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  variants: Array<VariantInput>;
+};
+
+export type MerchResponse = {
+  __typename?: 'MerchResponse';
+  errors?: Maybe<Array<FieldError>>;
+  item?: Maybe<Merch>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createCourse: CourseResponse;
+  createMerch: MerchResponse;
   createProject: ProjectResponse;
   createTalk: TalkResponse;
   createTutorial: TutorialResponse;
   deleteAllUsers: Scalars['Boolean'];
   editCourse: CourseResponse;
+  editMerch: MerchResponse;
   editProject: ProjectResponse;
   editTalk: TalkResponse;
   editTutorial: TutorialResponse;
@@ -85,6 +115,11 @@ export type MutationCreateCourseArgs = {
 };
 
 
+export type MutationCreateMerchArgs = {
+  itemInfo: MerchInput;
+};
+
+
 export type MutationCreateProjectArgs = {
   projectInfo: ProjectInput;
 };
@@ -103,6 +138,12 @@ export type MutationCreateTutorialArgs = {
 export type MutationEditCourseArgs = {
   courseInfo: CourseInput;
   id: Scalars['Float'];
+};
+
+
+export type MutationEditMerchArgs = {
+  id: Scalars['Float'];
+  itemInfo: MerchInput;
 };
 
 
@@ -222,6 +263,7 @@ export type ProjectResponse = {
 export type Query = {
   __typename?: 'Query';
   allCourses: Array<Course>;
+  allMerch: Array<Merch>;
   allProjects: Array<Project>;
   allTalks: Array<Talk>;
   allTutorials: Array<Tutorial>;
@@ -230,6 +272,8 @@ export type Query = {
   courses: Array<Course>;
   hello: Scalars['String'];
   me?: Maybe<User>;
+  merch: Array<Merch>;
+  merchByShortName?: Maybe<Merch>;
   projectByShortName?: Maybe<Project>;
   projectUsers: Array<User>;
   projects: Array<Project>;
@@ -252,6 +296,11 @@ export type QueryCourseByShortNameArgs = {
 export type QueryCourseUsersArgs = {
   courseId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryMerchByShortNameArgs = {
+  shortName: Scalars['String'];
 };
 
 
@@ -368,6 +417,17 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
+export type Variant = {
+  __typename?: 'Variant';
+  link: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type VariantInput = {
+  link: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
 
 export type CreateCourseMutationVariables = Exact<{
@@ -401,6 +461,21 @@ export type RemoveUserFromCourseMutationVariables = Exact<{
 
 
 export type RemoveUserFromCourseMutation = { __typename?: 'Mutation', removeUserFromCourse: boolean };
+
+export type CreateMerchMutationVariables = Exact<{
+  itemInfo: MerchInput;
+}>;
+
+
+export type CreateMerchMutation = { __typename?: 'Mutation', createMerch: { __typename?: 'MerchResponse', item?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+
+export type EditMerchMutationVariables = Exact<{
+  itemInfo: MerchInput;
+  id: Scalars['Float'];
+}>;
+
+
+export type EditMerchMutation = { __typename?: 'Mutation', editMerch: { __typename?: 'MerchResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, item?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined } };
 
 export type CreateProjectMutationVariables = Exact<{
   projectInfo: ProjectInput;
@@ -545,6 +620,23 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
+
+export type MerchQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MerchQuery = { __typename?: 'Query', merch: Array<{ __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, image: string }> };
+
+export type AllMerchQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllMerchQuery = { __typename?: 'Query', allMerch: Array<{ __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, image: string }> };
+
+export type MerchByShortNameQueryVariables = Exact<{
+  shortName: Scalars['String'];
+}>;
+
+
+export type MerchByShortNameQuery = { __typename?: 'Query', merchByShortName?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -710,6 +802,58 @@ export const RemoveUserFromCourseDocument = gql`
 
 export function useRemoveUserFromCourseMutation() {
   return Urql.useMutation<RemoveUserFromCourseMutation, RemoveUserFromCourseMutationVariables>(RemoveUserFromCourseDocument);
+};
+export const CreateMerchDocument = gql`
+    mutation CreateMerch($itemInfo: MerchInput!) {
+  createMerch(itemInfo: $itemInfo) {
+    item {
+      id
+      display
+      title
+      shortName
+      description
+      image
+      variants {
+        name
+        link
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useCreateMerchMutation() {
+  return Urql.useMutation<CreateMerchMutation, CreateMerchMutationVariables>(CreateMerchDocument);
+};
+export const EditMerchDocument = gql`
+    mutation EditMerch($itemInfo: MerchInput!, $id: Float!) {
+  editMerch(itemInfo: $itemInfo, id: $id) {
+    errors {
+      field
+      message
+    }
+    item {
+      id
+      display
+      title
+      shortName
+      description
+      image
+      variants {
+        name
+        link
+      }
+    }
+  }
+}
+    `;
+
+export function useEditMerchMutation() {
+  return Urql.useMutation<EditMerchMutation, EditMerchMutationVariables>(EditMerchDocument);
 };
 export const CreateProjectDocument = gql`
     mutation CreateProject($projectInfo: ProjectInput!) {
@@ -1080,6 +1224,56 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const MerchDocument = gql`
+    query Merch {
+  merch {
+    id
+    display
+    title
+    shortName
+    image
+  }
+}
+    `;
+
+export function useMerchQuery(options: Omit<Urql.UseQueryArgs<MerchQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MerchQuery>({ query: MerchDocument, ...options });
+};
+export const AllMerchDocument = gql`
+    query AllMerch {
+  allMerch {
+    id
+    display
+    title
+    shortName
+    image
+  }
+}
+    `;
+
+export function useAllMerchQuery(options: Omit<Urql.UseQueryArgs<AllMerchQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllMerchQuery>({ query: AllMerchDocument, ...options });
+};
+export const MerchByShortNameDocument = gql`
+    query MerchByShortName($shortName: String!) {
+  merchByShortName(shortName: $shortName) {
+    id
+    display
+    title
+    shortName
+    description
+    image
+    variants {
+      name
+      link
+    }
+  }
+}
+    `;
+
+export function useMerchByShortNameQuery(options: Omit<Urql.UseQueryArgs<MerchByShortNameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MerchByShortNameQuery>({ query: MerchByShortNameDocument, ...options });
 };
 export const ProjectsDocument = gql`
     query Projects {
