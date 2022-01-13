@@ -34,14 +34,44 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
   const [{ data }] = useProjectByShortNameQuery({
     variables: { shortName: project as string },
   });
-  const [{ data: projectUsers }, fetchProjectUsers] = useProjectUsersQuery({
-    variables: { shortName: project as string },
-    pause: isServer(),
-  });
+  const [{ data: projectUsers, fetching }, fetchProjectUsers] =
+    useProjectUsersQuery({
+      variables: { shortName: project as string },
+      pause: isServer(),
+    });
   const [, removeUserFromProject] = useRemoveUserFromProjectMutation();
 
+  const copyEmails = () => {
+    if (!fetching && projectUsers) {
+      const emails: string[] = [];
+      projectUsers.projectUsers.forEach((user) => {
+        emails.push(user.email);
+      });
+
+      var csvString: string = "";
+
+      emails.forEach((email) => {
+        csvString += `${email},`;
+      });
+
+      if (csvString.length > 0) {
+        csvString = csvString.slice(0, -1);
+      }
+
+      navigator.clipboard.writeText(csvString);
+    }
+  };
+
   return (
-    <Dashboard title="Manage Project" narrow={true}>
+    <Dashboard
+      title="Manage Project"
+      narrow={true}
+      options={
+        <Button variant="primary" onClick={copyEmails}>
+          Copy Emails (CSV)
+        </Button>
+      }
+    >
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>
