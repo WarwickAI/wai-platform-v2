@@ -1,57 +1,38 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Entity, JoinTable, ManyToMany } from "typeorm";
+import { Event } from "./Event";
 import { User } from "./User";
 
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class Tutorial extends BaseEntity {
-    @Field()
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Field(() => String)  // Specify as field in GraphQL
-    @CreateDateColumn() // Specify as row in DB
-    createdAt: Date;
-
-    @Field(() => String)
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @Field({ defaultValue: false })
-    @Column()
-    display: boolean;
-
-    @Field()
-    @Column()
-    title: string;
-
-    @Field()
-    @Column()
-    shortName: string;
-
-    @Field()
-    @Column()
-    description: string;
-
-    @Field()
-    @Column()
-    difficulty: string;
-
-    @Field()
-    @Column()
-    cover: string;
-
-    @Field()
-    @Column({ default: '' })
-    redirect: string;
-
-    @Field({ defaultValue: false })
-    @Column({ default: false })
-    joinButton: boolean;
-
+export class Tutorial extends Event {
     @Field(() => [User])
     @ManyToMany(() => User, user => user.tutorials, { cascade: true })
     @JoinTable()
     users: User[]
+
+    static async joinEvent(eventId?: number, shortName?: string, userId?: number) {
+        const user = await User.findOne(userId, {
+            relations: ["tutorials"],
+        });
+        if (!user) {
+            return false;
+        }
+
+        const event = await this.getEventByIdOrName(eventId, shortName, true);
+
+        if (!event || !event.joinable) {
+            return false;
+        }
+
+        try {
+            event.users.push(user);
+            event.save();
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
 }
