@@ -1,6 +1,6 @@
-import { ProjectInput } from "./ProjectInput";
+import { EventInput } from "./EventInput";
 
-export const validateProject = (options: ProjectInput) => {
+export const validateEvent = (options: EventInput) => {
     if (options.title.length <= 2) {
         return [
             {

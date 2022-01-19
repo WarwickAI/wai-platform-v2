@@ -23,6 +23,7 @@ import { Course } from "./entities/Course";
 import { Tutorial } from "./entities/Tutorial";
 import { CourseResolver } from "./resolvers/course";
 import { TutorialResolver } from "./resolvers/tutorial";
+import { Tag } from "./entities/Tag";
 
 const main = async () => {
   // Connect to DB
@@ -50,7 +51,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial],
+    entities: [User, Tag, Project, Talk, Course, Tutorial],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
