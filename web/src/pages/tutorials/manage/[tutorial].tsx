@@ -34,7 +34,7 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
   const [{ data }] = useTutorialByShortNameQuery({
     variables: { shortName: tutorial as string },
   });
-  const [{ data: tutorialUsers, stale }, fetchTutorialUsers] = useTutorialUsersQuery({
+  const [{ data: tutorialUsers, stale, fetching }, fetchTutorialUsers] = useTutorialUsersQuery({
     variables: { shortName: tutorial as string },
     pause: isServer(),
   });
@@ -46,8 +46,34 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
     }
   }, [fetchTutorialUsers, stale])
 
+  const copyEmails = () => {
+    if (!fetching && tutorialUsers) {
+      const emails: string[] = [];
+      tutorialUsers.tutorialUsers.forEach((user) => {
+        emails.push(user.email);
+      });
+
+      var csvString: string = "";
+
+      emails.forEach((email) => {
+        csvString += `${email},`;
+      });
+
+      if (csvString.length > 0) {
+        csvString = csvString.slice(0, -1);
+      }
+
+      navigator.clipboard.writeText(csvString);
+    }
+  };
+
   return (
-    <Dashboard title="Manage Tutorial" narrow={true}>
+    <Dashboard title="Manage Tutorial" narrow={true}
+    options={
+      <Button variant="primary" onClick={copyEmails}>
+        Copy Emails (CSV)
+      </Button>
+    }>
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>

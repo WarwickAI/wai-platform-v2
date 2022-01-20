@@ -34,20 +34,50 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
   const [{ data }] = useTalkByShortNameQuery({
     variables: { shortName: talk as string },
   });
-  const [{ data: talkUsers, stale }, fetchTalkUsers] = useTalkUsersQuery({
-    variables: { shortName: talk as string },
-    pause: isServer(),
-  });
+  const [{ data: talkUsers, stale, fetching }, fetchTalkUsers] =
+    useTalkUsersQuery({
+      variables: { shortName: talk as string },
+      pause: isServer(),
+    });
   const [, removeUserFromTalk] = useRemoveUserFromTalkMutation();
 
   useEffect(() => {
     if (stale) {
       fetchTalkUsers();
     }
-  }, [fetchTalkUsers, stale])
+  }, [fetchTalkUsers, stale]);
+
+  const copyEmails = () => {
+    if (!fetching && talkUsers) {
+      const emails: string[] = [];
+      talkUsers.talkUsers.forEach((user) => {
+        emails.push(user.email);
+      });
+
+      var csvString: string = "";
+
+      emails.forEach((email) => {
+        csvString += `${email},`;
+      });
+
+      if (csvString.length > 0) {
+        csvString = csvString.slice(0, -1);
+      }
+
+      navigator.clipboard.writeText(csvString);
+    }
+  };
 
   return (
-    <Dashboard title="Manage Talk" narrow={true}>
+    <Dashboard
+      title="Manage Talk"
+      narrow={true}
+      options={
+        <Button variant="primary" onClick={copyEmails}>
+          Copy Emails (CSV)
+        </Button>
+      }
+    >
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>

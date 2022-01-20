@@ -34,20 +34,50 @@ const EditCourse: React.FC<EditCourseProps> = ({}) => {
   const [{ data }] = useCourseByShortNameQuery({
     variables: { shortName: course as string },
   });
-  const [{ data: courseUsers, stale }, fetchCourseUsers] = useCourseUsersQuery({
-    variables: { shortName: course as string },
-    pause: isServer(),
-  });
+  const [{ data: courseUsers, stale, fetching }, fetchCourseUsers] =
+    useCourseUsersQuery({
+      variables: { shortName: course as string },
+      pause: isServer(),
+    });
   const [, removeUserFromCourse] = useRemoveUserFromCourseMutation();
 
   useEffect(() => {
     if (stale) {
       fetchCourseUsers();
     }
-  }, [fetchCourseUsers, stale])
+  }, [fetchCourseUsers, stale]);
+
+  const copyEmails = () => {
+    if (!fetching && courseUsers) {
+      const emails: string[] = [];
+      courseUsers.courseUsers.forEach((user) => {
+        emails.push(user.email);
+      });
+
+      var csvString: string = "";
+
+      emails.forEach((email) => {
+        csvString += `${email},`;
+      });
+
+      if (csvString.length > 0) {
+        csvString = csvString.slice(0, -1);
+      }
+
+      navigator.clipboard.writeText(csvString);
+    }
+  };
 
   return (
-    <Dashboard title="Manage Course" narrow={true}>
+    <Dashboard
+      title="Manage Course"
+      narrow={true}
+      options={
+        <Button variant="primary" onClick={copyEmails}>
+          Copy Emails (CSV)
+        </Button>
+      }
+    >
       <Heading size="md">Members</Heading>
       <Table variant="simple">
         <Thead>
