@@ -9,6 +9,11 @@ fragment RegularEvent on Event {
     coverImg
     redirectUrl
     joinable
+    tags {
+        id
+        title
+        color
+    }
 }
 
 fragment RegularCourse on Course {
@@ -22,6 +27,11 @@ fragment RegularCourse on Course {
     coverImg
     redirectUrl
     joinable
+    tags {
+        id
+        title
+        color
+    }
 }
 
 fragment RegularProject on Project {
@@ -35,6 +45,11 @@ fragment RegularProject on Project {
     coverImg
     redirectUrl
     joinable
+    tags {
+        id
+        title
+        color
+    }
 }
 
 fragment RegularTalk on Talk {
@@ -48,6 +63,11 @@ fragment RegularTalk on Talk {
     coverImg
     redirectUrl
     joinable
+    tags {
+        id
+        title
+        color
+    }
 }
 
 fragment RegularTutorial on Tutorial {
@@ -61,4 +81,9 @@ fragment RegularTutorial on Tutorial {
     coverImg
     redirectUrl
     joinable
+    tags {
+        id
+        title
+        color
+    }
 }

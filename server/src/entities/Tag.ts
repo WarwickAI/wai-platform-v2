@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Event } from "./Event";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -20,7 +21,7 @@ export class Tag extends BaseEntity {
     @Column()
     title: string;
 
-    // @Field(() => [Event])
-    // @ManyToMany(() => Event, event => event.tags)
-    // events: Event[]
+    @Field()
+    @Column()
+    color: string;
 }

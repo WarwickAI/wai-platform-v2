@@ -18,6 +18,6 @@ query CourseByShortName($shortName: String!) {
 
 query CourseUsers($courseId: Float, $shortName: String) {
   courseUsers(courseId: $courseId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }

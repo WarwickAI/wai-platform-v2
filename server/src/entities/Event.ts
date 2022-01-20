@@ -4,6 +4,7 @@ import { validateEvent } from "../utils/validateEvent";
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, FindConditions, FindManyOptions, FindOneOptions, FindOperator, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
+import { Tag } from "./Tag";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 export class Event extends BaseEntity {
@@ -35,10 +36,10 @@ export class Event extends BaseEntity {
     @Column()
     description: string;
 
-    // @Field(() => [Tag])
-    // @ManyToMany(() => Tag, tag => tag.events, { cascade: true })
-    // @JoinTable()
-    // tags: Tag[];
+    @Field(() => [Tag])
+    @ManyToMany(() => Tag, { cascade: true })
+    @JoinTable()
+    tags: Tag[];
 
     @Field()
     @Column()

@@ -53,7 +53,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial, Merch],
+    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();

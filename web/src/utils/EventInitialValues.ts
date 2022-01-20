@@ -1,4 +1,4 @@
-import { RegularCourseFragment, RegularEventFragment, RegularProjectFragment, RegularTalkFragment, RegularTutorialFragment } from "../generated/graphql";
+import { RegularCourseFragment, RegularEventFragment, RegularProjectFragment, RegularTalkFragment, RegularTutorialFragment, TagInput } from "../generated/graphql";
 
 var initalVals = {
     display: false,
@@ -9,7 +9,8 @@ var initalVals = {
     iconImg: "",
     coverImg: "",
     redirectUrl: "",
-    joinable: false
+    joinable: false,
+    tags: [],
 }
 
 export const setupEditValues = (eventDetails:
@@ -27,7 +28,8 @@ export const setupEditValues = (eventDetails:
         iconImg: eventDetails.iconImg || "",
         coverImg: eventDetails.coverImg || "",
         redirectUrl: eventDetails.redirectUrl || "",
-        joinable: eventDetails.joinable || false
+        joinable: eventDetails.joinable || false,
+        tags: eventDetails.tags.map(tag => { return { title: tag.title, color: tag.color } }) || []
     }
 }
 
