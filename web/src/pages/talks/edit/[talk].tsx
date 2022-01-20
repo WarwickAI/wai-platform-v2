@@ -33,7 +33,7 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
             });
             return response.data?.editTalk as EventResponse;
           }}
-          handleSuccess={() => router.push("/courses")}
+          handleSuccess={() => router.push("/talks")}
         />
       )}
     </Dashboard>

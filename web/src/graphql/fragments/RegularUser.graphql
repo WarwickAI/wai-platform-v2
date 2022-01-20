@@ -4,4 +4,20 @@ fragment RegularUser on User {
   lastName
   email
   role
+  projects {
+    id
+    shortName
+  }
+  talks {
+    id
+    shortName
+  }
+  courses {
+    id
+    shortName
+  }
+  tutorials {
+    id
+    shortName
+  }
 }
