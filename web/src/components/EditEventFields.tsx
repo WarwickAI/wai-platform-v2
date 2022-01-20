@@ -155,18 +155,17 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
             </Formik>
             <Flex mt={4}>
               {tags.map((tag) => (
-                <Badge key={tag.title} color={tag.color}>
+                <Badge key={tag.title} borderRadius="lg" backgroundColor={tag.color}>
                   {tag.title}
                   <Text
                     onClick={() => {
-                      setTags(
-                        tags.splice(
-                          tags.findIndex(
-                            (searchTag) => searchTag.title === tag.title,
-                            1
-                          )
-                        )
+                      const tmpTags = tags;
+                      tmpTags.splice(
+                        tags.findIndex((searchTag) => {
+                          return searchTag.title === tag.title;
+                        }, 1)
                       );
+                      setTags([...tmpTags]);
                     }}
                   >
                     x

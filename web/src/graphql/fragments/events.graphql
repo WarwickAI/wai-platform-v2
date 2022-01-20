@@ -9,11 +9,6 @@ fragment RegularEvent on Event {
     coverImg
     redirectUrl
     joinable
-    tags {
-        id
-        title
-        color
-    }
 }
 
 fragment RegularCourse on Course {
