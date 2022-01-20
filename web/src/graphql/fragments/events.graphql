@@ -1,0 +1,64 @@
+fragment RegularEvent on Event {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+}
+
+fragment RegularCourse on Course {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+}
+
+fragment RegularProject on Project {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+}
+
+fragment RegularTalk on Talk {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+}
+
+fragment RegularTutorial on Tutorial {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+}

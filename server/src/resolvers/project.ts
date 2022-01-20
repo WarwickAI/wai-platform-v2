@@ -17,7 +17,7 @@ import { EventInput } from "../utils/EventInput";
 export class ProjectResolver {
   @Query(() => [Project])
   async projects(): Promise<Project[]> {
-    return await Project.findWithoutUsers({ display: false })
+    return await Project.findWithoutUsers({ display: true })
   }
 
   @Query(() => [Project])
@@ -36,7 +36,7 @@ export class ProjectResolver {
   @Mutation(() => EventResponse)
   @UseMiddleware(isAuth, isExec)
   async createProject(
-    @Arg("projectInfo") projectInfo: EventInput
+    @Arg("eventInfo") projectInfo: EventInput
   ): Promise<EventResponse> {
     return await Project.validateAndCreate(projectInfo);
   }
@@ -45,7 +45,7 @@ export class ProjectResolver {
   @UseMiddleware(isAuth, isExec)
   async editProject(
     @Arg("id") id: number,
-    @Arg("projectInfo") projectInfo: EventInput
+    @Arg("eventInfo") projectInfo: EventInput
   ): Promise<EventResponse> {
     return await Project.validateAndEdit(id, projectInfo);
   }

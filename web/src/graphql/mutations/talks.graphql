@@ -1,16 +1,7 @@
-mutation CreateTalk($talkInfo: TalkInput!) {
-  createTalk(talkInfo: $talkInfo) {
-    talk {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      redirect
-      joinButton
+mutation CreateTalk($eventInfo: EventInput!) {
+  createTalk(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -19,23 +10,14 @@ mutation CreateTalk($talkInfo: TalkInput!) {
   }
 }
 
-mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {
-  editTalk(talkInfo: $talkInfo, id: $id) {
+mutation EditTalk($eventInfo: EventInput!, $id: Float!) {
+  editTalk(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
-    }
-    talk {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      cover
-      description
-      title
-      redirect
-      joinButton
     }
   }
 }

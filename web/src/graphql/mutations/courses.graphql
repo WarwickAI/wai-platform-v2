@@ -1,17 +1,7 @@
-mutation CreateCourse($courseInfo: CourseInput!) {
-  createCourse(courseInfo: $courseInfo) {
-    course {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+mutation CreateCourse($eventInfo: EventInput!) {
+  createCourse(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -20,24 +10,14 @@ mutation CreateCourse($courseInfo: CourseInput!) {
   }
 }
 
-mutation EditCourse($courseInfo: CourseInput!, $id: Float!) {
-  editCourse(courseInfo: $courseInfo, id: $id) {
+mutation EditCourse($eventInfo: EventInput!, $id: Float!) {
+  editCourse(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
-    }
-    course {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
     }
   }
 }

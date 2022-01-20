@@ -17,7 +17,7 @@ import { EventInput } from "../utils/EventInput";
 export class TutorialResolver {
   @Query(() => [Tutorial])
   async tutorials(): Promise<Tutorial[]> {
-    return await Tutorial.findWithoutUsers({ display: false })
+    return await Tutorial.findWithoutUsers({ display: true })
   }
 
   @Query(() => [Tutorial])
@@ -36,7 +36,7 @@ export class TutorialResolver {
   @Mutation(() => EventResponse)
   @UseMiddleware(isAuth, isExec)
   async createTutorial(
-    @Arg("tutorialInfo") tutorialInfo: EventInput
+    @Arg("eventInfo") tutorialInfo: EventInput
   ): Promise<EventResponse> {
     return await Tutorial.validateAndCreate(tutorialInfo);
   }
@@ -45,7 +45,7 @@ export class TutorialResolver {
   @UseMiddleware(isAuth, isExec)
   async editTutorial(
     @Arg("id") id: number,
-    @Arg("tutorialInfo") tutorialInfo: EventInput
+    @Arg("eventInfo") tutorialInfo: EventInput
   ): Promise<EventResponse> {
     return await Tutorial.validateAndEdit(id, tutorialInfo);
   }

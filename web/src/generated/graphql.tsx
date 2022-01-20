@@ -17,35 +17,54 @@ export type Scalars = {
 
 export type Course = {
   __typename?: 'Course';
-  cover: Scalars['String'];
+  coverImg: Scalars['String'];
   createdAt: Scalars['String'];
   description: Scalars['String'];
-  difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
+  iconImg: Scalars['String'];
   id: Scalars['Float'];
-  joinButton?: Maybe<Scalars['Boolean']>;
-  redirect: Scalars['String'];
+  joinable?: Maybe<Scalars['Boolean']>;
+  previewImg: Scalars['String'];
+  redirectUrl?: Maybe<Scalars['String']>;
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   users: Array<User>;
 };
 
-export type CourseInput = {
-  cover: Scalars['String'];
+export type Event = {
+  __typename?: 'Event';
+  coverImg: Scalars['String'];
+  createdAt: Scalars['String'];
   description: Scalars['String'];
-  difficulty: Scalars['String'];
+  display?: Maybe<Scalars['Boolean']>;
+  iconImg: Scalars['String'];
+  id: Scalars['Float'];
+  joinable?: Maybe<Scalars['Boolean']>;
+  previewImg: Scalars['String'];
+  redirectUrl?: Maybe<Scalars['String']>;
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  users: Array<User>;
+};
+
+export type EventInput = {
+  coverImg: Scalars['String'];
+  description: Scalars['String'];
   display: Scalars['Boolean'];
-  joinButton: Scalars['Boolean'];
-  redirect: Scalars['String'];
+  iconImg: Scalars['String'];
+  joinable: Scalars['Boolean'];
+  previewImg: Scalars['String'];
+  redirectUrl: Scalars['String'];
   shortName: Scalars['String'];
   title: Scalars['String'];
 };
 
-export type CourseResponse = {
-  __typename?: 'CourseResponse';
-  course?: Maybe<Course>;
+export type EventResponse = {
+  __typename?: 'EventResponse';
   errors?: Maybe<Array<FieldError>>;
+  event?: Maybe<Event>;
 };
 
 export type FieldError = {
@@ -56,15 +75,15 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createCourse: CourseResponse;
-  createProject: ProjectResponse;
-  createTalk: TalkResponse;
-  createTutorial: TutorialResponse;
+  createCourse: EventResponse;
+  createProject: EventResponse;
+  createTalk: EventResponse;
+  createTutorial: EventResponse;
   deleteAllUsers: Scalars['Boolean'];
-  editCourse: CourseResponse;
-  editProject: ProjectResponse;
-  editTalk: TalkResponse;
-  editTutorial: TutorialResponse;
+  editCourse: EventResponse;
+  editProject: EventResponse;
+  editTalk: EventResponse;
+  editTutorial: EventResponse;
   joinCourse: Scalars['Boolean'];
   joinProject: Scalars['Boolean'];
   joinTalk: Scalars['Boolean'];
@@ -81,46 +100,46 @@ export type Mutation = {
 
 
 export type MutationCreateCourseArgs = {
-  courseInfo: CourseInput;
+  eventInfo: EventInput;
 };
 
 
 export type MutationCreateProjectArgs = {
-  projectInfo: ProjectInput;
+  eventInfo: EventInput;
 };
 
 
 export type MutationCreateTalkArgs = {
-  talkInfo: TalkInput;
+  eventInfo: EventInput;
 };
 
 
 export type MutationCreateTutorialArgs = {
-  tutorialInfo: TutorialInput;
+  eventInfo: EventInput;
 };
 
 
 export type MutationEditCourseArgs = {
-  courseInfo: CourseInput;
+  eventInfo: EventInput;
   id: Scalars['Float'];
 };
 
 
 export type MutationEditProjectArgs = {
+  eventInfo: EventInput;
   id: Scalars['Float'];
-  projectInfo: ProjectInput;
 };
 
 
 export type MutationEditTalkArgs = {
+  eventInfo: EventInput;
   id: Scalars['Float'];
-  talkInfo: TalkInput;
 };
 
 
 export type MutationEditTutorialArgs = {
+  eventInfo: EventInput;
   id: Scalars['Float'];
-  tutorialInfo: TutorialInput;
 };
 
 
@@ -188,35 +207,19 @@ export type MutationUpdateUserRoleArgs = {
 
 export type Project = {
   __typename?: 'Project';
-  cover: Scalars['String'];
+  coverImg: Scalars['String'];
   createdAt: Scalars['String'];
   description: Scalars['String'];
-  difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
+  iconImg: Scalars['String'];
   id: Scalars['Float'];
-  joinButton?: Maybe<Scalars['Boolean']>;
-  redirect: Scalars['String'];
+  joinable?: Maybe<Scalars['Boolean']>;
+  previewImg: Scalars['String'];
+  redirectUrl?: Maybe<Scalars['String']>;
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   users: Array<User>;
-};
-
-export type ProjectInput = {
-  cover: Scalars['String'];
-  description: Scalars['String'];
-  difficulty: Scalars['String'];
-  display: Scalars['Boolean'];
-  joinButton: Scalars['Boolean'];
-  redirect: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type ProjectResponse = {
-  __typename?: 'ProjectResponse';
-  errors?: Maybe<Array<FieldError>>;
-  project?: Maybe<Project>;
 };
 
 export type Query = {
@@ -289,66 +292,36 @@ export type QueryTutorialUsersArgs = {
 
 export type Talk = {
   __typename?: 'Talk';
-  cover: Scalars['String'];
+  coverImg: Scalars['String'];
   createdAt: Scalars['String'];
   description: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
+  iconImg: Scalars['String'];
   id: Scalars['Float'];
-  joinButton?: Maybe<Scalars['Boolean']>;
-  redirect: Scalars['String'];
+  joinable?: Maybe<Scalars['Boolean']>;
+  previewImg: Scalars['String'];
+  redirectUrl?: Maybe<Scalars['String']>;
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   users: Array<User>;
-};
-
-export type TalkInput = {
-  cover: Scalars['String'];
-  description: Scalars['String'];
-  display: Scalars['Boolean'];
-  joinButton: Scalars['Boolean'];
-  redirect: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type TalkResponse = {
-  __typename?: 'TalkResponse';
-  errors?: Maybe<Array<FieldError>>;
-  talk?: Maybe<Talk>;
 };
 
 export type Tutorial = {
   __typename?: 'Tutorial';
-  cover: Scalars['String'];
+  coverImg: Scalars['String'];
   createdAt: Scalars['String'];
   description: Scalars['String'];
-  difficulty: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
+  iconImg: Scalars['String'];
   id: Scalars['Float'];
-  joinButton?: Maybe<Scalars['Boolean']>;
-  redirect: Scalars['String'];
+  joinable?: Maybe<Scalars['Boolean']>;
+  previewImg: Scalars['String'];
+  redirectUrl?: Maybe<Scalars['String']>;
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   users: Array<User>;
-};
-
-export type TutorialInput = {
-  cover: Scalars['String'];
-  description: Scalars['String'];
-  difficulty: Scalars['String'];
-  display: Scalars['Boolean'];
-  joinButton: Scalars['Boolean'];
-  redirect: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type TutorialResponse = {
-  __typename?: 'TutorialResponse';
-  errors?: Maybe<Array<FieldError>>;
-  tutorial?: Maybe<Tutorial>;
 };
 
 export type User = {
@@ -370,20 +343,30 @@ export type User = {
 
 export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
 
+export type RegularEventFragment = { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
+
+export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
+
+export type RegularProjectFragment = { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
+
+export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
+
+export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
+
 export type CreateCourseMutationVariables = Exact<{
-  courseInfo: CourseInput;
+  eventInfo: EventInput;
 }>;
 
 
-export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'CourseResponse', course?: { __typename?: 'Course', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditCourseMutationVariables = Exact<{
-  courseInfo: CourseInput;
+  eventInfo: EventInput;
   id: Scalars['Float'];
 }>;
 
 
-export type EditCourseMutation = { __typename?: 'Mutation', editCourse: { __typename?: 'CourseResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, course?: { __typename?: 'Course', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
+export type EditCourseMutation = { __typename?: 'Mutation', editCourse: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinCourseMutationVariables = Exact<{
   courseId?: InputMaybe<Scalars['Float']>;
@@ -403,19 +386,19 @@ export type RemoveUserFromCourseMutationVariables = Exact<{
 export type RemoveUserFromCourseMutation = { __typename?: 'Mutation', removeUserFromCourse: boolean };
 
 export type CreateProjectMutationVariables = Exact<{
-  projectInfo: ProjectInput;
+  eventInfo: EventInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditProjectMutationVariables = Exact<{
-  projectInfo: ProjectInput;
+  eventInfo: EventInput;
   id: Scalars['Float'];
 }>;
 
 
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, project?: { __typename?: 'Project', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
+export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinProjectMutationVariables = Exact<{
   projectId?: InputMaybe<Scalars['Float']>;
@@ -435,19 +418,19 @@ export type RemoveUserFromProjectMutationVariables = Exact<{
 export type RemoveUserFromProjectMutation = { __typename?: 'Mutation', removeUserFromProject: boolean };
 
 export type CreateTalkMutationVariables = Exact<{
-  talkInfo: TalkInput;
+  eventInfo: EventInput;
 }>;
 
 
-export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditTalkMutationVariables = Exact<{
-  talkInfo: TalkInput;
+  eventInfo: EventInput;
   id: Scalars['Float'];
 }>;
 
 
-export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'TalkResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, talk?: { __typename?: 'Talk', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
+export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinTalkMutationVariables = Exact<{
   talkId?: InputMaybe<Scalars['Float']>;
@@ -467,19 +450,19 @@ export type RemoveUserFromTalkMutationVariables = Exact<{
 export type RemoveUserFromTalkMutation = { __typename?: 'Mutation', removeUserFromTalk: boolean };
 
 export type CreateTutorialMutationVariables = Exact<{
-  tutorialInfo: TutorialInput;
+  eventInfo: EventInput;
 }>;
 
 
-export type CreateTutorialMutation = { __typename?: 'Mutation', createTutorial: { __typename?: 'TutorialResponse', tutorial?: { __typename?: 'Tutorial', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, difficulty: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+export type CreateTutorialMutation = { __typename?: 'Mutation', createTutorial: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditTutorialMutationVariables = Exact<{
-  tutorialInfo: TutorialInput;
+  eventInfo: EventInput;
   id: Scalars['Float'];
 }>;
 
 
-export type EditTutorialMutation = { __typename?: 'Mutation', editTutorial: { __typename?: 'TutorialResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, tutorial?: { __typename?: 'Tutorial', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, shortName: string, difficulty: string, cover: string, description: string, title: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined } };
+export type EditTutorialMutation = { __typename?: 'Mutation', editTutorial: { __typename?: 'EventResponse', event?: { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinTutorialMutationVariables = Exact<{
   tutorialId?: InputMaybe<Scalars['Float']>;
@@ -519,19 +502,19 @@ export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?:
 export type CoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type AllCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllCoursesQuery = { __typename?: 'Query', allCourses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type AllCoursesQuery = { __typename?: 'Query', allCourses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type CourseByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type CourseByShortNameQuery = { __typename?: 'Query', courseByShortName?: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
+export type CourseByShortNameQuery = { __typename?: 'Query', courseByShortName?: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined };
 
 export type CourseUsersQueryVariables = Exact<{
   courseId?: InputMaybe<Scalars['Float']>;
@@ -549,19 +532,19 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type AllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type ProjectByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
+export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined };
 
 export type ProjectUsersQueryVariables = Exact<{
   projectId?: InputMaybe<Scalars['Float']>;
@@ -574,19 +557,19 @@ export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __
 export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TalksQuery = { __typename?: 'Query', talks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type TalksQuery = { __typename?: 'Query', talks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type AllTalksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllTalksQuery = { __typename?: 'Query', allTalks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type AllTalksQuery = { __typename?: 'Query', allTalks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type TalkByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type TalkByShortNameQuery = { __typename?: 'Query', talkByShortName?: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
+export type TalkByShortNameQuery = { __typename?: 'Query', talkByShortName?: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined };
 
 export type TalkUsersQueryVariables = Exact<{
   talkId?: InputMaybe<Scalars['Float']>;
@@ -599,19 +582,19 @@ export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typena
 export type TutorialsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TutorialsQuery = { __typename?: 'Query', tutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type TutorialsQuery = { __typename?: 'Query', tutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type AllTutorialsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllTutorialsQuery = { __typename?: 'Query', allTutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, cover: string, redirect: string, joinButton?: boolean | null | undefined }> };
+export type AllTutorialsQuery = { __typename?: 'Query', allTutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined }> };
 
 export type TutorialByShortNameQueryVariables = Exact<{
   shortName: Scalars['String'];
 }>;
 
 
-export type TutorialByShortNameQuery = { __typename?: 'Query', tutorialByShortName?: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, difficulty: string, description: string, cover: string, redirect: string, joinButton?: boolean | null | undefined } | null | undefined };
+export type TutorialByShortNameQuery = { __typename?: 'Query', tutorialByShortName?: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined } | null | undefined };
 
 export type TutorialUsersQueryVariables = Exact<{
   tutorialId?: InputMaybe<Scalars['Float']>;
@@ -635,21 +618,81 @@ export const RegularUserFragmentDoc = gql`
   role
 }
     `;
+export const RegularEventFragmentDoc = gql`
+    fragment RegularEvent on Event {
+  id
+  display
+  title
+  shortName
+  description
+  previewImg
+  iconImg
+  coverImg
+  redirectUrl
+  joinable
+}
+    `;
+export const RegularCourseFragmentDoc = gql`
+    fragment RegularCourse on Course {
+  id
+  display
+  title
+  shortName
+  description
+  previewImg
+  iconImg
+  coverImg
+  redirectUrl
+  joinable
+}
+    `;
+export const RegularProjectFragmentDoc = gql`
+    fragment RegularProject on Project {
+  id
+  display
+  title
+  shortName
+  description
+  previewImg
+  iconImg
+  coverImg
+  redirectUrl
+  joinable
+}
+    `;
+export const RegularTalkFragmentDoc = gql`
+    fragment RegularTalk on Talk {
+  id
+  display
+  title
+  shortName
+  description
+  previewImg
+  iconImg
+  coverImg
+  redirectUrl
+  joinable
+}
+    `;
+export const RegularTutorialFragmentDoc = gql`
+    fragment RegularTutorial on Tutorial {
+  id
+  display
+  title
+  shortName
+  description
+  previewImg
+  iconImg
+  coverImg
+  redirectUrl
+  joinable
+}
+    `;
 export const CreateCourseDocument = gql`
-    mutation CreateCourse($courseInfo: CourseInput!) {
-  createCourse(courseInfo: $courseInfo) {
-    course {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+    mutation CreateCourse($eventInfo: EventInput!) {
+  createCourse(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -657,34 +700,24 @@ export const CreateCourseDocument = gql`
     }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useCreateCourseMutation() {
   return Urql.useMutation<CreateCourseMutation, CreateCourseMutationVariables>(CreateCourseDocument);
 };
 export const EditCourseDocument = gql`
-    mutation EditCourse($courseInfo: CourseInput!, $id: Float!) {
-  editCourse(courseInfo: $courseInfo, id: $id) {
+    mutation EditCourse($eventInfo: EventInput!, $id: Float!) {
+  editCourse(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
     }
-    course {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
-    }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useEditCourseMutation() {
   return Urql.useMutation<EditCourseMutation, EditCourseMutationVariables>(EditCourseDocument);
@@ -712,20 +745,10 @@ export function useRemoveUserFromCourseMutation() {
   return Urql.useMutation<RemoveUserFromCourseMutation, RemoveUserFromCourseMutationVariables>(RemoveUserFromCourseDocument);
 };
 export const CreateProjectDocument = gql`
-    mutation CreateProject($projectInfo: ProjectInput!) {
-  createProject(projectInfo: $projectInfo) {
-    project {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+    mutation CreateProject($eventInfo: EventInput!) {
+  createProject(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -733,34 +756,24 @@ export const CreateProjectDocument = gql`
     }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useCreateProjectMutation() {
   return Urql.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument);
 };
 export const EditProjectDocument = gql`
-    mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
-  editProject(projectInfo: $projectInfo, id: $id) {
+    mutation EditProject($eventInfo: EventInput!, $id: Float!) {
+  editProject(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
     }
-    project {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
-    }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useEditProjectMutation() {
   return Urql.useMutation<EditProjectMutation, EditProjectMutationVariables>(EditProjectDocument);
@@ -788,19 +801,10 @@ export function useRemoveUserFromProjectMutation() {
   return Urql.useMutation<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>(RemoveUserFromProjectDocument);
 };
 export const CreateTalkDocument = gql`
-    mutation CreateTalk($talkInfo: TalkInput!) {
-  createTalk(talkInfo: $talkInfo) {
-    talk {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      redirect
-      joinButton
+    mutation CreateTalk($eventInfo: EventInput!) {
+  createTalk(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -808,33 +812,24 @@ export const CreateTalkDocument = gql`
     }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useCreateTalkMutation() {
   return Urql.useMutation<CreateTalkMutation, CreateTalkMutationVariables>(CreateTalkDocument);
 };
 export const EditTalkDocument = gql`
-    mutation EditTalk($talkInfo: TalkInput!, $id: Float!) {
-  editTalk(talkInfo: $talkInfo, id: $id) {
+    mutation EditTalk($eventInfo: EventInput!, $id: Float!) {
+  editTalk(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
     }
-    talk {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      cover
-      description
-      title
-      redirect
-      joinButton
-    }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useEditTalkMutation() {
   return Urql.useMutation<EditTalkMutation, EditTalkMutationVariables>(EditTalkDocument);
@@ -858,20 +853,10 @@ export function useRemoveUserFromTalkMutation() {
   return Urql.useMutation<RemoveUserFromTalkMutation, RemoveUserFromTalkMutationVariables>(RemoveUserFromTalkDocument);
 };
 export const CreateTutorialDocument = gql`
-    mutation CreateTutorial($tutorialInfo: TutorialInput!) {
-  createTutorial(tutorialInfo: $tutorialInfo) {
-    tutorial {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+    mutation CreateTutorial($eventInfo: EventInput!) {
+  createTutorial(eventInfo: $eventInfo) {
+    event {
+      ...RegularEvent
     }
     errors {
       field
@@ -879,34 +864,24 @@ export const CreateTutorialDocument = gql`
     }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useCreateTutorialMutation() {
   return Urql.useMutation<CreateTutorialMutation, CreateTutorialMutationVariables>(CreateTutorialDocument);
 };
 export const EditTutorialDocument = gql`
-    mutation EditTutorial($tutorialInfo: TutorialInput!, $id: Float!) {
-  editTutorial(tutorialInfo: $tutorialInfo, id: $id) {
+    mutation EditTutorial($eventInfo: EventInput!, $id: Float!) {
+  editTutorial(eventInfo: $eventInfo, id: $id) {
+    event {
+      ...RegularEvent
+    }
     errors {
       field
       message
     }
-    tutorial {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
-    }
   }
 }
-    `;
+    ${RegularEventFragmentDoc}`;
 
 export function useEditTutorialMutation() {
   return Urql.useMutation<EditTutorialMutation, EditTutorialMutationVariables>(EditTutorialDocument);
@@ -991,17 +966,10 @@ export function useUpdateUserRoleMutation() {
 export const CoursesDocument = gql`
     query Courses {
   courses {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
-    `;
+    ${RegularCourseFragmentDoc}`;
 
 export function useCoursesQuery(options: Omit<Urql.UseQueryArgs<CoursesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CoursesQuery>({ query: CoursesDocument, ...options });
@@ -1009,17 +977,10 @@ export function useCoursesQuery(options: Omit<Urql.UseQueryArgs<CoursesQueryVari
 export const AllCoursesDocument = gql`
     query AllCourses {
   allCourses {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
-    `;
+    ${RegularCourseFragmentDoc}`;
 
 export function useAllCoursesQuery(options: Omit<Urql.UseQueryArgs<AllCoursesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllCoursesQuery>({ query: AllCoursesDocument, ...options });
@@ -1027,18 +988,10 @@ export function useAllCoursesQuery(options: Omit<Urql.UseQueryArgs<AllCoursesQue
 export const CourseByShortNameDocument = gql`
     query CourseByShortName($shortName: String!) {
   courseByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
-    `;
+    ${RegularCourseFragmentDoc}`;
 
 export function useCourseByShortNameQuery(options: Omit<Urql.UseQueryArgs<CourseByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CourseByShortNameQuery>({ query: CourseByShortNameDocument, ...options });
@@ -1084,17 +1037,10 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
 export const ProjectsDocument = gql`
     query Projects {
   projects {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
-    `;
+    ${RegularProjectFragmentDoc}`;
 
 export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectsQuery>({ query: ProjectsDocument, ...options });
@@ -1102,17 +1048,10 @@ export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVa
 export const AllProjectsDocument = gql`
     query AllProjects {
   allProjects {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
-    `;
+    ${RegularProjectFragmentDoc}`;
 
 export function useAllProjectsQuery(options: Omit<Urql.UseQueryArgs<AllProjectsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllProjectsQuery>({ query: AllProjectsDocument, ...options });
@@ -1120,18 +1059,10 @@ export function useAllProjectsQuery(options: Omit<Urql.UseQueryArgs<AllProjectsQ
 export const ProjectByShortNameDocument = gql`
     query ProjectByShortName($shortName: String!) {
   projectByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
-    `;
+    ${RegularProjectFragmentDoc}`;
 
 export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<ProjectByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectByShortNameQuery>({ query: ProjectByShortNameDocument, ...options });
@@ -1150,16 +1081,10 @@ export function useProjectUsersQuery(options: Omit<Urql.UseQueryArgs<ProjectUser
 export const TalksDocument = gql`
     query Talks {
   talks {
-    id
-    display
-    title
-    shortName
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
-    `;
+    ${RegularTalkFragmentDoc}`;
 
 export function useTalksQuery(options: Omit<Urql.UseQueryArgs<TalksQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TalksQuery>({ query: TalksDocument, ...options });
@@ -1167,16 +1092,10 @@ export function useTalksQuery(options: Omit<Urql.UseQueryArgs<TalksQueryVariable
 export const AllTalksDocument = gql`
     query AllTalks {
   allTalks {
-    id
-    display
-    title
-    shortName
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
-    `;
+    ${RegularTalkFragmentDoc}`;
 
 export function useAllTalksQuery(options: Omit<Urql.UseQueryArgs<AllTalksQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllTalksQuery>({ query: AllTalksDocument, ...options });
@@ -1184,17 +1103,10 @@ export function useAllTalksQuery(options: Omit<Urql.UseQueryArgs<AllTalksQueryVa
 export const TalkByShortNameDocument = gql`
     query TalkByShortName($shortName: String!) {
   talkByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
-    `;
+    ${RegularTalkFragmentDoc}`;
 
 export function useTalkByShortNameQuery(options: Omit<Urql.UseQueryArgs<TalkByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TalkByShortNameQuery>({ query: TalkByShortNameDocument, ...options });
@@ -1213,17 +1125,10 @@ export function useTalkUsersQuery(options: Omit<Urql.UseQueryArgs<TalkUsersQuery
 export const TutorialsDocument = gql`
     query Tutorials {
   tutorials {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
-    `;
+    ${RegularTutorialFragmentDoc}`;
 
 export function useTutorialsQuery(options: Omit<Urql.UseQueryArgs<TutorialsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TutorialsQuery>({ query: TutorialsDocument, ...options });
@@ -1231,17 +1136,10 @@ export function useTutorialsQuery(options: Omit<Urql.UseQueryArgs<TutorialsQuery
 export const AllTutorialsDocument = gql`
     query AllTutorials {
   allTutorials {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
-    `;
+    ${RegularTutorialFragmentDoc}`;
 
 export function useAllTutorialsQuery(options: Omit<Urql.UseQueryArgs<AllTutorialsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllTutorialsQuery>({ query: AllTutorialsDocument, ...options });
@@ -1249,18 +1147,10 @@ export function useAllTutorialsQuery(options: Omit<Urql.UseQueryArgs<AllTutorial
 export const TutorialByShortNameDocument = gql`
     query TutorialByShortName($shortName: String!) {
   tutorialByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
-    `;
+    ${RegularTutorialFragmentDoc}`;
 
 export function useTutorialByShortNameQuery(options: Omit<Urql.UseQueryArgs<TutorialByShortNameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TutorialByShortNameQuery>({ query: TutorialByShortNameDocument, ...options });
