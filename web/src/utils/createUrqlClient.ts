@@ -20,12 +20,9 @@ import {
   CreateTalkMutation,
   JoinProjectMutation,
   RemoveUserFromProjectMutation,
-  ProjectUsersQuery,
-  ProjectUsersDocument,
   JoinTalkMutation,
   JoinTutorialMutation,
   JoinCourseMutation,
-  JoinProjectMutationVariables,
   CreateCourseMutation,
   CoursesQuery,
   CoursesDocument,
@@ -41,6 +38,10 @@ import {
   RemoveUserFromTalkMutation,
   RemoveUserFromCourseMutation,
   RemoveUserFromTutorialMutation,
+  RegularProjectFragment,
+  RegularTalkFragment,
+  RegularCourseFragment,
+  RegularTutorialFragment,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -65,19 +66,20 @@ export const createUrqlClient = (ssrExchange: any) => {
       cacheExchange({
         updates: {
           Mutation: {
-
             createProject: (_result, args, cache, info) => {
               betterUpdateQuery<CreateProjectMutation, ProjectsQuery>(
                 cache,
                 { query: ProjectsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createProject.project) {
+                  if (!result.createProject.event) {
                     return query;
                   } else {
-                    if (result.createProject.project.display) {
+                    if (result.createProject.event.display) {
                       // Display set to true, add
-                      query.projects.push(result.createProject.project);
+                      query.projects.push(
+                        result.createProject.event as RegularProjectFragment
+                      );
                     }
                     return query;
                   }
@@ -88,10 +90,12 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllProjectsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createProject.project) {
+                  if (!result.createProject.event) {
                     return query;
                   } else {
-                    query.allProjects.push(result.createProject.project);
+                    query.allProjects.push(
+                      result.createProject.event as RegularProjectFragment
+                    );
                     return query;
                   }
                 }
@@ -104,19 +108,27 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: ProjectsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editProject.project) {
+                  if (!result.editProject.event) {
                     return query;
                   } else {
-                    const index = query.projects.findIndex((val) => val.id === result.editProject.project?.id);
-                    if (index === -1 && result.editProject.project.display) {
+                    const index = query.projects.findIndex(
+                      (val) => val.id === result.editProject.event?.id
+                    );
+                    if (index === -1 && result.editProject.event.display) {
                       // Display set to true, add to list.
-                      query.projects.push(result.editProject.project);
-                    } else if (index !== -1 && !result.editProject.project.display) {
+                      query.projects.push(
+                        result.editProject.event as RegularProjectFragment
+                      );
+                    } else if (
+                      index !== -1 &&
+                      !result.editProject.event.display
+                    ) {
                       // Display set to false, remove from list
-                      query.projects.splice(index, 1)
+                      query.projects.splice(index, 1);
                     } else if (index !== -1) {
                       // Update
-                      query.projects[index] = result.editProject.project;
+                      query.projects[index] = result.editProject
+                        .event as RegularProjectFragment;
                     }
                     return query;
                   }
@@ -127,13 +139,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllProjectsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editProject.project) {
+                  if (!result.editProject.event) {
                     return query;
                   } else {
-                    const index = query.allProjects.findIndex((val) => val.id === result.editProject.project?.id);
+                    const index = query.allProjects.findIndex(
+                      (val) => val.id === result.editProject.event?.id
+                    );
                     if (index !== -1) {
                       // Update
-                      query.allProjects[index] = result.editProject.project;
+                      query.allProjects[index] = result.editProject
+                        .event as RegularProjectFragment;
                     }
                     return query;
                   }
@@ -147,12 +162,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: TalksDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createTalk.talk) {
+                  if (!result.createTalk.event) {
                     return query;
                   } else {
-                    if (result.createTalk.talk.display) {
+                    if (result.createTalk.event.display) {
                       // Display set to true, add
-                      query.talks.push(result.createTalk.talk);
+                      query.talks.push(
+                        result.createTalk.event as RegularTalkFragment
+                      );
                     }
                     return query;
                   }
@@ -163,10 +180,12 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllTalksDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createTalk.talk) {
+                  if (!result.createTalk.event) {
                     return query;
                   } else {
-                    query.allTalks.push(result.createTalk.talk);
+                    query.allTalks.push(
+                      result.createTalk.event as RegularTalkFragment
+                    );
                     return query;
                   }
                 }
@@ -179,19 +198,24 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: TalksDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editTalk.talk) {
+                  if (!result.editTalk.event) {
                     return query;
                   } else {
-                    const index = query.talks.findIndex((val) => val.id === result.editTalk.talk?.id);
-                    if (index === -1 && result.editTalk.talk.display) {
+                    const index = query.talks.findIndex(
+                      (val) => val.id === result.editTalk.event?.id
+                    );
+                    if (index === -1 && result.editTalk.event.display) {
                       // Display set to true, add to list.
-                      query.talks.push(result.editTalk.talk);
-                    } else if (index !== -1 && !result.editTalk.talk.display) {
+                      query.talks.push(
+                        result.editTalk.event as RegularTalkFragment
+                      );
+                    } else if (index !== -1 && !result.editTalk.event.display) {
                       // Display set to false, remove from list
-                      query.talks.splice(index, 1)
+                      query.talks.splice(index, 1);
                     } else if (index !== -1) {
                       // Update
-                      query.talks[index] = result.editTalk.talk;
+                      query.talks[index] = result.editTalk
+                        .event as RegularTalkFragment;
                     }
                     return query;
                   }
@@ -202,13 +226,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllTalksDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editTalk.talk) {
+                  if (!result.editTalk.event) {
                     return query;
                   } else {
-                    const index = query.allTalks.findIndex((val) => val.id === result.editTalk.talk?.id);
+                    const index = query.allTalks.findIndex(
+                      (val) => val.id === result.editTalk.event?.id
+                    );
                     if (index !== -1) {
                       // Update
-                      query.allTalks[index] = result.editTalk.talk;
+                      query.allTalks[index] = result.editTalk
+                        .event as RegularTalkFragment;
                     }
                     return query;
                   }
@@ -222,12 +249,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: CoursesDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createCourse.course) {
+                  if (!result.createCourse.event) {
                     return query;
                   } else {
-                    if (result.createCourse.course.display) {
+                    if (result.createCourse.event.display) {
                       // Display set to true, add
-                      query.courses.push(result.createCourse.course);
+                      query.courses.push(
+                        result.createCourse.event as RegularCourseFragment
+                      );
                     }
                     return query;
                   }
@@ -238,10 +267,12 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllCoursesDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createCourse.course) {
+                  if (!result.createCourse.event) {
                     return query;
                   } else {
-                    query.allCourses.push(result.createCourse.course);
+                    query.allCourses.push(
+                      result.createCourse.event as RegularCourseFragment
+                    );
                     return query;
                   }
                 }
@@ -254,19 +285,27 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: CoursesDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editCourse.course) {
+                  if (!result.editCourse.event) {
                     return query;
                   } else {
-                    const index = query.courses.findIndex((val) => val.id === result.editCourse.course?.id);
-                    if (index === -1 && result.editCourse.course.display) {
+                    const index = query.courses.findIndex(
+                      (val) => val.id === result.editCourse.event?.id
+                    );
+                    if (index === -1 && result.editCourse.event.display) {
                       // Display set to true, add to list.
-                      query.courses.push(result.editCourse.course);
-                    } else if (index !== -1 && !result.editCourse.course.display) {
+                      query.courses.push(
+                        result.editCourse.event as RegularCourseFragment
+                      );
+                    } else if (
+                      index !== -1 &&
+                      !result.editCourse.event.display
+                    ) {
                       // Display set to false, remove from list
-                      query.courses.splice(index, 1)
+                      query.courses.splice(index, 1);
                     } else if (index !== -1) {
                       // Update
-                      query.courses[index] = result.editCourse.course;
+                      query.courses[index] = result.editCourse
+                        .event as RegularCourseFragment;
                     }
                     return query;
                   }
@@ -277,13 +316,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllCoursesDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editCourse.course) {
+                  if (!result.editCourse.event) {
                     return query;
                   } else {
-                    const index = query.allCourses.findIndex((val) => val.id === result.editCourse.course?.id);
+                    const index = query.allCourses.findIndex(
+                      (val) => val.id === result.editCourse.event?.id
+                    );
                     if (index !== -1) {
                       // Update
-                      query.allCourses[index] = result.editCourse.course;
+                      query.allCourses[index] = result.editCourse
+                        .event as RegularCourseFragment;
                     }
                     return query;
                   }
@@ -297,12 +339,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: TutorialsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createTutorial.tutorial) {
+                  if (!result.createTutorial.event) {
                     return query;
                   } else {
-                    if (result.createTutorial.tutorial.display) {
+                    if (result.createTutorial.event.display) {
                       // Display set to true, add
-                      query.tutorials.push(result.createTutorial.tutorial);
+                      query.tutorials.push(
+                        result.createTutorial.event as RegularTutorialFragment
+                      );
                     }
                     return query;
                   }
@@ -313,10 +357,12 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllTutorialsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.createTutorial.tutorial) {
+                  if (!result.createTutorial.event) {
                     return query;
                   } else {
-                    query.allTutorials.push(result.createTutorial.tutorial);
+                    query.allTutorials.push(
+                      result.createTutorial.event as RegularTutorialFragment
+                    );
                     return query;
                   }
                 }
@@ -329,19 +375,27 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: TutorialsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editTutorial.tutorial) {
+                  if (!result.editTutorial.event) {
                     return query;
                   } else {
-                    const index = query.tutorials.findIndex((val) => val.id === result.editTutorial.tutorial?.id);
-                    if (index === -1 && result.editTutorial.tutorial.display) {
+                    const index = query.tutorials.findIndex(
+                      (val) => val.id === result.editTutorial.event?.id
+                    );
+                    if (index === -1 && result.editTutorial.event.display) {
                       // Display set to true, add to list.
-                      query.tutorials.push(result.editTutorial.tutorial);
-                    } else if (index !== -1 && !result.editTutorial.tutorial.display) {
+                      query.tutorials.push(
+                        result.editTutorial.event as RegularTutorialFragment
+                      );
+                    } else if (
+                      index !== -1 &&
+                      !result.editTutorial.event.display
+                    ) {
                       // Display set to false, remove from list
-                      query.tutorials.splice(index, 1)
+                      query.tutorials.splice(index, 1);
                     } else if (index !== -1) {
                       // Update
-                      query.tutorials[index] = result.editTutorial.tutorial;
+                      query.tutorials[index] = result.editTutorial
+                        .event as RegularTutorialFragment;
                     }
                     return query;
                   }
@@ -352,13 +406,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: AllTutorialsDocument },
                 _result,
                 (result, query) => {
-                  if (!result.editTutorial.tutorial) {
+                  if (!result.editTutorial.event) {
                     return query;
                   } else {
-                    const index = query.allTutorials.findIndex((val) => val.id === result.editTutorial.tutorial?.id);
+                    const index = query.allTutorials.findIndex(
+                      (val) => val.id === result.editTutorial.event?.id
+                    );
                     if (index !== -1) {
                       // Update
-                      query.allTutorials[index] = result.editTutorial.tutorial;
+                      query.allTutorials[index] = result.editTutorial
+                        .event as RegularTutorialFragment;
                     }
                     return query;
                   }
@@ -374,11 +431,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.joinProject) {
                     // Successfully joined, update projects in me
-                    query.me?.projects.push({ id: args.projectId as number, shortName: args.shortName as string })
+                    query.me?.projects.push({
+                      id: args.projectId as number,
+                      shortName: args.shortName as string,
+                    });
                   }
                   return query;
                 }
-              )
+              );
             },
 
             joinTalk: (_result, args, cache, info) => {
@@ -389,11 +449,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.joinTalk) {
                     // Successfully joined, update projects in me
-                    query.me?.talks.push({ id: args.talkId as number, shortName: args.shortName as string })
+                    query.me?.talks.push({
+                      id: args.talkId as number,
+                      shortName: args.shortName as string,
+                    });
                   }
                   return query;
                 }
-              )
+              );
             },
 
             joinCourse: (_result, args, cache, info) => {
@@ -404,11 +467,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.joinCourse) {
                     // Successfully joined, update projects in me
-                    query.me?.courses.push({ id: args.courseId as number, shortName: args.shortName as string })
+                    query.me?.courses.push({
+                      id: args.courseId as number,
+                      shortName: args.shortName as string,
+                    });
                   }
                   return query;
                 }
-              )
+              );
             },
 
             joinTutorial: (_result, args, cache, info) => {
@@ -419,11 +485,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.joinTutorial) {
                     // Successfully joined, update projects in me
-                    query.me?.tutorials.push({ id: args.tutorialId as number, shortName: args.shortName as string })
+                    query.me?.tutorials.push({
+                      id: args.tutorialId as number,
+                      shortName: args.shortName as string,
+                    });
                   }
                   return query;
                 }
-              )
+              );
             },
 
             removeUserFromProject: (_result, args, cache, info) => {
@@ -434,11 +503,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.removeUserFromProject) {
                     // Successfully removed, update projects in me
-                    query.me?.projects.splice(query.me.projects.findIndex(proj => proj.shortName === args.shortName as string), 1);
+                    query.me?.projects.splice(
+                      query.me.projects.findIndex(
+                        (proj) => proj.shortName === (args.shortName as string)
+                      ),
+                      1
+                    );
                   }
                   return query;
                 }
-              )
+              );
             },
 
             removeUserFromTalk: (_result, args, cache, info) => {
@@ -449,11 +523,16 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.removeUserFromTalk) {
                     // Successfully removed, update projects in me
-                    query.me?.talks.splice(query.me.talks.findIndex(talk => talk.shortName === args.shortName as string), 1);
+                    query.me?.talks.splice(
+                      query.me.talks.findIndex(
+                        (talk) => talk.shortName === (args.shortName as string)
+                      ),
+                      1
+                    );
                   }
                   return query;
                 }
-              )
+              );
             },
 
             removeUserFromCourse: (_result, args, cache, info) => {
@@ -464,11 +543,17 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.removeUserFromCourse) {
                     // Successfully removed, update projects in me
-                    query.me?.courses.splice(query.me.courses.findIndex(course => course.shortName === args.shortName as string), 1);
+                    query.me?.courses.splice(
+                      query.me.courses.findIndex(
+                        (course) =>
+                          course.shortName === (args.shortName as string)
+                      ),
+                      1
+                    );
                   }
                   return query;
                 }
-              )
+              );
             },
 
             removeUserFromTutorial: (_result, args, cache, info) => {
@@ -479,11 +564,17 @@ export const createUrqlClient = (ssrExchange: any) => {
                 (result, query) => {
                   if (result.removeUserFromTutorial) {
                     // Successfully removed, update projects in me
-                    query.me?.tutorials.splice(query.me.tutorials.findIndex(tutorial => tutorial.shortName === args.shortName as string), 1);
+                    query.me?.tutorials.splice(
+                      query.me.tutorials.findIndex(
+                        (tutorial) =>
+                          tutorial.shortName === (args.shortName as string)
+                      ),
+                      1
+                    );
                   }
                   return query;
                 }
-              )
+              );
             },
 
             verifyLogin: (_result, args, cache, info) => {
@@ -519,5 +610,5 @@ export const createUrqlClient = (ssrExchange: any) => {
       ssrExchange,
       fetchExchange,
     ],
-  }
+  };
 };

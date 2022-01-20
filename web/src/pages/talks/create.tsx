@@ -19,7 +19,7 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
           const response = await createTalk({ eventInfo });
           return response.data?.createTalk as EventResponse;
         }}
-        handleSuccess={() => router.push("/courses")}
+        handleSuccess={() => router.push("/talks")}
       />
     </Dashboard>
   );

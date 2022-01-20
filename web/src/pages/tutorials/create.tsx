@@ -22,7 +22,7 @@ const CreateTutorial: React.FC<CreateTutorialProps> = ({}) => {
           const response = await createTutorial({ eventInfo });
           return response.data?.createTutorial as EventResponse;
         }}
-        handleSuccess={() => router.push("/courses")}
+        handleSuccess={() => router.push("/tutorials")}
       />
     </Dashboard>
   );

@@ -32,7 +32,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
             });
             return response.data?.editProject as EventResponse;
           }}
-          handleSuccess={() => router.push("/courses")}
+          handleSuccess={() => router.push("/projects")}
         />
       )}
     </Dashboard>

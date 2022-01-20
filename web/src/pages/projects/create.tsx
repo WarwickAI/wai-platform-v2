@@ -19,7 +19,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
           const response = await createProject({ eventInfo });
           return response.data?.createProject as EventResponse;
         }}
-        handleSuccess={() => router.push("/courses")}
+        handleSuccess={() => router.push("/projects")}
       />
     </Dashboard>
   );

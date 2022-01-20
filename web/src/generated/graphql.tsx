@@ -341,7 +341,7 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
-export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
+export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
 
 export type RegularEventFragment = { __typename?: 'Event', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined };
 
@@ -522,7 +522,7 @@ export type CourseUsersQueryVariables = Exact<{
 }>;
 
 
-export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -552,7 +552,7 @@ export type ProjectUsersQueryVariables = Exact<{
 }>;
 
 
-export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> }> };
 
 export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -577,7 +577,7 @@ export type TalkUsersQueryVariables = Exact<{
 }>;
 
 
-export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> }> };
 
 export type TutorialsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -602,7 +602,7 @@ export type TutorialUsersQueryVariables = Exact<{
 }>;
 
 
-export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -616,6 +616,22 @@ export const RegularUserFragmentDoc = gql`
   lastName
   email
   role
+  projects {
+    id
+    shortName
+  }
+  talks {
+    id
+    shortName
+  }
+  courses {
+    id
+    shortName
+  }
+  tutorials {
+    id
+    shortName
+  }
 }
     `;
 export const RegularEventFragmentDoc = gql`
@@ -912,22 +928,6 @@ export const VerifyLoginDocument = gql`
     mutation VerifyLogin {
   verifyLogin {
     ...RegularUser
-    projects {
-      id
-      shortName
-    }
-    talks {
-      id
-      shortName
-    }
-    courses {
-      id
-      shortName
-    }
-    tutorials {
-      id
-      shortName
-    }
   }
 }
     ${RegularUserFragmentDoc}`;
@@ -1011,22 +1011,6 @@ export const MeDocument = gql`
     query Me {
   me {
     ...RegularUser
-    projects {
-      id
-      shortName
-    }
-    talks {
-      id
-      shortName
-    }
-    courses {
-      id
-      shortName
-    }
-    tutorials {
-      id
-      shortName
-    }
   }
 }
     ${RegularUserFragmentDoc}`;

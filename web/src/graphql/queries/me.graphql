@@ -1,21 +1,5 @@
 query Me {
   me {
     ...RegularUser
-    projects {
-      id
-      shortName
-    }
-    talks {
-      id
-      shortName
-    }
-    courses {
-      id
-      shortName
-    }
-    tutorials {
-      id
-      shortName
-    }
   }
 }

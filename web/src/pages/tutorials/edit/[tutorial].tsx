@@ -32,7 +32,7 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
             });
             return response.data?.editTutorial as EventResponse;
           }}
-          handleSuccess={() => router.push("/courses")}
+          handleSuccess={() => router.push("/tutorials")}
         />
       )}
     </Dashboard>
