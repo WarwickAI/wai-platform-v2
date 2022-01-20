@@ -1,4 +1,11 @@
-import { HStack, Button, FormLabel, Switch } from "@chakra-ui/react";
+import {
+  HStack,
+  Button,
+  FormLabel,
+  Switch,
+  Flex,
+  Badge,
+} from "@chakra-ui/react";
 import {
   RegularEventFragment,
   RegularCourseFragment,
@@ -16,13 +23,11 @@ import Card from "./Card";
 interface EventsPageProps {
   eventType: string;
   events:
-    | RegularEventFragment[]
     | RegularCourseFragment[]
     | RegularProjectFragment[]
     | RegularTalkFragment[]
     | RegularTutorialFragment[];
   allEvents:
-    | RegularEventFragment[]
     | RegularCourseFragment[]
     | RegularProjectFragment[]
     | RegularTalkFragment[]
@@ -65,16 +70,20 @@ const EventsPage: React.FC<EventsPageProps> = ({
     >
       <ItemGrid>
         {(showHidden ? allEvents : events)?.map(
-          ({ title, previewImg, shortName, id, redirectUrl }) => (
+          ({ title, previewImg, shortName, id, redirectUrl, tags }) => (
             <Card
               key={id}
               title={title}
               backgroundImg={previewImg}
-              // description={
-              //   <Badge colorScheme="green" borderRadius="lg">
-              //     {difficulty}
-              //   </Badge>
-              // }
+              description={
+                <Flex>
+                  {tags.map((tag) => {
+                    <Badge colorScheme={tag.color} borderRadius="lg">
+                      {tag.title}
+                    </Badge>;
+                  })}
+                </Flex>
+              }
               extraInfo=""
               shortName={shortName}
               linkPrefix={eventType + "s"}
