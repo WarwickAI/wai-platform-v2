@@ -10,7 +10,7 @@ import { EventInput } from "../utils/EventInput";
 export class TalkResolver {
     @Query(() => [Talk])
   async talks(): Promise<Talk[]> {
-    return await Talk.findWithoutUsers({ display: false })
+    return await Talk.findWithoutUsers({ display: true })
   }
 
   @Query(() => [Talk])
@@ -29,7 +29,7 @@ export class TalkResolver {
   @Mutation(() => EventResponse)
   @UseMiddleware(isAuth, isExec)
   async createTalk(
-    @Arg("talkInfo") talkInfo: EventInput
+    @Arg("eventInfo") talkInfo: EventInput
   ): Promise<EventResponse> {
     return await Talk.validateAndCreate(talkInfo);
   }
@@ -38,7 +38,7 @@ export class TalkResolver {
   @UseMiddleware(isAuth, isExec)
   async editTalk(
     @Arg("id") id: number,
-    @Arg("talkInfo") talkInfo: EventInput
+    @Arg("eventInfo") talkInfo: EventInput
   ): Promise<EventResponse> {
     return await Talk.validateAndEdit(id, talkInfo);
   }

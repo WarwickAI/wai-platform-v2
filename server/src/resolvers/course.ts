@@ -17,7 +17,7 @@ import { EventResponse } from "../entities/Event";
 export class CourseResolver {
   @Query(() => [Course])
   async courses(): Promise<Course[]> {
-    return await Course.findWithoutUsers({ display: false })
+    return await Course.findWithoutUsers({ display: true })
   }
 
   @Query(() => [Course])
@@ -36,7 +36,7 @@ export class CourseResolver {
   @Mutation(() => EventResponse)
   @UseMiddleware(isAuth, isExec)
   async createCourse(
-    @Arg("courseInfo") courseInfo: EventInput
+    @Arg("eventInfo") courseInfo: EventInput
   ): Promise<EventResponse> {
     return await Course.validateAndCreate(courseInfo);
   }
@@ -45,7 +45,7 @@ export class CourseResolver {
   @UseMiddleware(isAuth, isExec)
   async editCourse(
     @Arg("id") id: number,
-    @Arg("courseInfo") courseInfo: EventInput
+    @Arg("eventInfo") courseInfo: EventInput
   ): Promise<EventResponse> {
     return await Course.validateAndEdit(id, courseInfo);
   }
