@@ -21,3 +21,11 @@ fragment RegularUser on User {
     shortName
   }
 }
+
+fragment RegularUserWithoutEvents on User {
+  id
+  firstName
+  lastName
+  email
+  role
+}

@@ -18,6 +18,6 @@ query ProjectByShortName($shortName: String!) {
 
 query ProjectUsers($projectId: Float, $shortName: String) {
   projectUsers(projectId: $projectId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }

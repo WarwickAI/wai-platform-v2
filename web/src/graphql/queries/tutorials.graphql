@@ -18,6 +18,6 @@ query TutorialByShortName($shortName: String!) {
 
 query TutorialUsers($tutorialId: Float, $shortName: String) {
   tutorialUsers(tutorialId: $tutorialId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }
