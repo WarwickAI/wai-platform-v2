@@ -1,0 +1,21 @@
+{
+  "autorun": true,
+  "autokill": true,
+  "terminals": [
+    {
+      "name": "Server Watch",
+      "cwd": "server",
+      "command": "yarn watch"
+    },
+    {
+      "name": "Server Run",
+      "cwd": "server",
+      "command": "yarn dev"
+    },
+    {
+      "name": "Web",
+      "cwd": "web",
+      "commands": ["yarn dev"]
+    }
+  ]
+}
