@@ -1,8 +1,6 @@
-import { EventInput } from "../utils/EventInput";
-import { validateEvent } from "../utils/validateEvent";
 import { Field, ObjectType } from "type-graphql";
 import { Entity, JoinTable, ManyToMany } from "typeorm";
-import { Event, EventResponse } from "./Event";
+import { Event } from "./Event";
 import { Tag } from "./Tag";
 import { User } from "./User";
 
@@ -19,55 +17,18 @@ export class Project extends Event {
   @JoinTable()
   tags: Tag[];
 
-  static async validateAndCreate(
-    eventInput: EventInput
-  ): Promise<EventResponse> {
-    const errors = validateEvent(eventInput);
-    if (errors) {
-      return { errors };
-    }
-    const event = await this.create(eventInput).save();
-    return { event };
-  }
-
-  static async validateAndEdit(
-    id: number,
-    eventInput: EventInput
-  ): Promise<EventResponse> {
-    const errors = validateEvent(eventInput);
-    if (errors) {
-      return { errors };
-    }
-    await this.update(id, eventInput);
-    const event = await this.findOne(id);
-    return { event: event };
-  }
-
-  static async joinEvent(
-    eventId?: number,
+  static async getByIdOrShortName(eventId?: number,
     shortName?: string,
-    userId?: number
-  ) {
-    const user = await User.findOne(userId, {
-      relations: ["projects"],
-    });
-    if (!user) {
-      return false;
-    }
-
-    const event = await this.getEventByIdOrName(eventId, shortName, true);
-
-    if (!event || !event.joinable) {
-      return false;
-    }
-
-    try {
-      event.users.push(user);
-      event.save();
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
+    relations: boolean = false) {
+    if (eventId) {
+      return await this.findOne(eventId, relations ? { relations: ["users", "tags"] } : { relations: ["tags"] });
+    } else if (shortName) {
+      return await this.findOne(
+        { shortName },
+        relations ? { relations: ["users", "tags"] } : { relations: ["tags"] }
+      );
+    } else {
+      return undefined;
     }
   }
 }

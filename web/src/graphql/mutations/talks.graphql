@@ -1,7 +1,7 @@
-mutation CreateTalk($eventInfo: EventInput!) {
-  createTalk(eventInfo: $eventInfo) {
-    event {
-      ...RegularEvent
+mutation CreateTalk($talkInfo: EventInput!) {
+  createTalk(talkInfo: $talkInfo) {
+    talk {
+      ...RegularTalk
     }
     errors {
       field
@@ -10,10 +10,10 @@ mutation CreateTalk($eventInfo: EventInput!) {
   }
 }
 
-mutation EditTalk($eventInfo: EventInput!, $id: Float!) {
-  editTalk(eventInfo: $eventInfo, id: $id) {
-    event {
-      ...RegularEvent
+mutation EditTalk($talkInfo: EventInput!, $id: Float!) {
+  editTalk(talkInfo: $talkInfo, id: $id) {
+    talk {
+      ...RegularTalk
     }
     errors {
       field

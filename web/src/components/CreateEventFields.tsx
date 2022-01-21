@@ -12,14 +12,28 @@ import {
   Text,
 } from "@chakra-ui/react";
 import eventInitialValues from "../utils/EventInitialValues";
-import { EventInput, EventResponse, TagInput } from "../generated/graphql";
+import {
+  EventInput,
+  CourseResponse,
+  ProjectResponse,
+  TalkResponse,
+  TutorialResponse,
+  TagInput,
+} from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 
 interface CreateEventFieldsProps {
   eventType: string;
   handleCreate: (
     eventInfo: EventInput
-  ) => Promise<EventResponse | undefined | null>;
+  ) => Promise<
+    | CourseResponse
+    | ProjectResponse
+    | TalkResponse
+    | TutorialResponse
+    | undefined
+    | null
+  >;
   handleSuccess: () => void;
 }
 
@@ -34,7 +48,7 @@ const CreateEventFields: React.FC<CreateEventFieldsProps> = (props) => {
           return;
         } else if (response.errors) {
           setErrors(toErrorMap(response.errors));
-        } else if (response.event) {
+        } else {
           // Course submitted
           props.handleSuccess();
         }
@@ -142,7 +156,7 @@ const CreateEventFields: React.FC<CreateEventFieldsProps> = (props) => {
             </Formik>
             <Flex mt={4}>
               {tags.map((tag) => (
-                <Badge key={tag.title} color={tag.color}>
+                <Badge key={tag.title} backgroundColor={tag.color}>
                   {tag.title}
                   <Text
                     onClick={() => {

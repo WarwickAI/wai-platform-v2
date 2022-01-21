@@ -2,7 +2,9 @@ import { MyContext } from "../types";
 import {
   Arg,
   Ctx,
+  Field,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   UseMiddleware,
@@ -11,43 +13,89 @@ import { Course } from "../entities/Course";
 import { isAuth, isExec } from "../isAuth";
 import { User } from "../entities/User";
 import { EventInput } from "../utils/EventInput";
-import { EventResponse } from "../entities/Event";
+import { getAndAddTags, removeUser, removeUsers } from "./event";
+import { validateEvent } from "../utils/validateEvent";
+import FieldError from "../utils/FieldError";
+
+@ObjectType()
+export class CourseResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field()
+  course?: Course;
+}
 
 @Resolver()
 export class CourseResolver {
   @Query(() => [Course])
   async courses(): Promise<Course[]> {
-    return await Course.findWithoutUsers({ display: true })
+    return removeUsers(await Course.find({ where: { display: true }, relations: ["tags"] }));
   }
 
   @Query(() => [Course])
   @UseMiddleware(isAuth, isExec)
   async allCourses(): Promise<Course[]> {
-    return await Course.findWithoutUsers({});
+    return removeUsers(await Course.find({ relations: ["tags"] }));
   }
 
   @Query(() => Course, { nullable: true })
   async courseByShortName(
     @Arg("shortName") shortName: string
   ): Promise<Course | undefined> {
-    return await Course.findOneWithoutUsers({ shortName });
+    const course = await Course.findOne({ shortName }, { relations: ["tags"] });
+    if (!course) return;
+    return removeUser(course);
   }
 
-  @Mutation(() => EventResponse)
+  @Mutation(() => CourseResponse)
   @UseMiddleware(isAuth, isExec)
   async createCourse(
-    @Arg("eventInfo") courseInfo: EventInput
-  ): Promise<EventResponse> {
-    return await Course.validateAndCreate(courseInfo);
+    @Arg("courseInfo") courseInfo: EventInput
+  ): Promise<CourseResponse> {
+    const errors = validateEvent(courseInfo);
+    if (errors) {
+      return { errors };
+    }
+    const { tags: inputTags, ...rest } = courseInfo;
+    const tags = getAndAddTags(inputTags, "courses");
+    const newCourse = await Course.create(rest).save();
+    const course = await Course.findOne(newCourse.id);
+    if (!course) {
+      return { errors: [{ field: "Course ID", message: "No course found" }] };
+    }
+    course.tags = tags;
+    await course.save();
+    return { course };
   }
 
-  @Mutation(() => EventResponse)
+  @Mutation(() => CourseResponse)
   @UseMiddleware(isAuth, isExec)
   async editCourse(
     @Arg("id") id: number,
-    @Arg("eventInfo") courseInfo: EventInput
-  ): Promise<EventResponse> {
-    return await Course.validateAndEdit(id, courseInfo);
+    @Arg("courseInfo") courseInfo: EventInput
+  ): Promise<CourseResponse> {
+    const errors = validateEvent(courseInfo);
+    if (errors) {
+      return { errors };
+    }
+
+    const { tags: inputTags, ...rest } = courseInfo;
+    await Course.update(id, rest);
+    const course = await Course.findOne(id, { relations: ["tags"] });
+
+    if (!course) {
+      return { errors: [{ field: "Course ID", message: "No course found" }] };
+    }
+
+    try {
+      const tags = getAndAddTags(inputTags, "courses");
+      course.tags = tags;
+      await course.save();
+      return { course };
+    } catch (e) {
+      return { errors: [{ field: "Saving", message: e }] }
+    }
   }
 
   @Mutation(() => Boolean)
@@ -57,7 +105,27 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ): Promise<Boolean> {
-    return Course.joinEvent(courseId, shortName, parseInt(payload!.userId));
+    const user = await User.findOne(payload!.userId, {
+      relations: ["courses"],
+    });
+    if (!user) {
+      return false;
+    }
+
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
+
+    if (!course || !course.joinable) {
+      return false;
+    }
+
+    try {
+      course.users.push(user);
+      course.save();
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 
   @Mutation(() => Boolean)
@@ -67,7 +135,21 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    return Course.removeUserFromEvent(courseId, shortName, userId);
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
+
+    if (!course) {
+      return false;
+    }
+
+    const userIndex = course.users.findIndex((us) => us.id === userId);
+    if (userIndex === -1) {
+      return false;
+    }
+
+    course.users.splice(userIndex, 1);
+    course.save();
+
+    return true;
   }
 
   @Query(() => [User])
@@ -76,6 +158,11 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    return Course.getEventUsers(courseId, shortName);
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
+
+    if (!course) {
+      return [];
+    }
+    return course.users;
   }
 }

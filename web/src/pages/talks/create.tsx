@@ -15,8 +15,8 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
     <Dashboard title="Create Talk">
       <CreateEventFields
         eventType="talk"
-        handleCreate={async (eventInfo) => {
-          const response = await createTalk({ eventInfo });
+        handleCreate={async (talkInfo) => {
+          const response = await createTalk({ talkInfo });
           return response.data?.createTalk as EventResponse;
         }}
         handleSuccess={() => router.push("/talks")}
