@@ -1,16 +1,3 @@
-fragment RegularEvent on Event {
-    id
-    display
-    title
-    shortName
-    description
-    previewImg
-    iconImg
-    coverImg
-    redirectUrl
-    joinable
-}
-
 fragment RegularCourse on Course {
     id
     display

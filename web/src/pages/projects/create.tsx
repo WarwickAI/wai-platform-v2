@@ -15,8 +15,8 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
     <Dashboard title="Create Project">
       <CreateEventFields
         eventType="project"
-        handleCreate={async (eventInfo) => {
-          const response = await createProject({ eventInfo });
+        handleCreate={async (projectInfo) => {
+          const response = await createProject({ projectInfo });
           return response.data?.createProject as EventResponse;
         }}
         handleSuccess={() => router.push("/projects")}

@@ -1,7 +1,7 @@
-mutation CreateProject($eventInfo: EventInput!) {
-  createProject(eventInfo: $eventInfo) {
-    event {
-      ...RegularEvent
+mutation CreateProject($projectInfo: EventInput!) {
+  createProject(projectInfo: $projectInfo) {
+    project {
+      ...RegularProject
     }
     errors {
       field
@@ -10,10 +10,10 @@ mutation CreateProject($eventInfo: EventInput!) {
   }
 }
 
-mutation EditProject($eventInfo: EventInput!, $id: Float!) {
-  editProject(eventInfo: $eventInfo, id: $id) {
-    event {
-      ...RegularEvent
+mutation EditProject($projectInfo: EventInput!, $id: Float!) {
+  editProject(projectInfo: $projectInfo, id: $id) {
+    project {
+      ...RegularProject
     }
     errors {
       field

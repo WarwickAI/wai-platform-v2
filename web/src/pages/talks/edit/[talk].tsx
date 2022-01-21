@@ -26,10 +26,10 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
         <EditEventFields
           eventType="talk"
           eventDetails={data.talkByShortName}
-          handleEdit={async (eventInfo) => {
+          handleEdit={async (talkInfo) => {
             const response = await editTalk({
               id: data.talkByShortName!.id,
-              eventInfo,
+              talkInfo,
             });
             return response.data?.editTalk as EventResponse;
           }}

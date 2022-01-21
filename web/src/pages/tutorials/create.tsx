@@ -18,8 +18,8 @@ const CreateTutorial: React.FC<CreateTutorialProps> = ({}) => {
     <Dashboard title="Create Tutorial">
       <CreateEventFields
         eventType="tutorial"
-        handleCreate={async (eventInfo) => {
-          const response = await createTutorial({ eventInfo });
+        handleCreate={async (tutorialInfo) => {
+          const response = await createTutorial({ tutorialInfo });
           return response.data?.createTutorial as EventResponse;
         }}
         handleSuccess={() => router.push("/tutorials")}

@@ -3,13 +3,10 @@ import data from "@iconify/icons-eva/people-fill";
 import router from "next/router";
 import ReactMarkdown from "react-markdown";
 import {
-  RegularEventFragment,
   RegularCourseFragment,
   RegularProjectFragment,
   RegularTalkFragment,
   RegularTutorialFragment,
-  EventInput,
-  EventResponse,
   MeQuery,
   RegularUserFragment,
 } from "../generated/graphql";
@@ -18,7 +15,6 @@ import Dashboard from "./Dashboard";
 interface EventPageProps {
   eventType: string;
   eventDetails:
-    | RegularEventFragment
     | RegularCourseFragment
     | RegularProjectFragment
     | RegularTalkFragment

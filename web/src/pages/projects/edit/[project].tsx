@@ -25,10 +25,10 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
         <EditEventFields
           eventType="project"
           eventDetails={data.projectByShortName}
-          handleEdit={async (eventInfo) => {
+          handleEdit={async (projectInfo) => {
             const response = await editProject({
               id: data.projectByShortName!.id,
-              eventInfo,
+              projectInfo,
             });
             return response.data?.editProject as EventResponse;
           }}

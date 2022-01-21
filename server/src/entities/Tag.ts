@@ -30,7 +30,7 @@ export class Tag extends BaseEntity {
   updatedAt: Date;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   title: string;
 
   @Field()

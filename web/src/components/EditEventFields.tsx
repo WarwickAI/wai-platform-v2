@@ -13,8 +13,10 @@ import {
 import { setupEditValues } from "../utils/EventInitialValues";
 import {
   EventInput,
-  EventResponse,
-  RegularEventFragment,
+  CourseResponse,
+  ProjectResponse,
+  TalkResponse,
+  TutorialResponse,
   RegularCourseFragment,
   RegularProjectFragment,
   RegularTalkFragment,
@@ -26,14 +28,20 @@ import { toErrorMap } from "../utils/toErrorMap";
 interface EditEventFieldsProps {
   eventType: string;
   eventDetails:
-    | RegularEventFragment
     | RegularCourseFragment
     | RegularProjectFragment
     | RegularTalkFragment
     | RegularTutorialFragment;
   handleEdit: (
     eventInfo: EventInput
-  ) => Promise<EventResponse | undefined | null>;
+  ) => Promise<
+    | CourseResponse
+    | ProjectResponse
+    | TalkResponse
+    | TutorialResponse
+    | undefined
+    | null
+  >;
   handleSuccess: () => void;
 }
 
@@ -50,7 +58,7 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
           return;
         } else if (response.errors) {
           setErrors(toErrorMap(response.errors));
-        } else if (response.event) {
+        } else {
           // Course submitted
           props.handleSuccess();
         }
@@ -155,7 +163,11 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
             </Formik>
             <Flex mt={4}>
               {tags.map((tag) => (
-                <Badge key={tag.title} borderRadius="lg" backgroundColor={tag.color}>
+                <Badge
+                  key={tag.title}
+                  borderRadius="lg"
+                  backgroundColor={tag.color}
+                >
                   {tag.title}
                   <Text
                     onClick={() => {

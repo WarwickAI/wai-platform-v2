@@ -7,7 +7,6 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import {
-  RegularEventFragment,
   RegularCourseFragment,
   RegularProjectFragment,
   RegularTalkFragment,
@@ -20,18 +19,16 @@ import { useState } from "react";
 import ItemGrid from "./ItemGrid";
 import Card from "./Card";
 
+type RegularEventFragment =
+  | RegularCourseFragment
+  | RegularProjectFragment
+  | RegularTalkFragment
+  | RegularTutorialFragment;
+
 interface EventsPageProps {
   eventType: string;
-  events:
-    | RegularCourseFragment[]
-    | RegularProjectFragment[]
-    | RegularTalkFragment[]
-    | RegularTutorialFragment[];
-  allEvents:
-    | RegularCourseFragment[]
-    | RegularProjectFragment[]
-    | RegularTalkFragment[]
-    | RegularTutorialFragment[];
+  events: RegularEventFragment[];
+  allEvents: RegularEventFragment[];
   userDetails?: RegularUserFragment;
   handleCreate: () => void;
 }
@@ -77,11 +74,15 @@ const EventsPage: React.FC<EventsPageProps> = ({
               backgroundImg={previewImg}
               description={
                 <Flex>
-                  {tags.map((tag) => {
-                    <Badge colorScheme={tag.color} borderRadius="lg">
+                  {tags.map((tag) => (
+                    <Badge
+                      key={tag.title}
+                      backgroundColor={tag.color}
+                      borderRadius="lg"
+                    >
                       {tag.title}
-                    </Badge>;
-                  })}
+                    </Badge>
+                  ))}
                 </Flex>
               }
               extraInfo=""

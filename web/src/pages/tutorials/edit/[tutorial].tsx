@@ -25,10 +25,10 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
         <EditEventFields
           eventType="tutorial"
           eventDetails={data.tutorialByShortName}
-          handleEdit={async (eventInfo) => {
+          handleEdit={async (tutorialInfo) => {
             const response = await editTutorial({
               id: data.tutorialByShortName!.id,
-              eventInfo,
+              tutorialInfo,
             });
             return response.data?.editTutorial as EventResponse;
           }}
