@@ -30,7 +30,9 @@ export class ProjectResponse {
 export class ProjectResolver {
   @Query(() => [Project])
   async projects(): Promise<Project[]> {
-    return removeUsers(await Project.find({ where: { display: true }, relations: ["tags"] }));
+    return removeUsers(
+      await Project.find({ where: { display: true }, relations: ["tags"] })
+    );
   }
 
   @Query(() => [Project])
@@ -43,7 +45,10 @@ export class ProjectResolver {
   async projectByShortName(
     @Arg("shortName") shortName: string
   ): Promise<Project | undefined> {
-    const project = await Project.findOne({ shortName }, { relations: ["tags"] });
+    const project = await Project.findOne(
+      { shortName },
+      { relations: ["tags"] }
+    );
     if (!project) return;
     return removeUser(project);
   }
@@ -57,15 +62,13 @@ export class ProjectResolver {
     if (errors) {
       return { errors };
     }
-    const { tags: inputTags, ...rest } = projectInfo;
-    const tags = getAndAddTags(inputTags, "projects");
-    const newProject = await Project.create(rest).save();
-    const project = await Project.findOne(newProject.id);
-    if (!project) {
-      return { errors: [{ field: "Project ID", message: "No project found" }] };
-    }
-    project.tags = tags;
-    await project.save();
+    const project = await Project.create(projectInfo).save();
+    // const project = await Project.findOne(newProject.id);
+    // if (!project) {
+    //   return { errors: [{ field: "Project ID", message: "No project found" }] };
+    // }
+    // project.tags = tags;
+    // await project.save();
     return { project };
   }
 
@@ -80,8 +83,8 @@ export class ProjectResolver {
       return { errors };
     }
 
-    const { tags: inputTags, ...rest } = projectInfo;
-    await Project.update(id, rest);
+    // const { tags: inputTags, ...rest } = projectInfo;
+    await Project.update(id, projectInfo);
     const project = await Project.findOne(id, { relations: ["tags"] });
 
     if (!project) {
@@ -89,12 +92,12 @@ export class ProjectResolver {
     }
 
     try {
-      const tags = getAndAddTags(inputTags, "projects");
-      project.tags = tags;
-      await project.save();
+      // const tags = getAndAddTags(inputTags, "projects");
+      // project.tags = tags;
+      // await project.save();
       return { project };
     } catch (e) {
-      return { errors: [{ field: "Saving", message: e }] }
+      return { errors: [{ field: "Saving", message: e }] };
     }
   }
 
@@ -112,7 +115,11 @@ export class ProjectResolver {
       return false;
     }
 
-    const project = await Project.getByIdOrShortName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
     if (!project || !project.joinable) {
       return false;
@@ -135,7 +142,11 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    const project = await Project.getByIdOrShortName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
     if (!project) {
       return false;
@@ -158,7 +169,11 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    const project = await Project.getByIdOrShortName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
     if (!project) {
       return [];
