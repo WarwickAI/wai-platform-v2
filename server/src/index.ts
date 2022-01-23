@@ -26,6 +26,7 @@ import { TutorialResolver } from "./resolvers/tutorial";
 import { Tag } from "./entities/Tag";
 import { Merch } from "./entities/Merch";
 import { MerchResolver } from "./resolvers/merch";
+import { TagResolver } from "./resolvers/tag";
 
 const main = async () => {
   // Connect to DB
@@ -125,6 +126,7 @@ const main = async () => {
         CourseResolver,
         TutorialResolver,
         MerchResolver,
+        TagResolver
       ],
       validate: false,
     }),

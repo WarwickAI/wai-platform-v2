@@ -1,77 +1,110 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Select,
+  Text,
+} from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
-import { useMeQuery } from "../generated/graphql";
+import {
+  RegularTagFragment,
+  useCreateTagMutation,
+  useTagsQuery,
+} from "../generated/graphql";
 import { isServer } from "../utils/isServer";
+import { toErrorMap } from "../utils/toErrorMap";
+import { InputField } from "./InputField";
 
-interface CardProps {
-  title: string | JSX.Element;
-  description?: string | JSX.Element;
-  extraInfo?: string | JSX.Element;
-  backgroundImg?: string | JSX.Element;
-  shortName?: string;
-  linkPrefix?: string;
-  redirect?: string;
-  execRedirect?: boolean;
+interface TagFieldProps {
+  tagsSelected: RegularTagFragment[];
+  handleAddTag: (newTag: RegularTagFragment) => void;
+  handleRemoveTag: (newTag: RegularTagFragment) => void;
 }
 
-const Card: React.FC<CardProps> = (props) => {
-  const router = useRouter();
-  const [{ data: meData }] = useMeQuery({ pause: isServer() });
+const TagField: React.FC<TagFieldProps> = (props) => {
+  const [{ data: tags }, fetchTags] = useTagsQuery();
+  const [, createTag] = useCreateTagMutation();
 
   return (
-    <Box
-      maxW="sm"
-      h={96}
-      borderWidth={props.backgroundImg ? 0 : 1}
-      borderRadius="2xl"
-      overflow="hidden"
-      backgroundImage={
-        props.backgroundImg
-          ? `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('${props.backgroundImg}')`
-          : ""
-      }
-      backgroundPosition={props.backgroundImg ? "center" : ""}
-      backgroundRepeat={props.backgroundImg ? "no-repeat" : ""}
-      backgroundSize={props.backgroundImg ? "cover" : ""}
-      _hover={{ cursor: props.shortName ? "pointer" : "default" }}
-      onClick={
-        props.shortName
-          ? () => {
-              if (
-                (meData?.me?.role !== "exec" || props.execRedirect) &&
-                props.redirect &&
-                props.redirect.length > 0
-              ) {
-                router.push(props.redirect);
-              } else {
-                router.push(
-                  `/${props.linkPrefix ? props.linkPrefix : ""}/${
-                    props.shortName
-                  }`
-                );
-              }
+    <>
+      <Formik
+        initialValues={{ title: "", color: "" }}
+        onSubmit={async (values, { setErrors }) => {
+          if (
+            tags &&
+            tags?.tags.findIndex((tag) => tag.title === values.title) !== -1
+          ) {
+            // Tag already exists
+            const { id: tagId, title: tagTitle, color: tagColor } = tags.tags[
+              tags.tags.findIndex((tag) => tag.title === values.title)
+            ];
+            props.handleAddTag({ id: tagId, title: tagTitle, color: tagColor });
+          } else {
+            // Create tag
+            const response = await createTag({
+              tagInfo: { title: values.title, color: values.color },
+            });
+            if (response.data?.createTag.tag) {
+              props.handleAddTag(response.data.createTag.tag);
+              fetchTags();
+            } else if (response.data?.createTag.errors) {
+              setErrors(toErrorMap(response.data.createTag.errors));
             }
-          : () => {}
-      }
-    >
-      <Flex p={5} h="100%" justifyContent="flex-end" direction="column">
-        {props.extraInfo && (
-          <Text fontSize="xs" color="rgb(165, 178, 191)" pb={3}>
-            {props.extraInfo}
-          </Text>
+          }
+        }}
+      >
+        {(tagFormProps) => (
+          <Form>
+            <HStack mt={4}>
+              <InputField
+                name="title"
+                placeholder="tag title"
+                label="Tag Title"
+              />
+              <InputField
+                name="color"
+                placeholder="tag color"
+                label="Tag Color"
+              />
+              <Button variant="primary" onClick={tagFormProps.submitForm}>
+                +
+              </Button>
+            </HStack>
+          </Form>
         )}
-        <Heading
-          size="md"
-          color={props.backgroundImg ? "white" : "black"}
-          pb={4}
-        >
-          {props.title}
-        </Heading>
-        {props.description && <Text>{props.description}</Text>}
+      </Formik>
+      <Select placeholder="Select tag to add" mt={4}>
+        {tags?.tags.map((tag) => (
+          <option
+            key={tag.title}
+            value={tag.title}
+            onClick={() => props.handleAddTag(tag)}
+          >
+            {tag.title}
+          </option>
+        ))}
+      </Select>
+      <Flex mt={4}>
+        {props.tagsSelected.map((tag) => (
+          <Badge
+            key={tag.title}
+            backgroundColor={tag.color}
+            onClick={() => {
+              props.handleRemoveTag(tag);
+            }}
+          >
+            {tag.title}
+            <Text>x</Text>
+          </Badge>
+        ))}
       </Flex>
-    </Box>
+    </>
   );
 };
 
-export default Card;
+export default TagField;

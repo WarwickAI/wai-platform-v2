@@ -22,8 +22,10 @@ import {
   RegularTalkFragment,
   RegularTutorialFragment,
   TagInput,
+  RegularTagFragment,
 } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import TagField from "./TagField";
 
 interface EditEventFieldsProps {
   eventType: string;
@@ -47,13 +49,16 @@ interface EditEventFieldsProps {
 
 const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
   const initialValues = setupEditValues(props.eventDetails);
-  const [tags, setTags] = useState<TagInput[]>(initialValues.tags);
+  const [tags, setTags] = useState<RegularTagFragment[]>(initialValues.tags);
 
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={async (values, { setErrors }) => {
-        const response = await props.handleEdit({ ...values, tags });
+        const response = await props.handleEdit({
+          ...values,
+          tags: tags.map((tag) => tag.id),
+        });
         if (!response) {
           return;
         } else if (response.errors) {
@@ -131,60 +136,24 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
           </Box>
           <Box mt={4}>
             <Heading size="md">Tags</Heading>
-            <Formik
-              initialValues={{ title: "", color: "" }}
-              onSubmit={async (values, { setErrors }) => {
-                console.log(values);
-                setTags([
-                  ...tags,
-                  { title: values.title, color: values.color },
-                ]);
+            <TagField
+              tagsSelected={tags}
+              handleAddTag={(tagToAdd) => {
+                if (tags.findIndex((tag) => tagToAdd.id === tag.id) === -1) {
+                  setTags([...tags, tagToAdd]);
+                }
               }}
-            >
-              {(tagFormProps) => (
-                <Form>
-                  <HStack mt={4}>
-                    <InputField
-                      name="title"
-                      placeholder="tag title"
-                      label="Tag Title"
-                    />
-                    <InputField
-                      name="color"
-                      placeholder="tag color"
-                      label="Tag Color"
-                    />
-                    <Button variant="primary" onClick={tagFormProps.submitForm}>
-                      +
-                    </Button>
-                  </HStack>
-                </Form>
-              )}
-            </Formik>
-            <Flex mt={4}>
-              {tags.map((tag) => (
-                <Badge
-                  key={tag.title}
-                  borderRadius="lg"
-                  backgroundColor={tag.color}
-                >
-                  {tag.title}
-                  <Text
-                    onClick={() => {
-                      const tmpTags = tags;
-                      tmpTags.splice(
-                        tags.findIndex((searchTag) => {
-                          return searchTag.title === tag.title;
-                        }, 1)
-                      );
-                      setTags([...tmpTags]);
-                    }}
-                  >
-                    x
-                  </Text>
-                </Badge>
-              ))}
-            </Flex>
+              handleRemoveTag={(tagToRemove) => {
+                if (tags.findIndex((tag) => tagToRemove.id === tag.id) !== -1) {
+                  const tmpTags = tags;
+                  tmpTags.splice(
+                    tags.findIndex((tag) => tagToRemove.id === tag.id),
+                    1
+                  );
+                  setTags([...tmpTags]);
+                }
+              }}
+            />
           </Box>
           <Box mt={4}>
             <Button

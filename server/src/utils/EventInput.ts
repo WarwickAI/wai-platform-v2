@@ -1,4 +1,3 @@
-import { Tag } from "../entities/Tag";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -15,8 +14,8 @@ export class EventInput {
   @Field()
   display: boolean;
 
-  @Field(() => [Tag])
-  tag: Tag[];
+  @Field(() => [Number])
+  tags: number[];
 
   @Field()
   previewImg: string;

@@ -16,6 +16,7 @@ import { EventInput } from "../utils/EventInput";
 import { getAndAddTags, removeUser, removeUsers } from "./event";
 import { validateEvent } from "../utils/validateEvent";
 import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
 export class CourseResponse {
@@ -57,15 +58,17 @@ export class CourseResolver {
     if (errors) {
       return { errors };
     }
-    const { tags: inputTags, ...rest } = courseInfo;
-    const tags = getAndAddTags(inputTags, "courses");
-    const newCourse = await Course.create(rest).save();
-    const course = await Course.findOne(newCourse.id);
-    if (!course) {
-      return { errors: [{ field: "Course ID", message: "No course found" }] };
-    }
-    course.tags = tags;
-    await course.save();
+
+    const { tags: newTagIDs, ...rest } = courseInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const course = await Course.create({ ...rest, tags }).save();
     return { course };
   }
 
@@ -80,21 +83,30 @@ export class CourseResolver {
       return { errors };
     }
 
-    const { tags: inputTags, ...rest } = courseInfo;
-    await Course.update(id, rest);
-    const course = await Course.findOne(id, { relations: ["tags"] });
+    const { tags: newTagIDs, ...rest } = courseInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Course.update(id, { ...rest });
+    var course = await Course.findOne(id, { relations: ["tags"] });
 
     if (!course) {
       return { errors: [{ field: "Course ID", message: "No course found" }] };
     }
 
+    course.tags = tags;
+    course = await course.save();
+
     try {
-      const tags = getAndAddTags(inputTags, "courses");
-      course.tags = tags;
-      await course.save();
       return { course };
     } catch (e) {
-      return { errors: [{ field: "Saving", message: e }] }
+      return { errors: [{ field: "Saving", message: e }] };
     }
   }
 

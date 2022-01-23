@@ -8,13 +8,10 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import FieldError from "src/utils/FieldError";
-import { Project } from "src/entities/Project";
-import { isAuth, isExec } from "src/isAuth";
-import { getAndAddTags } from "./event";
-import { ProjectResponse } from "./project";
-import { validateTag } from "src/utils/validateTag";
-import { TagInput } from "src/utils/TagInput";
+import FieldError from "../utils/FieldError";
+import { isAuth, isExec } from "../isAuth";
+import { validateTag } from "../utils/validateTag";
+import { TagInput } from "../utils/TagInput";
 
 @ObjectType()
 export class TagResponse {
