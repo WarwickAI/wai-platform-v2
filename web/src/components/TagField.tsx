@@ -7,6 +7,13 @@ import {
   HStack,
   Select,
   Text,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
@@ -78,17 +85,33 @@ const TagField: React.FC<TagFieldProps> = (props) => {
           </Form>
         )}
       </Formik>
-      <Select placeholder="Select tag to add" mt={4}>
-        {tags?.tags.map((tag) => (
-          <option
-            key={tag.title}
-            value={tag.title}
-            onClick={() => props.handleAddTag(tag)}
-          >
-            {tag.title}
-          </option>
-        ))}
-      </Select>
+      <Popover placement="top">
+        <PopoverTrigger>
+          <Button mt={4} variant="primary">
+            Add Existing Tag
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverHeader>Select an Existing Tag</PopoverHeader>
+          <PopoverBody>
+            <Flex>
+              {tags?.tags.map((tag) => (
+                <Badge
+                  key={tag.title}
+                  onClick={() => props.handleAddTag(tag)}
+                  backgroundColor={tag.color}
+                  mx={2}
+                  borderRadius="lg"
+                >
+                  {tag.title}
+                </Badge>
+              ))}
+            </Flex>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
       <Flex mt={4}>
         {props.tagsSelected.map((tag) => (
           <Badge
@@ -97,9 +120,10 @@ const TagField: React.FC<TagFieldProps> = (props) => {
             onClick={() => {
               props.handleRemoveTag(tag);
             }}
+            mx={2}
+            borderRadius="lg"
           >
             {tag.title}
-            <Text>x</Text>
           </Badge>
         ))}
       </Flex>
