@@ -36,7 +36,7 @@ export type Course = {
 export type CourseResponse = {
   __typename?: 'CourseResponse';
   course: Course;
-  errors: Array<FieldError>;
+  errors?: Maybe<Array<FieldError>>;
 };
 
 export type EventInput = {
@@ -48,7 +48,7 @@ export type EventInput = {
   previewImg: Scalars['String'];
   redirectUrl: Scalars['String'];
   shortName: Scalars['String'];
-  tags: Array<TagInput>;
+  tags: Array<Scalars['Float']>;
   title: Scalars['String'];
 };
 
@@ -91,6 +91,7 @@ export type Mutation = {
   createCourse: CourseResponse;
   createMerch: MerchResponse;
   createProject: ProjectResponse;
+  createTag: TagResponse;
   createTalk: TalkResponse;
   createTutorial: TutorialResponse;
   deleteAllUsers: Scalars['Boolean'];
@@ -126,6 +127,11 @@ export type MutationCreateMerchArgs = {
 
 export type MutationCreateProjectArgs = {
   projectInfo: EventInput;
+};
+
+
+export type MutationCreateTagArgs = {
+  tagInfo: TagInput;
 };
 
 
@@ -251,7 +257,7 @@ export type Project = {
 
 export type ProjectResponse = {
   __typename?: 'ProjectResponse';
-  errors: Array<FieldError>;
+  errors?: Maybe<Array<FieldError>>;
   project: Project;
 };
 
@@ -272,6 +278,7 @@ export type Query = {
   projectByShortName?: Maybe<Project>;
   projectUsers: Array<User>;
   projects: Array<Project>;
+  tags: Array<Tag>;
   talkByShortName?: Maybe<Talk>;
   talkUsers: Array<User>;
   talks: Array<Talk>;
@@ -334,19 +341,21 @@ export type QueryTutorialUsersArgs = {
 export type Tag = {
   __typename?: 'Tag';
   color: Scalars['String'];
-  courses: Array<Course>;
   createdAt: Scalars['String'];
   id: Scalars['Float'];
-  projects: Array<Project>;
-  talks: Array<Talk>;
   title: Scalars['String'];
-  tutorials: Array<Tutorial>;
   updatedAt: Scalars['String'];
 };
 
 export type TagInput = {
   color: Scalars['String'];
   title: Scalars['String'];
+};
+
+export type TagResponse = {
+  __typename?: 'TagResponse';
+  errors?: Maybe<Array<FieldError>>;
+  tag: Tag;
 };
 
 export type Talk = {
@@ -369,7 +378,7 @@ export type Talk = {
 
 export type TalkResponse = {
   __typename?: 'TalkResponse';
-  errors: Array<FieldError>;
+  errors?: Maybe<Array<FieldError>>;
   talk: Talk;
 };
 
@@ -393,7 +402,7 @@ export type Tutorial = {
 
 export type TutorialResponse = {
   __typename?: 'TutorialResponse';
-  errors: Array<FieldError>;
+  errors?: Maybe<Array<FieldError>>;
   tutorial: Tutorial;
 };
 
@@ -437,12 +446,14 @@ export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: b
 
 export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
+export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+
 export type CreateCourseMutationVariables = Exact<{
   courseInfo: EventInput;
 }>;
 
 
-export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditCourseMutationVariables = Exact<{
   courseInfo: EventInput;
@@ -450,7 +461,7 @@ export type EditCourseMutationVariables = Exact<{
 }>;
 
 
-export type EditCourseMutation = { __typename?: 'Mutation', editCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type EditCourseMutation = { __typename?: 'Mutation', editCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinCourseMutationVariables = Exact<{
   courseId?: InputMaybe<Scalars['Float']>;
@@ -489,7 +500,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditProjectMutationVariables = Exact<{
   projectInfo: EventInput;
@@ -497,7 +508,7 @@ export type EditProjectMutationVariables = Exact<{
 }>;
 
 
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinProjectMutationVariables = Exact<{
   projectId?: InputMaybe<Scalars['Float']>;
@@ -516,12 +527,19 @@ export type RemoveUserFromProjectMutationVariables = Exact<{
 
 export type RemoveUserFromProjectMutation = { __typename?: 'Mutation', removeUserFromProject: boolean };
 
+export type CreateTagMutationVariables = Exact<{
+  tagInfo: TagInput;
+}>;
+
+
+export type CreateTagMutation = { __typename?: 'Mutation', createTag: { __typename?: 'TagResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, tag: { __typename?: 'Tag', id: number, title: string, color: string } } };
+
 export type CreateTalkMutationVariables = Exact<{
   talkInfo: EventInput;
 }>;
 
 
-export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditTalkMutationVariables = Exact<{
   talkInfo: EventInput;
@@ -529,7 +547,7 @@ export type EditTalkMutationVariables = Exact<{
 }>;
 
 
-export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinTalkMutationVariables = Exact<{
   talkId?: InputMaybe<Scalars['Float']>;
@@ -553,7 +571,7 @@ export type CreateTutorialMutationVariables = Exact<{
 }>;
 
 
-export type CreateTutorialMutation = { __typename?: 'Mutation', createTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type CreateTutorialMutation = { __typename?: 'Mutation', createTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EditTutorialMutationVariables = Exact<{
   tutorialInfo: EventInput;
@@ -561,7 +579,7 @@ export type EditTutorialMutationVariables = Exact<{
 }>;
 
 
-export type EditTutorialMutation = { __typename?: 'Mutation', editTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors: Array<{ __typename?: 'FieldError', field: string, message: string }> } };
+export type EditTutorialMutation = { __typename?: 'Mutation', editTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg: string, iconImg: string, coverImg: string, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type JoinTutorialMutationVariables = Exact<{
   tutorialId?: InputMaybe<Scalars['Float']>;
@@ -669,6 +687,11 @@ export type ProjectUsersQueryVariables = Exact<{
 
 
 export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+
+export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TagsQuery = { __typename?: 'Query', tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
 export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -835,6 +858,13 @@ export const RegularTutorialFragmentDoc = gql`
   }
 }
     `;
+export const RegularTagFragmentDoc = gql`
+    fragment RegularTag on Tag {
+  id
+  title
+  color
+}
+    `;
 export const CreateCourseDocument = gql`
     mutation CreateCourse($courseInfo: EventInput!) {
   createCourse(courseInfo: $courseInfo) {
@@ -998,6 +1028,23 @@ export const RemoveUserFromProjectDocument = gql`
 
 export function useRemoveUserFromProjectMutation() {
   return Urql.useMutation<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>(RemoveUserFromProjectDocument);
+};
+export const CreateTagDocument = gql`
+    mutation CreateTag($tagInfo: TagInput!) {
+  createTag(tagInfo: $tagInfo) {
+    errors {
+      field
+      message
+    }
+    tag {
+      ...RegularTag
+    }
+  }
+}
+    ${RegularTagFragmentDoc}`;
+
+export function useCreateTagMutation() {
+  return Urql.useMutation<CreateTagMutation, CreateTagMutationVariables>(CreateTagDocument);
 };
 export const CreateTalkDocument = gql`
     mutation CreateTalk($talkInfo: EventInput!) {
@@ -1294,6 +1341,17 @@ export const ProjectUsersDocument = gql`
 
 export function useProjectUsersQuery(options: Omit<Urql.UseQueryArgs<ProjectUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectUsersQuery>({ query: ProjectUsersDocument, ...options });
+};
+export const TagsDocument = gql`
+    query Tags {
+  tags {
+    ...RegularTag
+  }
+}
+    ${RegularTagFragmentDoc}`;
+
+export function useTagsQuery(options: Omit<Urql.UseQueryArgs<TagsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TagsQuery>({ query: TagsDocument, ...options });
 };
 export const TalksDocument = gql`
     query Talks {

@@ -36,20 +36,4 @@ export class Tag extends BaseEntity {
   @Field()
   @Column()
   color: string;
-
-  @Field(() => [Project])
-  @ManyToMany(() => Project, (project) => project.tags)
-  projects: Project[];
-
-  @Field(() => [Course])
-  @ManyToMany(() => Course, (course) => course.tags)
-  courses: Course[];
-
-  @Field(() => [Talk])
-  @ManyToMany(() => Talk, (talk) => talk.tags)
-  talks: Talk[];
-
-  @Field(() => [Tutorial])
-  @ManyToMany(() => Tutorial, (tutorial) => tutorial.tags)
-  tutorials: Tutorial[];
 }

@@ -16,6 +16,7 @@ import { EventInput } from "../utils/EventInput";
 import { getAndAddTags, removeUser, removeUsers } from "./event";
 import { validateEvent } from "../utils/validateEvent";
 import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
 export class TutorialResponse {
@@ -57,15 +58,17 @@ export class TutorialResolver {
     if (errors) {
       return { errors };
     }
-    const { tags: inputTags, ...rest } = tutorialInfo;
-    const tags = getAndAddTags(inputTags, "tutorials");
-    const newTutorial = await Tutorial.create(rest).save();
-    const tutorial = await Tutorial.findOne(newTutorial.id);
-    if (!tutorial) {
-      return { errors: [{ field: "Tutorial ID", message: "No tutorial found" }] };
-    }
-    tutorial.tags = tags;
-    await tutorial.save();
+
+    const { tags: newTagIDs, ...rest } = tutorialInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const tutorial = await Tutorial.create({ ...rest, tags }).save();
     return { tutorial };
   }
 
@@ -80,21 +83,30 @@ export class TutorialResolver {
       return { errors };
     }
 
-    const { tags: inputTags, ...rest } = tutorialInfo;
-    await Tutorial.update(id, rest);
-    const tutorial = await Tutorial.findOne(id, { relations: ["tags"] });
+    const { tags: newTagIDs, ...rest } = tutorialInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Tutorial.update(id, { ...rest });
+    var tutorial = await Tutorial.findOne(id, { relations: ["tags"] });
 
     if (!tutorial) {
       return { errors: [{ field: "Tutorial ID", message: "No tutorial found" }] };
     }
 
+    tutorial.tags = tags;
+    tutorial = await tutorial.save();
+
     try {
-      const tags = getAndAddTags(inputTags, "tutorials");
-      tutorial.tags = tags;
-      await tutorial.save();
-      return { tutorial }; 
+      return { tutorial };
     } catch (e) {
-      return { errors: [{ field: "Saving", message: e }] }
+      return { errors: [{ field: "Saving", message: e }] };
     }
   }
 

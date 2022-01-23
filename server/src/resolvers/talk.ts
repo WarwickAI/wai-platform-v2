@@ -16,6 +16,7 @@ import { EventInput } from "../utils/EventInput";
 import { getAndAddTags, removeUser, removeUsers } from "./event";
 import { validateEvent } from "../utils/validateEvent";
 import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
 export class TalkResponse {
@@ -57,15 +58,17 @@ export class TalkResolver {
     if (errors) {
       return { errors };
     }
-    const { tags: inputTags, ...rest } = talkInfo;
-    const tags = getAndAddTags(inputTags, "talks");
-    const newTalk = await Talk.create(rest).save();
-    const talk = await Talk.findOne(newTalk.id);
-    if (!talk) {
-      return { errors: [{ field: "Talk ID", message: "No talk found" }] };
-    }
-    talk.tags = tags;
-    await talk.save();
+
+    const { tags: newTagIDs, ...rest } = talkInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const talk = await Talk.create({ ...rest, tags }).save();
     return { talk };
   }
 
@@ -80,21 +83,30 @@ export class TalkResolver {
       return { errors };
     }
 
-    const { tags: inputTags, ...rest } = talkInfo;
-    await Talk.update(id, rest);
-    const talk = await Talk.findOne(id, { relations: ["tags"] });
+    const { tags: newTagIDs, ...rest } = talkInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Talk.update(id, { ...rest });
+    var talk = await Talk.findOne(id, { relations: ["tags"] });
 
     if (!talk) {
       return { errors: [{ field: "Talk ID", message: "No talk found" }] };
     }
 
+    talk.tags = tags;
+    talk = await talk.save();
+
     try {
-      const tags = getAndAddTags(inputTags, "talks");
-      talk.tags = tags;
-      await talk.save();
       return { talk };
     } catch (e) {
-      return { errors: [{ field: "Saving", message: e }] }
+      return { errors: [{ field: "Saving", message: e }] };
     }
   }
 

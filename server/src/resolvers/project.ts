@@ -13,9 +13,10 @@ import { Project } from "../entities/Project";
 import { isAuth, isExec } from "../isAuth";
 import { User } from "../entities/User";
 import { EventInput } from "../utils/EventInput";
-import { getAndAddTags, removeUser, removeUsers } from "./event";
+import { removeUser, removeUsers } from "./event";
 import { validateEvent } from "../utils/validateEvent";
 import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
 export class ProjectResponse {
@@ -62,13 +63,17 @@ export class ProjectResolver {
     if (errors) {
       return { errors };
     }
-    const project = await Project.create(projectInfo).save();
-    // const project = await Project.findOne(newProject.id);
-    // if (!project) {
-    //   return { errors: [{ field: "Project ID", message: "No project found" }] };
-    // }
-    // project.tags = tags;
-    // await project.save();
+
+    const { tags: newTagIDs, ...rest } = projectInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const project = await Project.create({ ...rest, tags }).save();
     return { project };
   }
 
@@ -83,18 +88,27 @@ export class ProjectResolver {
       return { errors };
     }
 
-    // const { tags: inputTags, ...rest } = projectInfo;
-    await Project.update(id, projectInfo);
-    const project = await Project.findOne(id, { relations: ["tags"] });
+    const { tags: newTagIDs, ...rest } = projectInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Project.update(id, { ...rest });
+    var project = await Project.findOne(id, { relations: ["tags"] });
 
     if (!project) {
       return { errors: [{ field: "Project ID", message: "No project found" }] };
     }
 
+    project.tags = tags;
+    project = await project.save();
+
     try {
-      // const tags = getAndAddTags(inputTags, "projects");
-      // project.tags = tags;
-      // await project.save();
       return { project };
     } catch (e) {
       return { errors: [{ field: "Saving", message: e }] };
