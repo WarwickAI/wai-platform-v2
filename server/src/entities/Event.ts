@@ -33,20 +33,20 @@ export abstract class Event extends BaseEntity {
   @Column({ unique: true })
   shortName: string;
 
-  @Field()
-  @Column()
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
   description: string;
 
-  @Field()
-  @Column()
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
   previewImg: string;
 
-  @Field()
-  @Column()
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
   iconImg: string;
 
-  @Field()
-  @Column()
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
   coverImg: string;
 
   @Field({ defaultValue: "" })

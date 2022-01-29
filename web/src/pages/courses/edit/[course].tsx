@@ -6,7 +6,7 @@ import { withUrqlClient } from "next-urql";
 import {
   useEditCourseMutation,
   useCourseByShortNameQuery,
-  EventResponse,
+  CourseResponse,
 } from "../../../generated/graphql";
 import EditEventFields from "../../../components/EditEventFields";
 
@@ -30,7 +30,7 @@ const EditCourse: React.FC<EditCourseProps> = ({}) => {
               id: data.courseByShortName!.id,
               courseInfo,
             });
-            return response.data?.editCourse as EventResponse;
+            return response.data?.editCourse as CourseResponse;
           }}
           handleSuccess={() => router.push("/courses")}
         />

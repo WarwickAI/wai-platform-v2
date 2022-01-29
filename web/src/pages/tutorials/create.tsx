@@ -1,7 +1,7 @@
 import React from "react";
 import Dashboard from "../../components/Dashboard";
 import {
-  EventResponse,
+  TutorialResponse,
   useCreateTutorialMutation,
 } from "../../generated/graphql";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ const CreateTutorial: React.FC<CreateTutorialProps> = ({}) => {
         eventType="tutorial"
         handleCreate={async (tutorialInfo) => {
           const response = await createTutorial({ tutorialInfo });
-          return response.data?.createTutorial as EventResponse;
+          return response.data?.createTutorial as TutorialResponse;
         }}
         handleSuccess={() => router.push("/tutorials")}
       />
