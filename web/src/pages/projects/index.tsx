@@ -1,36 +1,22 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
-import {
-  Text,
-  SimpleGrid,
-  Badge,
-  Button,
-  HStack,
-  Switch,
-  FormLabel,
-  FormControl,
-} from "@chakra-ui/react";
-import Dashboard from "../../components/Dashboard";
-import Card from "../../components/Card";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { setAccessToken } from "../../utils/accesToken";
 import {
   useMeQuery,
   useProjectsQuery,
-  useVerifyLoginMutation,
   useAllProjectsQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
-import ItemGrid from "../../components/ItemGrid";
+import EventsPage from "../../components/EventsPage";
+import Dashboard from "../../components/Dashboard";
 
 const Projects = () => {
   const router = useRouter();
-  const [{ data: projectData }] = useProjectsQuery();
-  const [{ data: allProjectData }] = useAllProjectsQuery({ pause: isServer() });
-  const [{ data: userData }] = useMeQuery({ pause: isServer() });
-
-  const [showHidden, setShowHidden] = useState<boolean>(false);
+  const [{ data: events }] = useProjectsQuery();
+  const [{ data: allEvents }] = useAllProjectsQuery({ pause: isServer() });
+  const [{ data: userDetails }] = useMeQuery({ pause: isServer() });
 
   useEffect(() => {
     if (router.query.accessToken && router.query.accessToken.length > 0) {
@@ -38,54 +24,19 @@ const Projects = () => {
       router.push("/projects");
     }
   }, [router, router.query]);
-  return (
-    <Dashboard
-      title="Projects"
-      options={
-        userData?.me?.role === "exec" ? (
-          <HStack spacing={4}>
-            <HStack>
-              <FormLabel htmlFor="showAll">Show hidden</FormLabel>
-              <Switch
-                id="showAll"
-                isChecked={showHidden}
-                onChange={(e) => setShowHidden(e.target.checked)}
-              />
-            </HStack>
-            <Button
-              variant="primary"
-              onClick={() => router.push("/projects/create")}
-            >
-              Create
-            </Button>
-          </HStack>
-        ) : (
-          <></>
-        )
-      }
-    >
-      <ItemGrid>
-        {(showHidden ? allProjectData?.allProjects : projectData?.projects)?.map(
-          ({ title, cover, difficulty, shortName, id, redirect }) => (
-            <Card
-              key={id}
-              title={title}
-              backgroundImg={cover}
-              description={
-                <Badge colorScheme="green" borderRadius="lg">
-                  {difficulty}
-                </Badge>
-              }
-              extraInfo=""
-              shortName={shortName}
-              linkPrefix="projects"
-              redirect={redirect}
-            />
-          )
-        )}
-      </ItemGrid>
-    </Dashboard>
-  );
+  if (events?.projects) {
+    return (
+      <EventsPage
+        eventType={"project"}
+        events={events.projects}
+        allEvents={allEvents?.allProjects ? allEvents.allProjects : []}
+        userDetails={userDetails?.me ? userDetails.me : undefined}
+        handleCreate={() => router.push("/projects/create")}
+      />
+    );
+  } else {
+    return <Dashboard title="Loading projects" />;
+  }
 };
 
 export default withUrqlClient(createUrqlClient, { ssr: true })(Projects);

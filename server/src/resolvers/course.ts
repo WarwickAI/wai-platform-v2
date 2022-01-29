@@ -3,7 +3,6 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -11,18 +10,20 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Course } from "../entities/Course";
-import { CourseInput } from "../utils/CourseInput";
-import { validateCourse } from "../utils/validateCourse";
 import { isAuth, isExec } from "../isAuth";
-import FieldError from "../utils/FieldError";
 import { User } from "../entities/User";
+import { EventInput } from "../utils/EventInput";
+import { getAndAddTags, removeUser, removeUsers } from "./event";
+import { validateEvent } from "../utils/validateEvent";
+import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
-class CourseResponse {
+export class CourseResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => Course, { nullable: true })
+  @Field()
   course?: Course;
 }
 
@@ -30,39 +31,44 @@ class CourseResponse {
 export class CourseResolver {
   @Query(() => [Course])
   async courses(): Promise<Course[]> {
-    var courses = await Course.find({ display: true });
-    courses.forEach((course) => (course.users = []));
-    return courses;
+    return removeUsers(await Course.find({ where: { display: true }, relations: ["tags"] }));
   }
 
   @Query(() => [Course])
   @UseMiddleware(isAuth, isExec)
   async allCourses(): Promise<Course[]> {
-    return Course.find();
+    return removeUsers(await Course.find({ relations: ["tags"] }));
   }
 
   @Query(() => Course, { nullable: true })
   async courseByShortName(
     @Arg("shortName") shortName: string
   ): Promise<Course | undefined> {
-    const course = await Course.findOne({ shortName });
-    if (!course) {
-      return undefined;
-    }
-    course.users = [];
-    return course;
+    const course = await Course.findOne({ shortName }, { relations: ["tags"] });
+    if (!course) return;
+    return removeUser(course);
   }
 
   @Mutation(() => CourseResponse)
   @UseMiddleware(isAuth, isExec)
   async createCourse(
-    @Arg("courseInfo") courseInfo: CourseInput
+    @Arg("courseInfo") courseInfo: EventInput
   ): Promise<CourseResponse> {
-    const errors = validateCourse(courseInfo);
+    const errors = validateEvent(courseInfo);
     if (errors) {
       return { errors };
     }
-    const course = await Course.create(courseInfo).save();
+
+    const { tags: newTagIDs, ...rest } = courseInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const course = await Course.create({ ...rest, tags }).save();
     return { course };
   }
 
@@ -70,15 +76,38 @@ export class CourseResolver {
   @UseMiddleware(isAuth, isExec)
   async editCourse(
     @Arg("id") id: number,
-    @Arg("courseInfo") courseInfo: CourseInput
+    @Arg("courseInfo") courseInfo: EventInput
   ): Promise<CourseResponse> {
-    const errors = validateCourse(courseInfo);
+    const errors = validateEvent(courseInfo);
     if (errors) {
       return { errors };
     }
-    await Course.update(id, courseInfo);
-    const course = await Course.findOne(id);
-    return { course };
+
+    const { tags: newTagIDs, ...rest } = courseInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Course.update(id, { ...rest });
+    var course = await Course.findOne(id, { relations: ["tags"] });
+
+    if (!course) {
+      return { errors: [{ field: "Course ID", message: "No course found" }] };
+    }
+
+    course.tags = tags;
+    course = await course.save();
+
+    try {
+      return { course };
+    } catch (e) {
+      return { errors: [{ field: "Saving", message: e }] };
+    }
   }
 
   @Mutation(() => Boolean)
@@ -88,16 +117,16 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ): Promise<Boolean> {
-    const user = await User.findOne(payload?.userId, {
+    const user = await User.findOne(payload!.userId, {
       relations: ["courses"],
     });
     if (!user) {
       return false;
     }
 
-    const course = await getCourseByIdOrName(courseId, shortName, true);
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
 
-    if (!course || !course.joinButton) {
+    if (!course || !course.joinable) {
       return false;
     }
 
@@ -118,8 +147,7 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-
-    const course = await getCourseByIdOrName(courseId, shortName, true);
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
 
     if (!course) {
       return false;
@@ -142,21 +170,11 @@ export class CourseResolver {
     @Arg("courseId", { nullable: true }) courseId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    const course = await getCourseByIdOrName(courseId, shortName, true);
+    const course = await Course.getByIdOrShortName(courseId, shortName, true);
 
     if (!course) {
       return [];
     }
     return course.users;
-  }
-}
-
-const getCourseByIdOrName = async (courseId?: number, shortName?: string, relations?: boolean) => {
-  if (courseId) {
-    return await Course.findOne(courseId, relations ? { relations: ["users"] } : {});
-  } else if (shortName) {
-    return await Course.findOne({ shortName }, relations ? { relations: ["users"] } : {});
-  } else {
-    return undefined;
   }
 }

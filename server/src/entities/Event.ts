@@ -3,23 +3,12 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
-@ObjectType()
-class Variant {
-  @Field(() => String)
-  name: string;
-
-  @Field(() => String)
-  link: string;
-}
-
 @ObjectType() // Is now an Object Type also for GraphQL
-@Entity() // Is a DB table
-export class Merch extends BaseEntity {
+export abstract class Event extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
@@ -41,18 +30,31 @@ export class Merch extends BaseEntity {
   title: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   shortName: string;
 
-  @Field()
-  @Column()
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
   description: string;
 
-  @Field()
-  @Column()
-  image: string;
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
+  previewImg: string;
 
-  @Field((_type) => [Variant])
-  @Column("simple-json")
-  variants: Variant[];
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
+  iconImg: string;
+
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
+  coverImg: string;
+
+  @Field({ defaultValue: "" })
+  @Column({ default: "" })
+  redirectUrl: string;
+
+  @Field({ defaultValue: false })
+  @Column({ default: false })
+  joinable: boolean;
 }
+

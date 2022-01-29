@@ -1,17 +1,7 @@
-mutation CreateTutorial($tutorialInfo: TutorialInput!) {
+mutation CreateTutorial($tutorialInfo: EventInput!) {
   createTutorial(tutorialInfo: $tutorialInfo) {
     tutorial {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+      ...RegularTutorial
     }
     errors {
       field
@@ -20,24 +10,14 @@ mutation CreateTutorial($tutorialInfo: TutorialInput!) {
   }
 }
 
-mutation EditTutorial($tutorialInfo: TutorialInput!, $id: Float!) {
+mutation EditTutorial($tutorialInfo: EventInput!, $id: Float!) {
   editTutorial(tutorialInfo: $tutorialInfo, id: $id) {
+    tutorial {
+      ...RegularTutorial
+    }
     errors {
       field
       message
-    }
-    tutorial {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
     }
   }
 }

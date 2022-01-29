@@ -1,17 +1,7 @@
-mutation CreateProject($projectInfo: ProjectInput!) {
+mutation CreateProject($projectInfo: EventInput!) {
   createProject(projectInfo: $projectInfo) {
     project {
-      id
-      createdAt
-      updatedAt
-      display
-      title
-      shortName
-      description
-      cover
-      difficulty
-      redirect
-      joinButton
+      ...RegularProject
     }
     errors {
       field
@@ -20,24 +10,14 @@ mutation CreateProject($projectInfo: ProjectInput!) {
   }
 }
 
-mutation EditProject($projectInfo: ProjectInput!, $id: Float!) {
+mutation EditProject($projectInfo: EventInput!, $id: Float!) {
   editProject(projectInfo: $projectInfo, id: $id) {
+    project {
+      ...RegularProject
+    }
     errors {
       field
       message
-    }
-    project {
-      id
-      createdAt
-      updatedAt
-      display
-      shortName
-      difficulty
-      cover
-      description
-      title
-      redirect
-      joinButton
     }
   }
 }

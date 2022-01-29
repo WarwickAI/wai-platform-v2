@@ -10,12 +10,8 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import argon2 from "argon2";
 import { sendRefreshToken } from "../sendRefreshToken";
-import { createAccessToken, createRefreshToken } from "../auth";
 import { isAuth, isExec } from "../isAuth";
-import { UsernamePasswordInput } from "../utils/UsernamePasswordInput";
-import { validateRegister } from "../utils/validateRegister";
 
 @ObjectType()
 class FieldError {
@@ -25,17 +21,6 @@ class FieldError {
   message: string;
 }
 
-@ObjectType()
-class UserResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
-
-  @Field(() => User, { nullable: true })
-  user?: User;
-
-  @Field(() => String, { nullable: true })
-  accessToken?: string;
-}
 
 @Resolver()
 export class UserResolver {
