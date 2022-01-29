@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  EventResponse,
+  ProjectResponse,
   useEditProjectMutation,
   useProjectByShortNameQuery,
 } from "../../../generated/graphql";
@@ -30,7 +30,7 @@ const EditProject: React.FC<EditProjectProps> = ({}) => {
               id: data.projectByShortName!.id,
               projectInfo,
             });
-            return response.data?.editProject as EventResponse;
+            return response.data?.editProject as ProjectResponse;
           }}
           handleSuccess={() => router.push("/projects")}
         />

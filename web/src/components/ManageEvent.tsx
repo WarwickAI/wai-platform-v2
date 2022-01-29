@@ -10,12 +10,11 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import {
-  RegularEventFragment,
   RegularCourseFragment,
   RegularProjectFragment,
   RegularTalkFragment,
   RegularTutorialFragment,
-  RegularUserFragment,
+  RegularUserWithoutEventsFragment,
 } from "../generated/graphql";
 import { capitalizeFirstLetter } from "../utils/stringUtils";
 import Dashboard from "./Dashboard";
@@ -23,12 +22,11 @@ import Dashboard from "./Dashboard";
 interface ManageEventProps {
   eventType: string;
   eventDetails:
-    | RegularEventFragment
     | RegularCourseFragment
     | RegularProjectFragment
     | RegularTalkFragment
     | RegularTutorialFragment;
-  eventUsers: RegularUserFragment[];
+  eventUsers: RegularUserWithoutEventsFragment[];
   handleRemoveUserFromEvent: (userId: number, eventId: number) => void;
 }
 

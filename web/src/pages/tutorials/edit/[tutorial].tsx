@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  EventResponse,
+  TutorialResponse,
   useEditTutorialMutation,
   useTutorialByShortNameQuery,
 } from "../../../generated/graphql";
@@ -30,7 +30,7 @@ const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
               id: data.tutorialByShortName!.id,
               tutorialInfo,
             });
-            return response.data?.editTutorial as EventResponse;
+            return response.data?.editTutorial as TutorialResponse;
           }}
           handleSuccess={() => router.push("/tutorials")}
         />

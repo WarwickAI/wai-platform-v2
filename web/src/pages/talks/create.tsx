@@ -1,6 +1,6 @@
 import React from "react";
 import Dashboard from "../../components/Dashboard";
-import { EventResponse, useCreateTalkMutation } from "../../generated/graphql";
+import { TalkResponse, useCreateTalkMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
@@ -17,7 +17,7 @@ const CreateTalk: React.FC<CreateTalkProps> = ({}) => {
         eventType="talk"
         handleCreate={async (talkInfo) => {
           const response = await createTalk({ talkInfo });
-          return response.data?.createTalk as EventResponse;
+          return response.data?.createTalk as TalkResponse;
         }}
         handleSuccess={() => router.push("/talks")}
       />
