@@ -11,9 +11,9 @@ import Dashboard from "../../../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 
-interface EditCourseProps {}
+interface ManageCourseProps {}
 
-const EditCourse: React.FC<EditCourseProps> = ({}) => {
+const ManageCourse: React.FC<ManageCourseProps> = ({}) => {
   const router = useRouter();
   const { course } = router.query;
   const [{ data: eventData }] = useCourseByShortNameQuery({
@@ -51,4 +51,4 @@ const EditCourse: React.FC<EditCourseProps> = ({}) => {
   }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(EditCourse);
+export default withUrqlClient(createUrqlClient, { ssr: false })(ManageCourse);

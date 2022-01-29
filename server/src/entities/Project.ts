@@ -13,7 +13,7 @@ export class Project extends Event {
   users: User[];
 
   @Field(() => [Tag])
-  @ManyToMany(() => Tag, (tag) => tag.projects, { cascade: true })
+  @ManyToMany(() => Tag, { cascade: true })
   @JoinTable()
   tags: Tag[];
 

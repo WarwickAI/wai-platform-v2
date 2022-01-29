@@ -1,4 +1,4 @@
-import { RegularCourseFragment, RegularEventFragment, RegularProjectFragment, RegularTalkFragment, RegularTutorialFragment, TagInput } from "../generated/graphql";
+import { RegularCourseFragment, RegularProjectFragment, RegularTalkFragment, RegularTutorialFragment, TagInput } from "../generated/graphql";
 
 var initalVals = {
     display: false,
@@ -14,7 +14,6 @@ var initalVals = {
 }
 
 export const setupEditValues = (eventDetails:
-    | RegularEventFragment
     | RegularCourseFragment
     | RegularProjectFragment
     | RegularTalkFragment

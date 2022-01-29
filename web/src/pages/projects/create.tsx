@@ -1,6 +1,6 @@
 import React from "react";
 import Dashboard from "../../components/Dashboard";
-import { EventResponse, useCreateProjectMutation } from "../../generated/graphql";
+import { ProjectResponse, useCreateProjectMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
@@ -17,7 +17,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({}) => {
         eventType="project"
         handleCreate={async (projectInfo) => {
           const response = await createProject({ projectInfo });
-          return response.data?.createProject as EventResponse;
+          return response.data?.createProject as ProjectResponse;
         }}
         handleSuccess={() => router.push("/projects")}
       />

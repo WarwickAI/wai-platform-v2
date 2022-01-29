@@ -1,7 +1,7 @@
 import React from "react";
 import Dashboard from "../../components/Dashboard";
 import {
-  EventResponse,
+  CourseResponse,
   useCreateCourseMutation,
 } from "../../generated/graphql";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({}) => {
         eventType="course"
         handleCreate={async (courseInfo) => {
           const response = await createCourse({ courseInfo });
-          return response.data?.createCourse as EventResponse;
+          return response.data?.createCourse as CourseResponse;
         }}
         handleSuccess={() => router.push("/courses")}
       />

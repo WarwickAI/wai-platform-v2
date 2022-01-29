@@ -4,7 +4,7 @@ import { Project } from "../entities/Project";
 import { Talk } from "../entities/Talk";
 import { Tutorial } from "../entities/Tutorial";
 import FieldError from "../utils/FieldError";
-import { TagInput } from "../utils/EventInput";
+import { TagInput } from "../utils/TagInput";
 import { Tag } from "../entities/Tag";
 
 type EventType = Course | Project | Talk | Tutorial;

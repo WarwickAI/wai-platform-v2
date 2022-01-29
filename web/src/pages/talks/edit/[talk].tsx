@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import {
-  EventResponse,
+  TalkResponse,
   useEditTalkMutation,
   useTalkByShortNameQuery,
 } from "../../../generated/graphql";
@@ -31,7 +31,7 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
               id: data.talkByShortName!.id,
               talkInfo,
             });
-            return response.data?.editTalk as EventResponse;
+            return response.data?.editTalk as TalkResponse;
           }}
           handleSuccess={() => router.push("/talks")}
         />
