@@ -28,7 +28,7 @@ export const setupEditValues = (eventDetails:
         coverImg: eventDetails.coverImg || "",
         redirectUrl: eventDetails.redirectUrl || "",
         joinable: eventDetails.joinable || false,
-        tags: eventDetails.tags.map(tag => { return { title: tag.title, color: tag.color } }) || []
+        tags: eventDetails.tags.map(tag => { return { id: tag.id, title: tag.title, color: tag.color } }) || []
     }
 }
 
