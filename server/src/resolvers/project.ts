@@ -3,7 +3,6 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -11,18 +10,20 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Project } from "../entities/Project";
-import { ProjectInput } from "../utils/ProjectInput";
-import { validateProject } from "../utils/validateProject";
 import { isAuth, isExec } from "../isAuth";
-import FieldError from "../utils/FieldError";
 import { User } from "../entities/User";
+import { EventInput } from "../utils/EventInput";
+import { removeUser, removeUsers } from "./event";
+import { validateEvent } from "../utils/validateEvent";
+import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
-class ProjectResponse {
+export class ProjectResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => Project, { nullable: true })
+  @Field()
   project?: Project;
 }
 
@@ -30,39 +31,49 @@ class ProjectResponse {
 export class ProjectResolver {
   @Query(() => [Project])
   async projects(): Promise<Project[]> {
-    var projects = await Project.find({ display: true });
-    projects.forEach((project) => (project.users = []));
-    return projects;
+    return removeUsers(
+      await Project.find({ where: { display: true }, relations: ["tags"] })
+    );
   }
 
   @Query(() => [Project])
   @UseMiddleware(isAuth, isExec)
   async allProjects(): Promise<Project[]> {
-    return Project.find();
+    return removeUsers(await Project.find({ relations: ["tags"] }));
   }
 
   @Query(() => Project, { nullable: true })
   async projectByShortName(
     @Arg("shortName") shortName: string
   ): Promise<Project | undefined> {
-    const project = await Project.findOne({ shortName });
-    if (!project) {
-      return undefined;
-    }
-    project.users = [];
-    return project;
+    const project = await Project.findOne(
+      { shortName },
+      { relations: ["tags"] }
+    );
+    if (!project) return;
+    return removeUser(project);
   }
 
   @Mutation(() => ProjectResponse)
   @UseMiddleware(isAuth, isExec)
   async createProject(
-    @Arg("projectInfo") projectInfo: ProjectInput
+    @Arg("projectInfo") projectInfo: EventInput
   ): Promise<ProjectResponse> {
-    const errors = validateProject(projectInfo);
+    const errors = validateEvent(projectInfo);
     if (errors) {
       return { errors };
     }
-    const project = await Project.create(projectInfo).save();
+
+    const { tags: newTagIDs, ...rest } = projectInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const project = await Project.create({ ...rest, tags }).save();
     return { project };
   }
 
@@ -70,15 +81,38 @@ export class ProjectResolver {
   @UseMiddleware(isAuth, isExec)
   async editProject(
     @Arg("id") id: number,
-    @Arg("projectInfo") projectInfo: ProjectInput
+    @Arg("projectInfo") projectInfo: EventInput
   ): Promise<ProjectResponse> {
-    const errors = validateProject(projectInfo);
+    const errors = validateEvent(projectInfo);
     if (errors) {
       return { errors };
     }
-    await Project.update(id, projectInfo);
-    const project = await Project.findOne(id);
-    return { project };
+
+    const { tags: newTagIDs, ...rest } = projectInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Project.update(id, { ...rest });
+    var project = await Project.findOne(id, { relations: ["tags"] });
+
+    if (!project) {
+      return { errors: [{ field: "Project ID", message: "No project found" }] };
+    }
+
+    project.tags = tags;
+    project = await project.save();
+
+    try {
+      return { project };
+    } catch (e) {
+      return { errors: [{ field: "Saving", message: e }] };
+    }
   }
 
   @Mutation(() => Boolean)
@@ -88,16 +122,20 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ): Promise<Boolean> {
-    const user = await User.findOne(payload?.userId, {
+    const user = await User.findOne(payload!.userId, {
       relations: ["projects"],
     });
     if (!user) {
       return false;
     }
 
-    const project = await getProjectByIdOrName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
-    if (!project || !project.joinButton) {
+    if (!project || !project.joinable) {
       return false;
     }
 
@@ -118,8 +156,11 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-
-    const project = await getProjectByIdOrName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
     if (!project) {
       return false;
@@ -142,21 +183,15 @@ export class ProjectResolver {
     @Arg("projectId", { nullable: true }) projectId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    const project = await getProjectByIdOrName(projectId, shortName, true);
+    const project = await Project.getByIdOrShortName(
+      projectId,
+      shortName,
+      true
+    );
 
     if (!project) {
       return [];
     }
     return project.users;
-  }
-}
-
-const getProjectByIdOrName = async (projectId?: number, shortName?: string, relations?: boolean) => {
-  if (projectId) {
-    return await Project.findOne(projectId, relations ? { relations: ["users"] } : {});
-  } else if (shortName) {
-    return await Project.findOne({ shortName }, relations ? { relations: ["users"] } : {});
-  } else {
-    return undefined;
   }
 }

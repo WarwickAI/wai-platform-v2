@@ -4,22 +4,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-
-@ObjectType()
-class Variant {
-  @Field(() => String)
-  name: string;
-
-  @Field(() => String)
-  link: string;
-}
+import { Course } from "./Course";
+import { Event } from "./Event";
+import { Project } from "./Project";
+import { Talk } from "./Talk";
+import { Tutorial } from "./Tutorial";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class Merch extends BaseEntity {
+export class Tag extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
@@ -32,27 +29,11 @@ export class Merch extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field({ defaultValue: false })
-  @Column()
-  display: boolean;
-
   @Field()
-  @Column()
+  @Column({ unique: true })
   title: string;
 
   @Field()
   @Column()
-  shortName: string;
-
-  @Field()
-  @Column()
-  description: string;
-
-  @Field()
-  @Column()
-  image: string;
-
-  @Field((_type) => [Variant])
-  @Column("simple-json")
-  variants: Variant[];
+  color: string;
 }

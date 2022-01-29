@@ -1,42 +1,23 @@
 query Talks {
   talks {
-    id
-    display
-    title
-    shortName
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
 
 query AllTalks {
   allTalks {
-    id
-    display
-    title
-    shortName
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
 
 query TalkByShortName($shortName: String!) {
   talkByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularTalk
   }
 }
 
 query TalkUsers($talkId: Float, $shortName: String) {
   talkUsers(talkId: $talkId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }

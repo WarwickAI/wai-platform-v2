@@ -1,0 +1,11 @@
+mutation CreateTag($tagInfo: TagInput!) {
+  createTag(tagInfo: $tagInfo) {
+    errors {
+      field
+      message
+    }
+    tag {
+      ...RegularTag
+    }
+  }
+}

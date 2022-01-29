@@ -1,36 +1,22 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
-import {
-  Text,
-  SimpleGrid,
-  Badge,
-  Button,
-  HStack,
-  Switch,
-  FormLabel,
-  FormControl,
-} from "@chakra-ui/react";
-import Dashboard from "../../components/Dashboard";
-import Card from "../../components/Card";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { setAccessToken } from "../../utils/accesToken";
 import {
   useMeQuery,
   useTutorialsQuery,
-  useVerifyLoginMutation,
   useAllTutorialsQuery,
 } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
-import ItemGrid from "../../components/ItemGrid";
+import EventsPage from "../../components/EventsPage";
+import Dashboard from "../../components/Dashboard";
 
 const Tutorials = () => {
   const router = useRouter();
-  const [{ data: tutorialData }] = useTutorialsQuery();
-  const [{ data: allTutorialData }] = useAllTutorialsQuery({ pause: isServer() });
-  const [{ data: userData }] = useMeQuery({ pause: isServer() });
-
-  const [showHidden, setShowHidden] = useState<boolean>(false);
+  const [{ data: events }] = useTutorialsQuery();
+  const [{ data: allEvents }] = useAllTutorialsQuery({ pause: isServer() });
+  const [{ data: userDetails }] = useMeQuery({ pause: isServer() });
 
   useEffect(() => {
     if (router.query.accessToken && router.query.accessToken.length > 0) {
@@ -38,54 +24,19 @@ const Tutorials = () => {
       router.push("/tutorials");
     }
   }, [router, router.query]);
-  return (
-    <Dashboard
-      title="Tutorials"
-      options={
-        userData?.me?.role === "exec" ? (
-          <HStack spacing={4}>
-            <HStack>
-              <FormLabel htmlFor="showAll">Show hidden</FormLabel>
-              <Switch
-                id="showAll"
-                isChecked={showHidden}
-                onChange={(e) => setShowHidden(e.target.checked)}
-              />
-            </HStack>
-            <Button
-              variant="primary"
-              onClick={() => router.push("/tutorials/create")}
-            >
-              Create
-            </Button>
-          </HStack>
-        ) : (
-          <></>
-        )
-      }
-    >
-      <ItemGrid>
-        {(showHidden ? allTutorialData?.allTutorials : tutorialData?.tutorials)?.map(
-          ({ title, cover, difficulty, shortName, id, redirect }) => (
-            <Card
-              key={id}
-              title={title}
-              backgroundImg={cover}
-              description={
-                <Badge colorScheme="green" borderRadius="lg">
-                  {difficulty}
-                </Badge>
-              }
-              extraInfo=""
-              shortName={shortName}
-              linkPrefix="tutorials"
-              redirect={redirect}
-            />
-          )
-        )}
-      </ItemGrid>
-    </Dashboard>
-  );
+  if (events?.tutorials) {
+    return (
+      <EventsPage
+        eventType={"tutorial"}
+        events={events.tutorials}
+        allEvents={allEvents?.allTutorials ? allEvents.allTutorials : []}
+        userDetails={userDetails?.me ? userDetails.me : undefined}
+        handleCreate={() => router.push("/tutorials/create")}
+      />
+    );
+  } else {
+    return <Dashboard title="Loading tutorials" />;
+  }
 };
 
 export default withUrqlClient(createUrqlClient, { ssr: true })(Tutorials);

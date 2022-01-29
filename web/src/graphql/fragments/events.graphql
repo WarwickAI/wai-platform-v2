@@ -1,0 +1,71 @@
+fragment RegularCourse on Course {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+    tags {
+        id
+        title
+        color
+    }
+}
+
+fragment RegularProject on Project {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+    tags {
+        id
+        title
+        color
+    }
+}
+
+fragment RegularTalk on Talk {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+    tags {
+        id
+        title
+        color
+    }
+}
+
+fragment RegularTutorial on Tutorial {
+    id
+    display
+    title
+    shortName
+    description
+    previewImg
+    iconImg
+    coverImg
+    redirectUrl
+    joinable
+    tags {
+        id
+        title
+        color
+    }
+}

@@ -1,45 +1,23 @@
 query Tutorials {
   tutorials {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
 
 query AllTutorials {
   allTutorials {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
 
 query TutorialByShortName($shortName: String!) {
   tutorialByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularTutorial
   }
 }
 
 query TutorialUsers($tutorialId: Float, $shortName: String) {
   tutorialUsers(tutorialId: $tutorialId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }
