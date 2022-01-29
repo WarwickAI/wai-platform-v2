@@ -1,0 +1,5 @@
+fragment RegularTag on Tag {
+  id
+  title
+  color
+}

@@ -23,8 +23,10 @@ import { Course } from "./entities/Course";
 import { Tutorial } from "./entities/Tutorial";
 import { CourseResolver } from "./resolvers/course";
 import { TutorialResolver } from "./resolvers/tutorial";
-import { MerchResolver } from "./resolvers/merch";
+import { Tag } from "./entities/Tag";
 import { Merch } from "./entities/Merch";
+import { MerchResolver } from "./resolvers/merch";
+import { TagResolver } from "./resolvers/tag";
 
 const main = async () => {
   // Connect to DB
@@ -37,23 +39,23 @@ const main = async () => {
   //   entities: [User, Project]
   // })
 
-  // const conn = await createConnection({
-  //   type: 'postgres',
-  //   url: process.env.DATABASE_URL,
-  //   logging: true,
-  //   synchronize: false,
-  //   migrations: [path.join(__dirname, "./migrations/*")],
-  //   entities: [User, Project]
-  // })
-
   const conn = await createConnection({
-    type: "postgres",
+    type: 'postgres',
     url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
-    migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial, Merch],
-  });
+    synchronize: false,
+    migrations: [path.join(__dirname, "./migrations/*")],
+    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag]
+  })
+
+  // const conn = await createConnection({
+  //   type: "postgres",
+  //   url: process.env.DATABASE_URL,
+  //   logging: true,
+  //   synchronize: true,
+  //   migrations: [],
+  //   entities: [User, Project, Talk, Course, Tutorial, Merch, Tag],
+  // });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
 
@@ -124,6 +126,7 @@ const main = async () => {
         CourseResolver,
         TutorialResolver,
         MerchResolver,
+        TagResolver
       ],
       validate: false,
     }),

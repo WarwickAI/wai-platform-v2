@@ -1,45 +1,23 @@
 query Courses {
   courses {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
 
 query AllCourses {
   allCourses {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
 
 query CourseByShortName($shortName: String!) {
   courseByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularCourse
   }
 }
 
 query CourseUsers($courseId: Float, $shortName: String) {
   courseUsers(courseId: $courseId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }

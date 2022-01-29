@@ -31,6 +31,9 @@ const theme = extendTheme({
       html: {
         overflowY: "scroll",
       },
+      option: {
+        fontFamily: "Public Sans",
+      },
     },
   },
   fonts: {

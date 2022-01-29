@@ -1,45 +1,23 @@
 query Projects {
   projects {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
 
 query AllProjects {
   allProjects {
-    id
-    display
-    title
-    shortName
-    difficulty
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
 
 query ProjectByShortName($shortName: String!) {
   projectByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    difficulty
-    description
-    cover
-    redirect
-    joinButton
+    ...RegularProject
   }
 }
 
 query ProjectUsers($projectId: Float, $shortName: String) {
   projectUsers(projectId: $projectId, shortName: $shortName) {
-    ...RegularUser
+    ...RegularUserWithoutEvents
   }
 }

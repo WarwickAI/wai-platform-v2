@@ -1,57 +1,34 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Entity, JoinTable, ManyToMany } from "typeorm";
+import { Event } from "./Event";
+import { Tag } from "./Tag";
 import { User } from "./User";
-
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class Tutorial extends BaseEntity {
-    @Field()
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Tutorial extends Event {
+  @Field(() => [User])
+  @ManyToMany(() => User, (user) => user.tutorials, { cascade: true })
+  @JoinTable()
+  users: User[];
 
-    @Field(() => String)  // Specify as field in GraphQL
-    @CreateDateColumn() // Specify as row in DB
-    createdAt: Date;
+  @Field(() => [Tag])
+  @ManyToMany(() => Tag, { cascade: true })
+  @JoinTable()
+  tags: Tag[];
 
-    @Field(() => String)
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @Field({ defaultValue: false })
-    @Column()
-    display: boolean;
-
-    @Field()
-    @Column()
-    title: string;
-
-    @Field()
-    @Column()
-    shortName: string;
-
-    @Field()
-    @Column()
-    description: string;
-
-    @Field()
-    @Column()
-    difficulty: string;
-
-    @Field()
-    @Column()
-    cover: string;
-
-    @Field()
-    @Column({ default: '' })
-    redirect: string;
-
-    @Field({ defaultValue: false })
-    @Column({ default: false })
-    joinButton: boolean;
-
-    @Field(() => [User])
-    @ManyToMany(() => User, user => user.tutorials, { cascade: true })
-    @JoinTable()
-    users: User[]
+  static async getByIdOrShortName(eventId?: number,
+    shortName?: string,
+    relations: boolean = false) {
+    if (eventId) {
+      return await this.findOne(eventId, relations ? { relations: ["users", "tags"] } : { relations: ["tags"] });
+    } else if (shortName) {
+      return await this.findOne(
+        { shortName },
+        relations ? { relations: ["users", "tags"] } : { relations: ["tags"] }
+      );
+    } else {
+      return undefined;
+    }
+  }
 }

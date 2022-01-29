@@ -3,7 +3,6 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -11,18 +10,20 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Tutorial } from "../entities/Tutorial";
-import { TutorialInput } from "../utils/TutorialInput";
-import { validateTutorial } from "../utils/validateTutorial";
 import { isAuth, isExec } from "../isAuth";
-import FieldError from "../utils/FieldError";
 import { User } from "../entities/User";
+import { EventInput } from "../utils/EventInput";
+import { getAndAddTags, removeUser, removeUsers } from "./event";
+import { validateEvent } from "../utils/validateEvent";
+import FieldError from "../utils/FieldError";
+import { Tag } from "../entities/Tag";
 
 @ObjectType()
-class TutorialResponse {
+export class TutorialResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => Tutorial, { nullable: true })
+  @Field()
   tutorial?: Tutorial;
 }
 
@@ -30,39 +31,44 @@ class TutorialResponse {
 export class TutorialResolver {
   @Query(() => [Tutorial])
   async tutorials(): Promise<Tutorial[]> {
-    var tutorials = await Tutorial.find({ display: true });
-    tutorials.forEach((tutorial) => (tutorial.users = []));
-    return tutorials;
+    return removeUsers(await Tutorial.find({ where: { display: true }, relations: ["tags"] }));
   }
 
   @Query(() => [Tutorial])
   @UseMiddleware(isAuth, isExec)
   async allTutorials(): Promise<Tutorial[]> {
-    return Tutorial.find();
+    return removeUsers(await Tutorial.find({relations: ["tags"]}));
   }
 
   @Query(() => Tutorial, { nullable: true })
   async tutorialByShortName(
     @Arg("shortName") shortName: string
   ): Promise<Tutorial | undefined> {
-    const tutorial = await Tutorial.findOne({ shortName });
-    if (!tutorial) {
-      return undefined;
-    }
-    tutorial.users = [];
-    return tutorial;
+    const tutorial = await Tutorial.findOne({ shortName }, { relations: ["tags"] });
+    if (!tutorial) return;
+    return removeUser(tutorial);
   }
 
   @Mutation(() => TutorialResponse)
   @UseMiddleware(isAuth, isExec)
   async createTutorial(
-    @Arg("tutorialInfo") tutorialInfo: TutorialInput
+    @Arg("tutorialInfo") tutorialInfo: EventInput
   ): Promise<TutorialResponse> {
-    const errors = validateTutorial(tutorialInfo);
+    const errors = validateEvent(tutorialInfo);
     if (errors) {
       return { errors };
     }
-    const tutorial = await Tutorial.create(tutorialInfo).save();
+
+    const { tags: newTagIDs, ...rest } = tutorialInfo;
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    const tutorial = await Tutorial.create({ ...rest, tags }).save();
     return { tutorial };
   }
 
@@ -70,15 +76,38 @@ export class TutorialResolver {
   @UseMiddleware(isAuth, isExec)
   async editTutorial(
     @Arg("id") id: number,
-    @Arg("tutorialInfo") tutorialInfo: TutorialInput
+    @Arg("tutorialInfo") tutorialInfo: EventInput
   ): Promise<TutorialResponse> {
-    const errors = validateTutorial(tutorialInfo);
+    const errors = validateEvent(tutorialInfo);
     if (errors) {
       return { errors };
     }
-    await Tutorial.update(id, tutorialInfo);
-    const tutorial = await Tutorial.findOne(id);
-    return { tutorial };
+
+    const { tags: newTagIDs, ...rest } = tutorialInfo;
+
+    const tags: Tag[] = [];
+    await Promise.all(newTagIDs.map(async tagId => {
+      const foundTag = await Tag.findOne(tagId);
+      if (foundTag) {
+        tags.push(foundTag);
+      }
+    }));
+
+    await Tutorial.update(id, { ...rest });
+    var tutorial = await Tutorial.findOne(id, { relations: ["tags"] });
+
+    if (!tutorial) {
+      return { errors: [{ field: "Tutorial ID", message: "No tutorial found" }] };
+    }
+
+    tutorial.tags = tags;
+    tutorial = await tutorial.save();
+
+    try {
+      return { tutorial };
+    } catch (e) {
+      return { errors: [{ field: "Saving", message: e }] };
+    }
   }
 
   @Mutation(() => Boolean)
@@ -88,16 +117,16 @@ export class TutorialResolver {
     @Arg("tutorialId", { nullable: true }) tutorialId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ): Promise<Boolean> {
-    const user = await User.findOne(payload?.userId, {
+    const user = await User.findOne(payload!.userId, {
       relations: ["tutorials"],
     });
     if (!user) {
       return false;
     }
 
-    const tutorial = await getTutorialByIdOrName(tutorialId, shortName, true);
+    const tutorial = await Tutorial.getByIdOrShortName(tutorialId, shortName, true);
 
-    if (!tutorial || !tutorial.joinButton) {
+    if (!tutorial || !tutorial.joinable) {
       return false;
     }
 
@@ -118,8 +147,7 @@ export class TutorialResolver {
     @Arg("tutorialId", { nullable: true }) tutorialId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-
-    const tutorial = await getTutorialByIdOrName(tutorialId, shortName, true);
+    const tutorial = await Tutorial.getByIdOrShortName(tutorialId, shortName, true);
 
     if (!tutorial) {
       return false;
@@ -142,21 +170,11 @@ export class TutorialResolver {
     @Arg("tutorialId", { nullable: true }) tutorialId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
   ) {
-    const tutorial = await getTutorialByIdOrName(tutorialId, shortName, true);
+    const tutorial = await Tutorial.getByIdOrShortName(tutorialId, shortName, true);
 
     if (!tutorial) {
       return [];
     }
     return tutorial.users;
-  }
-}
-
-const getTutorialByIdOrName = async (tutorialId?: number, shortName?: string, relations?: boolean) => {
-  if (tutorialId) {
-    return await Tutorial.findOne(tutorialId, relations ? { relations: ["users"] } : {});
-  } else if (shortName) {
-    return await Tutorial.findOne({ shortName }, relations ? { relations: ["users"] } : {});
-  } else {
-    return undefined;
   }
 }

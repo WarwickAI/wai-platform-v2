@@ -34,7 +34,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   const [field, { error }] = useField(props);
 
   return (
-    <FormControl error={!!error}>
+    <FormControl error={error ? error.toString() : undefined}>
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
 
       {type === "text" && (
