@@ -69,6 +69,11 @@ const EventPage: React.FC<EventPageProps> = ({
               {userInEvent ? "Joined" : "Join"}
             </Button>
           )}
+          {eventDetails.joinable && !userDetails && (
+            <Button variant="primary" onClick={() => router.push("/login")}>
+              Login to Join
+            </Button>
+          )}
           {userDetails?.role === "exec" && (
             <Button
               variant="primary"
