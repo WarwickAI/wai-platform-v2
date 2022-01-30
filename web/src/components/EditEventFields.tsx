@@ -75,20 +75,23 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
             name="title"
             placeholder="title"
             label="Title"
-          ></InputField>
+            hint="Main title for the event. Must be at least 3 characters."
+            ></InputField>
           <Box mt={4}>
             <InputField
               name="shortName"
               placeholder="short name"
               label="Short Name"
-            ></InputField>
+              hint="Name used for the URL and as a unique identifier. Must be unique, not contain '/', 'space' or '?' and be at least 3 characters."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="display"
               label="Display"
               type="switch"
-            ></InputField>
+              hint="Whether to display to normal users or hide."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
@@ -97,45 +100,50 @@ const EditEventFields: React.FC<EditEventFieldsProps> = (props) => {
               label="Description"
               type="textarea"
               renderMarkdown
-            ></InputField>
+              hint="Markdown description rendered on the event page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="previewImg"
               placeholder="preview image"
               label="Preview Image"
-            ></InputField>
+              hint="URL for the image used for the card (on the page showing all events). Should be roughly portrait."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="iconImg"
               placeholder="icon image"
               label="Icon Image"
-            ></InputField>
+              hint="URL for the image used as the event icon/logo. Should be square."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="coverImg"
               placeholder="cover image"
               label="Cover Image"
-            ></InputField>
+              hint="URL for the image used as the event banner at the top of the event's page. Should be roughly landscape."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="redirectUrl"
               placeholder="redirect url"
               label="Redirect URL"
-            ></InputField>
+              hint="Enter a URL here for normal users to be redirected to when they click on the event, instead of seeing the event page on this website."
+              ></InputField>
           </Box>
           <Box mt={4}>
             <InputField
               name="joinable"
               label="Joinable"
               type="switch"
-            ></InputField>
+              hint="Whether the event should be joinable by users."
+              ></InputField>
           </Box>
           <Box mt={4}>
-            <Heading size="md">Tags</Heading>
             <TagField
               tagsSelected={tags}
               handleAddTag={(tagToAdd) => {

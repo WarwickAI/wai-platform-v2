@@ -14,6 +14,7 @@ import {
   PopoverCloseButton,
   PopoverHeader,
   PopoverBody,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
@@ -26,6 +27,8 @@ import {
 import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 import { InputField } from "./InputField";
+import infoOutline from "@iconify/icons-eva/info-outline";
+import { getIcon } from "./SidebarConfig";
 
 interface TagFieldProps {
   tagsSelected: RegularTagFragment[];
@@ -39,6 +42,10 @@ const TagField: React.FC<TagFieldProps> = (props) => {
 
   return (
     <>
+      <Flex>
+        <Heading size="md" mr={4}>Tags</Heading>
+        <Tooltip label={"Add or create new tags for the event. Use an exisiting tag if possible since you are not allowed duplicate tag names and will ensure consistency."}>{getIcon(infoOutline)}</Tooltip>
+      </Flex>
       <Formik
         initialValues={{ title: "", color: "" }}
         onSubmit={async (values, { setErrors }) => {
@@ -72,11 +79,13 @@ const TagField: React.FC<TagFieldProps> = (props) => {
                 name="title"
                 placeholder="tag title"
                 label="Tag Title"
+                hint="Name for the tag. This must be unique (i.e. no existing tag with the same name) and at least 3 characters"
               />
               <InputField
                 name="color"
                 placeholder="tag color"
                 label="Tag Color"
+                hint="Color of the tag. This should be in the format of '#rrggbb' where rr, gg, bb are hexadecimal values for red green and blue. Search for RGB colour picker for help finding out this value."
               />
               <Button variant="primary" onClick={tagFormProps.submitForm}>
                 +

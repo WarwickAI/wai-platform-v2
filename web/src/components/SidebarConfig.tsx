@@ -9,7 +9,7 @@ import shoppingCartFill from "@iconify/icons-eva/shopping-cart-fill";
 
 // ----------------------------------------------------------------------
 
-const getIcon = (name: IconifyIcon) => (
+export const getIcon = (name: IconifyIcon) => (
   <Icon icon={name} width={22} height={22} />
 );
 
