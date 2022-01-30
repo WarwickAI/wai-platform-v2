@@ -1,4 +1,4 @@
-import { HStack, Button } from "@chakra-ui/react";
+import { HStack, Button, Box } from "@chakra-ui/react";
 import data from "@iconify/icons-eva/people-fill";
 import router from "next/router";
 import ReactMarkdown from "react-markdown";
@@ -37,6 +37,7 @@ const EventPage: React.FC<EventPageProps> = ({
   return (
     <Dashboard
       title={eventDetails.title}
+      coverImg={eventDetails.coverImg}
       narrow={true}
       options={
         <HStack>
