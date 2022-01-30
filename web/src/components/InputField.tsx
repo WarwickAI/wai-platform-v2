@@ -11,16 +11,22 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  HStack,
+  Tooltip,
+  Flex,
 } from "@chakra-ui/react";
 import { useField } from "formik";
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import infoOutline from "@iconify/icons-eva/info-outline";
+import { getIcon } from "./SidebarConfig";
 
 type InputFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   name: string;
   renderMarkdown?: boolean;
   type?: "text" | "textarea" | "switch" | "number";
+  hint?: string;
 };
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -28,6 +34,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   size: _,
   color: _1,
   type = "text",
+  hint,
   renderMarkdown = false,
   ...props
 }) => {
@@ -35,7 +42,10 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <FormControl error={error ? error.toString() : undefined}>
-      <FormLabel htmlFor={field.name}>{label}</FormLabel>
+      <Flex>
+        <FormLabel htmlFor={field.name}>{label}</FormLabel>
+        {hint && <Tooltip label={hint}>{getIcon(infoOutline)}</Tooltip>}
+      </Flex>
 
       {type === "text" && (
         <Input
