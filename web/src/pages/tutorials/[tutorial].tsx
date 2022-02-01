@@ -45,7 +45,7 @@ const Tutorial: React.FC<TutorialProps> = () => {
         eventDetails={eventDetails.tutorialByShortName}
         userDetails={userInfo?.me ? userInfo.me : undefined}
         userInEvent={
-          userInfo?.me?.courses.findIndex(
+          userInfo?.me?.tutorials.findIndex(
             ({ shortName }) => shortName === tutorial
           ) !== -1
         }
