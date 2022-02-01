@@ -45,7 +45,7 @@ const Project: React.FC<ProjectProps> = () => {
         eventDetails={eventDetails.projectByShortName}
         userDetails={userInfo?.me ? userInfo.me : undefined}
         userInEvent={
-          userInfo?.me?.courses.findIndex(
+          userInfo?.me?.projects.findIndex(
             ({ shortName }) => shortName === project
           ) !== -1
         }

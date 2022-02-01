@@ -45,7 +45,7 @@ const Talk: React.FC<TalkProps> = () => {
         eventDetails={eventDetails.talkByShortName}
         userDetails={userInfo?.me ? userInfo.me : undefined}
         userInEvent={
-          userInfo?.me?.courses.findIndex(
+          userInfo?.me?.talks.findIndex(
             ({ shortName }) => shortName === talk
           ) !== -1
         }
