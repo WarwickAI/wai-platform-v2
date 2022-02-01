@@ -30,7 +30,8 @@ import { capitalizeFirstLetter } from "../utils/stringUtils";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { setAccessToken } from "../utils/accesToken";
 import { isServer } from "../utils/isServer";
-import { PageDesktop } from "./PageDesktop";
+import Page from "./Page";
+import PageMobile from "./PageMobile";
 
 const DRAWER_WIDTH = 280;
 
@@ -73,116 +74,11 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
-  const router = useRouter();
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const [{ data }] = useMeQuery({ pause: isServer() });
-  const [, logout] = useLogoutMutation();
-
-  const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
-
-  if (isMobile) {
-    return (
-      <Box p={4}>
-        <Head>
-          <title>{props.title}</title>
-        </Head>
-        <Flex direction="row" justifyContent="space-between">
-          <Button onClick={() => setOpen(true)} variant="primary">
-            <HamburgerIcon />
-          </Button>
-          <Popover>
-            <PopoverTrigger>
-              <Button variant="primary">Account</Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverHeader>
-                {data?.me ? `Hello ${data.me.firstName}` : "Not Logged In"}
-              </PopoverHeader>
-              <PopoverBody>
-                <HStack>
-                  {data && data.me ? (
-                    <>
-                      <Button variant="primary" disabled={true}>
-                        Account Settings
-                      </Button>
-                      <Button
-                        variant="primary"
-                        onClick={async () => {
-                          setAccessToken("");
-                          await logout();
-                          router.push("/");
-                        }}
-                      >
-                        Logout
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        router.push("/login");
-                      }}
-                    >
-                      Log In
-                    </Button>
-                  )}
-                </HStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-          {/* <Button onClick={() => setOpen(true)}>Account</Button> */}
-        </Flex>
-        <Box px={props.narrow ? [5, 10, 20, 48, 80] : [5, 10, 20]} py={10}>
-          <Flex direction="row" justifyContent="space-between">
-            <Heading size="lg" pb={10}>
-              {props.title}
-            </Heading>
-            {props.options}
-          </Flex>
-          {props.children}
-        </Box>
-        <>
-          <Drawer
-            isOpen={isOpen}
-            placement="left"
-            onClose={() => setOpen(false)}
-          >
-            <DrawerOverlay />
-            <DrawerContent px={5} py={3} w={DRAWER_WIDTH}>
-              <DrawerCloseButton />
-              <Box>
-                <Box w={20} pt={2} pb={10}>
-                  <Image src="/static/logo2.png" alt="WAI Logo" />
-                </Box>
-                <Box>
-                  {sidebarConfig.map(({ title, path, icon }) => {
-                    // console.log(title);
-                    return (
-                      <NavItem
-                        key={title}
-                        title={title}
-                        path={path}
-                        icon={icon}
-                        isHighlighted={router.pathname === path}
-                      />
-                    );
-                  })}
-                </Box>
-              </Box>
-            </DrawerContent>
-          </Drawer>
-        </>
-      </Box>
-    );
-  } else {
-    return (
-      <PageDesktop title={props.title} coverImg={props.coverImg}>
-        {props.children}
-      </PageDesktop>
-    );
-  }
+  return (
+    <Page title={props.title} coverImg={props.coverImg}>
+      {props.children}
+    </Page>
+  );
 };
 
 export default Dashboard;
