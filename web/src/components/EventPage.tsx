@@ -1,5 +1,4 @@
-import { HStack, Button, Box } from "@chakra-ui/react";
-import data from "@iconify/icons-eva/people-fill";
+import { HStack, Button, Badge, Flex } from "@chakra-ui/react";
 import router from "next/router";
 import ReactMarkdown from "react-markdown";
 import {
@@ -7,7 +6,6 @@ import {
   RegularProjectFragment,
   RegularTalkFragment,
   RegularTutorialFragment,
-  MeQuery,
   RegularUserFragment,
 } from "../generated/graphql";
 import Dashboard from "./Dashboard";
@@ -38,22 +36,22 @@ const EventPage: React.FC<EventPageProps> = ({
     <Dashboard
       title={eventDetails.title}
       coverImg={eventDetails.coverImg}
-      narrow={true}
+      tags={
+        <Flex mb={2}>
+          {eventDetails.tags.map((tag) => (
+            <Badge
+              key={tag.title}
+              backgroundColor={tag.color}
+              mr={2}
+              borderRadius="lg"
+            >
+              {tag.title}
+            </Badge>
+          ))}
+        </Flex>
+      }
       options={
         <HStack>
-          {userDetails?.role === "exec" &&
-            eventDetails.redirectUrl &&
-            eventDetails.redirectUrl.length > 0 && (
-              <Button
-                variant="primary"
-                onClick={() =>
-                  eventDetails.redirectUrl &&
-                  router.push(eventDetails.redirectUrl)
-                }
-              >
-                Follow Redirect
-              </Button>
-            )}
           {eventDetails.joinable && userDetails && (
             <Button
               variant="primary"
@@ -75,17 +73,27 @@ const EventPage: React.FC<EventPageProps> = ({
               Login to Join
             </Button>
           )}
+          {userDetails?.role === "exec" &&
+            eventDetails.redirectUrl &&
+            eventDetails.redirectUrl.length > 0 && (
+              <Button
+                variant="admin"
+                onClick={() =>
+                  eventDetails.redirectUrl &&
+                  router.push(eventDetails.redirectUrl)
+                }
+              >
+                Follow Redirect
+              </Button>
+            )}
           {userDetails?.role === "exec" && (
-            <Button
-              variant="primary"
-              onClick={() => handleEdit(eventDetails.id)}
-            >
+            <Button variant="admin" onClick={() => handleEdit(eventDetails.id)}>
               Edit
             </Button>
           )}
           {userDetails?.role === "exec" && (
             <Button
-              variant="primary"
+              variant="admin"
               onClick={() => handleManage(eventDetails.id)}
             >
               Manage

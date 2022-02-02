@@ -1,10 +1,4 @@
-import {
-  Box,
-  Tooltip,
-  Flex,
-  Link,
-  Image,
-} from "@chakra-ui/react";
+import { Box, Tooltip, Flex, Link, Image } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import React from "react";
@@ -72,7 +66,16 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
       className="navbar"
     >
       <Link href={"/"} as={NextLink}>
-        <Flex h={14} mx={-3} my={6} justifyContent="center" alignItems="center">
+        <Flex
+          h={14}
+          mx={-3}
+          my={6}
+          justifyContent="center"
+          alignItems="center"
+          _hover={{
+            cursor: "pointer",
+          }}
+        >
           <Image src="/static/logo2.png" alt="WAI Logo" width={12} />
         </Flex>
       </Link>

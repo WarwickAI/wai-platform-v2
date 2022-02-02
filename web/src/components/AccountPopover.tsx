@@ -12,6 +12,7 @@ import {
   HStack,
   Button,
   Portal,
+  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -21,7 +22,9 @@ import { isServer } from "../utils/isServer";
 import personFill from "@iconify/icons-eva/person-fill";
 import { getIcon } from "./SidebarConfig";
 
-interface AccountPopoverProps {}
+interface AccountPopoverProps {
+  isMobile?: boolean;
+}
 
 const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
   const [{ data: userData }] = useMeQuery({ pause: isServer() });
@@ -29,22 +32,39 @@ const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
   const router = useRouter();
 
   return (
-    <Popover placement="right">
+    <Popover placement={props.isMobile ? "bottom" : "right"}>
       <PopoverTrigger>
-        <Box>
-          <Tooltip placement="right" label="Account">
-            <Flex
-              h={14}
-              mx={-3}
-              mt={6}
-              mb={4}
-              justifyContent="center"
-              alignItems="center"
-            >
-              {getIcon(personFill)}
-            </Flex>
-          </Tooltip>
-        </Box>
+        {props.isMobile ? (
+          <Flex
+            h={14}
+            mx={-3}
+            px={10}
+            _hover={{
+              backgroundColor: "rgba(145, 158, 171, 0.08)",
+              cursor: "pointer",
+            }}
+            justifyContent="center"
+            alignItems="center"
+          >
+            {getIcon(personFill)}
+            <Text pl={5}>Account</Text>
+          </Flex>
+        ) : (
+          <Box>
+            <Tooltip placement="right" label="Account">
+              <Flex
+                h={14}
+                mx={-3}
+                mt={6}
+                mb={4}
+                justifyContent="center"
+                alignItems="center"
+              >
+                {getIcon(personFill)}
+              </Flex>
+            </Tooltip>
+          </Box>
+        )}
       </PopoverTrigger>
       <Portal>
         <Box w="full" h="full" zIndex={-2}>

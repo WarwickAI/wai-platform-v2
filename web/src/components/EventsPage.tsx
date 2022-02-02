@@ -5,6 +5,7 @@ import {
   Switch,
   Flex,
   Badge,
+  Box,
 } from "@chakra-ui/react";
 import {
   RegularCourseFragment,
@@ -44,19 +45,19 @@ const EventsPage: React.FC<EventsPageProps> = ({
 
   return (
     <Dashboard
-      title={capitalizeFirstLetter(eventType)}
+      title={capitalizeFirstLetter(eventType) + "s"}
       options={
         userDetails?.role === "exec" ? (
           <HStack spacing={4}>
-            <HStack>
-              <FormLabel htmlFor="showAll">Show hidden</FormLabel>
+            <Flex flexDirection="column" alignItems="center">
+              <FormLabel htmlFor="showAll" m={0}>Show hidden</FormLabel>
               <Switch
                 id="showAll"
                 isChecked={showHidden}
                 onChange={(e) => setShowHidden(e.target.checked)}
               />
-            </HStack>
-            <Button variant="primary" onClick={() => handleCreate()}>
+            </Flex>
+            <Button variant="admin" onClick={() => handleCreate()}>
               Create
             </Button>
           </HStack>
@@ -78,6 +79,7 @@ const EventsPage: React.FC<EventsPageProps> = ({
                     <Badge
                       key={tag.title}
                       backgroundColor={tag.color}
+                      mr={2}
                       borderRadius="lg"
                     >
                       {tag.title}
