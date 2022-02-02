@@ -57,7 +57,7 @@ const Blog = () => {
                     key={category}
                     colorScheme="green"
                     borderRadius="lg"
-                    marginRight={2}
+                    mr={2}
                   >
                     {category}
                   </Badge>

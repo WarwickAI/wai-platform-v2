@@ -111,7 +111,7 @@ const TagField: React.FC<TagFieldProps> = (props) => {
                   key={tag.title}
                   onClick={() => props.handleAddTag(tag)}
                   backgroundColor={tag.color}
-                  mx={2}
+                  mr={2}
                   borderRadius="lg"
                 >
                   {tag.title}

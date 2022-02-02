@@ -30,7 +30,6 @@ import {
   import { useLogoutMutation, useMeQuery } from "../generated/graphql";
   import { setAccessToken } from "../utils/accesToken";
   import { isServer } from "../utils/isServer";
-  import { PageDesktop } from "./Page";
   
   const DRAWER_WIDTH = 280;
   
