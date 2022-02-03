@@ -21,7 +21,7 @@ const Card: React.FC<CardProps> = (props) => {
 
   return (
     <Box
-      maxW="sm"
+      // maxW="sm"
       h={96}
       borderWidth={props.backgroundImg ? 0 : 1}
       borderRadius="2xl"
