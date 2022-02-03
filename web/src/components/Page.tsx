@@ -4,6 +4,7 @@ import {
   Heading,
   HStack,
   useBreakpointValue,
+  Image,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import React from "react";
@@ -13,6 +14,7 @@ import NavBarMobile from "./NavBarMobile";
 interface PageProps {
   title: string;
   coverImg?: string;
+  iconImg?: string;
   options?: JSX.Element;
   tags?: JSX.Element;
 }
@@ -49,8 +51,17 @@ const Page: React.FC<PageProps> = (props) => {
             pt={coverImg ? 10 : isMobile ? 6 : 8}
             pb={coverImg ? 5 : 4}
           >
+            {props.iconImg && (
+              <Image
+                src={props.iconImg}
+                alt="Page Icon"
+                width={24}
+                mb={4}
+                mt={props.coverImg ? -20 : 0}
+              />
+            )}
             {props.tags}
-            <Flex 
+            <Flex
               flexDirection={isMobile ? "column" : "row"}
               justifyContent="space-between"
             >

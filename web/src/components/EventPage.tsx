@@ -36,6 +36,7 @@ const EventPage: React.FC<EventPageProps> = ({
     <Dashboard
       title={eventDetails.title}
       coverImg={eventDetails.coverImg}
+      iconImg={eventDetails.iconImg}
       tags={
         <Flex mb={2}>
           {eventDetails.tags.map((tag) => (
