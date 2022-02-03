@@ -38,12 +38,13 @@ const EventPage: React.FC<EventPageProps> = ({
       coverImg={eventDetails.coverImg}
       iconImg={eventDetails.iconImg}
       tags={
-        <Flex mb={2}>
+        <Flex mb={2} flexWrap="wrap">
           {eventDetails.tags.map((tag) => (
             <Badge
               key={tag.title}
               backgroundColor={tag.color}
               mr={2}
+              mb={2}
               borderRadius="lg"
             >
               {tag.title}
