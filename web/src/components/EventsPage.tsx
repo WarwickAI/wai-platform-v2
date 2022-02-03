@@ -74,12 +74,13 @@ const EventsPage: React.FC<EventsPageProps> = ({
               title={title}
               backgroundImg={previewImg}
               description={
-                <Flex>
+                <Flex flexWrap="wrap">
                   {tags.map((tag) => (
                     <Badge
                       key={tag.title}
                       backgroundColor={tag.color}
                       mr={2}
+                      mb={2}
                       borderRadius="lg"
                     >
                       {tag.title}
