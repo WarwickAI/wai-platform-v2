@@ -105,13 +105,14 @@ const TagField: React.FC<TagFieldProps> = (props) => {
           <PopoverCloseButton />
           <PopoverHeader>Select an Existing Tag</PopoverHeader>
           <PopoverBody>
-            <Flex>
+            <Flex flexDirection="row" flexWrap="wrap">
               {tags?.tags.map((tag) => (
                 <Badge
                   key={tag.title}
                   onClick={() => props.handleAddTag(tag)}
                   backgroundColor={tag.color}
-                  mx={2}
+                  mr={2}
+                  mb={2}
                   borderRadius="lg"
                 >
                   {tag.title}
@@ -121,7 +122,7 @@ const TagField: React.FC<TagFieldProps> = (props) => {
           </PopoverBody>
         </PopoverContent>
       </Popover>
-      <Flex mt={4}>
+      <Flex mt={4} flexWrap="wrap">
         {props.tagsSelected.map((tag) => (
           <Badge
             key={tag.title}
@@ -130,6 +131,7 @@ const TagField: React.FC<TagFieldProps> = (props) => {
               props.handleRemoveTag(tag);
             }}
             mx={2}
+            mb={2}
             borderRadius="lg"
           >
             {tag.title}

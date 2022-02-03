@@ -63,6 +63,12 @@ const theme = extendTheme({
             bg: "primary.dark",
           },
         },
+        admin: {
+          bg: "rgb(99, 115, 129)",
+          "&:hover": {
+            bg: "gray"
+          }
+        }
       },
     },
   },
