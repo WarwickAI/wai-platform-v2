@@ -105,13 +105,14 @@ const TagField: React.FC<TagFieldProps> = (props) => {
           <PopoverCloseButton />
           <PopoverHeader>Select an Existing Tag</PopoverHeader>
           <PopoverBody>
-            <Flex>
+            <Flex flexDirection="row" flexWrap="wrap">
               {tags?.tags.map((tag) => (
                 <Badge
                   key={tag.title}
                   onClick={() => props.handleAddTag(tag)}
                   backgroundColor={tag.color}
                   mr={2}
+                  mb={2}
                   borderRadius="lg"
                 >
                   {tag.title}
