@@ -39,23 +39,23 @@ const main = async () => {
   //   entities: [User, Project]
   // })
 
-  const conn = await createConnection({
-    type: 'postgres',
-    url: process.env.DATABASE_URL,
-    logging: true,
-    synchronize: false,
-    migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag]
-  })
-
   // const conn = await createConnection({
-  //   type: "postgres",
+  //   type: 'postgres',
   //   url: process.env.DATABASE_URL,
   //   logging: true,
-  //   synchronize: true,
-  //   migrations: [],
-  //   entities: [User, Project, Talk, Course, Tutorial, Merch, Tag],
-  // });
+  //   synchronize: false,
+  //   migrations: [path.join(__dirname, "./migrations/*")],
+  //   entities: [User, Project, Talk, Course, Tutorial, Merch, Tag]
+  // })
+
+  const conn = await createConnection({
+    type: "postgres",
+    url: process.env.DATABASE_URL,
+    logging: true,
+    synchronize: true,
+    migrations: [],
+    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag],
+  });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
 

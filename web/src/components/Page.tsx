@@ -48,7 +48,7 @@ const Page: React.FC<PageProps> = (props) => {
           <Box
             px={[20, 20, 20, 28, 36, 48]}
             backgroundColor="rgba(255, 255, 255, 0.9)"
-            pt={coverImg ? 10 : isMobile ? 6 : 8}
+            pt={coverImg ? 10 : isMobile ? 4 : 8}
             pb={coverImg ? 5 : 4}
           >
             {props.iconImg && (
@@ -72,7 +72,7 @@ const Page: React.FC<PageProps> = (props) => {
             </Flex>
           </Box>
           <Box
-            px={[20, 20, 20, 28, 36, 48]}
+            px={[10, 10, 20, 28, 36, 48]}
             pt={coverImg ? (isMobile ? 4 : 14) : isMobile ? 4 : 8}
             pb={coverImg ? 20 : 12}
             backgroundColor="white"
