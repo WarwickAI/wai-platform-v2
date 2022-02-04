@@ -31,7 +31,6 @@ const Merch: React.FC<MerchProps> = ({}) => {
   return (
     <Dashboard
       title={data?.merchByShortName ? data?.merchByShortName.title : ""}
-      narrow={true}
       options={
         <HStack>
           {userInfo?.me?.role === "exec" && (

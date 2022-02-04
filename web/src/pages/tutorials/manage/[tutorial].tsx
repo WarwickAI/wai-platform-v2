@@ -1,117 +1,54 @@
 import React, { useEffect } from "react";
-import Dashboard from "../../../components/Dashboard";
-import { Formik, Form } from "formik";
-import { toErrorMap } from "../../../utils/toErrorMap";
-import { InputField } from "../../../components/InputField";
-import {
-  Box,
-  Button,
-  Heading,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { createUrqlClient } from "../../../utils/createUrqlClient";
-import { withUrqlClient } from "next-urql";
 import {
-  useEditTutorialMutation,
   useTutorialByShortNameQuery,
   useTutorialUsersQuery,
   useRemoveUserFromTutorialMutation,
 } from "../../../generated/graphql";
 import { isServer } from "../../../utils/isServer";
+import ManageEvent from "../../../components/ManageEvent";
+import Dashboard from "../../../components/Dashboard";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../../../utils/createUrqlClient";
 
-interface EditTutorialProps {}
+interface ManageTutorialProps {}
 
-const EditTutorial: React.FC<EditTutorialProps> = ({}) => {
+const ManageTutorial: React.FC<ManageTutorialProps> = ({}) => {
   const router = useRouter();
   const { tutorial } = router.query;
-  const [{ data }] = useTutorialByShortNameQuery({
+  const [{ data: eventData }] = useTutorialByShortNameQuery({
     variables: { shortName: tutorial as string },
   });
-  const [{ data: tutorialUsers, stale, fetching }, fetchTutorialUsers] = useTutorialUsersQuery({
+  const [
+    { data: eventUsers, stale, fetching },
+    fetchEventusers,
+  ] = useTutorialUsersQuery({
     variables: { shortName: tutorial as string },
     pause: isServer(),
   });
-  const [, removeUserFromTutorial] = useRemoveUserFromTutorialMutation();
+  const [, removeUserFromEvent] = useRemoveUserFromTutorialMutation();
 
   useEffect(() => {
     if (stale) {
-      fetchTutorialUsers();
+      fetchEventusers();
     }
-  }, [fetchTutorialUsers, stale])
+  }, [fetchEventusers, stale]);
 
-  const copyEmails = () => {
-    if (!fetching && tutorialUsers) {
-      const emails: string[] = [];
-      tutorialUsers.tutorialUsers.forEach((user) => {
-        emails.push(user.email);
-      });
-
-      var csvString: string = "";
-
-      emails.forEach((email) => {
-        csvString += `${email},`;
-      });
-
-      if (csvString.length > 0) {
-        csvString = csvString.slice(0, -1);
-      }
-
-      navigator.clipboard.writeText(csvString);
-    }
-  };
-
-  return (
-    <Dashboard title="Manage Tutorial" narrow={true}
-    options={
-      <Button variant="primary" onClick={copyEmails}>
-        Copy Emails (CSV)
-      </Button>
-    }>
-      <Heading size="md">Members</Heading>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>First Name</Th>
-            <Th>Last Name</Th>
-            <Th>Email</Th>
-            <Th></Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {tutorialUsers?.tutorialUsers.map((user) => {
-            return (
-              <Tr key={user.id}>
-                <Td>{user.firstName}</Td>
-                <Td>{user.lastName}</Td>
-                <Td>{user.email}</Td>
-                <Td>
-                  <Button
-                    variant="primary"
-                    onClick={async () => {
-                      await removeUserFromTutorial({
-                        userId: user.id,
-                        shortName: tutorial as string,
-                      });
-                      router.reload();
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
-    </Dashboard>
-  );
+  if (eventData?.tutorialByShortName && eventUsers?.tutorialUsers) {
+    return (
+      <ManageEvent
+        eventType="tutorial"
+        eventDetails={eventData.tutorialByShortName}
+        eventUsers={eventUsers.tutorialUsers}
+        handleRemoveUserFromEvent={async (userId, eventId) => {
+          await removeUserFromEvent({ userId, tutorialId: eventId });
+          router.reload();
+        }}
+      />
+    );
+  } else {
+    return <Dashboard title="Loading tutorial" />;
+  }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(EditTutorial);
+export default withUrqlClient(createUrqlClient, { ssr: false })(ManageTutorial);
