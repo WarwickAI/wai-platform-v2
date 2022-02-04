@@ -114,7 +114,7 @@ const NavBarMobile: React.FC<NavBarMobileProps> = () => {
 
   return (
     <>
-      <Box position="fixed" mx={4} my={4} zIndex={4}>
+      <Box position="fixed" mx={2} my={2} zIndex={4}>
         <Button onClick={() => setOpen(true)} variant="primary">
           <HamburgerIcon />
         </Button>
