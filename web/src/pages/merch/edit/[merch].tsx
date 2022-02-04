@@ -23,7 +23,7 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
   });
   const [, editMerch] = useEditMerchMutation();
   return (
-    <Dashboard title="Edit Merch" narrow={true}>
+    <Dashboard title="Edit Merch">
       <Formik
         initialValues={{
           title: data?.merchByShortName?.title || "",

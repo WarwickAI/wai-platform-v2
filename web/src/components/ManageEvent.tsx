@@ -58,7 +58,6 @@ const ManageEvent: React.FC<ManageEventProps> = ({
   return (
     <Dashboard
       title={`Manage ${capitalizeFirstLetter(eventType)}`}
-      narrow={true}
       options={
         <Button variant="primary" onClick={copyEmails}>
           Copy Emails (CSV)
