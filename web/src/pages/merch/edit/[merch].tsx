@@ -3,15 +3,24 @@ import Dashboard from "../../../components/Dashboard";
 import { Formik, Form } from "formik";
 import { toErrorMap } from "../../../utils/toErrorMap";
 import { InputField } from "../../../components/InputField";
-import { Badge, Box, Button, Heading, HStack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Tooltip,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
-import ReactMarkdown from "react-markdown";
 import {
   useEditMerchMutation,
   useMerchByShortNameQuery,
 } from "../../../generated/graphql";
+import infoOutline from "@iconify/icons-eva/info-outline";
+import { getIcon } from "../../../components/SidebarConfig";
 
 interface EditMerchProps {}
 
@@ -52,12 +61,14 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
               name="title"
               placeholder="title"
               label="Title"
+              hint="Main title for the merch. Must be at least 3 characters."
             ></InputField>
             <Box mt={4}>
               <InputField
                 name="shortName"
                 placeholder="short name"
                 label="Short Name"
+                hint="Name used for the URL and as a unique identifier. Must be unique, not contain '/', 'space' or '?' and be at least 3 characters."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -67,6 +78,7 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
                 label="Description"
                 type="textarea"
                 renderMarkdown
+                hint="Markdown description rendered on the merch page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -74,6 +86,7 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
                 name="image"
                 placeholder="image"
                 label="Image"
+                hint="URL for the image used for the card (on the page showing all merch items) and the merch item page itself. Should be roughly portrait."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -81,10 +94,20 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
                 name="display"
                 label="Display"
                 type="switch"
+                hint="Whether to display to normal users or hide."
               ></InputField>
             </Box>
             <Box mt={4}>
-              <Heading size="md">Variants</Heading>
+              <Flex>
+                <Heading size="md">Variants</Heading>
+                <Tooltip
+                  label={
+                    "Add a variant (usally a size) of the merch item with its own payment link. Click on a variant to remove it."
+                  }
+                >
+                  {getIcon(infoOutline)}
+                </Tooltip>
+              </Flex>
               <Formik
                 initialValues={{
                   name: "",
@@ -113,6 +136,7 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
                           name="name"
                           placeholder="name"
                           label="Name"
+                          hint="Name of the variant (usually the size)."
                         />
                       </Box>
                       <Box w={60}>
@@ -120,6 +144,7 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
                           name="link"
                           placeholder="link"
                           label="Link"
+                          hint="Payment URL link for the variant. Should be to the shopify payment page for this variant of this product."
                         />
                       </Box>
                       <Button
