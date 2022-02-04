@@ -43,8 +43,16 @@ const TagField: React.FC<TagFieldProps> = (props) => {
   return (
     <>
       <Flex>
-        <Heading size="md" mr={4}>Tags</Heading>
-        <Tooltip label={"Add or create new tags for the event. Use an exisiting tag if possible since you are not allowed duplicate tag names and will ensure consistency."}>{getIcon(infoOutline)}</Tooltip>
+        <Heading size="md" mr={4}>
+          Tags
+        </Heading>
+        <Tooltip
+          label={
+            "Add or create new tags for the event. Use an exisiting tag if possible since you are not allowed duplicate tag names and will ensure consistency."
+          }
+        >
+          {getIcon(infoOutline)}
+        </Tooltip>
       </Flex>
       <Formik
         initialValues={{ title: "", color: "" }}

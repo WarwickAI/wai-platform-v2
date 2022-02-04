@@ -7,19 +7,17 @@ import {
   Badge,
   Box,
   Button,
+  Flex,
   Heading,
   HStack,
-  Stack,
-  Text,
+  Tooltip,
 } from "@chakra-ui/react";
-import {
-  useCreateCourseMutation,
-  useCreateMerchMutation,
-} from "../../generated/graphql";
+import { useCreateMerchMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
-import ReactMarkdown from "react-markdown";
+import infoOutline from "@iconify/icons-eva/info-outline";
+import { getIcon } from "../../components/SidebarConfig";
 
 interface CreateMerchProps {}
 
@@ -55,12 +53,14 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
               name="title"
               placeholder="title"
               label="Title"
+              hint="Main title for the merch. Must be at least 3 characters."
             ></InputField>
             <Box mt={4}>
               <InputField
                 name="shortName"
                 placeholder="short name"
                 label="Short Name"
+                hint="Name used for the URL and as a unique identifier. Must be unique, not contain '/', 'space' or '?' and be at least 3 characters."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -70,6 +70,7 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
                 label="Description"
                 type="textarea"
                 renderMarkdown
+                hint="Markdown description rendered on the merch page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -77,6 +78,7 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
                 name="image"
                 placeholder="image"
                 label="Image"
+                hint="URL for the image used for the card (on the page showing all merch items) and the merch item page itself. Should be roughly portrait."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -84,10 +86,20 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
                 name="display"
                 label="Display"
                 type="switch"
+                hint="Whether to display to normal users or hide."
               ></InputField>
             </Box>
             <Box mt={4}>
-              <Heading size="md">Variants</Heading>
+              <Flex>
+                <Heading size="md">Variants</Heading>
+                <Tooltip
+                  label={
+                    "Add a variant (usally a size) of the merch item with its own payment link. Click on a variant to remove it."
+                  }
+                >
+                  {getIcon(infoOutline)}
+                </Tooltip>
+              </Flex>
               <Formik
                 initialValues={{
                   name: "",
@@ -116,6 +128,7 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
                           name="name"
                           placeholder="name"
                           label="Name"
+                          hint="Name of the variant (usually the size)."
                         />
                       </Box>
                       <Box w={60}>
@@ -123,6 +136,7 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
                           name="link"
                           placeholder="link"
                           label="Link"
+                          hint="Payment URL link for the variant. Should be to the shopify payment page for this variant of this product."
                         />
                       </Box>
                       <Button
