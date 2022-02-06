@@ -1,0 +1,23 @@
+query RoleManifestos {
+  roleManifestos {
+    ...RegularRoleManifesto
+  }
+}
+
+query AllRoleManifestos {
+  allRoleManifestos {
+    ...RegularRoleManifesto
+  }
+}
+
+query GetRoleManifesto($shortName: String, $manifestoId: Float) {
+  getRoleManifesto(shortName: $shortName, manifestoId: $manifestoId) {
+    ...RegularRoleManifesto
+  }
+}
+
+query RoleManifestoElectionRole($shortName: String, $manifestoId: Float) {
+  roleManifestoElectionRole(shortName: $shortName, manifestoId: $manifestoId) {
+    ...RegularElectionRole
+  }
+}

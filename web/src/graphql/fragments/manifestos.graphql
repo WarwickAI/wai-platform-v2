@@ -1,0 +1,31 @@
+fragment RegularRoleManifesto on RoleManifesto {
+    id
+    createdAt
+    updatedAt
+    display
+    title
+    shortName
+    description
+    img
+}
+
+fragment RegularRoleManifestoWithElectionRole on RoleManifesto {
+    id
+    createdAt
+    updatedAt
+    display
+    title
+    shortName
+    description
+    img
+    role {
+      id
+      shortName
+      createdAt
+      updatedAt
+      display
+      title
+      description
+      previewImg
+    }
+}

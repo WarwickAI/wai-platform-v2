@@ -1,0 +1,23 @@
+mutation CreateRoleManifesto($manifestoInfo: RoleManifestoInput!, $roleId: Float, $roleShortName: String) {
+  createRoleManifesto(manifestoInfo: $manifestoInfo, roleId: $roleId, roleShortName: $roleShortName) {
+    errors {
+      field
+      message
+    }
+    manifesto {
+      id
+    }
+  }
+}
+
+mutation EditRoleManifesto($manifestoInfo: RoleManifestoInput!, $editRoleManifestoId: Float!) {
+  editRoleManifesto(manifestoInfo: $manifestoInfo, id: $editRoleManifestoId) {
+    errors {
+      message
+      field
+    }
+    manifesto {
+      ...RegularRoleManifesto
+    }
+  }
+}

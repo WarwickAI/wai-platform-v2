@@ -1,0 +1,30 @@
+fragment RegularElectionRole on ElectionRole {
+  id
+  createdAt
+  updatedAt
+  display
+  title
+  shortName
+  description
+  previewImg
+}
+
+fragment RegularElectionRoleWithManifestos on ElectionRole {
+  id
+  createdAt
+  updatedAt
+  display
+  title
+  shortName
+  description
+  previewImg
+  manifestos {
+    id
+    display
+    createdAt
+    updatedAt
+    title
+    description
+    shortName
+  }
+}
