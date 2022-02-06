@@ -6,6 +6,7 @@ import messageSquareFill from "@iconify/icons-eva/message-square-fill";
 import bookOpenFill from "@iconify/icons-eva/book-open-fill";
 import calendarFill from "@iconify/icons-eva/calendar-fill";
 import shoppingCartFill from "@iconify/icons-eva/shopping-cart-fill";
+import awardFill from "@iconify/icons-eva/award-fill";
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,11 @@ const sidebarConfig = [
     title: "merch",
     path: "/merch",
     icon: getIcon(shoppingCartFill),
+  },
+  {
+    title: "elections",
+    path: "/elections",
+    icon: getIcon(awardFill),
   },
 ];
 

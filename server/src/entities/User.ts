@@ -52,6 +52,14 @@ export class User extends BaseEntity {
   @ManyToMany(() => Talk, project => project.users)
   talks: Talk[]
 
+  @Field({ defaultValue: false })
+  @Column({ default: false })
+  isMember: boolean;
+
+  @Field(() => String, { defaultValue: new Date() })
+  @Column({ default: new Date() })
+  memberFromDate: Date;
+
   @Field(() => [Course])
   @ManyToMany(() => Course, course => course.users)
   courses: Course[]
@@ -59,4 +67,5 @@ export class User extends BaseEntity {
   @Field(() => [Tutorial])
   @ManyToMany(() => Tutorial, tutorial => tutorial.users)
   tutorials: Tutorial[]
+
 }

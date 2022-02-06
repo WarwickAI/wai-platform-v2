@@ -117,4 +117,10 @@ export class UserResolver {
     }
     return user;
   }
+
+  // @Query(() => Boolean)
+  // @UseMiddleware(isAuth, isExec)
+  // async updateSUMembershipDetails(@Ctx() { payload }: MyContext) {
+    
+  // }
 }
