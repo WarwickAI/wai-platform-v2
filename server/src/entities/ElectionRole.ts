@@ -37,6 +37,14 @@ export class ElectionRole extends BaseEntity {
     @Column({ default: "" })
     previewImg: string;
 
+    @Field({ defaultValue: false })
+    @Column({ default: false })
+    canSubmitManifesto: boolean;
+
+    @Field({ defaultValue: "" })
+    @Column({ default: "" })
+    submitManifestoUrl: string;
+
     @Field(() => [RoleManifesto])
     @OneToMany(() => RoleManifesto, manifesto => manifesto.role)
     manifestos: RoleManifesto[];
