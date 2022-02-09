@@ -41,6 +41,7 @@ export type CourseResponse = {
 
 export type ElectionRole = {
   __typename?: 'ElectionRole';
+  canSubmitManifesto?: Maybe<Scalars['Boolean']>;
   createdAt: Scalars['String'];
   description: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
@@ -48,6 +49,7 @@ export type ElectionRole = {
   manifestos: Array<RoleManifesto>;
   previewImg?: Maybe<Scalars['String']>;
   shortName: Scalars['String'];
+  submitManifestoUrl?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -554,9 +556,9 @@ export type RegularUserFragment = { __typename?: 'User', id: number, firstName: 
 
 export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
 
-export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined };
+export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined };
 
-export type RegularElectionRoleWithManifestosFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, manifestos: Array<{ __typename?: 'RoleManifesto', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
+export type RegularElectionRoleWithManifestosFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined, manifestos: Array<{ __typename?: 'RoleManifesto', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
 
 export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
@@ -609,7 +611,7 @@ export type CreateElectionRoleMutationVariables = Exact<{
 }>;
 
 
-export type CreateElectionRoleMutation = { __typename?: 'Mutation', createElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined } } };
+export type CreateElectionRoleMutation = { __typename?: 'Mutation', createElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined } } };
 
 export type EditElectionRoleMutationVariables = Exact<{
   roleInfo: ElectionRoleInput;
@@ -617,7 +619,7 @@ export type EditElectionRoleMutationVariables = Exact<{
 }>;
 
 
-export type EditElectionRoleMutation = { __typename?: 'Mutation', editElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined } } };
+export type EditElectionRoleMutation = { __typename?: 'Mutation', editElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined } } };
 
 export type CreateRoleManifestoMutationVariables = Exact<{
   manifestoInfo: RoleManifestoInput;
@@ -800,12 +802,12 @@ export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __ty
 export type ElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ElectionRolesQuery = { __typename?: 'Query', electionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined }> };
+export type ElectionRolesQuery = { __typename?: 'Query', electionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined }> };
 
 export type AllElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllElectionRolesQuery = { __typename?: 'Query', allElectionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined }> };
+export type AllElectionRolesQuery = { __typename?: 'Query', allElectionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined }> };
 
 export type ElectionRoleManifestosQueryVariables = Exact<{
   shortName?: InputMaybe<Scalars['String']>;
@@ -821,7 +823,7 @@ export type GetElectionRoleQueryVariables = Exact<{
 }>;
 
 
-export type GetElectionRoleQuery = { __typename?: 'Query', getElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, manifestos: Array<{ __typename?: 'RoleManifesto', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> } | null | undefined };
+export type GetElectionRoleQuery = { __typename?: 'Query', getElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined, manifestos: Array<{ __typename?: 'RoleManifesto', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> } | null | undefined };
 
 export type RoleManifestosQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -847,7 +849,7 @@ export type RoleManifestoElectionRoleQueryVariables = Exact<{
 }>;
 
 
-export type RoleManifestoElectionRoleQuery = { __typename?: 'Query', roleManifestoElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined } | null | undefined };
+export type RoleManifestoElectionRoleQuery = { __typename?: 'Query', roleManifestoElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, previewImg?: string | null | undefined, canSubmitManifesto?: boolean | null | undefined, submitManifestoUrl?: string | null | undefined } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1000,6 +1002,8 @@ export const RegularElectionRoleFragmentDoc = gql`
   shortName
   description
   previewImg
+  canSubmitManifesto
+  submitManifestoUrl
 }
     `;
 export const RegularElectionRoleWithManifestosFragmentDoc = gql`
@@ -1012,6 +1016,8 @@ export const RegularElectionRoleWithManifestosFragmentDoc = gql`
   shortName
   description
   previewImg
+  canSubmitManifesto
+  submitManifestoUrl
   manifestos {
     id
     display

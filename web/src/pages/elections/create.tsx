@@ -77,6 +77,22 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
               ></InputField>
             </Box>
             <Box mt={4}>
+              <InputField
+                name="canSubmitManifesto"
+                label="Can Apply"
+                type="switch"
+                hint="Whether members can apply for this role."
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="submitManifestoUrl"
+                placeholder="apply redirect url"
+                label="Apply Redirect URL"
+                hint="URL to redirect users to to apply for this role."
+              ></InputField>
+            </Box>
+            <Box mt={4}>
               <Button
                 type="submit"
                 variant="primary"

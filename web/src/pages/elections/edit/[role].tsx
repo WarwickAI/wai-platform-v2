@@ -32,7 +32,10 @@ const EditElectionRole: React.FC<EditElectionRoleProps> = ({}) => {
         <Formik
           initialValues={setupEditValues(roleDetails.getElectionRole)}
           onSubmit={async (values, { setErrors }) => {
-            const response = await editElectionRole({ roleInfo: values, editElectionRoleId: roleDetails.getElectionRole!.id });
+            const response = await editElectionRole({
+              roleInfo: values,
+              editElectionRoleId: roleDetails.getElectionRole!.id,
+            });
             if (!response) {
               return;
             } else if (response.data?.editElectionRole.errors) {
@@ -83,6 +86,22 @@ const EditElectionRole: React.FC<EditElectionRoleProps> = ({}) => {
                   placeholder="preview image"
                   label="Preview Image"
                   hint="URL for the image used for the card (on the page showing all events). Should be roughly portrait."
+                ></InputField>
+              </Box>
+              <Box mt={4}>
+                <InputField
+                  name="canSubmitManifesto"
+                  label="Can Apply"
+                  type="switch"
+                  hint="Whether members can apply for this role."
+                ></InputField>
+              </Box>
+              <Box mt={4}>
+                <InputField
+                  name="submitManifestoUrl"
+                  placeholder="apply redirect url"
+                  label="Apply Redirect URL"
+                  hint="URL to redirect users to to apply for this role."
                 ></InputField>
               </Box>
               <Box mt={4}>
