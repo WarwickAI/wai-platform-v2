@@ -6,6 +6,8 @@ var initalVals = {
     shortName: "",
     description: "",
     previewImg: "",
+    canSubmitManifesto: false,
+    submitManifestoUrl: ""
 }
 
 export const setupEditValues = (roleDetails: RegularElectionRoleFragment) => {
@@ -15,6 +17,8 @@ export const setupEditValues = (roleDetails: RegularElectionRoleFragment) => {
         shortName: roleDetails.shortName || "",
         description: roleDetails.description || "",
         previewImg: roleDetails.previewImg || "",
+        canSubmitManifesto: roleDetails.canSubmitManifesto || false,
+        submitManifestoUrl: roleDetails.submitManifestoUrl || ""
     }
 }
 

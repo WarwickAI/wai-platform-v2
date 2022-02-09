@@ -36,6 +36,21 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
         title={roleDetails.getElectionRole.title}
         options={
           <HStack>
+            {roleDetails.getElectionRole.canSubmitManifesto &&
+              roleDetails.getElectionRole.submitManifestoUrl && (
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    router.push(
+                      roleDetails.getElectionRole?.submitManifestoUrl
+                        ? roleDetails.getElectionRole.submitManifestoUrl
+                        : ""
+                    )
+                  }
+                >
+                  Apply
+                </Button>
+              )}
             {userInfo?.me?.role === "exec" && (
               <Button
                 variant="admin"
@@ -52,7 +67,9 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
             {userInfo?.me?.role === "exec" && (
               <Button
                 variant="admin"
-                onClick={() => router.push(`/elections/${role}/manifestos/create`)}
+                onClick={() =>
+                  router.push(`/elections/${role}/manifestos/create`)
+                }
               >
                 Add Manifesto
               </Button>

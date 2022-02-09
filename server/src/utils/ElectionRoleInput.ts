@@ -16,4 +16,10 @@ export class ElectionRoleInput {
 
   @Field()
   previewImg: string;
+
+  @Field()
+  canSubmitManifesto: boolean;
+
+  @Field()
+  submitManifestoUrl: string;
 }
