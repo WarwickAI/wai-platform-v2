@@ -17,3 +17,18 @@ export class RoleManifestoInput {
   @Field()
   img: string;
 }
+
+@InputType()
+export class ApplyRoleInput {
+  @Field()
+  title: string;
+
+  @Field()
+  shortName: string;
+
+  @Field()
+  description: string;
+
+  @Field()
+  img: string;
+}

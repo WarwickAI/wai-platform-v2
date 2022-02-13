@@ -6,6 +6,7 @@ fragment RegularElectionRole on ElectionRole {
   title
   shortName
   description
+  manifestoTemplate
   previewImg
   canSubmitManifesto
   submitManifestoUrl
@@ -19,6 +20,7 @@ fragment RegularElectionRoleWithManifestos on ElectionRole {
   title
   shortName
   description
+  manifestoTemplate
   previewImg
   canSubmitManifesto
   submitManifestoUrl

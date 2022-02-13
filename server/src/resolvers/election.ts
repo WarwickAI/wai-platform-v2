@@ -91,6 +91,21 @@ export class ElectionResolver {
         if (!role) {
             return [];
         }
+        const publicManifestos = role.manifestos.filter((manifesto) => manifesto.display);
+        return publicManifestos;
+    }
+
+    @Query(() => [RoleManifesto])
+    @UseMiddleware(isAuth, isExec)
+    async electionRoleAllManifestos(
+        @Arg("roleId", { nullable: true }) roleId?: number,
+        @Arg("shortName", { nullable: true }) shortName?: string
+    ): Promise<RoleManifesto[]> {
+        const role = await ElectionRole.getByIdOrShortName(roleId, shortName, true);
+
+        if (!role) {
+            return [];
+        }
         return role.manifestos;
     }
 }

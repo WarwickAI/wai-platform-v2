@@ -3,6 +3,7 @@ import Dashboard from "../../../../components/Dashboard";
 import {
   useCreateElectionRoleMutation,
   useCreateRoleManifestoMutation,
+  useGetElectionRoleQuery,
 } from "../../../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../../utils/createUrqlClient";
@@ -18,12 +19,20 @@ interface CreateRoleManifestoProps {}
 const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
   const router = useRouter();
   const { role } = router.query;
+  const [{ data: roleInfo }] = useGetElectionRoleQuery({
+    variables: { shortName: role as string },
+  });
   const [, createRoleManifesto] = useCreateRoleManifestoMutation();
 
   return (
     <Dashboard title="Create Election Role">
       <Formik
-        initialValues={roleManifestoInitialValues}
+        initialValues={{
+          ...roleManifestoInitialValues,
+          description: roleInfo?.getElectionRole?.manifestoTemplate
+            ? roleInfo.getElectionRole.manifestoTemplate
+            : "",
+        }}
         onSubmit={async (values, { setErrors }) => {
           const response = await createRoleManifesto({
             manifestoInfo: values,
@@ -45,14 +54,14 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
               name="title"
               placeholder="title"
               label="Title"
-              hint="Main title for the event. Must be at least 3 characters."
+              hint="Main title for the manifesto, probably use their full name. Must be at least 3 characters."
             ></InputField>
             <Box mt={4}>
               <InputField
                 name="shortName"
                 placeholder="short name"
                 label="Short Name"
-                hint="Name used for the URL and as a unique identifier. Must be unique, not contain '/', 'space' or '?' and be at least 3 characters."
+                hint="Name used for the URL and as a unique identifier, probably the role followed by their name. Must be unique, not contain '/', 'space' or '?' and be at least 3 characters."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -70,7 +79,7 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
                 label="Description"
                 type="textarea"
                 renderMarkdown
-                hint="Markdown description rendered on the event page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+                hint="Markdown description rendered on the manifesto page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -78,7 +87,7 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
                 name="img"
                 placeholder="member image"
                 label="Member Image"
-                hint="URL for the image used for the card (on the page showing all events). Should be roughly portrait."
+                hint="URL for the applicants image. Should be roughly square."
               ></InputField>
             </Box>
             <Box mt={4}>

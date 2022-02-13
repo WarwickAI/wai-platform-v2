@@ -11,3 +11,9 @@ query Users {
     role
   }
 }
+
+query GetUserRoleApplications {
+  getUserRoleApplications {
+    ...RegularElectionRole
+  }
+}
