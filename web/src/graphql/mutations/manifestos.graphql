@@ -1,3 +1,15 @@
+mutation RoleApply($roleShortName: String, $roleId: Float, $manifestoInfo: ApplyRoleInput!) {
+  roleApply(roleShortName: $roleShortName, roleId: $roleId, manifestoInfo: $manifestoInfo) {
+    errors {
+      message
+      field
+    }
+    manifesto {
+      ...RegularRoleManifesto
+    }
+  }
+}
+
 mutation CreateRoleManifesto($manifestoInfo: RoleManifestoInput!, $roleId: Float, $roleShortName: String) {
   createRoleManifesto(manifestoInfo: $manifestoInfo, roleId: $roleId, roleShortName: $roleShortName) {
     errors {
@@ -5,7 +17,7 @@ mutation CreateRoleManifesto($manifestoInfo: RoleManifestoInput!, $roleId: Float
       message
     }
     manifesto {
-      id
+      ...RegularRoleManifesto
     }
   }
 }

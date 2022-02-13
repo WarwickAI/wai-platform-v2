@@ -12,6 +12,8 @@ import {
 } from "type-graphql";
 import { sendRefreshToken } from "../sendRefreshToken";
 import { isAuth, isExec } from "../isAuth";
+import { RoleManifesto } from "../entities/RoleManifesto";
+import { ElectionRole } from "../entities/ElectionRole";
 
 @ObjectType()
 class FieldError {
@@ -109,7 +111,7 @@ export class UserResolver {
       console.log("access token invalid");
       return null;
     }
-    const user = User.findOne(parseInt(payload.userId), { relations: ["projects", "talks", "courses", "tutorials"] });
+    const user = await User.findOne(parseInt(payload.userId), { relations: ["projects", "talks", "courses", "tutorials"] });
 
     if (!user) {
       console.log("user id in access token invalid");
@@ -118,9 +120,34 @@ export class UserResolver {
     return user;
   }
 
+  @Query(() => [ElectionRole], { nullable: true })
+  @UseMiddleware(isAuth)
+  async getUserRoleApplications(@Ctx() { payload }: MyContext) {
+    if (!payload || !payload.userId) {
+      console.log("access token invalid");
+      return null;
+    }
+    const user = await User.findOne(parseInt(payload.userId), { relations: ["manifestos"] });
+
+    if (!user) {
+      console.log("user id in access token invalid");
+      return null;
+    }
+
+    const roles: ElectionRole[] = [];
+    for (let i = 0; i < user.manifestos.length; i++) {
+      const manifesto = await RoleManifesto.findOne(user.manifestos[i].id, { relations: ["role"] })
+      if (manifesto?.role) {
+        roles.push(manifesto.role)
+      }
+    }
+
+    return roles;
+  }
+
   // @Query(() => Boolean)
   // @UseMiddleware(isAuth, isExec)
   // async updateSUMembershipDetails(@Ctx() { payload }: MyContext) {
-    
+
   // }
 }

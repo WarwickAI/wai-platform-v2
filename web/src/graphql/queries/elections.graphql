@@ -16,6 +16,13 @@ query ElectionRoleManifestos($shortName: String, $roleId: Float) {
   }
 }
 
+query ElectionRoleAllManifestos($shortName: String, $roleId: Float) {
+  electionRoleAllManifestos(shortName: $shortName, roleId: $roleId) {
+    ...RegularRoleManifesto
+  }
+}
+
+
 query GetElectionRole($shortName: String, $roleId: Float) {
   getElectionRole(shortName: $shortName, roleId: $roleId) {
     ...RegularElectionRole
