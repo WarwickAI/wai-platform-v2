@@ -40,7 +40,7 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
               name="title"
               placeholder="title"
               label="Title"
-              hint="Main title for the event. Must be at least 3 characters."
+              hint="Main title for the role. Must be at least 3 characters."
             ></InputField>
             <Box mt={4}>
               <InputField
@@ -65,7 +65,17 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
                 label="Description"
                 type="textarea"
                 renderMarkdown
-                hint="Markdown description rendered on the event page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+                hint="Markdown description rendered at the top of the role's page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+              ></InputField>
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="manifestoTemplate"
+                placeholder="manifesto template"
+                label="Manifesto Template"
+                type="textarea"
+                renderMarkdown
+                hint="Markdown manifesto description template given to applicants. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -73,7 +83,7 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
                 name="previewImg"
                 placeholder="preview image"
                 label="Preview Image"
-                hint="URL for the image used for the card (on the page showing all events). Should be roughly portrait."
+                hint="URL for the image used for the card (on the page showing all roles). Should be roughly portrait."
               ></InputField>
             </Box>
             <Box mt={4}>

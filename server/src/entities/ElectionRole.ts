@@ -32,6 +32,10 @@ export class ElectionRole extends BaseEntity {
     @Field()
     @Column()
     description: string;
+
+    @Field({ defaultValue: "" })
+    @Column({ default: "" })
+    manifestoTemplate: string;
     
     @Field({ defaultValue: "" })
     @Column({ default: "" })

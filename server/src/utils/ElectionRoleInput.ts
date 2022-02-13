@@ -15,6 +15,9 @@ export class ElectionRoleInput {
   description: string;
 
   @Field()
+  manifestoTemplate: string;
+
+  @Field()
   previewImg: string;
 
   @Field()

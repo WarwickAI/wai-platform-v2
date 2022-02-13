@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ElectionRole } from "./ElectionRole";
+import { User } from "./User";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -40,6 +41,10 @@ export class RoleManifesto extends BaseEntity {
     @Field(() => ElectionRole)
     @ManyToOne(() => ElectionRole, role => role.manifestos)
     role: ElectionRole;
+
+    @Field(() => User)
+    @ManyToOne(() => User, user => user.manifestos)
+    user: User;
 
     static async getByIdOrShortName(
         manifestoId?: number,
