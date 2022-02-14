@@ -22,7 +22,7 @@ export class RoleManifestoResponse {
     @Field(() => [FieldError], { nullable: true })
     errors?: FieldError[];
 
-    @Field()
+    @Field(() => RoleManifesto, { nullable: true })
     manifesto?: RoleManifesto;
 }
 
@@ -62,11 +62,27 @@ export class ManifestoResolver {
             return { errors };
         }
 
-        const user = await User.findOne(payload!.userId);
+        const user = await User.findOne(payload!.userId, { relations: ["manifestos"] });
         if (!user) {
             return {
                 errors: [
                     { field: "User ID", message: "No user found with ID" }
+                ]
+            }
+        }
+
+        const roles: ElectionRole[] = [];
+        for (let i = 0; i < user.manifestos.length; i++) {
+            const manifesto = await RoleManifesto.findOne(user.manifestos[i].id, { relations: ["role"] })
+            if (manifesto?.role) {
+                roles.push(manifesto.role)
+            }
+        }
+
+        if (roles.findIndex((role) => roleId ? role.id === roleId : role.shortName === roleShortName) !== -1) {
+            return {
+                errors: [
+                    { field: "User ID", message: "User already applied for role" }
                 ]
             }
         }
