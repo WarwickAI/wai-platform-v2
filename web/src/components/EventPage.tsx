@@ -35,8 +35,8 @@ const EventPage: React.FC<EventPageProps> = ({
   return (
     <Dashboard
       title={eventDetails.title}
-      coverImg={eventDetails.coverImg}
-      iconImg={eventDetails.iconImg}
+      coverImg={eventDetails.coverImg ? eventDetails.coverImg : undefined}
+      iconImg={eventDetails.iconImg ? eventDetails.iconImg : undefined}
       tags={
         <Flex mb={2} flexWrap="wrap">
           {eventDetails.tags.map((tag) => (
@@ -104,7 +104,11 @@ const EventPage: React.FC<EventPageProps> = ({
         </HStack>
       }
     >
-      {<ReactMarkdown>{eventDetails.description}</ReactMarkdown>}
+      {
+        <ReactMarkdown>
+          {eventDetails.description ? eventDetails.description : ""}
+        </ReactMarkdown>
+      }
     </Dashboard>
   );
 };
