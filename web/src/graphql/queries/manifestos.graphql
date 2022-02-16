@@ -1,23 +1,23 @@
-query RoleManifestos {
-  roleManifestos {
-    ...RegularRoleManifesto
+query RoleApplications {
+  roleApplications {
+    ...RegularRoleApplication
   }
 }
 
-query AllRoleManifestos {
-  allRoleManifestos {
-    ...RegularRoleManifesto
+query AllRoleApplications {
+  allRoleApplications {
+    ...RegularRoleApplication
   }
 }
 
-query GetRoleManifesto($shortName: String, $manifestoId: Float) {
-  getRoleManifesto(shortName: $shortName, manifestoId: $manifestoId) {
-    ...RegularRoleManifesto
+query GetRoleApplication($shortName: String, $applicationId: Float) {
+  getRoleApplication(shortName: $shortName, applicationId: $applicationId) {
+    ...RegularRoleApplication
   }
 }
 
-query RoleManifestoElectionRole($shortName: String, $manifestoId: Float) {
-  roleManifestoElectionRole(shortName: $shortName, manifestoId: $manifestoId) {
+query RoleApplicationElectionRole($shortName: String, $applicationId: Float) {
+  roleApplicationElectionRole(shortName: $shortName, applicationId: $applicationId) {
     ...RegularElectionRole
   }
 }

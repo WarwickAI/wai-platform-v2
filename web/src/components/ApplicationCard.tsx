@@ -4,13 +4,13 @@ import React from "react";
 import { useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
-interface ManifestoCardProps {
+interface ApplicationCardProps {
   title: string | JSX.Element;
   redirect: string;
   img: string | undefined | null;
 }
 
-const ManifestoCard: React.FC<ManifestoCardProps> = (props) => {
+const ApplicationCard: React.FC<ApplicationCardProps> = (props) => {
   const router = useRouter();
 
   return (
@@ -41,4 +41,4 @@ const ManifestoCard: React.FC<ManifestoCardProps> = (props) => {
   );
 };
 
-export default ManifestoCard;
+export default ApplicationCard;

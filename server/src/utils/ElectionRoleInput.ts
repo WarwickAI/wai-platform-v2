@@ -15,14 +15,11 @@ export class ElectionRoleInput {
   description: string;
 
   @Field()
-  manifestoTemplate: string;
+  applicationTemplate: string;
 
   @Field()
   previewImg: string;
 
   @Field()
-  canSubmitManifesto: boolean;
-
-  @Field()
-  submitManifestoUrl: string;
+  canApply: boolean;
 }

@@ -2,7 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Course } from "./Course";
 import { Project } from "./Project";
-import { RoleManifesto } from "./RoleManifesto";
+import { RoleApplication } from "./RoleApplication";
 import { Talk } from "./Talk";
 import { Tutorial } from "./Tutorial";
 
@@ -69,7 +69,7 @@ export class User extends BaseEntity {
   @ManyToMany(() => Tutorial, tutorial => tutorial.users)
   tutorials: Tutorial[]
 
-  @Field(() => [RoleManifesto])
-  @OneToMany(() => RoleManifesto, manifesto => manifesto.user)
-  manifestos: RoleManifesto[]
+  @Field(() => [RoleApplication])
+  @OneToMany(() => RoleApplication, application => application.user)
+  applications: RoleApplication[]
 }

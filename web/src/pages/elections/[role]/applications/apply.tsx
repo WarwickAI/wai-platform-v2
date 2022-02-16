@@ -1,42 +1,56 @@
 import React from "react";
-import Dashboard from "../../../../../components/Dashboard";
-import { useRouter } from "next/router";
-import { createUrqlClient } from "../../../../../utils/createUrqlClient";
-import { withUrqlClient } from "next-urql";
-import { Form, Formik } from "formik";
-import { InputField } from "../../../../../components/InputField";
-import { Box, Button } from "@chakra-ui/react";
-import { toErrorMap } from "../../../../../utils/toErrorMap";
+import Dashboard from "../../../../components/Dashboard";
 import {
-  useEditRoleManifestoMutation,
-  useGetRoleManifestoQuery,
-} from "../../../../../generated/graphql";
-import { setupEditValues } from "../../../../../utils/RoleManifestoInitialValues";
+  useGetElectionRoleQuery,
+  useMeQuery,
+  useRoleApplyMutation,
+} from "../../../../generated/graphql";
+import { useRouter } from "next/router";
+import { createUrqlClient } from "../../../../utils/createUrqlClient";
+import { withUrqlClient } from "next-urql";
+import roleApplyInitialValues from "../../../../utils/RoleApplyInitialValues";
+import { Form, Formik } from "formik";
+import { InputField } from "../../../../components/InputField";
+import { Box, Button } from "@chakra-ui/react";
+import { toErrorMap } from "../../../../utils/toErrorMap";
+import { isServer } from "../../../../utils/isServer";
 
-interface EditRoleManifestoProps {}
+interface RoleApplyProps {}
 
-const EditRoleManifesto: React.FC<EditRoleManifestoProps> = ({}) => {
+const RoleApply: React.FC<RoleApplyProps> = ({}) => {
   const router = useRouter();
-  const { role, manifesto } = router.query;
-  const [{ data: manifestoDetails }] = useGetRoleManifestoQuery({
-    variables: { shortName: manifesto as string },
+  const { role } = router.query;
+  const [{ data: roleInfo }] = useGetElectionRoleQuery({
+    variables: { shortName: role as string },
   });
-  const [, editRoleManifesto] = useEditRoleManifestoMutation();
+  const [{ data: me }] = useMeQuery({ pause: isServer() });
+  const [, roleApply] = useRoleApplyMutation();
 
-  if (manifestoDetails?.getRoleManifesto) {
+  if (roleInfo?.getElectionRole) {
     return (
-      <Dashboard title="Edit Manifesto">
+      <Dashboard title={roleInfo.getElectionRole.title + " Application"}>
         <Formik
-          initialValues={setupEditValues(manifestoDetails.getRoleManifesto)}
+          initialValues={{
+            ...roleApplyInitialValues,
+            title: me?.me ? me.me.firstName + " " + me.me.lastName : "",
+            shortName: me?.me
+              ? me.me.firstName +
+                "-" +
+                me.me.lastName +
+                "-" +
+                roleInfo.getElectionRole.shortName
+              : "",
+            description: roleInfo.getElectionRole.applicationTemplate!,
+          }}
           onSubmit={async (values, { setErrors }) => {
-            const response = await editRoleManifesto({
-              manifestoInfo: values,
-              editRoleManifestoId: manifestoDetails.getRoleManifesto!.id,
+            const response = await roleApply({
+              applicationInfo: values,
+              roleShortName: role as string,
             });
             if (!response) {
               return;
-            } else if (response.data?.editRoleManifesto.errors) {
-              setErrors(toErrorMap(response.data.editRoleManifesto.errors));
+            } else if (response.data?.roleApply.errors) {
+              setErrors(toErrorMap(response.data.roleApply.errors));
             } else {
               // Course submitted
               router.push(`/elections/${role}`);
@@ -49,7 +63,7 @@ const EditRoleManifesto: React.FC<EditRoleManifestoProps> = ({}) => {
                 name="title"
                 placeholder="title"
                 label="Title"
-                hint="Main title for the manifesto, probably use their full name. Must be at least 3 characters."
+                hint="Main title for the application, probably use their full name. Must be at least 3 characters."
               ></InputField>
               <Box mt={4}>
                 <InputField
@@ -61,20 +75,12 @@ const EditRoleManifesto: React.FC<EditRoleManifestoProps> = ({}) => {
               </Box>
               <Box mt={4}>
                 <InputField
-                  name="display"
-                  label="Display"
-                  type="switch"
-                  hint="Whether to display to normal users or hide."
-                ></InputField>
-              </Box>
-              <Box mt={4}>
-                <InputField
                   name="description"
                   placeholder="description"
                   label="Description"
                   type="textarea"
                   renderMarkdown
-                  hint="Markdown description rendered on the manifesto page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+                  hint="Markdown description rendered on the application page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
                 ></InputField>
               </Box>
               <Box mt={4}>
@@ -100,10 +106,8 @@ const EditRoleManifesto: React.FC<EditRoleManifestoProps> = ({}) => {
       </Dashboard>
     );
   } else {
-    return <Dashboard title="Loading Manifesto" />;
+    return <Dashboard title="Loading Role" />;
   }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(
-  EditRoleManifesto
-);
+export default withUrqlClient(createUrqlClient, { ssr: false })(RoleApply);

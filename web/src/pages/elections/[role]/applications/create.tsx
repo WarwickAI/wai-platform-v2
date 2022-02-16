@@ -2,46 +2,46 @@ import React from "react";
 import Dashboard from "../../../../components/Dashboard";
 import {
   useCreateElectionRoleMutation,
-  useCreateRoleManifestoMutation,
+  useCreateRoleApplicationMutation,
   useGetElectionRoleQuery,
 } from "../../../../generated/graphql";
 import { useRouter } from "next/router";
 import { createUrqlClient } from "../../../../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
-import roleManifestoInitialValues from "../../../../utils/RoleManifestoInitialValues";
+import roleApplicationInitialValues from "../../../../utils/RoleApplicationInitialValues";
 import { Form, Formik } from "formik";
 import { InputField } from "../../../../components/InputField";
 import { Box, Button } from "@chakra-ui/react";
 import { toErrorMap } from "../../../../utils/toErrorMap";
 
-interface CreateRoleManifestoProps {}
+interface CreateRoleApplicationProps {}
 
-const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
+const CreateRoleApplication: React.FC<CreateRoleApplicationProps> = ({}) => {
   const router = useRouter();
   const { role } = router.query;
   const [{ data: roleInfo }] = useGetElectionRoleQuery({
     variables: { shortName: role as string },
   });
-  const [, createRoleManifesto] = useCreateRoleManifestoMutation();
+  const [, createRoleApplication] = useCreateRoleApplicationMutation();
 
   return (
     <Dashboard title="Create Election Role">
       <Formik
         initialValues={{
-          ...roleManifestoInitialValues,
-          description: roleInfo?.getElectionRole?.manifestoTemplate
-            ? roleInfo.getElectionRole.manifestoTemplate
+          ...roleApplicationInitialValues,
+          description: roleInfo?.getElectionRole?.applicationTemplate
+            ? roleInfo.getElectionRole.applicationTemplate
             : "",
         }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await createRoleManifesto({
-            manifestoInfo: values,
+          const response = await createRoleApplication({
+            applicationInfo: values,
             roleShortName: role as string,
           });
           if (!response) {
             return;
-          } else if (response.data?.createRoleManifesto.errors) {
-            setErrors(toErrorMap(response.data.createRoleManifesto.errors));
+          } else if (response.data?.createRoleApplication.errors) {
+            setErrors(toErrorMap(response.data.createRoleApplication.errors));
           } else {
             // Course submitted
             router.push(`/elections/${role}`);
@@ -54,7 +54,7 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
               name="title"
               placeholder="title"
               label="Title"
-              hint="Main title for the manifesto, probably use their full name. Must be at least 3 characters."
+              hint="Main title for the application, probably use their full name. Must be at least 3 characters."
             ></InputField>
             <Box mt={4}>
               <InputField
@@ -79,7 +79,7 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
                 label="Description"
                 type="textarea"
                 renderMarkdown
-                hint="Markdown description rendered on the manifesto page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+                hint="Markdown description rendered on the application page. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -107,5 +107,5 @@ const CreateRoleManifesto: React.FC<CreateRoleManifestoProps> = ({}) => {
 };
 
 export default withUrqlClient(createUrqlClient, { ssr: false })(
-  CreateRoleManifesto
+  CreateRoleApplication
 );

@@ -12,7 +12,7 @@ import {
 } from "type-graphql";
 import { sendRefreshToken } from "../sendRefreshToken";
 import { isAuth, isExec } from "../isAuth";
-import { RoleManifesto } from "../entities/RoleManifesto";
+import { RoleManifesto } from "../entities/RoleApplication";
 import { ElectionRole } from "../entities/ElectionRole";
 
 @ObjectType()
@@ -127,7 +127,7 @@ export class UserResolver {
       console.log("access token invalid");
       return null;
     }
-    const user = await User.findOne(parseInt(payload.userId), { relations: ["manifestos"] });
+    const user = await User.findOne(parseInt(payload.userId), { relations: ["applications"] });
 
     if (!user) {
       console.log("user id in access token invalid");
@@ -135,8 +135,8 @@ export class UserResolver {
     }
 
     const roles: ElectionRole[] = [];
-    for (let i = 0; i < user.manifestos.length; i++) {
-      const manifesto = await RoleManifesto.findOne(user.manifestos[i].id, { relations: ["role"] })
+    for (let i = 0; i < user.applications.length; i++) {
+      const manifesto = await RoleManifesto.findOne(user.applications[i].id, { relations: ["role"] })
       if (manifesto?.role) {
         roles.push(manifesto.role)
       }

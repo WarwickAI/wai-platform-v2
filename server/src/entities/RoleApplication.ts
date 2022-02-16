@@ -5,7 +5,7 @@ import { User } from "./User";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
-export class RoleManifesto extends BaseEntity {
+export class RoleApplication extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id: number;
@@ -39,23 +39,23 @@ export class RoleManifesto extends BaseEntity {
     img: string;
 
     @Field(() => ElectionRole)
-    @ManyToOne(() => ElectionRole, role => role.manifestos)
+    @ManyToOne(() => ElectionRole, role => role.applications)
     role: ElectionRole;
 
     @Field(() => User)
-    @ManyToOne(() => User, user => user.manifestos)
+    @ManyToOne(() => User, user => user.applications)
     user: User;
 
     static async getByIdOrShortName(
-        manifestoId?: number,
-        manifestoShortName?: string,
+        applicationId?: number,
+        applicationShortName?: string,
         relations: boolean = false) {
 
-        if (manifestoId) {
-            return await this.findOne(manifestoId, relations ? { relations: ["role"] } : {});
-        } else if (manifestoShortName) {
+        if (applicationId) {
+            return await this.findOne(applicationId, relations ? { relations: ["role"] } : {});
+        } else if (applicationShortName) {
             return await this.findOne(
-                { shortName: manifestoShortName },
+                { shortName: applicationShortName },
                 relations ? { relations: ["role"] } : {}
             );
         } else {
