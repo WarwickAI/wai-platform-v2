@@ -50,7 +50,9 @@ const EventsPage: React.FC<EventsPageProps> = ({
         userDetails?.role === "exec" ? (
           <HStack spacing={4}>
             <Flex flexDirection="column" alignItems="center">
-              <FormLabel htmlFor="showAll" m={0}>Show hidden</FormLabel>
+              <FormLabel htmlFor="showAll" m={0}>
+                Show hidden
+              </FormLabel>
               <Switch
                 id="showAll"
                 isChecked={showHidden}
@@ -72,7 +74,7 @@ const EventsPage: React.FC<EventsPageProps> = ({
             <Card
               key={id}
               title={title}
-              backgroundImg={previewImg}
+              backgroundImg={previewImg ? previewImg : undefined}
               description={
                 <Flex flexWrap="wrap">
                   {tags.map((tag) => (

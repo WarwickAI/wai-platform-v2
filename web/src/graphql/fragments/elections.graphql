@@ -1,0 +1,34 @@
+fragment RegularElectionRole on ElectionRole {
+  id
+  createdAt
+  updatedAt
+  display
+  title
+  shortName
+  description
+  applicationTemplate
+  previewImg
+  canApply
+}
+
+fragment RegularElectionRoleWithApplications on ElectionRole {
+  id
+  createdAt
+  updatedAt
+  display
+  title
+  shortName
+  description
+  applicationTemplate
+  previewImg
+  canApply
+  applications {
+    id
+    display
+    createdAt
+    updatedAt
+    title
+    description
+    shortName
+  }
+}

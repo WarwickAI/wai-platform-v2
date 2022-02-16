@@ -1,4 +1,5 @@
 import { Box, Image } from "@chakra-ui/react";
+import Head from "next/head";
 import React from "react";
 import { Wrapper } from "./Wrapper";
 
@@ -12,6 +13,9 @@ const LogoOnlyPage: React.FC<LogoOnlyPageProps> = ({
 }) => {
   return (
     <Wrapper>
+      <Head>
+        <title>Warwick AI</title>
+      </Head>
       <Box w={20}>
         <Image src="static/logo2.png" alt="WAI Logo" />
       </Box>
