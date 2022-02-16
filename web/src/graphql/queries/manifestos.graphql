@@ -1,0 +1,23 @@
+query RoleApplications {
+  roleApplications {
+    ...RegularRoleApplication
+  }
+}
+
+query AllRoleApplications {
+  allRoleApplications {
+    ...RegularRoleApplication
+  }
+}
+
+query GetRoleApplication($shortName: String, $applicationId: Float) {
+  getRoleApplication(shortName: $shortName, applicationId: $applicationId) {
+    ...RegularRoleApplication
+  }
+}
+
+query RoleApplicationElectionRole($shortName: String, $applicationId: Float) {
+  roleApplicationElectionRole(shortName: $shortName, applicationId: $applicationId) {
+    ...RegularElectionRole
+  }
+}
