@@ -1,35 +1,35 @@
-mutation RoleApply($roleShortName: String, $roleId: Float, $manifestoInfo: ApplyRoleInput!) {
-  roleApply(roleShortName: $roleShortName, roleId: $roleId, manifestoInfo: $manifestoInfo) {
+mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
+  roleApply(roleShortName: $roleShortName, roleId: $roleId, applicationInfo: $applicationInfo) {
     errors {
       message
       field
     }
-    manifesto {
-      ...RegularRoleManifesto
+    application {
+      ...RegularRoleApplication
     }
   }
 }
 
-mutation CreateRoleManifesto($manifestoInfo: RoleManifestoInput!, $roleId: Float, $roleShortName: String) {
-  createRoleManifesto(manifestoInfo: $manifestoInfo, roleId: $roleId, roleShortName: $roleShortName) {
+mutation CreateRoleApplication($applicationInfo: RoleApplicationInput!, $roleId: Float, $roleShortName: String) {
+  createRoleApplication(applicationInfo: $applicationInfo, roleId: $roleId, roleShortName: $roleShortName) {
     errors {
       field
       message
     }
-    manifesto {
-      ...RegularRoleManifesto
+    application {
+      ...RegularRoleApplication
     }
   }
 }
 
-mutation EditRoleManifesto($manifestoInfo: RoleManifestoInput!, $editRoleManifestoId: Float!) {
-  editRoleManifesto(manifestoInfo: $manifestoInfo, id: $editRoleManifestoId) {
+mutation EditRoleApplication($applicationInfo: RoleApplicationInput!, $editRoleApplicationId: Float!) {
+  editRoleApplication(applicationInfo: $applicationInfo, id: $editRoleApplicationId) {
     errors {
       message
       field
     }
-    manifesto {
-      ...RegularRoleManifesto
+    application {
+      ...RegularRoleApplication
     }
   }
 }

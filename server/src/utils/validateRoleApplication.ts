@@ -1,6 +1,6 @@
-import { ApplyRoleInput, RoleManifestoInput } from "./RoleManifestoInput";
+import { ApplyRoleInput, RoleApplicationInput } from "./RoleApplicationInput";
 
-export const validateRoleManifesto = (options: RoleManifestoInput | ApplyRoleInput) => {
+export const validateRoleApplication = (options: RoleApplicationInput | ApplyRoleInput) => {
     if (options.title.length <= 2) {
         return [
             {

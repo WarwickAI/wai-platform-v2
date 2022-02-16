@@ -5,9 +5,9 @@ import Dashboard from "../../components/Dashboard";
 import {
   useMeQuery,
   useGetElectionRoleQuery,
-  useGetRoleManifestoQuery,
-  useElectionRoleManifestosQuery,
-  useElectionRoleAllManifestosQuery,
+  useGetRoleApplicationQuery,
+  useElectionRoleApplicationsQuery,
+  useElectionRoleAllApplicationsQuery,
   useGetUserRoleApplicationsQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import ItemGrid from "../../components/ItemGrid";
-import ManifestoCard from "../../components/ManifestoCard";
+import ApplicationCard from "../../components/ApplicationCard";
 
 interface ElectionRoleProps {}
 
@@ -33,10 +33,10 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
   const [{ data: roleDetails }] = useGetElectionRoleQuery({
     variables: { shortName: role as string },
   });
-  const [{ data: roleManifestos }] = useElectionRoleManifestosQuery({
+  const [{ data: roleApplications }] = useElectionRoleApplicationsQuery({
     variables: { shortName: role as string },
   });
-  const [{ data: allRoleManifestos }] = useElectionRoleAllManifestosQuery({
+  const [{ data: allRoleApplications }] = useElectionRoleAllApplicationsQuery({
     pause: isServer(),
     variables: { shortName: role as string },
   });
@@ -49,21 +49,21 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
     }
   );
 
-  const [showHiddenManifestos, setShowHiddenManifestos] = useState<boolean>(
+  const [showHiddenApplications, setShowHiddenApplications] = useState<boolean>(
     false
   );
 
-  if (roleDetails?.getElectionRole) {
+  if (roleDetails?.getElectionRole && roleApplications) {
     return (
       <Dashboard
         title={roleDetails.getElectionRole.title}
         options={
           <HStack>
-            {roleDetails.getElectionRole.canSubmitManifesto && (
+            {roleDetails.getElectionRole.canApply && (
               <Button
                 variant="primary"
                 onClick={() =>
-                  router.push(`/elections/${role}/manifestos/apply`)
+                  router.push(`/elections/${role}/applications/apply`)
                 }
                 disabled={
                   userRoleApplicationsRoles?.getUserRoleApplications?.findIndex(
@@ -85,8 +85,8 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 </FormLabel>
                 <Switch
                   id="showAll"
-                  isChecked={showHiddenManifestos}
-                  onChange={(e) => setShowHiddenManifestos(e.target.checked)}
+                  isChecked={showHiddenApplications}
+                  onChange={(e) => setShowHiddenApplications(e.target.checked)}
                 />
               </Flex>
             )}
@@ -107,10 +107,10 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
               <Button
                 variant="admin"
                 onClick={() =>
-                  router.push(`/elections/${role}/manifestos/create`)
+                  router.push(`/elections/${role}/applications/create`)
                 }
               >
-                Add Manifesto
+                Add Application
               </Button>
             )} */}
           </HStack>
@@ -122,21 +122,28 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
           </ReactMarkdown>
         }
         <Heading my={4} size="md">
-          Manifestos
+          Applications
         </Heading>
-        <ItemGrid>
-          {(showHiddenManifestos
-            ? allRoleManifestos?.electionRoleAllManifestos
-            : roleManifestos?.electionRoleManifestos
-          )?.map((manifesto) => (
-            <ManifestoCard
-              key={manifesto.id}
-              title={manifesto.title}
-              img={manifesto.img}
-              redirect={`/elections/${role}/manifestos/${manifesto.shortName}`}
-            />
-          ))}
-        </ItemGrid>
+        {(showHiddenApplications && allRoleApplications
+          ? allRoleApplications?.electionRoleAllApplications
+          : roleApplications.electionRoleApplications
+        )?.length > 0 ? (
+          <ItemGrid>
+            {(showHiddenApplications
+              ? allRoleApplications?.electionRoleAllApplications
+              : roleApplications?.electionRoleApplications
+            )?.map((application) => (
+              <ApplicationCard
+                key={application.id}
+                title={application.title}
+                img={application.img}
+                redirect={`/elections/${role}/applications/${application.shortName}`}
+              />
+            ))}
+          </ItemGrid>
+        ) : (
+          <Text>No applications submitted</Text>
+        )}
       </Dashboard>
     );
   } else {

@@ -1,7 +1,7 @@
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class RoleManifestoInput {
+export class RoleApplicationInput {
   @Field()
   display: boolean;
 

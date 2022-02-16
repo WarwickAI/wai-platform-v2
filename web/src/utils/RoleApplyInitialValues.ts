@@ -1,5 +1,3 @@
-import { RegularRoleManifestoFragment } from "../generated/graphql";
-
 var initalVals = {
     title: "",
     shortName: "",
