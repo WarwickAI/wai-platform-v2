@@ -62,13 +62,12 @@ export type ElectionRole = {
 };
 
 export type ElectionRoleInput = {
-  canSubmitManifesto: Scalars['Boolean'];
+  applicationTemplate: Scalars['String'];
+  canApply: Scalars['Boolean'];
   description: Scalars['String'];
   display: Scalars['Boolean'];
-  manifestoTemplate: Scalars['String'];
   previewImg: Scalars['String'];
   shortName: Scalars['String'];
-  submitManifestoUrl: Scalars['String'];
   title: Scalars['String'];
 };
 

@@ -12,7 +12,7 @@ import {
 } from "type-graphql";
 import { sendRefreshToken } from "../sendRefreshToken";
 import { isAuth, isExec } from "../isAuth";
-import { RoleManifesto } from "../entities/RoleApplication";
+import { RoleApplication } from "../entities/RoleApplication";
 import { ElectionRole } from "../entities/ElectionRole";
 
 @ObjectType()
@@ -136,7 +136,7 @@ export class UserResolver {
 
     const roles: ElectionRole[] = [];
     for (let i = 0; i < user.applications.length; i++) {
-      const manifesto = await RoleManifesto.findOne(user.applications[i].id, { relations: ["role"] })
+      const manifesto = await RoleApplication.findOne(user.applications[i].id, { relations: ["role"] })
       if (manifesto?.role) {
         roles.push(manifesto.role)
       }
