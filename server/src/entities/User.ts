@@ -2,6 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Course } from "./Course";
 import { Project } from "./Project";
+import { RoleApplication } from "./RoleApplication";
 import { Talk } from "./Talk";
 import { Tutorial } from "./Tutorial";
 
@@ -52,6 +53,14 @@ export class User extends BaseEntity {
   @ManyToMany(() => Talk, project => project.users)
   talks: Talk[]
 
+  @Field({ defaultValue: false })
+  @Column({ default: false })
+  isMember: boolean;
+
+  @Field(() => String, { defaultValue: new Date() })
+  @Column({ default: new Date() })
+  memberFromDate: Date;
+
   @Field(() => [Course])
   @ManyToMany(() => Course, course => course.users)
   courses: Course[]
@@ -59,4 +68,8 @@ export class User extends BaseEntity {
   @Field(() => [Tutorial])
   @ManyToMany(() => Tutorial, tutorial => tutorial.users)
   tutorials: Tutorial[]
+
+  @Field(() => [RoleApplication])
+  @OneToMany(() => RoleApplication, application => application.user)
+  applications: RoleApplication[]
 }

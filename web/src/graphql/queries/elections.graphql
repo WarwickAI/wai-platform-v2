@@ -1,0 +1,33 @@
+query ElectionRoles {
+  electionRoles {
+    ...RegularElectionRole
+  }
+}
+
+query AllElectionRoles {
+  allElectionRoles {
+    ...RegularElectionRole
+  }
+}
+
+query ElectionRoleApplications($shortName: String, $roleId: Float) {
+  electionRoleApplications(shortName: $shortName, roleId: $roleId) {
+    ...RegularRoleApplication
+  }
+}
+
+query ElectionRoleAllApplications($shortName: String, $roleId: Float) {
+  electionRoleAllApplications(shortName: $shortName, roleId: $roleId) {
+    ...RegularRoleApplication
+  }
+}
+
+
+query GetElectionRole($shortName: String, $roleId: Float) {
+  getElectionRole(shortName: $shortName, roleId: $roleId) {
+    ...RegularElectionRole
+    applications {
+      ...RegularRoleApplication
+    }
+  }
+}
