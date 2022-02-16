@@ -40,7 +40,11 @@ const EditMerch: React.FC<EditMerchProps> = ({}) => {
           description: data?.merchByShortName?.description || "",
           image: data?.merchByShortName?.image || "",
           display: data?.merchByShortName?.display || false,
-          variants: data?.merchByShortName?.variants || [],
+          variants:
+            data?.merchByShortName?.variants.map((variant) => ({
+              name: variant.name,
+              link: variant.link,
+            })) || [],
         }}
         onSubmit={async (values, { setErrors }) => {
           const response = await editMerch({
