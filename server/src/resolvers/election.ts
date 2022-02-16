@@ -12,7 +12,7 @@ import FieldError from "../utils/FieldError";
 import { ElectionRole } from "../entities/ElectionRole";
 import { validateElectionRole } from "../utils/validateElectionRole";
 import { ElectionRoleInput } from "../utils/ElectionRoleInput";
-import { RoleManifesto } from "../entities/RoleManifesto";
+import { RoleApplication } from "../entities/RoleApplication";
 
 @ObjectType()
 export class ElectionRoleResponse {
@@ -27,13 +27,13 @@ export class ElectionRoleResponse {
 export class ElectionResolver {
     @Query(() => [ElectionRole])
     async electionRoles(): Promise<ElectionRole[]> {
-        return await ElectionRole.find({ where: { display: true }, relations: ["manifestos"] });
+        return await ElectionRole.find({ where: { display: true }, relations: ["applications"] });
     }
 
     @Query(() => [ElectionRole])
     @UseMiddleware(isAuth, isExec)
     async allElectionRoles(): Promise<ElectionRole[]> {
-        return await ElectionRole.find({ relations: ["manifestos"] });
+        return await ElectionRole.find({ relations: ["applications"] });
     }
 
     @Query(() => ElectionRole, { nullable: true })
@@ -72,7 +72,7 @@ export class ElectionResolver {
         }
 
         await ElectionRole.update(id, roleInfo);
-        var role = await ElectionRole.findOne(id, { relations: ["manifestos"] });
+        var role = await ElectionRole.findOne(id, { relations: ["applications"] });
 
         if (!role) {
             return { errors: [{ field: "Election Role ID", message: "No role found" }] };
@@ -81,31 +81,31 @@ export class ElectionResolver {
         }
     }
 
-    @Query(() => [RoleManifesto])
-    async electionRoleManifestos(
+    @Query(() => [RoleApplication])
+    async electionRoleApplications(
         @Arg("roleId", { nullable: true }) roleId?: number,
         @Arg("shortName", { nullable: true }) shortName?: string
-    ): Promise<RoleManifesto[]> {
+    ): Promise<RoleApplication[]> {
         const role = await ElectionRole.getByIdOrShortName(roleId, shortName, true);
 
         if (!role) {
             return [];
         }
-        const publicManifestos = role.manifestos.filter((manifesto) => manifesto.display);
-        return publicManifestos;
+        const publicApplications = role.applications.filter((application) => application.display);
+        return publicApplications;
     }
 
-    @Query(() => [RoleManifesto])
+    @Query(() => [RoleApplication])
     @UseMiddleware(isAuth, isExec)
-    async electionRoleAllManifestos(
+    async electionRoleAllApplications(
         @Arg("roleId", { nullable: true }) roleId?: number,
         @Arg("shortName", { nullable: true }) shortName?: string
-    ): Promise<RoleManifesto[]> {
+    ): Promise<RoleApplication[]> {
         const role = await ElectionRole.getByIdOrShortName(roleId, shortName, true);
 
         if (!role) {
             return [];
         }
-        return role.manifestos;
+        return role.applications;
     }
 }

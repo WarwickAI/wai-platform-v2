@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { RoleManifesto } from "./RoleManifesto";
+import { RoleApplication } from "./RoleApplication";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -35,33 +35,29 @@ export class ElectionRole extends BaseEntity {
 
     @Field({ defaultValue: "" })
     @Column({ default: "" })
-    manifestoTemplate: string;
-    
+    applicationTemplate: string;
+
     @Field({ defaultValue: "" })
     @Column({ default: "" })
     previewImg: string;
 
     @Field({ defaultValue: false })
     @Column({ default: false })
-    canSubmitManifesto: boolean;
+    canApply: boolean;
 
-    @Field({ defaultValue: "" })
-    @Column({ default: "" })
-    submitManifestoUrl: string;
-
-    @Field(() => [RoleManifesto])
-    @OneToMany(() => RoleManifesto, manifesto => manifesto.role)
-    manifestos: RoleManifesto[];
+    @Field(() => [RoleApplication])
+    @OneToMany(() => RoleApplication, application => application.role)
+    applications: RoleApplication[];
 
     static async getByIdOrShortName(roleId?: number,
         shortName?: string,
         relations: boolean = false) {
         if (roleId) {
-            return await this.findOne(roleId, relations ? { relations: ["manifestos"] } : {});
+            return await this.findOne(roleId, relations ? { relations: ["applications"] } : {});
         } else if (shortName) {
             return await this.findOne(
                 { shortName },
-                relations ? { relations: ["manifestos"] } : {}
+                relations ? { relations: ["applications"] } : {}
             );
         } else {
             return undefined;

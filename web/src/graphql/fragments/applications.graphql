@@ -1,4 +1,4 @@
-fragment RegularRoleManifesto on RoleManifesto {
+fragment RegularRoleApplication on RoleApplication {
     id
     createdAt
     updatedAt
@@ -9,7 +9,7 @@ fragment RegularRoleManifesto on RoleManifesto {
     img
 }
 
-fragment RegularRoleManifestoWithElectionRole on RoleManifesto {
+fragment RegularRoleApplicationWithElectionRole on RoleApplication {
     id
     createdAt
     updatedAt

@@ -70,12 +70,12 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
             </Box>
             <Box mt={4}>
               <InputField
-                name="manifestoTemplate"
-                placeholder="manifesto template"
-                label="Manifesto Template"
+                name="applicationTemplate"
+                placeholder="application template"
+                label="Application Template"
                 type="textarea"
                 renderMarkdown
-                hint="Markdown manifesto description template given to applicants. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
+                hint="Markdown application description template given to applicants. Type into Google 'Markdown Cheat Sheet' for help with how to style the text."
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -88,18 +88,10 @@ const CreateElectionRole: React.FC<CreateElectionRoleProps> = ({}) => {
             </Box>
             <Box mt={4}>
               <InputField
-                name="canSubmitManifesto"
+                name="canApply"
                 label="Can Apply"
                 type="switch"
                 hint="Whether members can apply for this role."
-              ></InputField>
-            </Box>
-            <Box mt={4}>
-              <InputField
-                name="submitManifestoUrl"
-                placeholder="apply redirect url"
-                label="Apply Redirect URL"
-                hint="URL to redirect users to to apply for this role."
               ></InputField>
             </Box>
             <Box mt={4}>

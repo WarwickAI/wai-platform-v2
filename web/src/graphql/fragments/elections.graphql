@@ -6,13 +6,12 @@ fragment RegularElectionRole on ElectionRole {
   title
   shortName
   description
-  manifestoTemplate
+  applicationTemplate
   previewImg
-  canSubmitManifesto
-  submitManifestoUrl
+  canApply
 }
 
-fragment RegularElectionRoleWithManifestos on ElectionRole {
+fragment RegularElectionRoleWithApplications on ElectionRole {
   id
   createdAt
   updatedAt
@@ -20,11 +19,10 @@ fragment RegularElectionRoleWithManifestos on ElectionRole {
   title
   shortName
   description
-  manifestoTemplate
+  applicationTemplate
   previewImg
-  canSubmitManifesto
-  submitManifestoUrl
-  manifestos {
+  canApply
+  applications {
     id
     display
     createdAt

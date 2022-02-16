@@ -5,10 +5,9 @@ var initalVals = {
     title: "",
     shortName: "",
     description: "",
-    manifestoTemplate: "",
+    applicationTemplate: "",
     previewImg: "",
-    canSubmitManifesto: false,
-    submitManifestoUrl: ""
+    canApply: false,
 }
 
 export const setupEditValues = (roleDetails: RegularElectionRoleFragment) => {
@@ -17,10 +16,9 @@ export const setupEditValues = (roleDetails: RegularElectionRoleFragment) => {
         title: roleDetails.title || "",
         shortName: roleDetails.shortName || "",
         description: roleDetails.description || "",
-        manifestoTemplate: roleDetails.manifestoTemplate || "",
+        applicationTemplate: roleDetails.applicationTemplate || "",
         previewImg: roleDetails.previewImg || "",
-        canSubmitManifesto: roleDetails.canSubmitManifesto || false,
-        submitManifestoUrl: roleDetails.submitManifestoUrl || ""
+        canApply: roleDetails.canApply || false
     }
 }
 
