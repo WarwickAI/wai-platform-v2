@@ -24,6 +24,9 @@ import {
 import ReactMarkdown from "react-markdown";
 import ItemGrid from "../../components/ItemGrid";
 import ApplicationCard from "../../components/ApplicationCard";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { markdownTheme } from "../../theme";
+import remarkGfm from "remark-gfm";
 
 interface ElectionRoleProps {}
 
@@ -49,9 +52,8 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
     }
   );
 
-  const [showHiddenApplications, setShowHiddenApplications] = useState<boolean>(
-    false
-  );
+  const [showHiddenApplications, setShowHiddenApplications] =
+    useState<boolean>(false);
 
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
@@ -117,7 +119,11 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
         }
       >
         {
-          <ReactMarkdown>
+          <ReactMarkdown
+            components={ChakraUIRenderer(markdownTheme)}
+            linkTarget="_self"
+            remarkPlugins={[remarkGfm]}
+          >
             {roleDetails.getElectionRole.description}
           </ReactMarkdown>
         }
