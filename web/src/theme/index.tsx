@@ -3,6 +3,7 @@ import { extendTheme } from "@chakra-ui/react";
 
 import "@fontsource/public-sans/700.css";
 import "@fontsource/public-sans/400.css";
+import { HTMLProps } from "react";
 
 const PRIMARY = {
   lighter: "#C8FACD",
@@ -19,6 +20,13 @@ const SECONDARY = {
   dark: "#1939B7",
   darker: "#091A7A",
   contrastText: "#fff",
+};
+
+export const markdownTheme = {
+  a: (props: any) => {
+    const { children, href } = props;
+    return <a href={href} style={{ color: "primary.main" }}>{children}</a>;
+  },
 };
 
 // 2. Call `extendTheme` and pass your custom values
@@ -66,9 +74,9 @@ const theme = extendTheme({
         admin: {
           bg: "rgb(99, 115, 129)",
           "&:hover": {
-            bg: "gray"
-          }
-        }
+            bg: "gray",
+          },
+        },
       },
     },
   },

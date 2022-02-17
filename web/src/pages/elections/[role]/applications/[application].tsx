@@ -11,6 +11,9 @@ import { createUrqlClient } from "../../../../utils/createUrqlClient";
 import { isServer } from "../../../../utils/isServer";
 import { Button, HStack } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
+import { markdownTheme } from "../../../../theme";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import remarkGfm from "remark-gfm";
 
 interface RoleApplicationProps {}
 
@@ -51,7 +54,11 @@ const RoleApplication: React.FC<RoleApplicationProps> = () => {
         }
       >
         {
-          <ReactMarkdown>
+          <ReactMarkdown
+            components={ChakraUIRenderer(markdownTheme)}
+            linkTarget="_self"
+            remarkPlugins={[remarkGfm]}
+          >
             {applicationDetails.getRoleApplication.description}
           </ReactMarkdown>
         }
