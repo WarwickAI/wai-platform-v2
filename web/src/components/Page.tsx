@@ -56,6 +56,8 @@ const Page: React.FC<PageProps> = (props) => {
                 src={props.iconImg}
                 alt="Page Icon"
                 width={24}
+                height={24}
+                objectFit="cover"
                 mb={4}
                 mt={props.coverImg ? -20 : 0}
               />

@@ -58,6 +58,10 @@ const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
               mt={6}
               mb={4}
               justifyContent="center"
+              _hover={{
+                backgroundColor: "rgba(145, 158, 171, 0.08)",
+                cursor: "pointer",
+              }}
               alignItems="center"
               onClick={onOpen}
             >
