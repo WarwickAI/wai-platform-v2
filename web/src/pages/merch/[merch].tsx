@@ -15,6 +15,9 @@ import { useMeQuery, useMerchByShortNameQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import ReactMarkdown from "react-markdown";
 import { isServer } from "../../utils/isServer";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { markdownTheme } from "../../theme";
+import remarkGfm from "remark-gfm";
 
 interface MerchProps {}
 
@@ -49,7 +52,13 @@ const Merch: React.FC<MerchProps> = ({}) => {
       <SimpleGrid columns={[1, 2]} spacing={3}>
         <Box>
           {data?.merchByShortName?.description && (
-            <ReactMarkdown>{data?.merchByShortName?.description}</ReactMarkdown>
+            <ReactMarkdown
+              components={ChakraUIRenderer(markdownTheme)}
+              linkTarget="_self"
+              remarkPlugins={[remarkGfm]}
+            >
+              {data?.merchByShortName?.description}
+            </ReactMarkdown>
           )}
           <Heading my={6} size="md">
             Buy

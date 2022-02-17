@@ -20,6 +20,9 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import infoOutline from "@iconify/icons-eva/info-outline";
 import { getIcon } from "./SidebarConfig";
+import remarkGfm from "remark-gfm";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { markdownTheme } from "../theme";
 
 type InputFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -72,7 +75,13 @@ export const InputField: React.FC<InputFieldProps> = ({
             {label} Rendered
           </Heading>
           {renderMarkdown && (
-            <ReactMarkdown linkTarget="_self">{field.value}</ReactMarkdown>
+            <ReactMarkdown
+              components={ChakraUIRenderer(markdownTheme)}
+              linkTarget="_self"
+              remarkPlugins={[remarkGfm]}
+            >
+              {field.value}
+            </ReactMarkdown>
           )}
         </>
       )}
