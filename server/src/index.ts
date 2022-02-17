@@ -27,6 +27,10 @@ import { Tag } from "./entities/Tag";
 import { Merch } from "./entities/Merch";
 import { MerchResolver } from "./resolvers/merch";
 import { TagResolver } from "./resolvers/tag";
+import { ElectionRole } from "./entities/ElectionRole";
+import { RoleApplication } from "./entities/RoleApplication";
+import { ElectionResolver } from "./resolvers/election";
+import { ApplicationResolver } from "./resolvers/application";
 
 const main = async () => {
   // Connect to DB
@@ -54,7 +58,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag],
+    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag, ElectionRole, RoleApplication],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -126,7 +130,9 @@ const main = async () => {
         CourseResolver,
         TutorialResolver,
         MerchResolver,
-        TagResolver
+        TagResolver,
+        ElectionResolver,
+        ApplicationResolver
       ],
       validate: false,
     }),

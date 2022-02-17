@@ -1,0 +1,35 @@
+mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
+  roleApply(roleShortName: $roleShortName, roleId: $roleId, applicationInfo: $applicationInfo) {
+    errors {
+      message
+      field
+    }
+    application {
+      ...RegularRoleApplication
+    }
+  }
+}
+
+mutation CreateRoleApplication($applicationInfo: RoleApplicationInput!, $roleId: Float, $roleShortName: String) {
+  createRoleApplication(applicationInfo: $applicationInfo, roleId: $roleId, roleShortName: $roleShortName) {
+    errors {
+      field
+      message
+    }
+    application {
+      ...RegularRoleApplication
+    }
+  }
+}
+
+mutation EditRoleApplication($applicationInfo: RoleApplicationInput!, $editRoleApplicationId: Float!) {
+  editRoleApplication(applicationInfo: $applicationInfo, id: $editRoleApplicationId) {
+    errors {
+      message
+      field
+    }
+    application {
+      ...RegularRoleApplication
+    }
+  }
+}
