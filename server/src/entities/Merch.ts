@@ -41,7 +41,7 @@ export class Merch extends BaseEntity {
   title: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   shortName: string;
 
   @Field()

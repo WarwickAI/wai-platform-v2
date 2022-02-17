@@ -1,0 +1,26 @@
+mutation CreateElectionRole($roleInfo: ElectionRoleInput!) {
+  createElectionRole(roleInfo: $roleInfo) {
+    errors {
+      field
+      message
+    }
+    role {
+      ...RegularElectionRole
+    }
+  }
+}
+
+mutation EditElectionRole(
+  $roleInfo: ElectionRoleInput!
+  $editElectionRoleId: Float!
+) {
+  editElectionRole(roleInfo: $roleInfo, id: $editElectionRoleId) {
+    errors {
+      field
+      message
+    }
+    role {
+      ...RegularElectionRole
+    }
+  }
+}
