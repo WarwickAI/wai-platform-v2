@@ -61,7 +61,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
         title={roleDetails.getElectionRole.title}
         options={
           <HStack>
-            {roleDetails.getElectionRole.canApply && (
+            {roleDetails.getElectionRole.canApply && userInfo && (
               <Button
                 variant="primary"
                 onClick={() =>
