@@ -55,13 +55,15 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
   const [showHiddenApplications, setShowHiddenApplications] =
     useState<boolean>(false);
 
+  console.log(userInfo?.me);
+
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
       <Dashboard
         title={roleDetails.getElectionRole.title}
         options={
           <HStack>
-            {roleDetails.getElectionRole.canApply && userInfo && (
+            {roleDetails.getElectionRole.canApply && userInfo?.me && (
               <Button
                 variant="primary"
                 onClick={() =>
@@ -78,6 +80,11 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 ) !== -1
                   ? "Applied"
                   : "Apply"}
+              </Button>
+            )}
+            {!userInfo?.me && (
+              <Button variant="primary" onClick={() => router.push("/login")}>
+                Login to Apply
               </Button>
             )}
             {userInfo?.me?.role === "exec" && (
