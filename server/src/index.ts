@@ -16,7 +16,6 @@ import cors from "cors";
 import setupCognitoAuthentication from "./utils/cognitoAuthentication";
 import { ProjectResolver } from "./resolvers/project";
 import { createConnection } from "typeorm";
-import path from "path";
 import { Talk } from "./entities/Talk";
 import { TalkResolver } from "./resolvers/talk";
 import { Course } from "./entities/Course";
@@ -31,6 +30,8 @@ import { ElectionRole } from "./entities/ElectionRole";
 import { RoleApplication } from "./entities/RoleApplication";
 import { ElectionResolver } from "./resolvers/election";
 import { ApplicationResolver } from "./resolvers/application";
+import { Badge } from "./entities/Badge";
+import { BadgeResolver } from "./resolvers/badge";
 
 const main = async () => {
   // Connect to DB
@@ -58,7 +59,18 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag, ElectionRole, RoleApplication],
+    entities: [
+      User,
+      Project,
+      Talk,
+      Course,
+      Tutorial,
+      Merch,
+      Tag,
+      ElectionRole,
+      RoleApplication,
+      Badge,
+    ],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -132,7 +144,8 @@ const main = async () => {
         MerchResolver,
         TagResolver,
         ElectionResolver,
-        ApplicationResolver
+        ApplicationResolver,
+        BadgeResolver,
       ],
       validate: false,
     }),

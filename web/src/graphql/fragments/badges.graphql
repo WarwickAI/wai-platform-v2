@@ -1,0 +1,22 @@
+fragment RegularBadge on Badge {
+  id
+  title
+  shortName
+  description
+  assignableFrom
+  assignableTo
+  color
+}
+
+fragment RegularBadgeWithUsers on Badge {
+    id
+  title
+  shortName
+  description
+  assignableFrom
+  assignableTo
+  color
+  users {
+    ...RegularUserWithoutEvents
+  }
+}

@@ -22,6 +22,35 @@ export type ApplyRoleInput = {
   title: Scalars['String'];
 };
 
+export type Badge = {
+  __typename?: 'Badge';
+  assignableFrom?: Maybe<Scalars['String']>;
+  assignableTo?: Maybe<Scalars['String']>;
+  color: Scalars['String'];
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  id: Scalars['Float'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  users: Array<User>;
+};
+
+export type BadgeInput = {
+  assignableFrom?: InputMaybe<Scalars['String']>;
+  assignableTo?: InputMaybe<Scalars['String']>;
+  color: Scalars['String'];
+  description: Scalars['String'];
+  shortName: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type BadgeResponse = {
+  __typename?: 'BadgeResponse';
+  badge: Badge;
+  errors?: Maybe<Array<FieldError>>;
+};
+
 export type Course = {
   __typename?: 'Course';
   coverImg?: Maybe<Scalars['String']>;
@@ -126,6 +155,9 @@ export type MerchResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  adminGiveBadge: Scalars['Boolean'];
+  adminRemoveBadge: Scalars['Boolean'];
+  createBadge: BadgeResponse;
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createMerch: MerchResponse;
@@ -135,6 +167,7 @@ export type Mutation = {
   createTalk: TalkResponse;
   createTutorial: TutorialResponse;
   deleteAllUsers: Scalars['Boolean'];
+  editBadge: BadgeResponse;
   editCourse: CourseResponse;
   editElectionRole: ElectionRoleResponse;
   editMerch: MerchResponse;
@@ -155,6 +188,26 @@ export type Mutation = {
   roleApply: RoleApplicationResponse;
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
+};
+
+
+export type MutationAdminGiveBadgeArgs = {
+  badgeId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+  userEmail?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['Float']>;
+};
+
+
+export type MutationAdminRemoveBadgeArgs = {
+  badgeId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+  userId: Scalars['Float'];
+};
+
+
+export type MutationCreateBadgeArgs = {
+  badgeInfo: BadgeInput;
 };
 
 
@@ -197,6 +250,12 @@ export type MutationCreateTalkArgs = {
 
 export type MutationCreateTutorialArgs = {
   tutorialInfo: EventInput;
+};
+
+
+export type MutationEditBadgeArgs = {
+  badgeInfo: BadgeInput;
+  id: Scalars['Float'];
 };
 
 
@@ -344,6 +403,9 @@ export type Query = {
   allRoleApplications: Array<RoleApplication>;
   allTalks: Array<Talk>;
   allTutorials: Array<Tutorial>;
+  badgeByShortName?: Maybe<Badge>;
+  badgeUsers: Array<User>;
+  badges: Array<Badge>;
   courseByShortName?: Maybe<Course>;
   courseUsers: Array<User>;
   courses: Array<Course>;
@@ -371,6 +433,17 @@ export type Query = {
   tutorialUsers: Array<User>;
   tutorials: Array<Tutorial>;
   users: Array<User>;
+};
+
+
+export type QueryBadgeByShortNameArgs = {
+  shortName: Scalars['String'];
+};
+
+
+export type QueryBadgeUsersArgs = {
+  badgeId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -551,6 +624,7 @@ export type TutorialResponse = {
 export type User = {
   __typename?: 'User';
   applications: Array<RoleApplication>;
+  badges: Array<Badge>;
   cognitoUsername: Scalars['String'];
   courses: Array<Course>;
   createdAt: Scalars['String'];
@@ -587,6 +661,10 @@ export type RegularRoleApplicationFragment = { __typename?: 'RoleApplication', i
 
 export type RegularRoleApplicationWithElectionRoleFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined, role: { __typename?: 'ElectionRole', id: number, shortName: string, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, description: string, previewImg?: string | null | undefined } };
 
+export type RegularBadgeFragment = { __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string };
+
+export type RegularBadgeWithUsersFragment = { __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+
 export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined };
 
 export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
@@ -600,6 +678,40 @@ export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: b
 export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
 export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+
+export type CreateBadgeMutationVariables = Exact<{
+  badgeInfo: BadgeInput;
+}>;
+
+
+export type CreateBadgeMutation = { __typename?: 'Mutation', createBadge: { __typename?: 'BadgeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, badge: { __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string } } };
+
+export type EditBadgeMutationVariables = Exact<{
+  badgeInfo: BadgeInput;
+  editBadgeId: Scalars['Float'];
+}>;
+
+
+export type EditBadgeMutation = { __typename?: 'Mutation', editBadge: { __typename?: 'BadgeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, badge: { __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string } } };
+
+export type AdminGiveBadgeMutationVariables = Exact<{
+  userId?: InputMaybe<Scalars['Float']>;
+  userEmail?: InputMaybe<Scalars['String']>;
+  shortName?: InputMaybe<Scalars['String']>;
+  badgeId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type AdminGiveBadgeMutation = { __typename?: 'Mutation', adminGiveBadge: boolean };
+
+export type AdminRemoveBadgeMutationVariables = Exact<{
+  userId: Scalars['Float'];
+  badgeId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AdminRemoveBadgeMutation = { __typename?: 'Mutation', adminRemoveBadge: boolean };
 
 export type CreateCourseMutationVariables = Exact<{
   courseInfo: EventInput;
@@ -809,6 +921,26 @@ export type UpdateUserRoleMutationVariables = Exact<{
 
 
 export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?: { __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string } | null | undefined };
+
+export type BadgesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BadgesQuery = { __typename?: 'Query', badges: Array<{ __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string }> };
+
+export type BadgeByShortNameQueryVariables = Exact<{
+  shortName: Scalars['String'];
+}>;
+
+
+export type BadgeByShortNameQuery = { __typename?: 'Query', badgeByShortName?: { __typename?: 'Badge', id: number, title: string, shortName: string, description: string, assignableFrom?: string | null | undefined, assignableTo?: string | null | undefined, color: string } | null | undefined };
+
+export type BadgeUsersQueryVariables = Exact<{
+  shortName?: InputMaybe<Scalars['String']>;
+  badgeId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type BadgeUsersQuery = { __typename?: 'Query', badgeUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
 
 export type CoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1032,15 +1164,6 @@ export const RegularUserFragmentDoc = gql`
   }
 }
     `;
-export const RegularUserWithoutEventsFragmentDoc = gql`
-    fragment RegularUserWithoutEvents on User {
-  id
-  firstName
-  lastName
-  email
-  role
-}
-    `;
 export const RegularRoleApplicationFragmentDoc = gql`
     fragment RegularRoleApplication on RoleApplication {
   id
@@ -1075,6 +1198,40 @@ export const RegularRoleApplicationWithElectionRoleFragmentDoc = gql`
   }
 }
     `;
+export const RegularBadgeFragmentDoc = gql`
+    fragment RegularBadge on Badge {
+  id
+  title
+  shortName
+  description
+  assignableFrom
+  assignableTo
+  color
+}
+    `;
+export const RegularUserWithoutEventsFragmentDoc = gql`
+    fragment RegularUserWithoutEvents on User {
+  id
+  firstName
+  lastName
+  email
+  role
+}
+    `;
+export const RegularBadgeWithUsersFragmentDoc = gql`
+    fragment RegularBadgeWithUsers on Badge {
+  id
+  title
+  shortName
+  description
+  assignableFrom
+  assignableTo
+  color
+  users {
+    ...RegularUserWithoutEvents
+  }
+}
+    ${RegularUserWithoutEventsFragmentDoc}`;
 export const RegularElectionRoleFragmentDoc = gql`
     fragment RegularElectionRole on ElectionRole {
   id
@@ -1195,6 +1352,63 @@ export const RegularTagFragmentDoc = gql`
   color
 }
     `;
+export const CreateBadgeDocument = gql`
+    mutation CreateBadge($badgeInfo: BadgeInput!) {
+  createBadge(badgeInfo: $badgeInfo) {
+    errors {
+      field
+      message
+    }
+    badge {
+      ...RegularBadge
+    }
+  }
+}
+    ${RegularBadgeFragmentDoc}`;
+
+export function useCreateBadgeMutation() {
+  return Urql.useMutation<CreateBadgeMutation, CreateBadgeMutationVariables>(CreateBadgeDocument);
+};
+export const EditBadgeDocument = gql`
+    mutation EditBadge($badgeInfo: BadgeInput!, $editBadgeId: Float!) {
+  editBadge(badgeInfo: $badgeInfo, id: $editBadgeId) {
+    errors {
+      field
+      message
+    }
+    badge {
+      ...RegularBadge
+    }
+  }
+}
+    ${RegularBadgeFragmentDoc}`;
+
+export function useEditBadgeMutation() {
+  return Urql.useMutation<EditBadgeMutation, EditBadgeMutationVariables>(EditBadgeDocument);
+};
+export const AdminGiveBadgeDocument = gql`
+    mutation AdminGiveBadge($userId: Float, $userEmail: String, $shortName: String, $badgeId: Float) {
+  adminGiveBadge(
+    userId: $userId
+    userEmail: $userEmail
+    shortName: $shortName
+    badgeId: $badgeId
+  )
+}
+    `;
+
+export function useAdminGiveBadgeMutation() {
+  return Urql.useMutation<AdminGiveBadgeMutation, AdminGiveBadgeMutationVariables>(AdminGiveBadgeDocument);
+};
+export const AdminRemoveBadgeDocument = gql`
+    mutation AdminRemoveBadge($userId: Float!, $badgeId: Float, $shortName: String) {
+  adminRemoveBadge(userId: $userId, badgeId: $badgeId, shortName: $shortName)
+}
+    `;
+
+export function useAdminRemoveBadgeMutation() {
+  return Urql.useMutation<AdminRemoveBadgeMutation, AdminRemoveBadgeMutationVariables>(AdminRemoveBadgeDocument);
+};
 export const CreateCourseDocument = gql`
     mutation CreateCourse($courseInfo: EventInput!) {
   createCourse(courseInfo: $courseInfo) {
@@ -1618,6 +1832,39 @@ export const UpdateUserRoleDocument = gql`
 
 export function useUpdateUserRoleMutation() {
   return Urql.useMutation<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>(UpdateUserRoleDocument);
+};
+export const BadgesDocument = gql`
+    query Badges {
+  badges {
+    ...RegularBadge
+  }
+}
+    ${RegularBadgeFragmentDoc}`;
+
+export function useBadgesQuery(options: Omit<Urql.UseQueryArgs<BadgesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<BadgesQuery>({ query: BadgesDocument, ...options });
+};
+export const BadgeByShortNameDocument = gql`
+    query BadgeByShortName($shortName: String!) {
+  badgeByShortName(shortName: $shortName) {
+    ...RegularBadge
+  }
+}
+    ${RegularBadgeFragmentDoc}`;
+
+export function useBadgeByShortNameQuery(options: Omit<Urql.UseQueryArgs<BadgeByShortNameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<BadgeByShortNameQuery>({ query: BadgeByShortNameDocument, ...options });
+};
+export const BadgeUsersDocument = gql`
+    query BadgeUsers($shortName: String, $badgeId: Float) {
+  badgeUsers(shortName: $shortName, badgeId: $badgeId) {
+    ...RegularUserWithoutEvents
+  }
+}
+    ${RegularUserWithoutEventsFragmentDoc}`;
+
+export function useBadgeUsersQuery(options: Omit<Urql.UseQueryArgs<BadgeUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<BadgeUsersQuery>({ query: BadgeUsersDocument, ...options });
 };
 export const CoursesDocument = gql`
     query Courses {

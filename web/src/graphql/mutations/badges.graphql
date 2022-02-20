@@ -1,0 +1,45 @@
+mutation CreateBadge($badgeInfo: BadgeInput!) {
+  createBadge(badgeInfo: $badgeInfo) {
+    errors {
+      field
+      message
+    }
+    badge {
+      ...RegularBadge
+    }
+  }
+}
+
+mutation EditBadge($badgeInfo: BadgeInput!, $editBadgeId: Float!) {
+  editBadge(badgeInfo: $badgeInfo, id: $editBadgeId) {
+    errors {
+      field
+      message
+    }
+    badge {
+      ...RegularBadge
+    }
+  }
+}
+
+mutation AdminGiveBadge(
+  $userId: Float
+  $userEmail: String
+  $shortName: String
+  $badgeId: Float
+) {
+  adminGiveBadge(
+    userId: $userId
+    userEmail: $userEmail
+    shortName: $shortName
+    badgeId: $badgeId
+  )
+}
+
+mutation AdminRemoveBadge(
+  $userId: Float!
+  $badgeId: Float
+  $shortName: String
+) {
+  adminRemoveBadge(userId: $userId, badgeId: $badgeId, shortName: $shortName)
+}

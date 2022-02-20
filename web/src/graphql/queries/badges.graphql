@@ -1,0 +1,17 @@
+query Badges {
+  badges {
+    ...RegularBadge
+  }
+}
+
+query BadgeByShortName($shortName: String!) {
+  badgeByShortName(shortName: $shortName) {
+    ...RegularBadge
+  }
+}
+
+query BadgeUsers($shortName: String, $badgeId: Float) {
+  badgeUsers(shortName: $shortName, badgeId: $badgeId) {
+    ...RegularUserWithoutEvents
+  }
+}
