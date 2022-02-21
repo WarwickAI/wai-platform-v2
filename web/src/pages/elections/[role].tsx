@@ -24,6 +24,9 @@ import {
 import ReactMarkdown from "react-markdown";
 import ItemGrid from "../../components/ItemGrid";
 import ApplicationCard from "../../components/ApplicationCard";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { markdownTheme } from "../../theme";
+import remarkGfm from "remark-gfm";
 
 interface ElectionRoleProps {}
 
@@ -49,9 +52,10 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
     }
   );
 
-  const [showHiddenApplications, setShowHiddenApplications] = useState<boolean>(
-    false
-  );
+  const [showHiddenApplications, setShowHiddenApplications] =
+    useState<boolean>(false);
+
+  console.log(userInfo?.me);
 
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
@@ -59,7 +63,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
         title={roleDetails.getElectionRole.title}
         options={
           <HStack>
-            {roleDetails.getElectionRole.canApply && (
+            {roleDetails.getElectionRole.canApply && userInfo?.me && (
               <Button
                 variant="primary"
                 onClick={() =>
@@ -76,6 +80,11 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 ) !== -1
                   ? "Applied"
                   : "Apply"}
+              </Button>
+            )}
+            {!userInfo?.me && (
+              <Button variant="primary" onClick={() => router.push("/login")}>
+                Login to Apply
               </Button>
             )}
             {userInfo?.me?.role === "exec" && (
@@ -117,7 +126,11 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
         }
       >
         {
-          <ReactMarkdown>
+          <ReactMarkdown
+            components={ChakraUIRenderer(markdownTheme)}
+            linkTarget="_self"
+            remarkPlugins={[remarkGfm]}
+          >
             {roleDetails.getElectionRole.description}
           </ReactMarkdown>
         }
