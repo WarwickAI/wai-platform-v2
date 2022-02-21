@@ -1,6 +1,8 @@
 import { HStack, Button, Badge, Flex } from "@chakra-ui/react";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import router from "next/router";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   RegularCourseFragment,
   RegularProjectFragment,
@@ -8,6 +10,7 @@ import {
   RegularTutorialFragment,
   RegularUserFragment,
 } from "../generated/graphql";
+import { markdownTheme } from "../theme";
 import Dashboard from "./Dashboard";
 
 interface EventPageProps {
@@ -105,7 +108,11 @@ const EventPage: React.FC<EventPageProps> = ({
       }
     >
       {
-        <ReactMarkdown>
+        <ReactMarkdown
+          components={ChakraUIRenderer(markdownTheme)}
+          linkTarget="_self"
+          remarkPlugins={[remarkGfm]}
+        >
           {eventDetails.description ? eventDetails.description : ""}
         </ReactMarkdown>
       }
