@@ -107,6 +107,14 @@ const EditElectionRole: React.FC<EditElectionRoleProps> = ({}) => {
                 ></InputField>
               </Box>
               <Box mt={4}>
+                <InputField
+                  name="canVote"
+                  label="Can Vote"
+                  type="switch"
+                  hint="Whether members can vote for this role."
+                ></InputField>
+              </Box>
+              <Box mt={4}>
                 <Button
                   type="submit"
                   variant="primary"

@@ -22,12 +22,20 @@ query ElectionRoleAllApplications($shortName: String, $roleId: Float) {
   }
 }
 
-
 query GetElectionRole($shortName: String, $roleId: Float) {
   getElectionRole(shortName: $shortName, roleId: $roleId) {
     ...RegularElectionRole
     applications {
       ...RegularRoleApplication
     }
+  }
+}
+
+query GetRoleVoteCount($roleId: Float, $shortName: String) {
+  getRoleVoteCount(roleId: $roleId, shortName: $shortName) {
+    application {
+      ...RegularRoleApplication
+    }
+    count
   }
 }

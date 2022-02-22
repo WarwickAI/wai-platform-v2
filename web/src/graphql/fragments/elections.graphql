@@ -9,6 +9,7 @@ fragment RegularElectionRole on ElectionRole {
   applicationTemplate
   previewImg
   canApply
+  canVote
 }
 
 fragment RegularElectionRoleWithApplications on ElectionRole {
@@ -22,6 +23,7 @@ fragment RegularElectionRoleWithApplications on ElectionRole {
   applicationTemplate
   previewImg
   canApply
+  canVote
   applications {
     id
     display

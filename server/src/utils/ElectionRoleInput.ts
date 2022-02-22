@@ -22,4 +22,7 @@ export class ElectionRoleInput {
 
   @Field()
   canApply: boolean;
+
+  @Field()
+  canVote: boolean;
 }

@@ -6,8 +6,10 @@ import { isServer } from "../utils/isServer";
 
 interface ApplicationCardProps {
   title: string | JSX.Element;
-  redirect: string;
+  redirect?: string;
   img: string | undefined | null;
+  selected?: boolean;
+  onClick?: () => any;
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = (props) => {
@@ -17,9 +19,17 @@ const ApplicationCard: React.FC<ApplicationCardProps> = (props) => {
     <Flex
       h={16}
       _hover={{ cursor: "pointer" }}
-      onClick={() => router.push(props.redirect)}
+      onClick={
+        props.onClick !== undefined
+          ? props.onClick
+          : props.redirect
+          ? () => router.push(props.redirect as string)
+          : () => {}
+      }
       p={2}
       borderWidth={1}
+      borderColor={props.selected ? "primary.main" : "lightgray"}
+      bg={props.selected ? "rgba(0, 171, 85, 0.08)" : "white"}
       overflow="hidden"
       borderRadius="2xl"
       alignItems="center"
