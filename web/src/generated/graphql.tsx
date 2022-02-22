@@ -96,6 +96,12 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type MemberInfoInput = {
+  dataJoined: Scalars['String'];
+  name: Scalars['String'];
+  uniId: Scalars['Float'];
+};
+
 export type Merch = {
   __typename?: 'Merch';
   createdAt: Scalars['String'];
@@ -126,6 +132,7 @@ export type MerchResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addMemberInfo: Scalars['Boolean'];
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createMerch: MerchResponse;
@@ -153,8 +160,14 @@ export type Mutation = {
   removeUserFromTutorial: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
   roleApply: RoleApplicationResponse;
+  updateMembership: Scalars['Boolean'];
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
+};
+
+
+export type MutationAddMemberInfoArgs = {
+  memberInfo: Array<MemberInfoInput>;
 };
 
 
@@ -565,6 +578,7 @@ export type User = {
   talks: Array<Talk>;
   tokenVersion: Scalars['Float'];
   tutorials: Array<Tutorial>;
+  uniId?: Maybe<Scalars['Float']>;
   updatedAt: Scalars['String'];
 };
 
@@ -579,9 +593,9 @@ export type VariantInput = {
   name: Scalars['String'];
 };
 
-export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
+export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
 
-export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
+export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
 
 export type RegularRoleApplicationFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined };
 
@@ -600,6 +614,18 @@ export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: b
 export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
 export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+
+export type AddMemberInfoMutationVariables = Exact<{
+  memberInfo: Array<MemberInfoInput> | MemberInfoInput;
+}>;
+
+
+export type AddMemberInfoMutation = { __typename?: 'Mutation', addMemberInfo: boolean };
+
+export type UpdateMembershipMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: boolean };
 
 export type CreateCourseMutationVariables = Exact<{
   courseInfo: EventInput;
@@ -795,7 +821,7 @@ export type RemoveUserFromTutorialMutation = { __typename?: 'Mutation', removeUs
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
+export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -833,7 +859,7 @@ export type CourseUsersQueryVariables = Exact<{
 }>;
 
 
-export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type ElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -898,7 +924,7 @@ export type RoleApplicationElectionRoleQuery = { __typename?: 'Query', roleAppli
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
 
 export type MerchQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -940,7 +966,7 @@ export type ProjectUsersQueryVariables = Exact<{
 }>;
 
 
-export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -970,7 +996,7 @@ export type TalkUsersQueryVariables = Exact<{
 }>;
 
 
-export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type TutorialsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -995,12 +1021,12 @@ export type TutorialUsersQueryVariables = Exact<{
 }>;
 
 
-export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1010,10 +1036,13 @@ export type GetUserRoleApplicationsQuery = { __typename?: 'Query', getUserRoleAp
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
   projects {
     id
     shortName
@@ -1035,10 +1064,13 @@ export const RegularUserFragmentDoc = gql`
 export const RegularUserWithoutEventsFragmentDoc = gql`
     fragment RegularUserWithoutEvents on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
 }
     `;
 export const RegularRoleApplicationFragmentDoc = gql`
@@ -1195,6 +1227,24 @@ export const RegularTagFragmentDoc = gql`
   color
 }
     `;
+export const AddMemberInfoDocument = gql`
+    mutation AddMemberInfo($memberInfo: [MemberInfoInput!]!) {
+  addMemberInfo(memberInfo: $memberInfo)
+}
+    `;
+
+export function useAddMemberInfoMutation() {
+  return Urql.useMutation<AddMemberInfoMutation, AddMemberInfoMutationVariables>(AddMemberInfoDocument);
+};
+export const UpdateMembershipDocument = gql`
+    mutation UpdateMembership {
+  updateMembership
+}
+    `;
+
+export function useUpdateMembershipMutation() {
+  return Urql.useMutation<UpdateMembershipMutation, UpdateMembershipMutationVariables>(UpdateMembershipDocument);
+};
 export const CreateCourseDocument = gql`
     mutation CreateCourse($courseInfo: EventInput!) {
   createCourse(courseInfo: $courseInfo) {
@@ -1976,18 +2026,10 @@ export function useTutorialUsersQuery(options: Omit<Urql.UseQueryArgs<TutorialUs
 export const UsersDocument = gql`
     query Users {
   users {
-    id
-    createdAt
-    updatedAt
-    firstName
-    lastName
-    email
-    cognitoUsername
-    tokenVersion
-    role
+    ...RegularUserWithoutEvents
   }
 }
-    `;
+    ${RegularUserWithoutEventsFragmentDoc}`;
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });

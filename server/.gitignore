@@ -4,3 +4,5 @@
 .env.production
 
 /dist
+
+logs.txt

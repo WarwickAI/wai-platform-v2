@@ -31,6 +31,7 @@ import { ElectionRole } from "./entities/ElectionRole";
 import { RoleApplication } from "./entities/RoleApplication";
 import { ElectionResolver } from "./resolvers/election";
 import { ApplicationResolver } from "./resolvers/application";
+import { AdminResolver } from "./resolvers/admin";
 
 const main = async () => {
   // Connect to DB
@@ -132,7 +133,8 @@ const main = async () => {
         MerchResolver,
         TagResolver,
         ElectionResolver,
-        ApplicationResolver
+        ApplicationResolver,
+        AdminResolver
       ],
       validate: false,
     }),

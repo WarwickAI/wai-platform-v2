@@ -1,0 +1,7 @@
+mutation AddMemberInfo($memberInfo: [MemberInfoInput!]!) {
+  addMemberInfo(memberInfo: $memberInfo)
+}
+
+mutation UpdateMembership {
+  updateMembership
+}

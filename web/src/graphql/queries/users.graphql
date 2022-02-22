@@ -1,14 +1,6 @@
 query Users {
   users {
-    id
-    createdAt
-    updatedAt
-    firstName
-    lastName
-    email
-    cognitoUsername
-    tokenVersion
-    role
+    ...RegularUserWithoutEvents
   }
 }
 
