@@ -31,6 +31,9 @@ import { ElectionRole } from "./entities/ElectionRole";
 import { RoleApplication } from "./entities/RoleApplication";
 import { ElectionResolver } from "./resolvers/election";
 import { ApplicationResolver } from "./resolvers/application";
+import { AdminResolver } from "./resolvers/admin";
+import { Vote } from "./entities/Vote";
+import { VoteResolver } from "./resolvers/vote";
 
 const main = async () => {
   // Connect to DB
@@ -58,7 +61,18 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [],
-    entities: [User, Project, Talk, Course, Tutorial, Merch, Tag, ElectionRole, RoleApplication],
+    entities: [
+      User,
+      Project,
+      Talk,
+      Course,
+      Tutorial,
+      Merch,
+      Tag,
+      ElectionRole,
+      RoleApplication,
+      Vote,
+    ],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -132,7 +146,9 @@ const main = async () => {
         MerchResolver,
         TagResolver,
         ElectionResolver,
-        ApplicationResolver
+        ApplicationResolver,
+        AdminResolver,
+        VoteResolver,
       ],
       validate: false,
     }),

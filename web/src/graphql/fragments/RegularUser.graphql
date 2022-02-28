@@ -1,9 +1,12 @@
 fragment RegularUser on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
   projects {
     id
     shortName
@@ -24,8 +27,11 @@ fragment RegularUser on User {
 
 fragment RegularUserWithoutEvents on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
 }

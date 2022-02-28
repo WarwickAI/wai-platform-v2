@@ -51,6 +51,7 @@ export type ElectionRole = {
   applicationTemplate?: Maybe<Scalars['String']>;
   applications: Array<RoleApplication>;
   canApply?: Maybe<Scalars['Boolean']>;
+  canVote?: Maybe<Scalars['Boolean']>;
   createdAt: Scalars['String'];
   description: Scalars['String'];
   display?: Maybe<Scalars['Boolean']>;
@@ -59,11 +60,13 @@ export type ElectionRole = {
   shortName: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+  votes: Array<Vote>;
 };
 
 export type ElectionRoleInput = {
   applicationTemplate: Scalars['String'];
   canApply: Scalars['Boolean'];
+  canVote: Scalars['Boolean'];
   description: Scalars['String'];
   display: Scalars['Boolean'];
   previewImg: Scalars['String'];
@@ -96,6 +99,12 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type MemberInfoInput = {
+  dataJoined: Scalars['String'];
+  name: Scalars['String'];
+  uniId: Scalars['Float'];
+};
+
 export type Merch = {
   __typename?: 'Merch';
   createdAt: Scalars['String'];
@@ -126,6 +135,7 @@ export type MerchResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addMemberInfo: Scalars['Boolean'];
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createMerch: MerchResponse;
@@ -153,8 +163,15 @@ export type Mutation = {
   removeUserFromTutorial: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
   roleApply: RoleApplicationResponse;
+  updateMembership: Scalars['Boolean'];
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
+  vote: Scalars['Boolean'];
+};
+
+
+export type MutationAddMemberInfoArgs = {
+  memberInfo: Array<MemberInfoInput>;
 };
 
 
@@ -311,6 +328,14 @@ export type MutationUpdateUserRoleArgs = {
   role: Scalars['String'];
 };
 
+
+export type MutationVoteArgs = {
+  applicationId?: InputMaybe<Scalars['Float']>;
+  applicationShortName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['Float']>;
+  roleShortName?: InputMaybe<Scalars['String']>;
+};
+
 export type Project = {
   __typename?: 'Project';
   coverImg?: Maybe<Scalars['String']>;
@@ -350,9 +375,13 @@ export type Query = {
   electionRoleAllApplications: Array<RoleApplication>;
   electionRoleApplications: Array<RoleApplication>;
   electionRoles: Array<ElectionRole>;
+  getAllVotes: Array<Vote>;
   getElectionRole?: Maybe<ElectionRole>;
   getRoleApplication?: Maybe<RoleApplication>;
+  getRoleApplicationForVote: RoleApplicationResponseForVote;
+  getRoleVoteCount: Array<RoleApplicationVoteCount>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
+  hasUserVotedForRole: Scalars['Boolean'];
   hello: Scalars['String'];
   me?: Maybe<User>;
   merch: Array<Merch>;
@@ -406,6 +435,23 @@ export type QueryGetElectionRoleArgs = {
 export type QueryGetRoleApplicationArgs = {
   applicationId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetRoleApplicationForVoteArgs = {
+  voteId: Scalars['Float'];
+};
+
+
+export type QueryGetRoleVoteCountArgs = {
+  roleId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryHasUserVotedForRoleArgs = {
+  roleId?: InputMaybe<Scalars['Float']>;
+  roleShortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -464,6 +510,7 @@ export type RoleApplication = {
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   user: User;
+  votes: Array<Vote>;
 };
 
 export type RoleApplicationInput = {
@@ -478,6 +525,18 @@ export type RoleApplicationResponse = {
   __typename?: 'RoleApplicationResponse';
   application?: Maybe<RoleApplication>;
   errors?: Maybe<Array<FieldError>>;
+};
+
+export type RoleApplicationResponseForVote = {
+  __typename?: 'RoleApplicationResponseForVote';
+  message?: Maybe<Scalars['String']>;
+  role?: Maybe<RoleApplication>;
+};
+
+export type RoleApplicationVoteCount = {
+  __typename?: 'RoleApplicationVoteCount';
+  application: RoleApplication;
+  count: Scalars['Float'];
 };
 
 export type Tag = {
@@ -565,7 +624,9 @@ export type User = {
   talks: Array<Talk>;
   tokenVersion: Scalars['Float'];
   tutorials: Array<Tutorial>;
+  uniId?: Maybe<Scalars['Float']>;
   updatedAt: Scalars['String'];
+  votes: Array<Vote>;
 };
 
 export type Variant = {
@@ -579,17 +640,27 @@ export type VariantInput = {
   name: Scalars['String'];
 };
 
-export type RegularUserFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
+export type Vote = {
+  __typename?: 'Vote';
+  application: RoleApplication;
+  createdAt: Scalars['String'];
+  id: Scalars['Float'];
+  role: ElectionRole;
+  updatedAt: Scalars['String'];
+  user: User;
+};
 
-export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string };
+export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
+
+export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
 
 export type RegularRoleApplicationFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined };
 
 export type RegularRoleApplicationWithElectionRoleFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined, role: { __typename?: 'ElectionRole', id: number, shortName: string, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, description: string, previewImg?: string | null | undefined } };
 
-export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined };
+export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined };
 
-export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
+export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
 
 export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
@@ -600,6 +671,18 @@ export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: b
 export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
 export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+
+export type AddMemberInfoMutationVariables = Exact<{
+  memberInfo: Array<MemberInfoInput> | MemberInfoInput;
+}>;
+
+
+export type AddMemberInfoMutation = { __typename?: 'Mutation', addMemberInfo: boolean };
+
+export type UpdateMembershipMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: boolean };
 
 export type CreateCourseMutationVariables = Exact<{
   courseInfo: EventInput;
@@ -638,7 +721,7 @@ export type CreateElectionRoleMutationVariables = Exact<{
 }>;
 
 
-export type CreateElectionRoleMutation = { __typename?: 'Mutation', createElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined } } };
+export type CreateElectionRoleMutation = { __typename?: 'Mutation', createElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } } };
 
 export type EditElectionRoleMutationVariables = Exact<{
   roleInfo: ElectionRoleInput;
@@ -646,7 +729,17 @@ export type EditElectionRoleMutationVariables = Exact<{
 }>;
 
 
-export type EditElectionRoleMutation = { __typename?: 'Mutation', editElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined } } };
+export type EditElectionRoleMutation = { __typename?: 'Mutation', editElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } } };
+
+export type VoteMutationVariables = Exact<{
+  applicationShortName?: InputMaybe<Scalars['String']>;
+  applicationId?: InputMaybe<Scalars['Float']>;
+  roleShortName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type VoteMutation = { __typename?: 'Mutation', vote: boolean };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -795,7 +888,7 @@ export type RemoveUserFromTutorialMutation = { __typename?: 'Mutation', removeUs
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
+export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -833,17 +926,17 @@ export type CourseUsersQueryVariables = Exact<{
 }>;
 
 
-export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type ElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ElectionRolesQuery = { __typename?: 'Query', electionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined }> };
+export type ElectionRolesQuery = { __typename?: 'Query', electionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> };
 
 export type AllElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllElectionRolesQuery = { __typename?: 'Query', allElectionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined }> };
+export type AllElectionRolesQuery = { __typename?: 'Query', allElectionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> };
 
 export type ElectionRoleApplicationsQueryVariables = Exact<{
   shortName?: InputMaybe<Scalars['String']>;
@@ -867,7 +960,30 @@ export type GetElectionRoleQueryVariables = Exact<{
 }>;
 
 
-export type GetElectionRoleQuery = { __typename?: 'Query', getElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> } | null | undefined };
+export type GetElectionRoleQuery = { __typename?: 'Query', getElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> } | null | undefined };
+
+export type GetRoleVoteCountQueryVariables = Exact<{
+  roleId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetRoleVoteCountQuery = { __typename?: 'Query', getRoleVoteCount: Array<{ __typename?: 'RoleApplicationVoteCount', count: number, application: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } }> };
+
+export type GetRoleApplicationForVoteQueryVariables = Exact<{
+  voteId: Scalars['Float'];
+}>;
+
+
+export type GetRoleApplicationForVoteQuery = { __typename?: 'Query', getRoleApplicationForVote: { __typename?: 'RoleApplicationResponseForVote', message?: string | null | undefined, role?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
+
+export type HasUserVotedForRoleQueryVariables = Exact<{
+  roleShortName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRole: boolean };
 
 export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -893,12 +1009,12 @@ export type RoleApplicationElectionRoleQueryVariables = Exact<{
 }>;
 
 
-export type RoleApplicationElectionRoleQuery = { __typename?: 'Query', roleApplicationElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined } | null | undefined };
+export type RoleApplicationElectionRoleQuery = { __typename?: 'Query', roleApplicationElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> } | null | undefined };
 
 export type MerchQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -940,7 +1056,7 @@ export type ProjectUsersQueryVariables = Exact<{
 }>;
 
 
-export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -970,7 +1086,7 @@ export type TalkUsersQueryVariables = Exact<{
 }>;
 
 
-export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type TutorialsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -995,25 +1111,28 @@ export type TutorialUsersQueryVariables = Exact<{
 }>;
 
 
-export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string }> };
+export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserRoleApplicationsQuery = { __typename?: 'Query', getUserRoleApplications?: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined }> | null | undefined };
+export type GetUserRoleApplicationsQuery = { __typename?: 'Query', getUserRoleApplications?: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> | null | undefined };
 
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
   projects {
     id
     shortName
@@ -1035,10 +1154,13 @@ export const RegularUserFragmentDoc = gql`
 export const RegularUserWithoutEventsFragmentDoc = gql`
     fragment RegularUserWithoutEvents on User {
   id
+  uniId
   firstName
   lastName
   email
   role
+  memberFromDate
+  isMember
 }
     `;
 export const RegularRoleApplicationFragmentDoc = gql`
@@ -1087,6 +1209,7 @@ export const RegularElectionRoleFragmentDoc = gql`
   applicationTemplate
   previewImg
   canApply
+  canVote
 }
     `;
 export const RegularElectionRoleWithApplicationsFragmentDoc = gql`
@@ -1101,6 +1224,7 @@ export const RegularElectionRoleWithApplicationsFragmentDoc = gql`
   applicationTemplate
   previewImg
   canApply
+  canVote
   applications {
     id
     display
@@ -1195,6 +1319,24 @@ export const RegularTagFragmentDoc = gql`
   color
 }
     `;
+export const AddMemberInfoDocument = gql`
+    mutation AddMemberInfo($memberInfo: [MemberInfoInput!]!) {
+  addMemberInfo(memberInfo: $memberInfo)
+}
+    `;
+
+export function useAddMemberInfoMutation() {
+  return Urql.useMutation<AddMemberInfoMutation, AddMemberInfoMutationVariables>(AddMemberInfoDocument);
+};
+export const UpdateMembershipDocument = gql`
+    mutation UpdateMembership {
+  updateMembership
+}
+    `;
+
+export function useUpdateMembershipMutation() {
+  return Urql.useMutation<UpdateMembershipMutation, UpdateMembershipMutationVariables>(UpdateMembershipDocument);
+};
 export const CreateCourseDocument = gql`
     mutation CreateCourse($courseInfo: EventInput!) {
   createCourse(courseInfo: $courseInfo) {
@@ -1284,6 +1426,20 @@ export const EditElectionRoleDocument = gql`
 
 export function useEditElectionRoleMutation() {
   return Urql.useMutation<EditElectionRoleMutation, EditElectionRoleMutationVariables>(EditElectionRoleDocument);
+};
+export const VoteDocument = gql`
+    mutation Vote($applicationShortName: String, $applicationId: Float, $roleShortName: String, $roleId: Float) {
+  vote(
+    applicationShortName: $applicationShortName
+    applicationId: $applicationId
+    roleShortName: $roleShortName
+    roleId: $roleId
+  )
+}
+    `;
+
+export function useVoteMutation() {
+  return Urql.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
@@ -1722,6 +1878,43 @@ ${RegularRoleApplicationFragmentDoc}`;
 export function useGetElectionRoleQuery(options: Omit<Urql.UseQueryArgs<GetElectionRoleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetElectionRoleQuery>({ query: GetElectionRoleDocument, ...options });
 };
+export const GetRoleVoteCountDocument = gql`
+    query GetRoleVoteCount($roleId: Float, $shortName: String) {
+  getRoleVoteCount(roleId: $roleId, shortName: $shortName) {
+    application {
+      ...RegularRoleApplication
+    }
+    count
+  }
+}
+    ${RegularRoleApplicationFragmentDoc}`;
+
+export function useGetRoleVoteCountQuery(options: Omit<Urql.UseQueryArgs<GetRoleVoteCountQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetRoleVoteCountQuery>({ query: GetRoleVoteCountDocument, ...options });
+};
+export const GetRoleApplicationForVoteDocument = gql`
+    query GetRoleApplicationForVote($voteId: Float!) {
+  getRoleApplicationForVote(voteId: $voteId) {
+    role {
+      ...RegularRoleApplication
+    }
+    message
+  }
+}
+    ${RegularRoleApplicationFragmentDoc}`;
+
+export function useGetRoleApplicationForVoteQuery(options: Omit<Urql.UseQueryArgs<GetRoleApplicationForVoteQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetRoleApplicationForVoteQuery>({ query: GetRoleApplicationForVoteDocument, ...options });
+};
+export const HasUserVotedForRoleDocument = gql`
+    query HasUserVotedForRole($roleShortName: String, $roleId: Float) {
+  hasUserVotedForRole(roleShortName: $roleShortName, roleId: $roleId)
+}
+    `;
+
+export function useHasUserVotedForRoleQuery(options: Omit<Urql.UseQueryArgs<HasUserVotedForRoleQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<HasUserVotedForRoleQuery>({ query: HasUserVotedForRoleDocument, ...options });
+};
 export const RoleApplicationsDocument = gql`
     query RoleApplications {
   roleApplications {
@@ -1976,18 +2169,10 @@ export function useTutorialUsersQuery(options: Omit<Urql.UseQueryArgs<TutorialUs
 export const UsersDocument = gql`
     query Users {
   users {
-    id
-    createdAt
-    updatedAt
-    firstName
-    lastName
-    email
-    cognitoUsername
-    tokenVersion
-    role
+    ...RegularUserWithoutEvents
   }
 }
-    `;
+    ${RegularUserWithoutEventsFragmentDoc}`;
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });

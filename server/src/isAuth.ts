@@ -45,3 +45,30 @@ export const isExec: MiddlewareFn<MyContext> = async ({ context }, next) => {
 
   return next();
 };
+
+export const isSuper: MiddlewareFn<MyContext> = async ({ context }, next) => {
+  const userId = context.payload?.userId;
+  if (!userId) {
+    throw new ForbiddenError("not authenticated");
+  }
+
+  try {
+    const user = await User.findOne(parseInt(userId));
+    if (!user) {
+      throw new ForbiddenError("not authenticated");
+    }
+
+    if (
+      user.email != "Edward.Upton@warwick.ac.uk" &&
+      user.email != "Oliver.Jaffe@warwick.ac.uk" &&
+      user.email != "Joe.Hewett@warwick.ac.uk"
+    ) {
+      throw new ForbiddenError("not exec");
+    }
+  } catch (err) {
+    console.log(err);
+    throw new ForbiddenError("not authenticated");
+  }
+
+  return next();
+};

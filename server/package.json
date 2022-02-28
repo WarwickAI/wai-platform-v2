@@ -41,7 +41,8 @@
     "pg": "^8.7.1",
     "stripe": "^8.195.0",
     "type-graphql": "^1.1.1",
-    "typeorm": "^0.2.41"
+    "typeorm": "^0.2.41",
+    "xml-js": "^1.6.11"
   },
   "mikro-orm": {
     "useTsNode": true,
