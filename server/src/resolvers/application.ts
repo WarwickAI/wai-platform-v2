@@ -8,7 +8,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { isAuth, isExec } from "../isAuth";
+import { isAuth, isExec, isSuper } from "../isAuth";
 import FieldError from "../utils/FieldError";
 import { RoleApplication } from "../entities/RoleApplication";
 import { validateRoleApplication } from "../utils/validateRoleApplication";
@@ -40,7 +40,7 @@ export class ApplicationResolver {
   }
 
   @Query(() => [RoleApplication])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async allRoleApplications(): Promise<RoleApplication[]> {
     return await RoleApplication.find({ relations: ["role"] });
   }

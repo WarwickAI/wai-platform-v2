@@ -39,7 +39,6 @@ export class VoteResolver {
   @Query(() => RoleApplicationResponseForVote)
   @UseMiddleware(isAuth)
   async getRoleApplicationForVote(
-    @Ctx() { payload }: MyContext,
     @Arg("voteId") voteId: number
   ) {
     const vote = await Vote.findOne(voteId, { relations: ["role"] });
