@@ -1,7 +1,7 @@
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import Dashboard from "../../components/Dashboard";
+import Dashboard from "../../../components/Dashboard";
 import {
   useMeQuery,
   useGetElectionRoleQuery,
@@ -9,9 +9,10 @@ import {
   useElectionRoleApplicationsQuery,
   useElectionRoleAllApplicationsQuery,
   useGetUserRoleApplicationsQuery,
-} from "../../generated/graphql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
-import { isServer } from "../../utils/isServer";
+  useHasUserVotedForRoleQuery,
+} from "../../../generated/graphql";
+import { createUrqlClient } from "../../../utils/createUrqlClient";
+import { isServer } from "../../../utils/isServer";
 import {
   Button,
   Flex,
@@ -22,10 +23,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
-import ItemGrid from "../../components/ItemGrid";
-import ApplicationCard from "../../components/ApplicationCard";
+import ItemGrid from "../../../components/ItemGrid";
+import ApplicationCard from "../../../components/ApplicationCard";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
-import { markdownTheme } from "../../theme";
+import { markdownTheme } from "../../../theme";
 import remarkGfm from "remark-gfm";
 
 interface ElectionRoleProps {}
@@ -52,10 +53,13 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
     }
   );
 
+  const [{ data: hasUserVotedForRole }] = useHasUserVotedForRoleQuery({
+    variables: { roleShortName: role as string },
+    pause: isServer(),
+  });
+
   const [showHiddenApplications, setShowHiddenApplications] =
     useState<boolean>(false);
-
-  console.log(userInfo?.me);
 
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
@@ -82,9 +86,23 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                   : "Apply"}
               </Button>
             )}
-            {!userInfo?.me && (
+            {roleDetails.getElectionRole.canApply && !userInfo?.me && (
               <Button variant="primary" onClick={() => router.push("/login")}>
                 Login to Apply
+              </Button>
+            )}
+            {roleDetails.getElectionRole.canVote && userInfo?.me && (
+              <Button
+                variant="primary"
+                onClick={() => router.push(`/elections/${role}/vote`)}
+                disabled={hasUserVotedForRole?.hasUserVotedForRole}
+              >
+                {hasUserVotedForRole?.hasUserVotedForRole ? "Voted" : "Vote"}
+              </Button>
+            )}
+            {roleDetails.getElectionRole.canVote && !userInfo?.me && (
+              <Button variant="primary" onClick={() => router.push("/login")}>
+                Login to Vote
               </Button>
             )}
             {userInfo?.me?.role === "exec" && (
@@ -108,7 +126,10 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
               </Button>
             )}
             {userInfo?.me?.role === "exec" && (
-              <Button variant="admin" onClick={() => {}}>
+              <Button
+                variant="admin"
+                onClick={() => router.push(`/elections/${role}/manage`)}
+              >
                 Manage
               </Button>
             )}
@@ -155,7 +176,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
             ))}
           </ItemGrid>
         ) : (
-          <Text>No applications submitted</Text>
+          <Text>Applications hidden until March 3rd</Text>
         )}
       </Dashboard>
     );

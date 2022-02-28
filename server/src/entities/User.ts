@@ -1,10 +1,21 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Course } from "./Course";
 import { Project } from "./Project";
 import { RoleApplication } from "./RoleApplication";
 import { Talk } from "./Talk";
 import { Tutorial } from "./Tutorial";
+import { Vote } from "./Vote";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -12,6 +23,10 @@ export class User extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Field({ nullable: true })
+  @Column({ unique: true, nullable: true })
+  uniId?: number;
 
   @Field(() => String) // Specify as field in GraphQL
   @CreateDateColumn() // Specify as row in DB
@@ -46,30 +61,34 @@ export class User extends BaseEntity {
   role: string = "none";
 
   @Field(() => [Project])
-  @ManyToMany(() => Project, project => project.users)
-  projects: Project[]
+  @ManyToMany(() => Project, (project) => project.users)
+  projects: Project[];
 
   @Field(() => [Talk])
-  @ManyToMany(() => Talk, project => project.users)
-  talks: Talk[]
+  @ManyToMany(() => Talk, (project) => project.users)
+  talks: Talk[];
 
   @Field({ defaultValue: false })
   @Column({ default: false })
   isMember: boolean;
 
-  @Field(() => String, { defaultValue: new Date() })
-  @Column({ default: new Date() })
-  memberFromDate: Date;
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  memberFromDate?: Date;
 
   @Field(() => [Course])
-  @ManyToMany(() => Course, course => course.users)
-  courses: Course[]
+  @ManyToMany(() => Course, (course) => course.users)
+  courses: Course[];
 
   @Field(() => [Tutorial])
-  @ManyToMany(() => Tutorial, tutorial => tutorial.users)
-  tutorials: Tutorial[]
+  @ManyToMany(() => Tutorial, (tutorial) => tutorial.users)
+  tutorials: Tutorial[];
 
   @Field(() => [RoleApplication])
-  @OneToMany(() => RoleApplication, application => application.user)
-  applications: RoleApplication[]
+  @OneToMany(() => RoleApplication, (application) => application.user)
+  applications: RoleApplication[];
+
+  @Field(() => [Vote])
+  @OneToMany(() => Vote, (vote) => vote.user)
+  votes: Vote[];
 }
