@@ -7,7 +7,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { isAuth, isExec } from "../isAuth";
+import { isAuth, isExec, isSuper } from "../isAuth";
 import FieldError from "../utils/FieldError";
 import { ElectionRole } from "../entities/ElectionRole";
 import { validateElectionRole } from "../utils/validateElectionRole";
@@ -126,7 +126,7 @@ export class ElectionResolver {
   }
 
   @Query(() => [RoleApplication])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async electionRoleAllApplications(
     @Arg("roleId", { nullable: true }) roleId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
@@ -142,7 +142,7 @@ export class ElectionResolver {
   }
 
   @Query(() => [RoleApplicationVoteCount])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async getRoleVoteCount(
     @Arg("roleId", { nullable: true }) roleId?: number,
     @Arg("shortName", { nullable: true }) shortName?: string
