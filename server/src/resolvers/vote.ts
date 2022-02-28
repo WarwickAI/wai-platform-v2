@@ -2,25 +2,78 @@ import { User } from "../entities/User";
 import {
   Arg,
   Ctx,
+  Field,
   Mutation,
   ObjectType,
   Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { isAuth, isExec } from "../isAuth";
+import { isAuth, isExec, isSuper } from "../isAuth";
 import { MemberInfoInput } from "../utils/MemberInfoInput";
 import { MyContext } from "../types";
 import { ElectionRole } from "../entities/ElectionRole";
 import { RoleApplication } from "../entities/RoleApplication";
 import { Vote } from "../entities/Vote";
 
+const mustBeMemberFrom = new Date("March 3, 2022 19:00:00");
+mustBeMemberFrom.setDate(mustBeMemberFrom.getDate() - 14);
+
+@ObjectType()
+class RoleApplicationResponseForVote {
+  @Field(() => RoleApplication, { nullable: true })
+  role?: RoleApplication;
+
+  @Field({ nullable: true })
+  message?: string;
+}
+
 @Resolver()
 export class VoteResolver {
   @Query(() => [Vote])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async getAllVotes() {
     return await Vote.find({ relations: ["role", "user", "application"] });
+  }
+
+  @Query(() => RoleApplicationResponseForVote)
+  @UseMiddleware(isAuth)
+  async getRoleApplicationForVote(
+    @Ctx() { payload }: MyContext,
+    @Arg("voteId") voteId: number
+  ) {
+    const vote = await Vote.findOne(voteId, { relations: ["role"] });
+    if (!vote) {
+      return { message: "Could not find vote using ID" };
+    }
+
+    const role = vote.role;
+    if (!role) {
+      return { message: "Could not find role of vote" };
+    }
+
+    return { role };
+  }
+
+  @Query(() => Boolean)
+  @UseMiddleware(isAuth)
+  async hasUserVotedForRole(
+    @Ctx() { payload }: MyContext,
+    @Arg("roleId", { nullable: true }) roleId?: number,
+    @Arg("roleShortName", { nullable: true }) roleShortName?: string
+  ) {
+    const votes = await Vote.find({ relations: ["role", "user"] });
+    const filteredVotes = votes.filter(
+      (vote) =>
+        ((roleId && vote.role.id === roleId) ||
+          (roleShortName && vote.role.shortName === roleShortName)) &&
+        vote.user.id === parseInt(payload?.userId ? payload.userId : "-1")
+    );
+    console.log(filteredVotes.length);
+    if (filteredVotes.length === 1) {
+      return true;
+    }
+    return false;
   }
 
   @Mutation(() => Boolean)
@@ -68,6 +121,11 @@ export class VoteResolver {
       return false;
     }
 
+    if (!application.display) {
+      console.log("Application is not public");
+      return false;
+    }
+
     const allVotes = await Vote.find({ relations: ["role", "user"] });
     if (
       allVotes.findIndex(
@@ -77,6 +135,19 @@ export class VoteResolver {
       console.log("User already voted for this role");
       return false;
     }
+
+    if (!user.isMember) {
+      console.log("User not member");
+      return false;
+    }
+
+    if (!user.memberFromDate || user.memberFromDate >= mustBeMemberFrom) {
+      console.log(
+        "User memberFromDate not available or has not been member for long enough"
+      );
+      return false;
+    }
+
     const vote = Vote.create({
       application: application,
       role: role,

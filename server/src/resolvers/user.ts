@@ -23,7 +23,6 @@ class FieldError {
   message: string;
 }
 
-
 @Resolver()
 export class UserResolver {
   // Add functions here, can be queries or mutatations
@@ -78,9 +77,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async revokeRefreshTokensForUser(
-    @Arg("id") id: number
-  ) {
+  async revokeRefreshTokensForUser(@Arg("id") id: number) {
     const user = await User.findOne(id);
     if (!user) {
       return false;
@@ -111,7 +108,9 @@ export class UserResolver {
       console.log("access token invalid");
       return null;
     }
-    const user = await User.findOne(parseInt(payload.userId), { relations: ["projects", "talks", "courses", "tutorials"] });
+    const user = await User.findOne(parseInt(payload.userId), {
+      relations: ["projects", "talks", "courses", "tutorials", "votes"],
+    });
 
     if (!user) {
       console.log("user id in access token invalid");
@@ -127,7 +126,9 @@ export class UserResolver {
       console.log("access token invalid");
       return null;
     }
-    const user = await User.findOne(parseInt(payload.userId), { relations: ["applications"] });
+    const user = await User.findOne(parseInt(payload.userId), {
+      relations: ["applications"],
+    });
 
     if (!user) {
       console.log("user id in access token invalid");
@@ -136,9 +137,11 @@ export class UserResolver {
 
     const roles: ElectionRole[] = [];
     for (let i = 0; i < user.applications.length; i++) {
-      const manifesto = await RoleApplication.findOne(user.applications[i].id, { relations: ["role"] })
+      const manifesto = await RoleApplication.findOne(user.applications[i].id, {
+        relations: ["role"],
+      });
       if (manifesto?.role) {
-        roles.push(manifesto.role)
+        roles.push(manifesto.role);
       }
     }
 

@@ -378,8 +378,10 @@ export type Query = {
   getAllVotes: Array<Vote>;
   getElectionRole?: Maybe<ElectionRole>;
   getRoleApplication?: Maybe<RoleApplication>;
+  getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
+  hasUserVotedForRole: Scalars['Boolean'];
   hello: Scalars['String'];
   me?: Maybe<User>;
   merch: Array<Merch>;
@@ -436,9 +438,20 @@ export type QueryGetRoleApplicationArgs = {
 };
 
 
+export type QueryGetRoleApplicationForVoteArgs = {
+  voteId: Scalars['Float'];
+};
+
+
 export type QueryGetRoleVoteCountArgs = {
   roleId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryHasUserVotedForRoleArgs = {
+  roleId?: InputMaybe<Scalars['Float']>;
+  roleShortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -512,6 +525,12 @@ export type RoleApplicationResponse = {
   __typename?: 'RoleApplicationResponse';
   application?: Maybe<RoleApplication>;
   errors?: Maybe<Array<FieldError>>;
+};
+
+export type RoleApplicationResponseForVote = {
+  __typename?: 'RoleApplicationResponseForVote';
+  message?: Maybe<Scalars['String']>;
+  role?: Maybe<RoleApplication>;
 };
 
 export type RoleApplicationVoteCount = {
@@ -950,6 +969,21 @@ export type GetRoleVoteCountQueryVariables = Exact<{
 
 
 export type GetRoleVoteCountQuery = { __typename?: 'Query', getRoleVoteCount: Array<{ __typename?: 'RoleApplicationVoteCount', count: number, application: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } }> };
+
+export type GetRoleApplicationForVoteQueryVariables = Exact<{
+  voteId: Scalars['Float'];
+}>;
+
+
+export type GetRoleApplicationForVoteQuery = { __typename?: 'Query', getRoleApplicationForVote: { __typename?: 'RoleApplicationResponseForVote', message?: string | null | undefined, role?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
+
+export type HasUserVotedForRoleQueryVariables = Exact<{
+  roleShortName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRole: boolean };
 
 export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1857,6 +1891,29 @@ export const GetRoleVoteCountDocument = gql`
 
 export function useGetRoleVoteCountQuery(options: Omit<Urql.UseQueryArgs<GetRoleVoteCountQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetRoleVoteCountQuery>({ query: GetRoleVoteCountDocument, ...options });
+};
+export const GetRoleApplicationForVoteDocument = gql`
+    query GetRoleApplicationForVote($voteId: Float!) {
+  getRoleApplicationForVote(voteId: $voteId) {
+    role {
+      ...RegularRoleApplication
+    }
+    message
+  }
+}
+    ${RegularRoleApplicationFragmentDoc}`;
+
+export function useGetRoleApplicationForVoteQuery(options: Omit<Urql.UseQueryArgs<GetRoleApplicationForVoteQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetRoleApplicationForVoteQuery>({ query: GetRoleApplicationForVoteDocument, ...options });
+};
+export const HasUserVotedForRoleDocument = gql`
+    query HasUserVotedForRole($roleShortName: String, $roleId: Float) {
+  hasUserVotedForRole(roleShortName: $roleShortName, roleId: $roleId)
+}
+    `;
+
+export function useHasUserVotedForRoleQuery(options: Omit<Urql.UseQueryArgs<HasUserVotedForRoleQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<HasUserVotedForRoleQuery>({ query: HasUserVotedForRoleDocument, ...options });
 };
 export const RoleApplicationsDocument = gql`
     query RoleApplications {
