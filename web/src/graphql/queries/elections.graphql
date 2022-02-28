@@ -39,3 +39,16 @@ query GetRoleVoteCount($roleId: Float, $shortName: String) {
     count
   }
 }
+
+query GetRoleApplicationForVote($voteId: Float!) {
+  getRoleApplicationForVote(voteId: $voteId) {
+    role {
+      ...RegularRoleApplication
+    }
+    message
+  }
+}
+
+query HasUserVotedForRole($roleShortName: String, $roleId: Float) {
+  hasUserVotedForRole(roleShortName: $roleShortName, roleId: $roleId)
+}

@@ -9,6 +9,7 @@ import {
   useElectionRoleApplicationsQuery,
   useElectionRoleAllApplicationsQuery,
   useGetUserRoleApplicationsQuery,
+  useHasUserVotedForRoleQuery,
 } from "../../../generated/graphql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { isServer } from "../../../utils/isServer";
@@ -52,10 +53,13 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
     }
   );
 
+  const [{ data: hasUserVotedForRole }] = useHasUserVotedForRoleQuery({
+    variables: { roleShortName: role as string },
+    pause: isServer(),
+  });
+
   const [showHiddenApplications, setShowHiddenApplications] =
     useState<boolean>(false);
-
-  console.log(userInfo?.me);
 
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
@@ -91,8 +95,9 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
               <Button
                 variant="primary"
                 onClick={() => router.push(`/elections/${role}/vote`)}
+                disabled={hasUserVotedForRole?.hasUserVotedForRole}
               >
-                Vote
+                {hasUserVotedForRole?.hasUserVotedForRole ? "Voted" : "Vote"}
               </Button>
             )}
             {roleDetails.getElectionRole.canVote && !userInfo?.me && (
