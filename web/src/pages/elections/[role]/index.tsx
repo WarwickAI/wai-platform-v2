@@ -171,7 +171,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
             ))}
           </ItemGrid>
         ) : (
-          <Text>No applications submitted</Text>
+          <Text>Applications hidden until March 3rd</Text>
         )}
       </Dashboard>
     );
