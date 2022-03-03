@@ -11,6 +11,7 @@ import {
   useVoteMutation,
   RegularRoleApplicationFragment,
   useGetRoleVoteCountQuery,
+  useAddRonApplicationMutation,
 } from "../../../generated/graphql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { isServer } from "../../../utils/isServer";
@@ -63,13 +64,11 @@ const ManageRole: React.FC<ManageRoleProps> = () => {
     variables: { shortName: role as string },
   });
 
-  const [{ data: userInfo }] = useMeQuery({
+  const [, addRonApplication] = useAddRonApplicationMutation();
+
+  const [{ data: me }] = useMeQuery({
     pause: isServer(),
   });
-
-  const [applicationSelected, setApplicationSelected] = useState<
-    RegularRoleApplicationFragment | undefined
-  >();
 
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const onClose = () => setIsAlertOpen(false);
@@ -77,7 +76,28 @@ const ManageRole: React.FC<ManageRoleProps> = () => {
 
   if (roleDetails?.getElectionRole && roleApplications) {
     return (
-      <Dashboard title={roleDetails.getElectionRole.title}>
+      <Dashboard
+        title={roleDetails.getElectionRole.title}
+        options={
+          <>
+            {me?.me?.role == "exec" && (
+              <HStack>
+                <Button
+                  variant="admin"
+                  onClick={async () => {
+                    const result = await addRonApplication({ shortName: role });
+                    if (result.data?.addRONApplication) {
+                      router.reload();
+                    }
+                  }}
+                >
+                  Add RON Applications
+                </Button>
+              </HStack>
+            )}
+          </>
+        }
+      >
         {voteCounts && (
           <Table variant="simple">
             <Thead>
@@ -101,7 +121,7 @@ const ManageRole: React.FC<ManageRoleProps> = () => {
       </Dashboard>
     );
   } else {
-    return <Dashboard title={"Loading Election Role Voting"} />;
+    return <Dashboard title={"Loading Election Role Management"} />;
   }
 };
 

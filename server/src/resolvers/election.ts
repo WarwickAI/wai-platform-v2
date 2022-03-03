@@ -14,6 +14,7 @@ import { validateElectionRole } from "../utils/validateElectionRole";
 import { ElectionRoleInput } from "../utils/ElectionRoleInput";
 import { RoleApplication } from "../entities/RoleApplication";
 import { Vote } from "../entities/Vote";
+import { application } from "express";
 
 @ObjectType()
 export class ElectionRoleResponse {
@@ -75,13 +76,46 @@ export class ElectionResolver {
     const ron = RoleApplication.create({
       title: "RON",
       shortName: "RON-" + roleInfo.shortName,
-      display: true,
+      display: false,
       description: "Vote to re-open nominations",
     });
     role.applications = [ron];
     await ron.save();
     await role.save();
     return { role };
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth, isExec, isSuper)
+  async addRONApplication(
+    @Arg("roleId", { nullable: true }) roleId?: number,
+    @Arg("shortName", { nullable: true }) shortName?: string
+  ) {
+    const role = await ElectionRole.getByIdOrShortName(roleId, shortName, [
+      "applications",
+    ]);
+    if (!role) {
+      console.log("Could not find role");
+      return false;
+    }
+
+    if (
+      role.applications.findIndex(
+        (application) => application.title === "RON"
+      ) === -1
+    ) {
+      const ron = RoleApplication.create({
+        title: "RON",
+        shortName: "RON-" + role.shortName,
+        display: false,
+        description: "Vote to re-open nominations",
+      });
+      role.applications = [...role.applications, ron];
+      await ron.save();
+      await role.save();
+    }
+
+    return true;
   }
 
   @Mutation(() => ElectionRoleResponse)

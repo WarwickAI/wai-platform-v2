@@ -136,6 +136,7 @@ export type MerchResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   addMemberInfo: Scalars['Boolean'];
+  addRONApplication: Scalars['Boolean'];
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createMerch: MerchResponse;
@@ -172,6 +173,12 @@ export type Mutation = {
 
 export type MutationAddMemberInfoArgs = {
   memberInfo: Array<MemberInfoInput>;
+};
+
+
+export type MutationAddRonApplicationArgs = {
+  roleId?: InputMaybe<Scalars['Float']>;
+  shortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -740,6 +747,14 @@ export type VoteMutationVariables = Exact<{
 
 
 export type VoteMutation = { __typename?: 'Mutation', vote: boolean };
+
+export type AddRonApplicationMutationVariables = Exact<{
+  shortName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type AddRonApplicationMutation = { __typename?: 'Mutation', addRONApplication: boolean };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -1440,6 +1455,15 @@ export const VoteDocument = gql`
 
 export function useVoteMutation() {
   return Urql.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument);
+};
+export const AddRonApplicationDocument = gql`
+    mutation AddRONApplication($shortName: String, $roleId: Float) {
+  addRONApplication(shortName: $shortName, roleId: $roleId)
+}
+    `;
+
+export function useAddRonApplicationMutation() {
+  return Urql.useMutation<AddRonApplicationMutation, AddRonApplicationMutationVariables>(AddRonApplicationDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {

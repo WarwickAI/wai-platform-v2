@@ -28,3 +28,7 @@ mutation EditElectionRole(
 mutation Vote($applicationShortName: String, $applicationId: Float, $roleShortName: String, $roleId: Float) {
   vote(applicationShortName: $applicationShortName, applicationId: $applicationId, roleShortName: $roleShortName, roleId: $roleId)
 }
+
+mutation AddRONApplication($shortName: String, $roleId: Float) {
+  addRONApplication(shortName: $shortName, roleId: $roleId)
+}
