@@ -85,7 +85,7 @@ const ManageRole: React.FC<ManageRoleProps> = () => {
                 <Button
                   variant="admin"
                   onClick={async () => {
-                    const result = await addRonApplication({ shortName: role });
+                    const result = await addRonApplication({ shortName: role as string });
                     if (result.data?.addRONApplication) {
                       router.reload();
                     }

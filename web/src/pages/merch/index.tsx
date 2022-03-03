@@ -76,7 +76,7 @@ const Merch = () => {
           )}
         </ItemGrid>
       ) : (
-        <Heading size="md">Coming Soon...</Heading>
+        <Heading size="md">Merch drop finished (for now...)</Heading>
       )}
     </Dashboard>
   );

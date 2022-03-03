@@ -27,6 +27,26 @@ import {
 } from "@chakra-ui/react";
 import Card from "../../components/Card";
 import ItemGrid from "../../components/ItemGrid";
+import ReactMarkdown from "react-markdown";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { markdownTheme } from "../../theme";
+import remarkGfm from "remark-gfm";
+
+const ELECTION_DESCRIPTION = `
+**Welcome to the Election page**
+
+Applications open up from **6 pm Thursday 24th March** and close at **Midnight Thursday 3rd March**.
+
+You can apply by selecting the role and clicking apply. Please make sure your application is correct before submitting it.
+
+Voting opens up from **9 am Friday 4th March** and close at **5 pm Thursday 10th March**. Results will be announced at Code Night that evening so please come along.
+
+You must have been a member for at least 2 weeks when voting opens to be able to vote.
+
+If you have any problems with applying or voting, please contact **Joe (President)** or **Edward (Head of Engineering)** on Discord.
+
+Below are all the open positions, Best of Luck!
+`;
 
 const Projects = () => {
   const router = useRouter();
@@ -45,7 +65,7 @@ const Projects = () => {
   if (roles?.electionRoles) {
     return (
       <Dashboard
-        title={"Election Roles"}
+        title={"Elections"}
         options={
           userDetails?.me?.role === "exec" ? (
             <HStack spacing={4}>
@@ -71,23 +91,13 @@ const Projects = () => {
           )
         }
       >
-        <Text mb={4}>
-          Here are all the current positions that you can nominate yourself for.
-        </Text>
-        <Text mb={4}>
-          Please ensure that you are an official member of the society at the
-          time of applying for a role.
-        </Text>
-        <Text mb={4}>
-          To be able to vote in these elections, you must have been a member for
-          at least 2 weeks before voting opens, therefore members who sign up
-          after 7pm, Thursday 17th February will not be able to vote.
-        </Text>
-        <Text mb={4}>
-          To apply, make sure to sign in by clicking on the account button in
-          the sidebar then clicking on the role and pressing the
-          &quot;Apply&quot; button.
-        </Text>
+        <ReactMarkdown
+          components={ChakraUIRenderer(markdownTheme)}
+          linkTarget="_self"
+          remarkPlugins={[remarkGfm]}
+        >
+          {ELECTION_DESCRIPTION}
+        </ReactMarkdown>
         <Heading my={4} size="md">
           Positions
         </Heading>
