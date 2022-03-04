@@ -128,7 +128,7 @@ export class VoteResolver {
     const allVotes = await Vote.find({ relations: ["role", "user"] });
     if (
       allVotes.findIndex(
-        (voteDb) => voteDb.role.id === role.id && voteDb.user.id && user.id
+        (voteDb) => voteDb.role.id === role.id && voteDb.user.id === user.id
       ) !== -1
     ) {
       console.log("User already voted for this role");
