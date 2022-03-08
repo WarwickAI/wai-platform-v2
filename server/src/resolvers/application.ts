@@ -138,7 +138,7 @@ export class ApplicationResolver {
   }
 
   @Mutation(() => RoleApplicationResponse)
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async createRoleApplication(
     @Arg("applicationInfo") applicationInfo: RoleApplicationInput,
     @Arg("roleId", { nullable: true }) roleId: number,
@@ -168,7 +168,7 @@ export class ApplicationResolver {
   }
 
   @Mutation(() => RoleApplicationResponse)
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async editRoleApplication(
     @Arg("id") id: number,
     @Arg("applicationInfo") applicationInfo: RoleApplicationInput

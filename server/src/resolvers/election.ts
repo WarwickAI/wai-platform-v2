@@ -45,7 +45,7 @@ export class ElectionResolver {
   }
 
   @Query(() => [ElectionRole])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async allElectionRoles(): Promise<ElectionRole[]> {
     return await ElectionRole.find({ relations: ["applications"] });
   }
@@ -63,7 +63,7 @@ export class ElectionResolver {
   }
 
   @Mutation(() => ElectionRoleResponse)
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async createElectionRole(
     @Arg("roleInfo") roleInfo: ElectionRoleInput
   ): Promise<ElectionRoleResponse> {
@@ -119,7 +119,7 @@ export class ElectionResolver {
   }
 
   @Mutation(() => ElectionRoleResponse)
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware(isAuth, isExec, isSuper)
   async editElectionRole(
     @Arg("id") id: number,
     @Arg("roleInfo") roleInfo: ElectionRoleInput

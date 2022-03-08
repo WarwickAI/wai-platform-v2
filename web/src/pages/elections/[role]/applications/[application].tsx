@@ -14,6 +14,7 @@ import ReactMarkdown from "react-markdown";
 import { markdownTheme } from "../../../../theme";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import remarkGfm from "remark-gfm";
+import { isSuper } from "../../../../utils/isAuth";
 
 interface RoleApplicationProps {}
 
@@ -38,7 +39,7 @@ const RoleApplication: React.FC<RoleApplicationProps> = () => {
         }
         options={
           <HStack>
-            {userInfo?.me?.role === "exec" && (
+            {userInfo?.me && isSuper(userInfo.me) && (
               <Button
                 variant="admin"
                 onClick={() =>

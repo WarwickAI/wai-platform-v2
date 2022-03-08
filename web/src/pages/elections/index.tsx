@@ -31,6 +31,7 @@ import ReactMarkdown from "react-markdown";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import { markdownTheme } from "../../theme";
 import remarkGfm from "remark-gfm";
+import { isSuper } from "../../utils/isAuth";
 
 const ELECTION_DESCRIPTION = `
 **Welcome to the Election page**
@@ -67,7 +68,7 @@ const Projects = () => {
       <Dashboard
         title={"Elections"}
         options={
-          userDetails?.me?.role === "exec" ? (
+          userDetails?.me && isSuper(userDetails.me) ? (
             <HStack spacing={4}>
               <Flex flexDirection="column" alignItems="center">
                 <FormLabel htmlFor="showAll" m={0}>

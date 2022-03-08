@@ -28,6 +28,7 @@ import ApplicationCard from "../../../components/ApplicationCard";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import { markdownTheme } from "../../../theme";
 import remarkGfm from "remark-gfm";
+import { isSuper } from "../../../utils/isAuth";
 
 interface ElectionRoleProps {}
 
@@ -105,7 +106,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 Login to Vote
               </Button>
             )}
-            {userInfo?.me?.role === "exec" && (
+            {userInfo?.me && isSuper(userInfo.me) && (
               <Flex flexDirection="column" alignItems="center">
                 <FormLabel htmlFor="showAll" m={0}>
                   Show hidden
@@ -117,7 +118,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 />
               </Flex>
             )}
-            {userInfo?.me?.role === "exec" && (
+            {userInfo?.me && isSuper(userInfo.me) && (
               <Button
                 variant="admin"
                 onClick={() => router.push(`/elections/edit/${role}`)}
@@ -125,7 +126,7 @@ const ElectionRole: React.FC<ElectionRoleProps> = () => {
                 Edit
               </Button>
             )}
-            {userInfo?.me?.role === "exec" && (
+            {userInfo?.me && isSuper(userInfo.me) && (
               <Button
                 variant="admin"
                 onClick={() => router.push(`/elections/${role}/manage`)}
