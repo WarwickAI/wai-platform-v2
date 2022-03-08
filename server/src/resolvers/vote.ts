@@ -16,7 +16,7 @@ import { ElectionRole } from "../entities/ElectionRole";
 import { RoleApplication } from "../entities/RoleApplication";
 import { Vote } from "../entities/Vote";
 
-const mustBeMemberFrom = new Date("March 3, 2022 19:00:00");
+const mustBeMemberFrom = new Date("March 4, 2022 09:00:00");
 mustBeMemberFrom.setDate(mustBeMemberFrom.getDate() - 14);
 
 @ObjectType()

@@ -6,3 +6,6 @@
 /dist
 
 logs.txt
+
+# misc
+.DS_Store
