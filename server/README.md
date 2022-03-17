@@ -1,4 +1,5 @@
-- Remove previous migrations, run `npx typeorm migration:generate -n Initial`. Copy file generated into migrations.
+## Deploying
+
 - Run `docker build -t engiego/wai-platform-v2:<version> .` to build docker container.
 - Run `docker push engiego/wai-platform-v2:<version>` to push container to DockerHub.
 - SSH into Dokku server.
