@@ -50,11 +50,11 @@ const sidebarConfig = [
     path: "/merch",
     icon: getIcon(shoppingCartFill),
   },
-  {
-    title: "elections",
-    path: "/elections",
-    icon: getIcon(awardFill),
-  },
+  // {
+  //   title: "elections",
+  //   path: "/elections",
+  //   icon: getIcon(awardFill),
+  // },
 ];
 
 export default sidebarConfig;

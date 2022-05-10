@@ -9,3 +9,6 @@ logs.txt
 
 # misc
 .DS_Store
+
+*.dump
+*.sql
