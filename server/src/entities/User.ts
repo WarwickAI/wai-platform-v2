@@ -16,6 +16,7 @@ import { RoleApplication } from "./RoleApplication";
 import { Talk } from "./Talk";
 import { Tutorial } from "./Tutorial";
 import { Vote } from "./Vote";
+import { Element } from "./Element";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -91,4 +92,8 @@ export class User extends BaseEntity {
   @Field(() => [Vote])
   @OneToMany(() => Vote, (vote) => vote.user)
   votes: Vote[];
+
+  @Field(() => [Element])
+  @OneToMany(() => Element, (element) => element.createdBy)
+  elements: Element[];
 }

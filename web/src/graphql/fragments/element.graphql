@@ -1,0 +1,41 @@
+fragment ElementWithoutChildren on Element {
+    id
+    createdAt
+    updatedAt
+    createdBy {
+      id
+    }
+    parent {
+      id
+    }
+    type
+    index
+    props
+}
+
+fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
+    id
+    createdAt
+    updatedAt
+    type
+    index
+    props
+}
+
+fragment ElementWithChildren on Element {
+    id
+    createdAt
+    updatedAt
+    createdBy {
+      id
+    }
+    parent {
+      id
+    }
+    type
+    index
+    props
+    content {
+      ...ElementWithoutChildrenWithoutParentWithoutCreatedBy
+    }
+}

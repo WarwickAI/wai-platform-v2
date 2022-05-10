@@ -1,0 +1,26 @@
+mutation EditElementProps($props: JSONObject!, $elementId: Float!) {
+  editElementProps(props: $props, elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+
+mutation EditElementIndex($index: Float!, $elementId: Float!) {
+  editElementIndex(index: $index, elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+
+mutation CreateElement(
+  $type: ElementType!
+  $props: JSONObject!
+  $index: Float!
+  $parent: Float
+) {
+  createElement(type: $type, props: $props, index: $index, parent: $parent) {
+    ...ElementWithChildren
+  }
+}
+
+mutation RemoveElement($elementId: Float!) {
+  removeElement(elementId: $elementId)
+}

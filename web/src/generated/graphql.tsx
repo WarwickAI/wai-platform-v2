@@ -13,6 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: any;
 };
 
 export type ApplyRoleInput = {
@@ -80,6 +82,27 @@ export type ElectionRoleResponse = {
   role: ElectionRole;
 };
 
+export type Element = {
+  __typename?: 'Element';
+  content: Array<Element>;
+  createdAt: Scalars['String'];
+  createdBy: User;
+  id: Scalars['Float'];
+  index: Scalars['Float'];
+  parent?: Maybe<Element>;
+  props: Scalars['JSONObject'];
+  type: ElementType;
+  updatedAt: Scalars['String'];
+};
+
+/** Different options for elements */
+export enum ElementType {
+  Database = 'Database',
+  DatabaseView = 'DatabaseView',
+  Page = 'Page',
+  Text = 'Text'
+}
+
 export type EventInput = {
   coverImg: Scalars['String'];
   description: Scalars['String'];
@@ -139,6 +162,7 @@ export type Mutation = {
   addRONApplication: Scalars['Boolean'];
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
+  createElement?: Maybe<Element>;
   createMerch: MerchResponse;
   createProject: ProjectResponse;
   createRoleApplication: RoleApplicationResponse;
@@ -148,6 +172,9 @@ export type Mutation = {
   deleteAllUsers: Scalars['Boolean'];
   editCourse: CourseResponse;
   editElectionRole: ElectionRoleResponse;
+  editElementIndex: Element;
+  editElementParent: Element;
+  editElementProps: Element;
   editMerch: MerchResponse;
   editProject: ProjectResponse;
   editRoleApplication: RoleApplicationResponse;
@@ -158,6 +185,7 @@ export type Mutation = {
   joinTalk: Scalars['Boolean'];
   joinTutorial: Scalars['Boolean'];
   logout: Scalars['Boolean'];
+  removeElement: Scalars['Boolean'];
   removeUserFromCourse: Scalars['Boolean'];
   removeUserFromProject: Scalars['Boolean'];
   removeUserFromTalk: Scalars['Boolean'];
@@ -189,6 +217,14 @@ export type MutationCreateCourseArgs = {
 
 export type MutationCreateElectionRoleArgs = {
   roleInfo: ElectionRoleInput;
+};
+
+
+export type MutationCreateElementArgs = {
+  index: Scalars['Float'];
+  parent?: InputMaybe<Scalars['Float']>;
+  props: Scalars['JSONObject'];
+  type: ElementType;
 };
 
 
@@ -233,6 +269,24 @@ export type MutationEditCourseArgs = {
 export type MutationEditElectionRoleArgs = {
   id: Scalars['Float'];
   roleInfo: ElectionRoleInput;
+};
+
+
+export type MutationEditElementIndexArgs = {
+  elementId: Scalars['Float'];
+  index: Scalars['Float'];
+};
+
+
+export type MutationEditElementParentArgs = {
+  elementId: Scalars['Float'];
+  parentId: Scalars['Float'];
+};
+
+
+export type MutationEditElementPropsArgs = {
+  elementId: Scalars['Float'];
+  props: Scalars['JSONObject'];
 };
 
 
@@ -287,6 +341,11 @@ export type MutationJoinTalkArgs = {
 export type MutationJoinTutorialArgs = {
   shortName?: InputMaybe<Scalars['String']>;
   tutorialId?: InputMaybe<Scalars['Float']>;
+};
+
+
+export type MutationRemoveElementArgs = {
+  elementId: Scalars['Float'];
 };
 
 
@@ -383,7 +442,12 @@ export type Query = {
   electionRoleApplications: Array<RoleApplication>;
   electionRoles: Array<ElectionRole>;
   getAllVotes: Array<Vote>;
+  getDatabase: Element;
+  getDatabases: Array<Element>;
   getElectionRole?: Maybe<ElectionRole>;
+  getElement: Element;
+  getElements: Array<Element>;
+  getParentPages: Array<Element>;
   getRoleApplication?: Maybe<RoleApplication>;
   getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
@@ -433,9 +497,19 @@ export type QueryElectionRoleApplicationsArgs = {
 };
 
 
+export type QueryGetDatabaseArgs = {
+  databaseId: Scalars['Float'];
+};
+
+
 export type QueryGetElectionRoleArgs = {
   roleId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetElementArgs = {
+  elementId: Scalars['Float'];
 };
 
 
@@ -620,6 +694,7 @@ export type User = {
   cognitoUsername: Scalars['String'];
   courses: Array<Course>;
   createdAt: Scalars['String'];
+  elements: Array<Element>;
   email: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['Float'];
@@ -668,6 +743,12 @@ export type RegularRoleApplicationWithElectionRoleFragment = { __typename?: 'Rol
 export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined };
 
 export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
+
+export type ElementWithoutChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined };
+
+export type ElementWithoutChildrenWithoutParentWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any };
+
+export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> };
 
 export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
@@ -755,6 +836,39 @@ export type AddRonApplicationMutationVariables = Exact<{
 
 
 export type AddRonApplicationMutation = { __typename?: 'Mutation', addRONApplication: boolean };
+
+export type EditElementPropsMutationVariables = Exact<{
+  props: Scalars['JSONObject'];
+  elementId: Scalars['Float'];
+}>;
+
+
+export type EditElementPropsMutation = { __typename?: 'Mutation', editElementProps: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+
+export type EditElementIndexMutationVariables = Exact<{
+  index: Scalars['Float'];
+  elementId: Scalars['Float'];
+}>;
+
+
+export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+
+export type CreateElementMutationVariables = Exact<{
+  type: ElementType;
+  props: Scalars['JSONObject'];
+  index: Scalars['Float'];
+  parent?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } | null | undefined };
+
+export type RemoveElementMutationVariables = Exact<{
+  elementId: Scalars['Float'];
+}>;
+
+
+export type RemoveElementMutation = { __typename?: 'Mutation', removeElement: boolean };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -999,6 +1113,35 @@ export type HasUserVotedForRoleQueryVariables = Exact<{
 
 
 export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRole: boolean };
+
+export type GetElementsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> }> };
+
+export type GetElementQueryVariables = Exact<{
+  elementId: Scalars['Float'];
+}>;
+
+
+export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+
+export type GetParentPagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> }> };
+
+export type GetDatabasesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDatabasesQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+
+export type GetDatabaseQueryVariables = Exact<{
+  databaseId: Scalars['Float'];
+}>;
+
+
+export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
 
 export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1251,6 +1394,51 @@ export const RegularElectionRoleWithApplicationsFragmentDoc = gql`
   }
 }
     `;
+export const ElementWithoutChildrenFragmentDoc = gql`
+    fragment ElementWithoutChildren on Element {
+  id
+  createdAt
+  updatedAt
+  createdBy {
+    id
+  }
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+    `;
+export const ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc = gql`
+    fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
+  id
+  createdAt
+  updatedAt
+  type
+  index
+  props
+}
+    `;
+export const ElementWithChildrenFragmentDoc = gql`
+    fragment ElementWithChildren on Element {
+  id
+  createdAt
+  updatedAt
+  createdBy {
+    id
+  }
+  parent {
+    id
+  }
+  type
+  index
+  props
+  content {
+    ...ElementWithoutChildrenWithoutParentWithoutCreatedBy
+  }
+}
+    ${ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc}`;
 export const RegularCourseFragmentDoc = gql`
     fragment RegularCourse on Course {
   id
@@ -1464,6 +1652,48 @@ export const AddRonApplicationDocument = gql`
 
 export function useAddRonApplicationMutation() {
   return Urql.useMutation<AddRonApplicationMutation, AddRonApplicationMutationVariables>(AddRonApplicationDocument);
+};
+export const EditElementPropsDocument = gql`
+    mutation EditElementProps($props: JSONObject!, $elementId: Float!) {
+  editElementProps(props: $props, elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useEditElementPropsMutation() {
+  return Urql.useMutation<EditElementPropsMutation, EditElementPropsMutationVariables>(EditElementPropsDocument);
+};
+export const EditElementIndexDocument = gql`
+    mutation EditElementIndex($index: Float!, $elementId: Float!) {
+  editElementIndex(index: $index, elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useEditElementIndexMutation() {
+  return Urql.useMutation<EditElementIndexMutation, EditElementIndexMutationVariables>(EditElementIndexDocument);
+};
+export const CreateElementDocument = gql`
+    mutation CreateElement($type: ElementType!, $props: JSONObject!, $index: Float!, $parent: Float) {
+  createElement(type: $type, props: $props, index: $index, parent: $parent) {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useCreateElementMutation() {
+  return Urql.useMutation<CreateElementMutation, CreateElementMutationVariables>(CreateElementDocument);
+};
+export const RemoveElementDocument = gql`
+    mutation RemoveElement($elementId: Float!) {
+  removeElement(elementId: $elementId)
+}
+    `;
+
+export function useRemoveElementMutation() {
+  return Urql.useMutation<RemoveElementMutation, RemoveElementMutationVariables>(RemoveElementDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
@@ -1938,6 +2168,61 @@ export const HasUserVotedForRoleDocument = gql`
 
 export function useHasUserVotedForRoleQuery(options: Omit<Urql.UseQueryArgs<HasUserVotedForRoleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<HasUserVotedForRoleQuery>({ query: HasUserVotedForRoleDocument, ...options });
+};
+export const GetElementsDocument = gql`
+    query GetElements {
+  getElements {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useGetElementsQuery(options: Omit<Urql.UseQueryArgs<GetElementsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetElementsQuery>({ query: GetElementsDocument, ...options });
+};
+export const GetElementDocument = gql`
+    query GetElement($elementId: Float!) {
+  getElement(elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useGetElementQuery(options: Omit<Urql.UseQueryArgs<GetElementQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetElementQuery>({ query: GetElementDocument, ...options });
+};
+export const GetParentPagesDocument = gql`
+    query GetParentPages {
+  getParentPages {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useGetParentPagesQuery(options: Omit<Urql.UseQueryArgs<GetParentPagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetParentPagesQuery>({ query: GetParentPagesDocument, ...options });
+};
+export const GetDatabasesDocument = gql`
+    query GetDatabases {
+  getDatabases {
+    ...ElementWithoutChildren
+  }
+}
+    ${ElementWithoutChildrenFragmentDoc}`;
+
+export function useGetDatabasesQuery(options: Omit<Urql.UseQueryArgs<GetDatabasesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetDatabasesQuery>({ query: GetDatabasesDocument, ...options });
+};
+export const GetDatabaseDocument = gql`
+    query GetDatabase($databaseId: Float!) {
+  getDatabase(databaseId: $databaseId) {
+    ...ElementWithChildren
+  }
+}
+    ${ElementWithChildrenFragmentDoc}`;
+
+export function useGetDatabaseQuery(options: Omit<Urql.UseQueryArgs<GetDatabaseQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetDatabaseQuery>({ query: GetDatabaseDocument, ...options });
 };
 export const RoleApplicationsDocument = gql`
     query RoleApplications {

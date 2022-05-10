@@ -1,0 +1,29 @@
+query GetElements {
+  getElements {
+    ...ElementWithChildren
+  }
+}
+
+query GetElement($elementId: Float!) {
+  getElement(elementId: $elementId) {
+    ...ElementWithChildren
+  }
+}
+
+query GetParentPages {
+  getParentPages {
+    ...ElementWithChildren
+  }
+}
+
+query GetDatabases {
+  getDatabases {
+    ...ElementWithoutChildren
+  }
+}
+
+query GetDatabase($databaseId: Float!) {
+  getDatabase(databaseId: $databaseId) {
+    ...ElementWithChildren
+  }
+}

@@ -42,6 +42,8 @@ import {
   RegularTalkFragment,
   RegularCourseFragment,
   RegularTutorialFragment,
+  EditElementPropsMutation,
+  GetElementQuery,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -345,7 +347,8 @@ export const createUrqlClient = (ssrExchange: any) => {
                     if (result.createTutorial.tutorial.display) {
                       // Display set to true, add
                       query.tutorials.push(
-                        result.createTutorial.tutorial as RegularTutorialFragment
+                        result.createTutorial
+                          .tutorial as RegularTutorialFragment
                       );
                     }
                     return query;
