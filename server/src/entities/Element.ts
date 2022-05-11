@@ -60,6 +60,6 @@ export class Element extends BaseEntity {
   props: object;
 
   @Field(() => [Element])
-  @OneToMany(() => Element, (element) => element.parent)
+  @OneToMany(() => Element, (element) => element.parent, { cascade: true })
   content: Element[];
 }

@@ -14,6 +14,7 @@ import {
   Tbody,
   Td,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import {
   Element,
@@ -34,6 +35,7 @@ interface DatabaseViewProps {
 }
 
 const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
+  const router = useRouter();
   const elementProps = props.element.props;
 
   const editorRef = useRef(null);
@@ -114,6 +116,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
             <Table variant={"simple"}>
               <Thead>
                 <Tr>
+                  <Th>🔗</Th>
                   {Object.keys(database.props.attributes).map(
                     (attributeName: string) => {
                       const attributeType =
@@ -156,17 +159,37 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                 {database.content.map((row) => {
                   return (
                     <Tr key={row.id}>
+                      <Td
+                        onClick={() => router.push(`/generic/${row.id}`)}
+                        _hover={{ cursor: "pointer" }}
+                      >
+                        ↗️
+                      </Td>
                       {Object.keys(database.props.attributes).map(
                         (attributeName: string) => {
                           const attributeType =
                             database.props.attributes[attributeName];
-                          const rowAttribute =
-                            row.props.attributes[attributeName];
-                          return (
-                            <Td key={attributeName}>
-                              {rowAttribute ? rowAttribute : "null"}
-                            </Td>
-                          );
+                          const rowAttribute = row.props[attributeName];
+                          if (attributeType === "string") {
+                            return (
+                              <Td key={attributeName}>
+                                <Input
+                                  value={rowAttribute}
+                                  w={150}
+                                  onChange={(e) => {
+                                    const newProps: any = {};
+                                    newProps[attributeName] = e.target.value;
+                                    editElement({
+                                      elementId: row.id,
+                                      props: newProps,
+                                    });
+                                  }}
+                                />
+                              </Td>
+                            );
+                          } else {
+                            return <Td key={attributeName}>OH-NO!!!</Td>;
+                          }
                         }
                       )}
                     </Tr>

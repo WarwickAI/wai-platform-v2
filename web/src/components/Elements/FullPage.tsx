@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Image,
+  Input,
   Popover,
   PopoverBody,
   PopoverContent,
@@ -16,6 +17,7 @@ import {
   ElementType,
   useCreateElementMutation,
   useEditElementIndexMutation,
+  useEditElementPropsMutation,
   useRemoveElementMutation,
 } from "../../generated/graphql";
 import Main from "./Main";
@@ -38,6 +40,7 @@ const Page: React.FC<PageProps> = (props) => {
     props.element.content.sort((a, b) => a.index! - b.index!)
   );
 
+  const [, editElement] = useEditElementPropsMutation();
   const [, editElementIndex] = useEditElementIndexMutation();
   const [, createElement] = useCreateElementMutation();
 
@@ -149,9 +152,19 @@ const Page: React.FC<PageProps> = (props) => {
             flexDirection={isMobile ? "column" : "row"}
             justifyContent="space-between"
           >
-            <Heading size="lg" mr={4}>
+            <Input
+              value={elementProps.title}
+              w={150}
+              onChange={(e) => {
+                editElement({
+                  elementId: props.element.id,
+                  props: { title: e.target.value },
+                });
+              }}
+            />
+            {/* <Heading size="lg" mr={4}>
               {elementProps.title}
-            </Heading>
+            </Heading> */}
           </Flex>
         </Box>
         <Box

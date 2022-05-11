@@ -1,9 +1,7 @@
 import { Element, ElementType } from "../generated/graphql";
 
 export interface ElementBase {
-  attributes: {
-    [key: string]: string;
-  };
+  [key: string]: string;
 }
 
 export type TextElementProps = ElementBase & {
@@ -45,23 +43,22 @@ export type DatabaseViewElementType = Element & {
 export const ElementDefaultProps: { [key in ElementType]: any } = {
   Text: {
     text: "",
-    attributes: {},
   } as const,
   Page: {
     title: "Page title",
     coverImg: "",
     iconImg: "",
-    attributes: {},
   },
   Database: {
     title: "Database title",
     attributes: {
-      name: "string",
+      title: "string",
+      coverImg: "string",
+      iconImg: "string",
     },
     contentBaseType: ElementType.Page,
   },
   DatabaseView: {
-    attributes: {},
   },
 };
 
