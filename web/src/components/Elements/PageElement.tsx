@@ -27,7 +27,7 @@ const PageElement: React.FC<PageElementProps> = (props) => {
         router.push(`/generic/${props.element.id}`);
       }}
     >
-      {elementProps.title}
+      {elementProps.title.value}
     </Button>
   );
 };

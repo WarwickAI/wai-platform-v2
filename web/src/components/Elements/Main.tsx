@@ -2,13 +2,17 @@ import React from "react";
 import Text from "./Text";
 import { ElementType, useGetElementQuery } from "../../generated/graphql";
 import {
-  DatabaseElementType,
-  DatabaseViewElementType,
-  PageElementType,
-  TextElementType,
+  ButtonElementProps,
+  DatabaseViewElementProps,
+  ElementTyper,
+  PageElementProps,
+  PropertyLinkElementProps,
+  TextElementProps,
 } from "../../utils/elements";
 import PageElement from "./PageElement";
 import DatabaseView from "./DatabaseView";
+import PropertyLink from "./PropertyLink";
+import Button from "./Button";
 
 interface MainProps {
   elementId: number;
@@ -22,14 +26,36 @@ const Main: React.FC<MainProps> = (props) => {
     return <>Loading...</>;
   }
   if (element.getElement.type === ElementType.Text) {
-    return <Text element={element.getElement as TextElementType} />;
+    return (
+      <Text element={element.getElement as ElementTyper<TextElementProps>} />
+    );
   }
   if (element.getElement.type === ElementType.Page) {
-    return <PageElement element={element.getElement as PageElementType} />;
+    return (
+      <PageElement
+        element={element.getElement as ElementTyper<PageElementProps>}
+      />
+    );
   }
   if (element.getElement.type === ElementType.DatabaseView) {
     return (
-      <DatabaseView element={element.getElement as DatabaseViewElementType} />
+      <DatabaseView
+        element={element.getElement as ElementTyper<DatabaseViewElementProps>}
+      />
+    );
+  }
+  if (element.getElement.type === ElementType.PropertyLink) {
+    return (
+      <PropertyLink
+        element={element.getElement as ElementTyper<PropertyLinkElementProps>}
+      />
+    );
+  }
+  if (element.getElement.type === ElementType.Button) {
+    return (
+      <Button
+        element={element.getElement as ElementTyper<ButtonElementProps>}
+      />
     );
   }
   return <>No Element</>;

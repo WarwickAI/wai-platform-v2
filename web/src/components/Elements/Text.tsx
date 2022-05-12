@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
+import { Box, Button, Flex } from "@chakra-ui/react";
+import { useEditElementPropsMutation } from "../../generated/graphql";
 import {
-  Box,
-  Button,
-  Flex,
-} from "@chakra-ui/react";
-import {
-  useEditElementPropsMutation,
-} from "../../generated/graphql";
-import { TextElementType } from "../../utils/elements";
+  ElementTyper,
+  PropertyTypes,
+  TextElementProps,
+} from "../../utils/elements";
 import {
   convertFromRaw,
   convertToRaw,
@@ -98,20 +96,20 @@ const StyleButtons: React.FC<StyleButtonsProps> = (props) => {
 };
 
 interface TextProps {
-  element: TextElementType;
+  element: ElementTyper<TextElementProps>;
 }
 
 const Text: React.FC<TextProps> = (props) => {
-  const elementProps = props.element.props;
+  const elementProps = props.element.props as TextElementProps;
 
   const editorRef = useRef(null);
 
   const [, editElement] = useEditElementPropsMutation();
-
+  console.log(props.element);
   const [editorState, setEditorState] = React.useState(() =>
-    elementProps.text.length > 0
+    elementProps.text.value.length > 0
       ? EditorState.createWithContent(
-          convertFromRaw(JSON.parse(elementProps.text))
+          convertFromRaw(JSON.parse(elementProps.text.value))
         )
       : EditorState.createEmpty()
   );
@@ -135,7 +133,10 @@ const Text: React.FC<TextProps> = (props) => {
     editElement({
       elementId: props.element.id,
       props: {
-        text: JSON.stringify(convertToRaw(state.getCurrentContent())),
+        text: {
+          type: PropertyTypes.Text,
+          value: JSON.stringify(convertToRaw(state.getCurrentContent())),
+        },
       },
     });
   };
@@ -149,11 +150,7 @@ const Text: React.FC<TextProps> = (props) => {
         onMouseDown={focusEditor}
         onBlur={() => setIsEditorFocused(false)}
       >
-        <Editor
-          ref={editorRef}
-          editorState={editorState}
-          onChange={onEdit}
-        />
+        <Editor ref={editorRef} editorState={editorState} onChange={onEdit} />
       </Box>
       <StyleButtons
         onToggle={onInlineClick}

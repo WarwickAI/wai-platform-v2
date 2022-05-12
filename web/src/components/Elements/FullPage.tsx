@@ -22,14 +22,19 @@ import {
 } from "../../generated/graphql";
 import Main from "./Main";
 import { Reorder, useDragControls } from "framer-motion";
-import { ElementDefaultProps, PageElementType } from "../../utils/elements";
+import {
+  ElementDefaultProps,
+  PageElementProps,
+  PageElementType,
+  PropertyTypes,
+} from "../../utils/elements";
 
 interface PageProps {
   element: PageElementType;
 }
 
 const Page: React.FC<PageProps> = (props) => {
-  const elementProps = props.element.props;
+  const elementProps = props.element.props as PageElementProps;
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
   const oldOrder = useRef(
     props.element.content.sort((a, b) => a.index! - b.index!)
@@ -63,7 +68,6 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   const addElement = async (type: ElementType, index: number) => {
-
     if (type === ElementType.Database) {
       const newDatabase = await createElement({
         index,
@@ -75,7 +79,10 @@ const Page: React.FC<PageProps> = (props) => {
           index,
           type: ElementType.DatabaseView,
           props: {
-            databaseId: newDatabase.data.createElement.id,
+            databaseId: {
+              type: PropertyTypes.Number,
+              value: newDatabase.data.createElement.id,
+            },
           },
           parent: props.element.id,
         });
@@ -110,16 +117,15 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
-  const coverImg =
-    elementProps.coverImg && elementProps.coverImg.length > 0
-      ? elementProps.coverImg
-      : undefined;
+  const coverImg = elementProps.coverImg.value
+    ? elementProps.coverImg.value
+    : undefined;
 
   return (
     <>
       {coverImg && (
         <Box
-          backgroundImage={`linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url('${elementProps.coverImg}')`}
+          backgroundImage={`linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url('${elementProps.coverImg.value}')`}
           backgroundPosition={"center"}
           backgroundRepeat={"no-repeat"}
           backgroundSize={"cover"}
@@ -137,15 +143,15 @@ const Page: React.FC<PageProps> = (props) => {
           pt={coverImg ? 10 : isMobile ? 4 : 8}
           pb={coverImg ? 5 : 4}
         >
-          {elementProps.iconImg && (
+          {elementProps.iconImg.value && (
             <Image
-              src={elementProps.iconImg}
+              src={elementProps.iconImg.value}
               alt="Page Icon"
               width={24}
               height={24}
               objectFit="cover"
               mb={4}
-              mt={elementProps.coverImg ? -20 : 0}
+              mt={elementProps.coverImg.value ? -20 : 0}
             />
           )}
           <Flex
@@ -153,12 +159,14 @@ const Page: React.FC<PageProps> = (props) => {
             justifyContent="space-between"
           >
             <Input
-              value={elementProps.title}
+              value={elementProps.title.value}
               w={150}
               onChange={(e) => {
                 editElement({
                   elementId: props.element.id,
-                  props: { title: e.target.value },
+                  props: {
+                    title: { type: PropertyTypes.Text, value: e.target.value },
+                  },
                 });
               }}
             />

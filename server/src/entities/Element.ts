@@ -17,6 +17,8 @@ export enum ElementType {
   Page,
   Database,
   DatabaseView,
+  PropertyLink,
+  Button
 }
 
 registerEnumType(ElementType, {

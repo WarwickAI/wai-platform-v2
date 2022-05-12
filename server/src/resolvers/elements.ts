@@ -65,7 +65,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element, { nullable: true })
-  @UseMiddleware(isAuth)
+  @UseMiddleware()
   async createElement(
     @Ctx() { payload }: MyContext,
     @Arg("props", () => GraphQLJSONObject) props: object,

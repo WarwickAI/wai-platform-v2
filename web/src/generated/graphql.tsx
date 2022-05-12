@@ -97,9 +97,11 @@ export type Element = {
 
 /** Different options for elements */
 export enum ElementType {
+  Button = 'Button',
   Database = 'Database',
   DatabaseView = 'DatabaseView',
   Page = 'Page',
+  PropertyLink = 'PropertyLink',
   Text = 'Text'
 }
 

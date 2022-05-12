@@ -1,65 +1,195 @@
 import { Element, ElementType } from "../generated/graphql";
 
-export interface ElementBase {
-  [key: string]: string;
+export enum PropertyTypes {
+  Text,
+  FormattedText,
+  Number,
+  Bool,
+  ElementType,
+  PropertyList,
+  Url,
+  PropertyLink,
+  ActionType,
+  DataList,
 }
 
-export type TextElementProps = ElementBase & {
-  text: string;
+export type Text = {
+  type: PropertyTypes.Text;
+  value: string;
 };
 
-export type TextElementType = Element & {
-  props: TextElementProps;
+export type FormattedText = {
+  type: PropertyTypes.FormattedText;
+  value: string;
 };
 
-export type PageElementProps = ElementBase & {
-  title: string;
+export type Number = {
+  type: PropertyTypes.Number;
+  value: number;
 };
 
-export type PageElementType = Element & {
-  props: PageElementProps;
+export type Bool = {
+  type: PropertyTypes.Bool;
+  value: boolean;
 };
 
-export type DatabaseElementProps = ElementBase & {
-  title: string;
-  attributes: {
-    [key: string]: string;
+export enum ActionTypes {
+  Add,
+  Remove,
+}
+
+export enum DataTypes {
+  User,
+  Email,
+  Name,
+}
+
+export interface Property {
+  type: PropertyTypes;
+  value: any;
+}
+
+export interface PropertyBase {
+  [key: string]: Property;
+}
+
+export type TextElementProps = PropertyBase & {
+  text: {
+    type: PropertyTypes.FormattedText;
+    value: any;
   };
-  contentBaseType: ElementType;
 };
 
-export type DatabaseElementType = Element & {
-  props: DatabaseElementProps;
+export type PageElementProps = PropertyBase & {
+  title: {
+    type: PropertyTypes.Text;
+    value: any;
+  };
+  coverImg: {
+    type: PropertyTypes.Text;
+    value: any;
+  };
+  iconImg: {
+    type: PropertyTypes.Url;
+    value: any;
+  };
 };
 
-export type DatabaseViewElementProps = ElementBase & {
-  databaseId: number;
+export type DatabaseElementProps = PropertyBase & {
+  title: {
+    type: PropertyTypes.Text;
+    value: any;
+  };
+  attributes: {
+    type: PropertyTypes.PropertyList;
+    value: any;
+  };
+  contentBaseType: {
+    type: PropertyTypes.ElementType;
+    value: any;
+  };
 };
 
-export type DatabaseViewElementType = Element & {
-  props: DatabaseViewElementProps;
+export type DatabaseViewElementProps = PropertyBase & {
+  databaseId: {
+    type: PropertyTypes.Number;
+    value: any;
+  };
 };
 
-export const ElementDefaultProps: { [key in ElementType]: any } = {
+export type PropertyLinkElementProps = PropertyBase & {
+  propertyName: {
+    type: PropertyTypes.PropertyLink;
+    value: any;
+  };
+};
+
+export type ButtonElementProps = PropertyBase & {
+  databseId: {
+    type: PropertyTypes.Number;
+    value: any;
+  };
+  action: {
+    type: PropertyTypes.ActionType;
+    value: any;
+  };
+  data: {
+    type: PropertyTypes.DataList;
+    value: any;
+  };
+};
+
+export type ElementTyper<T> = Element & {
+  props: T;
+};
+
+export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
   Text: {
-    text: "",
-  } as const,
+    text: {
+      type: PropertyTypes.Text,
+      value: "",
+    } as Property,
+  } as TextElementProps,
   Page: {
-    title: "Page title",
-    coverImg: "",
-    iconImg: "",
-  },
+    title: {
+      type: PropertyTypes.Text,
+      value: "Enter title...",
+    } as Property,
+    coverImg: {
+      type: PropertyTypes.Url,
+      value: "",
+    } as Property,
+    iconImg: {
+      type: PropertyTypes.Url,
+      value: "",
+    } as Property,
+  } as PageElementProps,
   Database: {
-    title: "Database title",
+    title: {
+      type: PropertyTypes.Text,
+      value: "Enter title...",
+    } as Property,
     attributes: {
-      title: "string",
-      coverImg: "string",
-      iconImg: "string",
+      type: PropertyTypes.PropertyList,
+      value: {
+        title: {
+          type: PropertyTypes.Text,
+          value: "Enter title...",
+        } as Property,
+        coverImg: {
+          type: PropertyTypes.Url,
+          value: "",
+        } as Property,
+        iconImg: {
+          type: PropertyTypes.Url,
+          value: "",
+        } as Property,
+      },
     },
-    contentBaseType: ElementType.Page,
-  },
-  DatabaseView: {
+    contentBaseType: {
+      type: PropertyTypes.ElementType,
+      value: ElementType.Page,
+    } as Property,
+  } as DatabaseElementProps,
+  DatabaseView: {},
+  PropertyLink: {
+    propertyName: {
+      type: PropertyTypes.PropertyLink,
+      value: "",
+    } as Property,
+  } as PropertyLinkElementProps,
+  Button: {
+    databseId: {
+      type: PropertyTypes.Number,
+      value: 0,
+    },
+    action: {
+      type: PropertyTypes.ActionType,
+      value: ActionTypes.Add,
+    },
+    data: {
+      type: PropertyTypes.DataList,
+      value: {},
+    },
   },
 };
-
-export const DatabaseAttributeTypes: string[] = ["string", "number", "boolean"];
