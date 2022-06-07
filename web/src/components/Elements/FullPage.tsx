@@ -4,6 +4,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Heading,
   Image,
   Input,
   Switch,
@@ -156,23 +157,40 @@ const Page: React.FC<PageProps> = (props) => {
             flexDirection={isMobile ? "column" : "row"}
             justifyContent="space-between"
           >
-            <Input
-              value={pageTitle}
-              w={"auto"}
-              size="lg"
-              fontSize={24}
-              fontWeight={600}
-              onChange={(e) => {
-                setPageTitle(e.target.value);
-                editElement({
-                  elementId: props.element.id,
-                  props: {
-                    title: { type: PropertyTypes.Text, value: e.target.value },
-                  },
-                });
-                props.refetchElement();
-              }}
-            />
+            {isEditMode ? (
+              <Input
+                value={pageTitle}
+                w={300}
+                size="lg"
+                fontSize={24}
+                fontWeight={600}
+                onChange={(e) => {
+                  setPageTitle(e.target.value);
+                  editElement({
+                    elementId: props.element.id,
+                    props: {
+                      title: {
+                        type: PropertyTypes.Text,
+                        value: e.target.value,
+                      },
+                    },
+                  });
+                  props.refetchElement();
+                }}
+              />
+            ) : (
+              <Flex alignItems={"center"} h={12} w={300}>
+                <Heading
+                  mx={4}
+                  fontSize={24}
+                  fontWeight={600}
+                  borderWidth={1}
+                  borderColor="white"
+                >
+                  {pageTitle}
+                </Heading>
+              </Flex>
+            )}
             <FormControl display="flex" alignItems="center">
               <FormLabel htmlFor="edit-mode" mb="0">
                 Edit Mode?
