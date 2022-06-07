@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Element, ElementType } from "../../generated/graphql";
 import Main from "./Main";
 import { DragHandleIcon } from "@chakra-ui/icons";
+import AddElementPopover from "./AddElementPopover";
 
 interface PageItemProps {
   element: Element;
@@ -90,43 +91,12 @@ const PageItem: React.FC<PageItemProps> = (props) => {
             width={"full"}
             zIndex={1}
           >
-            <Popover
+            <AddElementPopover
               onOpen={() => setAddElementPopoverOpen(true)}
               onClose={() => setAddElementPopoverOpen(false)}
-            >
-              <PopoverTrigger>
-                <Button
-                  size={"xs"}
-                  height={4}
-                  width={10}
-                  backgroundColor={"white"}
-                  variant="outline"
-                >
-                  +
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <PopoverBody>
-                  {Object.keys(ElementType).map((type) => {
-                    return (
-                      <Button
-                        size={"xs"}
-                        key={type}
-                        variant="outline"
-                        onClick={() => {
-                          props.addElement(
-                            type as ElementType,
-                            props.element.index + 1
-                          );
-                        }}
-                      >
-                        {type}
-                      </Button>
-                    );
-                  })}
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
+              addElement={props.addElement}
+              atIndex={props.element.index + 1}
+            />
           </Flex>
         )}
       </Box>

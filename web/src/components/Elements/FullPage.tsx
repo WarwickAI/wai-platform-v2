@@ -28,6 +28,7 @@ import {
   PropertyTypes,
 } from "../../utils/elements";
 import PageItem from "./PageItem";
+import AddElementPopover from "./AddElementPopover";
 
 interface PageProps {
   element: ElementTyper<PageElementProps>;
@@ -97,7 +98,7 @@ const Page: React.FC<PageProps> = (props) => {
         });
       }
     } else {
-      await createElement({
+      const newElement = await createElement({
         index,
         type,
         props: ElementDefaultProps[type],
@@ -194,39 +195,21 @@ const Page: React.FC<PageProps> = (props) => {
               );
             })}
             {items.length === 0 && (
-              <Flex
-                direction={"row"}
-                borderRadius={4}
-                borderWidth={1}
-                borderColor="gray.300"
-                mr={2}
-                p={2}
-              >
-                <Popover>
-                  <PopoverTrigger>
-                    <Button size={"sm"} variant="outline">
-                      +
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverBody>
-                      {Object.keys(ElementType).map((type) => {
-                        return (
-                          <Button
-                            key={type}
-                            variant="outline"
-                            onClick={() => {
-                              addElement(type as ElementType, 0);
-                            }}
-                          >
-                            {type}
-                          </Button>
-                        );
-                      })}
-                    </PopoverBody>
-                  </PopoverContent>
-                </Popover>
-              </Flex>
+              <Box position="relative" p={2} my={2}>
+                <Flex
+                  position={"absolute"}
+                  justifyContent={"center"}
+                  width={"full"}
+                  zIndex={1}
+                >
+                  <AddElementPopover
+                    onOpen={() => {}}
+                    onClose={() => {}}
+                    addElement={addElement}
+                    atIndex={0}
+                  />
+                </Flex>
+              </Box>
             )}
           </Reorder.Group>
         </Box>

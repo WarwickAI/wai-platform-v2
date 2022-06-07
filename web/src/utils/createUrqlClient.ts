@@ -690,8 +690,10 @@ export const createUrqlClient = (ssrExchange: any) => {
                         }
                       );
                     }
-                    query.getElement = result.createElement;
-                    return query;
+                    return {
+                      __typename: "Query",
+                      getElement: result.createElement,
+                    };
                   }
                 }
               );

@@ -1,22 +1,15 @@
 import {
   Arg,
-  Args,
   Ctx,
   Mutation,
-  PubSub,
-  PubSubEngine,
   Query,
   Resolver,
-  Root,
-  Subscription,
   UseMiddleware,
 } from "type-graphql";
-import { isAuth } from "../isAuth";
 import { Element, ElementType } from "../entities/Element";
 import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
-import { cloneDeep } from "lodash";
 
 @Resolver()
 export class ElementResolver {
@@ -74,6 +67,7 @@ export class ElementResolver {
     @Arg("index") index: number,
     @Arg("parent", { nullable: true }) parentId?: number
   ): Promise<Element | null> {
+    console.log(type)
     const element = new Element();
     element.props = props;
     element.type = type;
