@@ -127,7 +127,7 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
   Text: {
     text: {
       type: PropertyTypes.Text,
-      value: "",
+      value: `{"blocks":[{"key":"coa1e","text":"...","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`,
     } as Property,
   } as TextElementProps,
   Page: {
@@ -171,7 +171,12 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
       value: ElementType.Page,
     } as Property,
   } as DatabaseElementProps,
-  DatabaseView: {},
+  DatabaseView: {
+    databaseId: {
+      type: PropertyTypes.Number,
+      value: 0,
+    },
+  },
   PropertyLink: {
     propertyName: {
       type: PropertyTypes.PropertyLink,

@@ -14,6 +14,8 @@ const particleStyle = {
 export default function ParticleBackground() {
   return (
     <div style={particleStyle}>
+      {/* 
+  // @ts-ignore */}
       <Particles params={particlesConfig} />
     </div>
   );

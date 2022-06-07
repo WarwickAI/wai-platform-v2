@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { Box, Flex, Text, Button } from "@chakra-ui/react";
 import { useEditElementPropsMutation } from "../../generated/graphql";
-import { PageElementType, TextElementType } from "../../utils/elements";
 import {
   convertFromRaw,
   convertToRaw,
@@ -11,15 +10,15 @@ import {
 } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
+import { ElementTyper } from "../../utils/elements";
 
 interface PageElementProps {
-  element: PageElementType;
+  element: ElementTyper<PageElementProps>;
 }
 
 const PageElement: React.FC<PageElementProps> = (props) => {
   const router = useRouter();
   const elementProps = props.element.props;
-  const editorRef = useRef(null);
 
   return (
     <Button

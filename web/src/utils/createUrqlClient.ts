@@ -1,4 +1,4 @@
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { cacheExchange, Scalar } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
@@ -44,6 +44,9 @@ import {
   RegularTutorialFragment,
   EditElementPropsMutation,
   GetElementQuery,
+  CreateElementMutation,
+  GetElementDocument,
+  RemoveElementMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -605,6 +608,135 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: MeDocument },
                 _result,
                 () => ({ me: null })
+              );
+            },
+
+            removeElement: (_result, args, cache, info) => {
+              const elementId = args.elementId;
+              console.log("REMOVING:", elementId);
+              betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  console.log("First:", result);
+                  if (!result.removeElement) {
+                    return query;
+                  } else {
+                    if (result.removeElement.parent) {
+                      betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.removeElement.parent.id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          const indexOfRemovedElement =
+                            query2.getElement.content.findIndex(
+                              (val) => val.id === elementId
+                            );
+                          console.log("INDEX:", indexOfRemovedElement);
+                          console.log("OLD QUERY:", [
+                            ...query2.getElement.content,
+                          ]);
+                          query2.getElement.content.splice(
+                            indexOfRemovedElement,
+                            1
+                          );
+                          console.log("NEW QUERY:", [
+                            ...query2.getElement.content,
+                          ]);
+                          return query2;
+                        }
+                      );
+                    }
+                    return query;
+                  }
+                }
+              );
+            },
+
+            createElement: (_result, args, cache, info) => {
+              const res = _result as CreateElementMutation;
+              if (!res.createElement) {
+                return;
+              }
+              const newElement = res.createElement;
+              const elementId = newElement.id;
+              betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.createElement) {
+                    return query;
+                  } else {
+                    if (result.createElement.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.createElement.parent.id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.content.push(result.createElement!);
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.createElement;
+                    return query;
+                  }
+                }
+              );
+            },
+
+            editElementProps: (_result, args, cache, info) => {
+              const res = _result as EditElementPropsMutation;
+              if (!res.editElementProps) {
+                return;
+              }
+              const newElement = res.editElementProps;
+              const elementId = newElement.id;
+              betterUpdateQuery<EditElementPropsMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.editElementProps) {
+                    return query;
+                  } else {
+                    if (result.editElementProps.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.editElementProps.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.content[
+                            query2.getElement.content.findIndex(
+                              (val) => val.id === result.editElementProps.id
+                            )
+                          ] = result.editElementProps;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.editElementProps;
+                    return query;
+                  }
+                }
               );
             },
           },

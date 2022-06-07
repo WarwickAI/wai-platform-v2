@@ -16,6 +16,7 @@ import { Element, ElementType } from "../entities/Element";
 import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
+import { cloneDeep } from "lodash";
 
 @Resolver()
 export class ElementResolver {
@@ -108,11 +109,14 @@ export class ElementResolver {
     @Arg("elementId") elementId: number,
     @Arg("index") index: number
   ): Promise<Element> {
-    const element = await Element.findOneOrFail(elementId);
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ["createdBy", "parent", "content"],
+    });
 
     element.index = index;
 
     await element.save();
+    console.log(element);
     return element;
   }
 
@@ -123,10 +127,10 @@ export class ElementResolver {
     @Arg("parentId") parentId: number
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["parent"],
+      relations: ["createdBy", "parent", "content"],
     });
     const parent = await Element.findOneOrFail(parentId, {
-      relations: ["content"],
+      relations: ["createdBy", "parent", "content"],
     });
     element.parent = parent;
 
@@ -134,14 +138,13 @@ export class ElementResolver {
     return element;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Element)
   @UseMiddleware()
-  async removeElement(@Arg("elementId") elementId: number): Promise<boolean> {
+  async removeElement(@Arg("elementId") elementId: number): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["parent"],
+      relations: ["createdBy", "parent", "content"],
     });
-
     await element.remove();
-    return true;
+    return element;
   }
 }

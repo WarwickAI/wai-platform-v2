@@ -9,7 +9,6 @@ import {
   useGetElementQuery,
 } from "../../generated/graphql";
 import FullPage from "../../components/Elements/FullPage";
-import { PageElementType } from "../../utils/elements";
 
 interface GenericProps {}
 
@@ -22,12 +21,12 @@ const Generic: React.FC<GenericProps> = ({}) => {
 
   return (
     <Dashboard title="Generic">
-      {element && (
+      {/* {element && (
         <FullPage
           key={element.getDatabase.id}
           element={element.getDatabase as PageElementType}
         />
-      )}
+      )} */}
     </Dashboard>
   );
 };

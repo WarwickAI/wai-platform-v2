@@ -187,7 +187,7 @@ export type Mutation = {
   joinTalk: Scalars['Boolean'];
   joinTutorial: Scalars['Boolean'];
   logout: Scalars['Boolean'];
-  removeElement: Scalars['Boolean'];
+  removeElement: Element;
   removeUserFromCourse: Scalars['Boolean'];
   removeUserFromProject: Scalars['Boolean'];
   removeUserFromTalk: Scalars['Boolean'];
@@ -752,6 +752,8 @@ export type ElementWithoutChildrenWithoutParentWithoutCreatedByFragment = { __ty
 
 export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> };
 
+export type ElementAfterRemoveFragment = { __typename?: 'Element', type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
+
 export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
 export type RegularProjectFragment = { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
@@ -870,7 +872,7 @@ export type RemoveElementMutationVariables = Exact<{
 }>;
 
 
-export type RemoveElementMutation = { __typename?: 'Mutation', removeElement: boolean };
+export type RemoveElementMutation = { __typename?: 'Mutation', removeElement: { __typename?: 'Element', type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -1441,6 +1443,16 @@ export const ElementWithChildrenFragmentDoc = gql`
   }
 }
     ${ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc}`;
+export const ElementAfterRemoveFragmentDoc = gql`
+    fragment ElementAfterRemove on Element {
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+    `;
 export const RegularCourseFragmentDoc = gql`
     fragment RegularCourse on Course {
   id
@@ -1690,9 +1702,11 @@ export function useCreateElementMutation() {
 };
 export const RemoveElementDocument = gql`
     mutation RemoveElement($elementId: Float!) {
-  removeElement(elementId: $elementId)
+  removeElement(elementId: $elementId) {
+    ...ElementAfterRemove
+  }
 }
-    `;
+    ${ElementAfterRemoveFragmentDoc}`;
 
 export function useRemoveElementMutation() {
   return Urql.useMutation<RemoveElementMutation, RemoveElementMutationVariables>(RemoveElementDocument);

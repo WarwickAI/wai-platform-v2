@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Button,
   Flex,
-  Heading,
   Image,
   Input,
   Popover,
@@ -24,30 +23,40 @@ import Main from "./Main";
 import { Reorder, useDragControls } from "framer-motion";
 import {
   ElementDefaultProps,
+  ElementTyper,
   PageElementProps,
-  PageElementType,
   PropertyTypes,
 } from "../../utils/elements";
+import PageItem from "./PageItem";
 
 interface PageProps {
-  element: PageElementType;
+  element: ElementTyper<PageElementProps>;
+  refetchElement: () => void;
 }
 
 const Page: React.FC<PageProps> = (props) => {
   const elementProps = props.element.props as PageElementProps;
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
-  const oldOrder = useRef(
-    props.element.content.sort((a, b) => a.index! - b.index!)
-  );
-  const [, deleteElement] = useRemoveElementMutation();
 
-  const [items, setItems] = React.useState(
-    props.element.content.sort((a, b) => a.index! - b.index!)
-  );
+  const [items, setItems] = useState<Element[]>([]);
+  const [oldItems, setOldItems] = useState<Element[]>([]);
 
+  // Initialise and update page content here
+  useEffect(() => {
+    const contentSorted = props.element.content.sort(
+      (a, b) => a.index! - b.index!
+    );
+    setItems(contentSorted);
+    setOldItems(contentSorted);
+  }, [props.element.content]);
+
+  // Modifiable props
+  const [pageTitle, setPageTitle] = useState<string>(elementProps.title.value);
+
+  const [, createElement] = useCreateElementMutation();
   const [, editElement] = useEditElementPropsMutation();
   const [, editElementIndex] = useEditElementIndexMutation();
-  const [, createElement] = useCreateElementMutation();
+  const [, deleteElement] = useRemoveElementMutation();
 
   const updateIndex = (oldOrder: Element[], newOrder: Element[]) => {
     newOrder.forEach((item, index) => {
@@ -59,12 +68,12 @@ const Page: React.FC<PageProps> = (props) => {
 
   const onDragStart = (e: MouseEvent | TouchEvent | PointerEvent) => {
     e.preventDefault();
-    oldOrder.current = items;
+    setOldItems(items);
   };
 
   const onDragEnd = (e: MouseEvent | TouchEvent | PointerEvent) => {
     e.preventDefault();
-    updateIndex(oldOrder.current, items);
+    updateIndex(oldItems, items);
   };
 
   const addElement = async (type: ElementType, index: number) => {
@@ -75,7 +84,7 @@ const Page: React.FC<PageProps> = (props) => {
         props: ElementDefaultProps[type],
       });
       if (newDatabase.data?.createElement) {
-        const newElement = await createElement({
+        await createElement({
           index,
           type: ElementType.DatabaseView,
           props: {
@@ -86,40 +95,31 @@ const Page: React.FC<PageProps> = (props) => {
           },
           parent: props.element.id,
         });
-        const newItems = [...items];
-        newItems.splice(index, 0, newElement.data?.createElement as Element);
-        setItems(newItems);
       }
     } else {
-      const newElement = await createElement({
+      await createElement({
         index,
         type,
         props: ElementDefaultProps[type],
         parent: props.element.id,
       });
-      if (newElement.data?.createElement) {
-        const newItems = [...items];
-        newItems.splice(index, 0, newElement.data?.createElement as Element);
-        setItems(newItems);
-      }
     }
+    props.refetchElement();
   };
 
   const removeElement = async (id: number) => {
-    const removeResult = await deleteElement({ elementId: id });
-    if (removeResult.data?.removeElement) {
-      const newItems = [...items];
-      newItems.splice(
-        items.findIndex((item) => item.id === id),
-        1
-      );
-      setItems(newItems);
+    const res = await deleteElement({ elementId: id });
+    if (res.data?.removeElement) {
+      const tmpItems = items.filter((item) => item.id !== id);
+      props.refetchElement();
     }
   };
 
-  const coverImg = elementProps.coverImg.value
-    ? elementProps.coverImg.value
-    : undefined;
+  const coverImg = useMemo(
+    () =>
+      elementProps.coverImg.value ? elementProps.coverImg.value : undefined,
+    [elementProps.coverImg.value]
+  );
 
   return (
     <>
@@ -159,20 +159,19 @@ const Page: React.FC<PageProps> = (props) => {
             justifyContent="space-between"
           >
             <Input
-              value={elementProps.title.value}
+              value={pageTitle}
               w={150}
               onChange={(e) => {
+                setPageTitle(e.target.value);
                 editElement({
                   elementId: props.element.id,
                   props: {
                     title: { type: PropertyTypes.Text, value: e.target.value },
                   },
                 });
+                props.refetchElement();
               }}
             />
-            {/* <Heading size="lg" mr={4}>
-              {elementProps.title}
-            </Heading> */}
           </Flex>
         </Box>
         <Box
@@ -181,17 +180,10 @@ const Page: React.FC<PageProps> = (props) => {
           pb={coverImg ? 20 : 12}
           backgroundColor="white"
         >
-          <Reorder.Group
-            axis="y"
-            values={items}
-            onReorder={(newOrder: Element[]) => {
-              setItems(newOrder);
-            }}
-            as="div"
-          >
+          <Reorder.Group axis="y" values={items} onReorder={setItems} as="div">
             {items.map((item) => {
               return (
-                <Item
+                <PageItem
                   key={item.id}
                   element={item}
                   onDragStart={onDragStart}
@@ -240,81 +232,6 @@ const Page: React.FC<PageProps> = (props) => {
         </Box>
       </Box>
     </>
-  );
-};
-
-interface ItemProps {
-  element: Element;
-  onDragStart: (e: MouseEvent | TouchEvent | PointerEvent) => void;
-  onDragEnd: (e: MouseEvent | TouchEvent | PointerEvent) => void;
-  addElement: (type: ElementType, index: number) => void;
-  removeElement: (elementId: number) => void;
-}
-
-const Item: React.FC<ItemProps> = (props) => {
-  const controls = useDragControls();
-
-  return (
-    <Reorder.Item
-      key={props.element.id}
-      value={props.element}
-      as="div"
-      onDragStart={props.onDragStart}
-      onDragEnd={props.onDragEnd}
-      dragListener={false}
-      dragControls={controls}
-    >
-      <Flex direction="row">
-        <Flex
-          direction={"row"}
-          borderRadius={4}
-          borderWidth={1}
-          borderColor="gray.300"
-          onPointerDown={(e) => controls.start(e)}
-          mr={2}
-          p={2}
-        >
-          <Popover>
-            <PopoverTrigger>
-              <Button size={"sm"} variant="outline">
-                +
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverBody>
-                {Object.keys(ElementType).map((type) => {
-                  return (
-                    <Button
-                      size={"sm"}
-                      key={type}
-                      variant="outline"
-                      onClick={() => {
-                        props.addElement(
-                          type as ElementType,
-                          props.element.index + 1
-                        );
-                      }}
-                    >
-                      {type}
-                    </Button>
-                  );
-                })}
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-          <Button
-            size={"sm"}
-            variant="outline"
-            onClick={() => {
-              props.removeElement(props.element.id);
-            }}
-          >
-            -
-          </Button>
-        </Flex>
-        <Main elementId={props.element.id} />
-      </Flex>
-    </Reorder.Item>
   );
 };
 

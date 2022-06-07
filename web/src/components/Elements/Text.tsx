@@ -105,7 +105,6 @@ const Text: React.FC<TextProps> = (props) => {
   const editorRef = useRef(null);
 
   const [, editElement] = useEditElementPropsMutation();
-  console.log(props.element);
   const [editorState, setEditorState] = React.useState(() =>
     elementProps.text.value.length > 0
       ? EditorState.createWithContent(
@@ -113,6 +112,7 @@ const Text: React.FC<TextProps> = (props) => {
         )
       : EditorState.createEmpty()
   );
+
 
   const [isEditorFocused, setIsEditorFocused] = React.useState(false);
 
@@ -146,7 +146,6 @@ const Text: React.FC<TextProps> = (props) => {
       <Box
         minWidth={200}
         flexBasis={1}
-        borderWidth={1}
         onMouseDown={focusEditor}
         onBlur={() => setIsEditorFocused(false)}
       >

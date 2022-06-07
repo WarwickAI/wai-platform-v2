@@ -42,7 +42,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   const editorRef = useRef(null);
 
   const [databaseId, setDatabaseId] = useState<number>(
-    elementProps.databaseId.value
+    elementProps.databaseId ? elementProps.databaseId.value : 0
   );
   const [updatedDatabase, setUpdatedDatabase] = useState<
     ElementTyper<DatabaseElementProps> | undefined
@@ -80,7 +80,8 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
     });
     if (editedDatabase.data?.editElementProps) {
       setUpdatedDatabase(
-        editedDatabase.data.editElementProps as ElementTyper<DatabaseElementProps>
+        editedDatabase.data
+          .editElementProps as ElementTyper<DatabaseElementProps>
       );
     }
   };
@@ -154,13 +155,14 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                       <PopoverContent>
                         <PopoverBody>
                           {Object.keys(PropertyTypes).map((type) => {
-                            if (isNaN(type)) {
+                            if (isNaN(type as any)) {
                               return (
                                 <Button
                                   size={"sm"}
                                   key={type}
                                   variant="outline"
                                   onClick={() =>
+                                    // @ts-ignore
                                     addAttribute(PropertyTypes[type])
                                   }
                                 >
@@ -168,7 +170,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                                 </Button>
                               );
                             } else {
-                              return <></>;
+                              return <div key={type}></div>;
                             }
                           })}
                         </PopoverBody>

@@ -39,3 +39,12 @@ fragment ElementWithChildren on Element {
       ...ElementWithoutChildrenWithoutParentWithoutCreatedBy
     }
 }
+
+fragment ElementAfterRemove on Element {
+    parent {
+      id
+    }
+    type
+    index
+    props
+}
