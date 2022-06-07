@@ -1,11 +1,10 @@
 import {
-  Flex,
   Popover,
   PopoverTrigger,
   Button,
   PopoverContent,
   PopoverBody,
-  propNames,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ElementType } from "../../generated/graphql";
 
@@ -18,17 +17,11 @@ interface AddElementPopoverProps {
 
 const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
   return (
-    <Flex
-      position={"absolute"}
-      justifyContent={"center"}
-      width={"full"}
-      zIndex={1}
-    >
       <Popover onOpen={() => props.onOpen()} onClose={() => props.onClose()}>
         <PopoverTrigger>
           <Button
             size={"xs"}
-            height={4}
+            height={6}
             width={10}
             backgroundColor={"white"}
             variant="outline"
@@ -40,22 +33,24 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
           <PopoverBody>
             {Object.keys(ElementType).map((type) => {
               return (
-                <Button
-                  size={"xs"}
-                  key={type}
-                  variant="outline"
-                  onClick={() => {
-                    props.addElement(type as ElementType, props.atIndex);
-                  }}
-                >
-                  {type}
-                </Button>
+                <Tooltip key={type} label={type}>
+                  <Button
+                    size={"xs"}
+                    m={1}
+                    p={2}
+                    variant="outline"
+                    onClick={() => {
+                      props.addElement(type as ElementType, props.atIndex);
+                    }}
+                  >
+                    {type}
+                  </Button>
+                </Tooltip>
               );
             })}
           </PopoverBody>
         </PopoverContent>
       </Popover>
-    </Flex>
   );
 };
 

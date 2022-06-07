@@ -1,14 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  Button,
   Flex,
+  FormControl,
+  FormLabel,
   Image,
   Input,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
+  Switch,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import {
@@ -19,8 +17,7 @@ import {
   useEditElementPropsMutation,
   useRemoveElementMutation,
 } from "../../generated/graphql";
-import Main from "./Main";
-import { Reorder, useDragControls } from "framer-motion";
+import { Reorder } from "framer-motion";
 import {
   ElementDefaultProps,
   ElementTyper,
@@ -28,7 +25,7 @@ import {
   PropertyTypes,
 } from "../../utils/elements";
 import PageItem from "./PageItem";
-import AddElementPopover from "./AddElementPopover";
+import AddElementPopover from "../Utils/AddElementPopover";
 
 interface PageProps {
   element: ElementTyper<PageElementProps>;
@@ -41,6 +38,7 @@ const Page: React.FC<PageProps> = (props) => {
 
   const [items, setItems] = useState<Element[]>([]);
   const [oldItems, setOldItems] = useState<Element[]>([]);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // Initialise and update page content here
   useEffect(() => {
@@ -98,7 +96,7 @@ const Page: React.FC<PageProps> = (props) => {
         });
       }
     } else {
-      const newElement = await createElement({
+      await createElement({
         index,
         type,
         props: ElementDefaultProps[type],
@@ -111,7 +109,6 @@ const Page: React.FC<PageProps> = (props) => {
   const removeElement = async (id: number) => {
     const res = await deleteElement({ elementId: id });
     if (res.data?.removeElement) {
-      const tmpItems = items.filter((item) => item.id !== id);
       props.refetchElement();
     }
   };
@@ -161,7 +158,10 @@ const Page: React.FC<PageProps> = (props) => {
           >
             <Input
               value={pageTitle}
-              w={150}
+              w={"auto"}
+              size="lg"
+              fontSize={24}
+              fontWeight={600}
               onChange={(e) => {
                 setPageTitle(e.target.value);
                 editElement({
@@ -173,6 +173,16 @@ const Page: React.FC<PageProps> = (props) => {
                 props.refetchElement();
               }}
             />
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="edit-mode" mb="0">
+                Edit Mode?
+              </FormLabel>
+              <Switch
+                id="edit-mode"
+                isChecked={isEditMode}
+                onChange={(e) => setIsEditMode(e.target.checked)}
+              />
+            </FormControl>
           </Flex>
         </Box>
         <Box

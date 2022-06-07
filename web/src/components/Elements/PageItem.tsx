@@ -1,18 +1,10 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-} from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
 import { Element, ElementType } from "../../generated/graphql";
 import Main from "./Main";
-import { DragHandleIcon } from "@chakra-ui/icons";
-import AddElementPopover from "./AddElementPopover";
+import AddElementPopover from "../Utils/AddElementPopover";
+import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
 
 interface PageItemProps {
   element: Element;
@@ -27,6 +19,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
   const [showControls, setShowControls] = useState<boolean>(false);
   const [addElementPopoverOpen, setAddElementPopoverOpen] =
     useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   return (
     <Reorder.Item
@@ -35,51 +28,36 @@ const PageItem: React.FC<PageItemProps> = (props) => {
       as="div"
       dragListener={false}
       dragControls={controls}
-      onDragStart={props.onDragStart}
-      onDragEnd={props.onDragEnd}
+      onDragStart={(e) => {
+        props.onDragStart(e);
+        setIsDragging(true);
+      }}
+      onDragEnd={(e) => {
+        props.onDragEnd(e);
+        setTimeout(() => setIsDragging(false), 100);
+      }}
       onHoverStart={() => setShowControls(true)}
       onHoverEnd={() => setShowControls(false)}
     >
       <Box position="relative" p={2} my={2}>
         {/* Element Controls */}
-        {(showControls || addElementPopoverOpen) && (
-          <Flex
-            height={"full"}
-            onPointerDown={(e) => controls.start(e)}
-            position="absolute"
-            left="-5"
-            my={-2}
-            alignItems={"center"}
-          >
-            <Popover
-              onOpen={() => setAddElementPopoverOpen(true)}
-              onClose={() => setAddElementPopoverOpen(false)}
-            >
-              <PopoverTrigger>
-                <Button
-                  size={"xs"}
-                  height={8}
-                  width={2}
-                  backgroundColor={"white"}
-                  variant="outline"
-                >
-                  <DragHandleIcon />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <PopoverBody>
-                  <Button
-                    size={"xs"}
-                    variant="outline"
-                    onClick={() => props.removeElement(props.element.id)}
-                  >
-                    Remove
-                  </Button>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          </Flex>
-        )}
+        <Flex
+          height={"full"}
+          onPointerDown={(e) => controls.start(e)}
+          position="absolute"
+          left="-5"
+          my={-2}
+          alignItems={"center"}
+          opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
+        >
+          <ElementSettingsPopover
+            onOpen={() => setAddElementPopoverOpen(true)}
+            onClose={() => setAddElementPopoverOpen(false)}
+            element={props.element}
+            removeElement={props.removeElement}
+            disabled={isDragging}
+          />
+        </Flex>
         {/* Element Content */}
         <Flex alignItems="center">
           <Main elementId={props.element.id} />
