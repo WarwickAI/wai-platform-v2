@@ -6,8 +6,12 @@ import {
   PopoverContent,
   PopoverBody,
   useDisclosure,
+  Text,
+  Flex,
+  Input,
 } from "@chakra-ui/react";
-import { Element } from "../../generated/graphql";
+import { Element, useEditElementPropsMutation } from "../../generated/graphql";
+import { ElementSettingOptions, PropertyTypes } from "../../utils/elements";
 
 interface ElementSettingsPopoverProps {
   onOpen: () => void;
@@ -15,12 +19,15 @@ interface ElementSettingsPopoverProps {
   removeElement: (elementId: number) => void;
   element: Element;
   disabled: boolean;
+  refetch: () => void | undefined;
 }
 
 const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
   props
 ) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
+
+  const [, editElement] = useEditElementPropsMutation();
 
   return (
     <Popover
@@ -51,6 +58,34 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody>
+          {Object.keys(props.element.props).map((propName) => {
+            const propType = props.element.props[propName].type;
+            const propValue = props.element.props[propName].value;
+            return (
+              <Flex direction={"row"} key={propName} alignItems="center" mb={2}>
+                <Text mr={2}>{propName}:</Text>
+                <Input
+                  value={propValue}
+                  type={propType === PropertyTypes.Text ? "text" : "number"}
+                  onChange={async (e) => {
+                    const newProps: any = {};
+                    newProps[propName] = {
+                      type: propType,
+                      value: parseInt(e.target.value),
+                    };
+
+                    await editElement({
+                      elementId: props.element.id,
+                      props: newProps,
+                    });
+                    if (props.refetch) {
+                      props.refetch();
+                    }
+                  }}
+                />
+              </Flex>
+            );
+          })}
           <Button
             size={"xs"}
             variant="outline"

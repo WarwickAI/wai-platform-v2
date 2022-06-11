@@ -16,6 +16,7 @@ import Button from "./Button";
 
 interface MainProps {
   elementId: number;
+  refetchParent: () => void;
 }
 
 const Main: React.FC<MainProps> = (props) => {
@@ -55,6 +56,7 @@ const Main: React.FC<MainProps> = (props) => {
     return (
       <Button
         element={element.getElement as ElementTyper<ButtonElementProps>}
+        refetchParent={props.refetchParent}
       />
     );
   }

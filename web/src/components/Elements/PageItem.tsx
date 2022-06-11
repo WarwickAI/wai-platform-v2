@@ -12,6 +12,7 @@ interface PageItemProps {
   onDragEnd: (e: MouseEvent | TouchEvent | PointerEvent) => void;
   addElement: (type: ElementType, index: number) => void;
   removeElement: (elementId: number) => void;
+  refetchParent: () => void;
 }
 
 const PageItem: React.FC<PageItemProps> = (props) => {
@@ -56,11 +57,15 @@ const PageItem: React.FC<PageItemProps> = (props) => {
             element={props.element}
             removeElement={props.removeElement}
             disabled={isDragging}
+            refetch={props.refetchParent}
           />
         </Flex>
         {/* Element Content */}
         <Flex alignItems="center">
-          <Main elementId={props.element.id} />
+          <Main
+            elementId={props.element.id}
+            refetchParent={props.refetchParent}
+          />
         </Flex>
         {(showControls || addElementPopoverOpen) && (
           <Flex

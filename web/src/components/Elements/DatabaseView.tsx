@@ -50,7 +50,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseQuery }] = useGetDatabaseQuery({
+  const [{ data: databaseQuery }, getDatabase] = useGetDatabaseQuery({
     variables: {
       databaseId: elementProps.databaseId.value,
     },
@@ -78,12 +78,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         },
       },
     });
-    if (editedDatabase.data?.editElementProps) {
-      setUpdatedDatabase(
-        editedDatabase.data
-          .editElementProps as ElementTyper<DatabaseElementProps>
-      );
-    }
+    getDatabase();
   };
 
   const addRow = async () => {
@@ -96,16 +91,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         ],
       parent: databaseId,
     });
-
-    if (editedDatabase.data?.createElement) {
-      setUpdatedDatabase({
-        ...database,
-        content: [
-          ...database.content,
-          editedDatabase.data.createElement as Element,
-        ],
-      });
-    }
+    getDatabase();
   };
 
   return (

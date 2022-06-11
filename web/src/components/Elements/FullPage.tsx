@@ -219,6 +219,7 @@ const Page: React.FC<PageProps> = (props) => {
                   onDragEnd={onDragEnd}
                   addElement={addElement}
                   removeElement={removeElement}
+                  refetchParent={props.refetchElement}
                 />
               );
             })}

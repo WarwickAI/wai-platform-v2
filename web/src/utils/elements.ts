@@ -13,6 +13,12 @@ export enum PropertyTypes {
   DataList,
 }
 
+export type SettingOptions = {
+  label: string;
+  hint: string;
+  type: PropertyTypes;
+}[];
+
 export type Text = {
   type: PropertyTypes.Text;
   value: string;
@@ -197,4 +203,29 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
       value: {},
     },
   },
+};
+
+export const ElementSettingOptions: { [key in ElementType]: SettingOptions } = {
+  Button: [
+    {
+      label: "Database",
+      hint: "Database ID to update",
+      type: PropertyTypes.Number,
+    },
+    {
+      label: "Action",
+      hint: "Action to perform on DB",
+      type: PropertyTypes.ActionType,
+    },
+    {
+      label: "Data",
+      hint: "Data to Add",
+      type: PropertyTypes.DataList,
+    },
+  ],
+  Database: [],
+  DatabaseView: [],
+  Page: [],
+  PropertyLink: [],
+  Text: []
 };

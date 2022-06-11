@@ -674,6 +674,7 @@ export const createUrqlClient = (ssrExchange: any) => {
                   if (!result.createElement) {
                     return query;
                   } else {
+                    console.log(result.createElement.parent);
                     if (result.createElement.parent) {
                       betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                         cache,
