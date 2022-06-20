@@ -14,6 +14,8 @@ interface PageItemProps {
   removeElement: (elementId: number) => void;
   refetchParent: () => void;
   isEdit: boolean;
+  refreshDatabase: (id: number | undefined) => void;
+  refreshDatabaseId: number | undefined;
 }
 
 const PageItem: React.FC<PageItemProps> = (props) => {
@@ -69,6 +71,8 @@ const PageItem: React.FC<PageItemProps> = (props) => {
             elementId={props.element.id}
             refetchParent={props.refetchParent}
             isEdit={props.isEdit}
+            refreshDatabase={props.refreshDatabase}
+            refreshDatabaseId={props.refreshDatabaseId}
           />
         </Flex>
         {(showControls || addElementPopoverOpen) && props.isEdit && (

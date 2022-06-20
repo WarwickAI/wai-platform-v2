@@ -31,6 +31,8 @@ import AddElementPopover from "../Utils/AddElementPopover";
 interface PageProps {
   element: ElementTyper<PageElementProps>;
   refetchElement: () => void;
+  refreshDatabase: (id: number | undefined) => void;
+  refreshDatabaseId: number | undefined;
 }
 
 const Page: React.FC<PageProps> = (props) => {
@@ -40,6 +42,9 @@ const Page: React.FC<PageProps> = (props) => {
   const [items, setItems] = useState<Element[]>([]);
   const [oldItems, setOldItems] = useState<Element[]>([]);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [refreshDatabaseId, setRefreshDatabaseId] = useState<
+    number | undefined
+  >(undefined);
 
   // Initialise and update page content here
   useEffect(() => {
@@ -119,6 +124,11 @@ const Page: React.FC<PageProps> = (props) => {
       elementProps.coverImg.value ? elementProps.coverImg.value : undefined,
     [elementProps.coverImg.value]
   );
+
+  const refreshDatabase = (id: number | undefined) => {
+    console.log("HERE")
+    setRefreshDatabaseId(id);
+  };
 
   return (
     <>
@@ -221,6 +231,8 @@ const Page: React.FC<PageProps> = (props) => {
                   removeElement={removeElement}
                   refetchParent={props.refetchElement}
                   isEdit={isEditMode}
+                  refreshDatabase={refreshDatabase}
+                  refreshDatabaseId={props.refreshDatabaseId}
                 />
               );
             })}

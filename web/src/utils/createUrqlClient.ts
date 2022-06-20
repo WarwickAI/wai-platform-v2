@@ -47,6 +47,7 @@ import {
   CreateElementMutation,
   GetElementDocument,
   RemoveElementMutation,
+  ElementType,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -666,6 +667,8 @@ export const createUrqlClient = (ssrExchange: any) => {
               }
               const newElement = res.createElement;
               const elementId = newElement.id;
+              console.log("Cache Result: ", res);
+              // Update element
               betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                 cache,
                 { query: GetElementDocument, variables: { elementId } },
@@ -674,8 +677,9 @@ export const createUrqlClient = (ssrExchange: any) => {
                   if (!result.createElement) {
                     return query;
                   } else {
-                    console.log(result.createElement.parent);
-                    if (result.createElement.parent) {
+                    // Update parent element
+                    if (result.createElement.parent?.id) {
+                      console.log("Parent: ", result.createElement.parent);
                       betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                         cache,
                         {
@@ -686,7 +690,10 @@ export const createUrqlClient = (ssrExchange: any) => {
                         },
                         _result,
                         (_, query2) => {
-                          query2.getElement.content.push(result.createElement!);
+                          console.log("Query 2:", query2);
+                          const parentElement = query2.getElement;
+                          parentElement.content.push(result.createElement!);
+                          console.log("New content:", parentElement.content);
                           return query2;
                         }
                       );

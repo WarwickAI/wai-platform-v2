@@ -15,13 +15,15 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Element,
   ElementType,
   useCreateElementMutation,
   useEditElementPropsMutation,
   useGetDatabaseQuery,
+  useGetElementQuery,
+  useGetElementsQuery,
 } from "../../generated/graphql";
 import {
   DatabaseElementProps,
@@ -34,6 +36,8 @@ import {
 interface DatabaseViewProps {
   element: ElementTyper<DatabaseViewElementProps>;
   isEdit: boolean;
+  refreshDatabaseId: number | undefined;
+  refreshDatabase: (id: number | undefined) => void;
 }
 
 const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
@@ -45,21 +49,17 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   const [databaseId, setDatabaseId] = useState<number>(
     elementProps.databaseId ? elementProps.databaseId.value : 0
   );
-  const [updatedDatabase, setUpdatedDatabase] = useState<
-    ElementTyper<DatabaseElementProps> | undefined
-  >();
 
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseQuery }, getDatabase] = useGetDatabaseQuery({
-    variables: {
-      databaseId: elementProps.databaseId.value,
-    },
+  // const [{ data: databaseQuery }, getDatabase] = useGetDatabaseQuery({
+  //   variables: {
+  //     databaseId: elementProps.databaseId.value,
+  //   },
+  // });
+  const [{ data: databaseQuery }, getDatabase] = useGetElementQuery({
+    variables: { elementId: elementProps.databaseId.value },
   });
-
-  const database = updatedDatabase
-    ? updatedDatabase
-    : (databaseQuery?.getDatabase as ElementTyper<DatabaseElementProps>);
 
   const addAttribute = async (attributeType: PropertyTypes) => {
     const newAttribute: any = {};
@@ -73,7 +73,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         attributes: {
           type: PropertyTypes.PropertyList,
           value: {
-            ...database?.props.attributes.value,
+            ...databaseQuery?.getElement.props.attributes.value,
             ...newAttribute,
           },
         },
@@ -85,10 +85,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   const addRow = async () => {
     const editedDatabase = await createElement({
       index: 0,
-      type: database?.props.contentBaseType.value,
+      type: databaseQuery?.getElement.props.contentBaseType.value,
       props:
         ElementDefaultProps[
-          database?.props.contentBaseType.value as ElementType
+          databaseQuery?.getElement.props.contentBaseType.value as ElementType
         ],
       parent: databaseId,
     });
@@ -111,27 +111,31 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
               },
             },
           });
+
+          getDatabase();
         }}
       />
-      {database && (
+      {databaseQuery?.getElement && (
         <Box>
-          <Heading>{database.props.title.value}</Heading>
+          <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
           <Box>
             <Table variant={"simple"}>
               <Thead>
                 <Tr>
                   <Th>🔗</Th>
-                  {Object.keys(database.props.attributes.value).map(
-                    (attributeName: string) => {
-                      const attributeType =
-                        database.props.attributes.value[attributeName].type;
-                      return (
-                        <Th key={attributeName}>
-                          {attributeName}-{attributeType}
-                        </Th>
-                      );
-                    }
-                  )}
+                  {Object.keys(
+                    databaseQuery?.getElement.props.attributes.value
+                  ).map((attributeName: string) => {
+                    const attributeType =
+                      databaseQuery?.getElement.props.attributes.value[
+                        attributeName
+                      ].type;
+                    return (
+                      <Th key={attributeName}>
+                        {attributeName}-{attributeType}
+                      </Th>
+                    );
+                  })}
                   <Th>
                     <Popover>
                       <PopoverTrigger>
@@ -167,7 +171,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {database.content.map((row, rowIndex) => {
+                {databaseQuery?.getElement.content.map((row, rowIndex) => {
                   return (
                     <Tr key={row.id}>
                       <Td
@@ -176,50 +180,52 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                       >
                         ↗️
                       </Td>
-                      {Object.keys(database.props.attributes.value).map(
-                        (attributeName: string) => {
-                          const attributeType =
-                            database.props.attributes.value[attributeName].type;
-                          const rowAttribute = row.props[attributeName]
-                            ? row.props[attributeName].value
-                            : "";
-                          if (
-                            attributeType === PropertyTypes.Text ||
-                            attributeType === PropertyTypes.Url
-                          ) {
-                            return (
-                              <Td key={attributeName}>
-                                <Input
-                                  value={rowAttribute}
-                                  w={150}
-                                  onChange={async (e) => {
-                                    const newProps: any = {};
-                                    newProps[attributeName] = {
-                                      type: attributeType,
-                                      value: e.target.value,
-                                    };
-                                    const res = await editElement({
-                                      elementId: row.id,
-                                      props: newProps,
-                                    });
-                                    if (res.data?.editElementProps) {
-                                      const newContent = database.content;
-                                      newContent[rowIndex] = res.data
-                                        ?.editElementProps as Element;
-                                      setUpdatedDatabase({
-                                        ...database,
-                                        content: newContent,
-                                      });
-                                    }
-                                  }}
-                                />
-                              </Td>
-                            );
-                          } else {
-                            return <Td key={attributeName}>OH-NO!!!</Td>;
-                          }
+                      {Object.keys(
+                        databaseQuery?.getElement.props.attributes.value
+                      ).map((attributeName: string) => {
+                        const attributeType =
+                          databaseQuery?.getElement.props.attributes.value[
+                            attributeName
+                          ].type;
+                        const rowAttribute = row.props[attributeName]
+                          ? row.props[attributeName].value
+                          : "";
+                        if (
+                          attributeType === PropertyTypes.Text ||
+                          attributeType === PropertyTypes.Url
+                        ) {
+                          return (
+                            <Td key={attributeName}>
+                              <Input
+                                value={rowAttribute}
+                                w={150}
+                                onChange={async (e) => {
+                                  const newProps: any = {};
+                                  newProps[attributeName] = {
+                                    type: attributeType,
+                                    value: e.target.value,
+                                  };
+                                  const res = await editElement({
+                                    elementId: row.id,
+                                    props: newProps,
+                                  });
+                                  // if (res.data?.editElementProps) {
+                                  //   const newContent = database.content;
+                                  //   newContent[rowIndex] = res.data
+                                  //     ?.editElementProps as Element;
+                                  //   setUpdatedDatabase({
+                                  //     ...database,
+                                  //     content: newContent,
+                                  //   });
+                                  // }
+                                }}
+                              />
+                            </Td>
+                          );
+                        } else {
+                          return <Td key={attributeName}>OH-NO!!!</Td>;
                         }
-                      )}
+                      })}
                     </Tr>
                   );
                 })}
