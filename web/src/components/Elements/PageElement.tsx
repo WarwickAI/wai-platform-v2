@@ -14,6 +14,7 @@ import { ElementTyper } from "../../utils/elements";
 
 interface PageElementProps {
   element: ElementTyper<PageElementProps>;
+  isEdit: boolean;
 }
 
 const PageElement: React.FC<PageElementProps> = (props) => {

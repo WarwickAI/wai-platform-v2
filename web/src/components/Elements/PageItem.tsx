@@ -13,6 +13,7 @@ interface PageItemProps {
   addElement: (type: ElementType, index: number) => void;
   removeElement: (elementId: number) => void;
   refetchParent: () => void;
+  isEdit: boolean;
 }
 
 const PageItem: React.FC<PageItemProps> = (props) => {
@@ -51,23 +52,26 @@ const PageItem: React.FC<PageItemProps> = (props) => {
           alignItems={"center"}
           opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
         >
-          <ElementSettingsPopover
-            onOpen={() => setAddElementPopoverOpen(true)}
-            onClose={() => setAddElementPopoverOpen(false)}
-            element={props.element}
-            removeElement={props.removeElement}
-            disabled={isDragging}
-            refetch={props.refetchParent}
-          />
+          {props.isEdit && (
+            <ElementSettingsPopover
+              onOpen={() => setAddElementPopoverOpen(true)}
+              onClose={() => setAddElementPopoverOpen(false)}
+              element={props.element}
+              removeElement={props.removeElement}
+              disabled={isDragging}
+              refetch={props.refetchParent}
+            />
+          )}
         </Flex>
         {/* Element Content */}
         <Flex alignItems="center">
           <Main
             elementId={props.element.id}
             refetchParent={props.refetchParent}
+            isEdit={props.isEdit}
           />
         </Flex>
-        {(showControls || addElementPopoverOpen) && (
+        {(showControls || addElementPopoverOpen) && props.isEdit && (
           <Flex
             position={"absolute"}
             justifyContent={"center"}

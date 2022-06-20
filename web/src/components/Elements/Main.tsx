@@ -17,6 +17,7 @@ import Button from "./Button";
 interface MainProps {
   elementId: number;
   refetchParent: () => void;
+  isEdit: boolean;
 }
 
 const Main: React.FC<MainProps> = (props) => {
@@ -28,13 +29,17 @@ const Main: React.FC<MainProps> = (props) => {
   }
   if (element.getElement.type === ElementType.Text) {
     return (
-      <Text element={element.getElement as ElementTyper<TextElementProps>} />
+      <Text
+        element={element.getElement as ElementTyper<TextElementProps>}
+        isEdit={props.isEdit}
+      />
     );
   }
   if (element.getElement.type === ElementType.Page) {
     return (
       <PageElement
         element={element.getElement as ElementTyper<PageElementProps>}
+        isEdit={props.isEdit}
       />
     );
   }
@@ -42,6 +47,7 @@ const Main: React.FC<MainProps> = (props) => {
     return (
       <DatabaseView
         element={element.getElement as ElementTyper<DatabaseViewElementProps>}
+        isEdit={props.isEdit}
       />
     );
   }
@@ -49,6 +55,7 @@ const Main: React.FC<MainProps> = (props) => {
     return (
       <PropertyLink
         element={element.getElement as ElementTyper<PropertyLinkElementProps>}
+        isEdit={props.isEdit}
       />
     );
   }
@@ -57,6 +64,7 @@ const Main: React.FC<MainProps> = (props) => {
       <Button
         element={element.getElement as ElementTyper<ButtonElementProps>}
         refetchParent={props.refetchParent}
+        isEdit={props.isEdit}
       />
     );
   }

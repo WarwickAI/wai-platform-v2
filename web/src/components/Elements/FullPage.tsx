@@ -220,6 +220,7 @@ const Page: React.FC<PageProps> = (props) => {
                   addElement={addElement}
                   removeElement={removeElement}
                   refetchParent={props.refetchElement}
+                  isEdit={isEditMode}
                 />
               );
             })}

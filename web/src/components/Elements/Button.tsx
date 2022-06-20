@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 interface ButtonProps {
   element: ElementTyper<ButtonElementProps>;
   refetchParent: () => void;
+  isEdit: boolean;
 }
 
 const ButtonLink: React.FC<ButtonProps> = (props) => {

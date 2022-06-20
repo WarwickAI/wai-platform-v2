@@ -33,6 +33,7 @@ import {
 
 interface DatabaseViewProps {
   element: ElementTyper<DatabaseViewElementProps>;
+  isEdit: boolean;
 }
 
 const DatabaseView: React.FC<DatabaseViewProps> = (props) => {

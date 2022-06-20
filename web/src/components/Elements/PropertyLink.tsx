@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 
 interface PropertyLinkProps {
   element: ElementTyper<PropertyLinkElementProps>;
+  isEdit: boolean;
 }
 
 const PropertyLink: React.FC<PropertyLinkProps> = (props) => {

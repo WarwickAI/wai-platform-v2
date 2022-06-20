@@ -97,6 +97,7 @@ const StyleButtons: React.FC<StyleButtonsProps> = (props) => {
 
 interface TextProps {
   element: ElementTyper<TextElementProps>;
+  isEdit: boolean;
 }
 
 const Text: React.FC<TextProps> = (props) => {

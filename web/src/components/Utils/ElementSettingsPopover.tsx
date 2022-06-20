@@ -11,7 +11,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { Element, useEditElementPropsMutation } from "../../generated/graphql";
-import { ElementSettingOptions, PropertyTypes } from "../../utils/elements";
+import { PropertyBase, PropertyTypes } from "../../utils/elements";
 
 interface ElementSettingsPopoverProps {
   onOpen: () => void;
@@ -59,18 +59,26 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       <PopoverContent>
         <PopoverBody>
           {Object.keys(props.element.props).map((propName) => {
-            const propType = props.element.props[propName].type;
-            const propValue = props.element.props[propName].value;
+            const elementProp = props.element.props[propName];
+            console.log(elementProp);
+            const propType = elementProp.type;
+            const propValue = elementProp.value;
+            const propFriendly = elementProp.friendly;
+            const propHint = elementProp.hint;
+            const propShowInSettings = elementProp.showInSettings;
+            if (!propShowInSettings) {
+              return <></>;
+            }
             return (
               <Flex direction={"row"} key={propName} alignItems="center" mb={2}>
-                <Text mr={2}>{propName}:</Text>
+                <Text mr={2}>{propFriendly}:</Text>
                 <Input
                   value={propValue}
                   type={propType === PropertyTypes.Text ? "text" : "number"}
                   onChange={async (e) => {
                     const newProps: any = {};
                     newProps[propName] = {
-                      type: propType,
+                      ...elementProp,
                       value: parseInt(e.target.value),
                     };
 
