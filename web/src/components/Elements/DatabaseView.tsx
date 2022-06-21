@@ -44,12 +44,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   const router = useRouter();
   const elementProps = props.element.props as DatabaseViewElementProps;
 
-  const editorRef = useRef(null);
-
-  const [databaseId, setDatabaseId] = useState<number>(
-    elementProps.databaseId ? elementProps.databaseId.value : 0
-  );
-
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
   // const [{ data: databaseQuery }, getDatabase] = useGetDatabaseQuery({
@@ -57,7 +51,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   //     databaseId: elementProps.databaseId.value,
   //   },
   // });
-  const [{ data: databaseQuery }, getDatabase] = useGetElementQuery({
+  const [{ data: databaseQuery }] = useGetElementQuery({
     variables: { elementId: elementProps.databaseId.value },
   });
 
@@ -68,7 +62,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
       value: attributeType === PropertyTypes.Text ? "" : 0,
     };
     const editedDatabase = await editElement({
-      elementId: databaseId,
+      elementId: elementProps.databaseId.value,
       props: {
         attributes: {
           type: PropertyTypes.PropertyList,
@@ -79,7 +73,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         },
       },
     });
-    getDatabase();
   };
 
   const addRow = async () => {
@@ -90,161 +83,143 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         ElementDefaultProps[
           databaseQuery?.getElement.props.contentBaseType.value as ElementType
         ],
-      parent: databaseId,
+      parent: elementProps.databaseId.value,
     });
-    getDatabase();
   };
 
   return (
     <Box>
-      <Input
-        value={databaseId}
-        w={150}
-        onChange={(e) => {
-          setDatabaseId(parseInt(e.target.value));
-          editElement({
-            elementId: props.element.id,
-            props: {
-              databaseId: {
-                type: PropertyTypes.Number,
-                value: parseInt(e.target.value),
-              },
-            },
-          });
-
-          getDatabase();
-        }}
-      />
-      {databaseQuery?.getElement && (
-        <Box>
-          <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
+      {databaseQuery?.getElement &&
+        databaseQuery?.getElement.type === ElementType.Database && (
           <Box>
-            <Table variant={"simple"}>
-              <Thead>
-                <Tr>
-                  <Th>🔗</Th>
-                  {Object.keys(
-                    databaseQuery?.getElement.props.attributes.value
-                  ).map((attributeName: string) => {
-                    const attributeType =
-                      databaseQuery?.getElement.props.attributes.value[
-                        attributeName
-                      ].type;
+            <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
+            <Box>
+              <Table variant={"simple"}>
+                <Thead>
+                  <Tr>
+                    <Th>🔗</Th>
+                    {Object.keys(
+                      databaseQuery?.getElement.props.attributes.value
+                    ).map((attributeName: string) => {
+                      const attributeType =
+                        databaseQuery?.getElement.props.attributes.value[
+                          attributeName
+                        ].type;
+                      return (
+                        <Th key={attributeName}>
+                          {attributeName}-{attributeType}
+                        </Th>
+                      );
+                    })}
+                    <Th>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button size={"sm"} variant="outline">
+                            +
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverBody>
+                            {Object.keys(PropertyTypes).map((type) => {
+                              if (isNaN(type as any)) {
+                                return (
+                                  <Button
+                                    size={"sm"}
+                                    key={type}
+                                    variant="outline"
+                                    onClick={() =>
+                                      // @ts-ignore
+                                      addAttribute(PropertyTypes[type])
+                                    }
+                                  >
+                                    {type}
+                                  </Button>
+                                );
+                              } else {
+                                return <div key={type}></div>;
+                              }
+                            })}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {databaseQuery?.getElement.content.map((row, rowIndex) => {
                     return (
-                      <Th key={attributeName}>
-                        {attributeName}-{attributeType}
-                      </Th>
+                      <Tr key={row.id}>
+                        <Td
+                          onClick={() => router.push(`/generic/${row.id}`)}
+                          _hover={{ cursor: "pointer" }}
+                        >
+                          ↗️
+                        </Td>
+                        {Object.keys(
+                          databaseQuery?.getElement.props.attributes.value
+                        ).map((attributeName: string) => {
+                          const attributeType =
+                            databaseQuery?.getElement.props.attributes.value[
+                              attributeName
+                            ].type;
+                          const rowAttribute = row.props[attributeName]
+                            ? row.props[attributeName].value
+                            : "";
+                          if (
+                            attributeType === PropertyTypes.Text ||
+                            attributeType === PropertyTypes.Url
+                          ) {
+                            return (
+                              <Td key={attributeName}>
+                                <Input
+                                  value={rowAttribute}
+                                  w={150}
+                                  onChange={async (e) => {
+                                    const newProps: any = {};
+                                    newProps[attributeName] = {
+                                      type: attributeType,
+                                      value: e.target.value,
+                                    };
+                                    const res = await editElement({
+                                      elementId: row.id,
+                                      props: newProps,
+                                    });
+                                    // if (res.data?.editElementProps) {
+                                    //   const newContent = database.content;
+                                    //   newContent[rowIndex] = res.data
+                                    //     ?.editElementProps as Element;
+                                    //   setUpdatedDatabase({
+                                    //     ...database,
+                                    //     content: newContent,
+                                    //   });
+                                    // }
+                                  }}
+                                />
+                              </Td>
+                            );
+                          } else {
+                            return <Td key={attributeName}>OH-NO!!!</Td>;
+                          }
+                        })}
+                      </Tr>
                     );
                   })}
-                  <Th>
-                    <Popover>
-                      <PopoverTrigger>
-                        <Button size={"sm"} variant="outline">
-                          +
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverBody>
-                          {Object.keys(PropertyTypes).map((type) => {
-                            if (isNaN(type as any)) {
-                              return (
-                                <Button
-                                  size={"sm"}
-                                  key={type}
-                                  variant="outline"
-                                  onClick={() =>
-                                    // @ts-ignore
-                                    addAttribute(PropertyTypes[type])
-                                  }
-                                >
-                                  {type}
-                                </Button>
-                              );
-                            } else {
-                              return <div key={type}></div>;
-                            }
-                          })}
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {databaseQuery?.getElement.content.map((row, rowIndex) => {
-                  return (
-                    <Tr key={row.id}>
-                      <Td
-                        onClick={() => router.push(`/generic/${row.id}`)}
-                        _hover={{ cursor: "pointer" }}
+                  <Tr>
+                    <Td>
+                      <Button
+                        size={"sm"}
+                        variant="outline"
+                        onClick={() => addRow()}
                       >
-                        ↗️
-                      </Td>
-                      {Object.keys(
-                        databaseQuery?.getElement.props.attributes.value
-                      ).map((attributeName: string) => {
-                        const attributeType =
-                          databaseQuery?.getElement.props.attributes.value[
-                            attributeName
-                          ].type;
-                        const rowAttribute = row.props[attributeName]
-                          ? row.props[attributeName].value
-                          : "";
-                        if (
-                          attributeType === PropertyTypes.Text ||
-                          attributeType === PropertyTypes.Url
-                        ) {
-                          return (
-                            <Td key={attributeName}>
-                              <Input
-                                value={rowAttribute}
-                                w={150}
-                                onChange={async (e) => {
-                                  const newProps: any = {};
-                                  newProps[attributeName] = {
-                                    type: attributeType,
-                                    value: e.target.value,
-                                  };
-                                  const res = await editElement({
-                                    elementId: row.id,
-                                    props: newProps,
-                                  });
-                                  // if (res.data?.editElementProps) {
-                                  //   const newContent = database.content;
-                                  //   newContent[rowIndex] = res.data
-                                  //     ?.editElementProps as Element;
-                                  //   setUpdatedDatabase({
-                                  //     ...database,
-                                  //     content: newContent,
-                                  //   });
-                                  // }
-                                }}
-                              />
-                            </Td>
-                          );
-                        } else {
-                          return <Td key={attributeName}>OH-NO!!!</Td>;
-                        }
-                      })}
-                    </Tr>
-                  );
-                })}
-                <Tr>
-                  <Td>
-                    <Button
-                      size={"sm"}
-                      variant="outline"
-                      onClick={() => addRow()}
-                    >
-                      +
-                    </Button>
-                  </Td>
-                </Tr>
-              </Tbody>
-            </Table>
+                        +
+                      </Button>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
     </Box>
   );
 };

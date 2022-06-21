@@ -10,8 +10,9 @@ import {
   Flex,
   Input,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { Element, useEditElementPropsMutation } from "../../generated/graphql";
-import { PropertyBase, PropertyTypes } from "../../utils/elements";
+import { Property, PropertyBase, PropertyTypes } from "../../utils/elements";
 
 interface ElementSettingsPopoverProps {
   onOpen: () => void;
@@ -60,38 +61,18 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
         <PopoverBody>
           {Object.keys(props.element.props).map((propName) => {
             const elementProp = props.element.props[propName];
-            console.log(elementProp);
-            const propType = elementProp.type;
-            const propValue = elementProp.value;
-            const propFriendly = elementProp.friendly;
-            const propHint = elementProp.hint;
             const propShowInSettings = elementProp.showInSettings;
             if (!propShowInSettings) {
               return <></>;
             }
             return (
-              <Flex direction={"row"} key={propName} alignItems="center" mb={2}>
-                <Text mr={2}>{propFriendly}:</Text>
-                <Input
-                  value={propValue}
-                  type={propType === PropertyTypes.Text ? "text" : "number"}
-                  onChange={async (e) => {
-                    const newProps: any = {};
-                    newProps[propName] = {
-                      ...elementProp,
-                      value: parseInt(e.target.value),
-                    };
-
-                    await editElement({
-                      elementId: props.element.id,
-                      props: newProps,
-                    });
-                    if (props.refetch) {
-                      props.refetch();
-                    }
-                  }}
-                />
-              </Flex>
+              <ElementSetting
+                key={propName}
+                prop={elementProp}
+                propName={propName}
+                elementId={props.element.id}
+                refetch={props.refetch}
+              />
             );
           })}
           <Button
@@ -104,6 +85,45 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
         </PopoverBody>
       </PopoverContent>
     </Popover>
+  );
+};
+
+interface ElementSettingProps {
+  prop: Property;
+  propName: string;
+  elementId: number;
+  refetch: () => void | undefined;
+}
+
+const ElementSetting: React.FC<ElementSettingProps> = (props) => {
+  const [value, setValue] = useState<any>(props.prop.value);
+
+  const [, editElement] = useEditElementPropsMutation();
+
+  return (
+    <Flex direction={"row"} alignItems="center" mb={2}>
+      <Text mr={2}>{props.prop.friendly}:</Text>
+      <Input
+        value={value}
+        type={props.prop.type === PropertyTypes.Text ? "text" : "number"}
+        onChange={async (e) => {
+          setValue(e.target.value);
+          const newProps: any = {};
+          newProps[props.propName] = {
+            ...props.prop,
+            value: parseInt(e.target.value),
+          };
+
+          await editElement({
+            elementId: props.elementId,
+            props: newProps,
+          });
+          if (props.refetch) {
+            props.refetch();
+          }
+        }}
+      />
+    </Flex>
   );
 };
 

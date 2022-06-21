@@ -89,15 +89,12 @@ const Page: React.FC<PageProps> = (props) => {
         props: ElementDefaultProps[type],
       });
       if (newDatabase.data?.createElement) {
+        const databaseViewProps = ElementDefaultProps[ElementType.DatabaseView];
+        databaseViewProps.databaseId.value = newDatabase.data.createElement.id;
         await createElement({
           index,
           type: ElementType.DatabaseView,
-          props: {
-            databaseId: {
-              type: PropertyTypes.Number,
-              value: newDatabase.data.createElement.id,
-            },
-          },
+          props: databaseViewProps,
           parent: props.element.id,
         });
       }
@@ -126,7 +123,7 @@ const Page: React.FC<PageProps> = (props) => {
   );
 
   const refreshDatabase = (id: number | undefined) => {
-    console.log("HERE")
+    console.log("HERE");
     setRefreshDatabaseId(id);
   };
 
