@@ -1,11 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, Text, Button, Input } from "@chakra-ui/react";
 import {
   useEditElementPropsMutation,
   useGetElementQuery,
 } from "../../generated/graphql";
 import {
-    ElementTyper,
+  ElementTyper,
   PropertyLinkElementProps,
   PropertyTypes,
 } from "../../utils/elements";
@@ -27,41 +27,27 @@ interface PropertyLinkProps {
 const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
   const router = useRouter();
   const elementProps = props.element.props as PropertyLinkElementProps;
-  const [propertyName, setPropertyName] = useState<string>(
-    elementProps.propertyName.value
-  );
-  const [, editElement] = useEditElementPropsMutation();
   const [{ data: parentElement }] = useGetElementQuery({
     variables: {
       elementId: props.element.parent ? props.element.parent.id : 0,
     },
   });
 
-  const propertyValue = parentElement?.getElement.props[propertyName]
-    ? parentElement?.getElement.props[propertyName].value
-    : "NONE";
+  useEffect(() => {
+  }, [elementProps, props])
 
   return (
     <Box>
-      <Input
-        value={propertyName}
-        w={150}
-        onChange={(e) => {
-          setPropertyName(e.target.value);
-          editElement({
-            elementId: props.element.id,
-            props: {
-              propertyName: {
-                type: PropertyTypes.Text,
-                value: e.target.value,
-              },
-            },
-          });
-        }}
-      />
-      <Text>
-        {propertyName} - {propertyValue}
-      </Text>
+      {parentElement?.getElement.props[elementProps.propertyName.value]
+        ?.value && (
+        <Text>
+          {elementProps.propertyName.value} -{" "}
+          {
+            parentElement?.getElement.props[elementProps.propertyName.value]
+              .value
+          }
+        </Text>
+      )}
     </Box>
   );
 };

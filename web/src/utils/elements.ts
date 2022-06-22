@@ -258,7 +258,7 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
   PropertyLink: {
     propertyName: {
       type: PropertyTypes.PropertyLink,
-      value: "",
+      value: "title",
       friendly: "Property",
       hint: "Property name",
       showInSettings: true,

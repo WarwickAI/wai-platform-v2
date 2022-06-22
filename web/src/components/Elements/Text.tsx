@@ -32,7 +32,7 @@ const StyleButtons: React.FC<StyleButtonsProps> = (props) => {
       borderRadius={8}
       backgroundColor="white"
       boxShadow="md"
-      index={99}
+      zIndex={100}
     >
       <Flex flexDirection="row" justifyContent="center" alignItems="center">
         <Button
@@ -107,13 +107,12 @@ const Text: React.FC<TextProps> = (props) => {
 
   const [, editElement] = useEditElementPropsMutation();
   const [editorState, setEditorState] = React.useState(() =>
-    elementProps.text.value.length > 0
+    elementProps.text.value && elementProps.text.value.length > 0
       ? EditorState.createWithContent(
           convertFromRaw(JSON.parse(elementProps.text.value))
         )
       : EditorState.createEmpty()
   );
-
 
   const [isEditorFocused, setIsEditorFocused] = React.useState(false);
 

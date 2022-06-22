@@ -105,13 +105,16 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
       <Text mr={2}>{props.prop.friendly}:</Text>
       <Input
         value={value}
-        type={props.prop.type === PropertyTypes.Text ? "text" : "number"}
+        type={props.prop.type === PropertyTypes.Number ? "number" : "text"}
         onChange={async (e) => {
           setValue(e.target.value);
           const newProps: any = {};
           newProps[props.propName] = {
             ...props.prop,
-            value: parseInt(e.target.value),
+            value:
+              props.prop.type === PropertyTypes.Number
+                ? parseInt(e.target.value)
+                : e.target.value,
           };
 
           await editElement({

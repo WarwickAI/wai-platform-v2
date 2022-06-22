@@ -614,13 +614,11 @@ export const createUrqlClient = (ssrExchange: any) => {
 
             removeElement: (_result, args, cache, info) => {
               const elementId = args.elementId;
-              console.log("REMOVING:", elementId);
               betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
                 cache,
                 { query: GetElementDocument, variables: { elementId } },
                 _result,
                 (result, query) => {
-                  console.log("First:", result);
                   if (!result.removeElement) {
                     return query;
                   } else {
@@ -639,17 +637,10 @@ export const createUrqlClient = (ssrExchange: any) => {
                             query2.getElement.content.findIndex(
                               (val) => val.id === elementId
                             );
-                          console.log("INDEX:", indexOfRemovedElement);
-                          console.log("OLD QUERY:", [
-                            ...query2.getElement.content,
-                          ]);
                           query2.getElement.content.splice(
                             indexOfRemovedElement,
                             1
                           );
-                          console.log("NEW QUERY:", [
-                            ...query2.getElement.content,
-                          ]);
                           return query2;
                         }
                       );
@@ -667,7 +658,6 @@ export const createUrqlClient = (ssrExchange: any) => {
               }
               const newElement = res.createElement;
               const elementId = newElement.id;
-              console.log("Cache Result: ", res);
               // Update element
               betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                 cache,
@@ -679,7 +669,6 @@ export const createUrqlClient = (ssrExchange: any) => {
                   } else {
                     // Update parent element
                     if (result.createElement.parent?.id) {
-                      console.log("Parent: ", result.createElement.parent);
                       betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                         cache,
                         {
@@ -690,10 +679,8 @@ export const createUrqlClient = (ssrExchange: any) => {
                         },
                         _result,
                         (_, query2) => {
-                          console.log("Query 2:", query2);
                           const parentElement = query2.getElement;
                           parentElement.content.push(result.createElement!);
-                          console.log("New content:", parentElement.content);
                           return query2;
                         }
                       );

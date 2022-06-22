@@ -41,7 +41,7 @@ const Page: React.FC<PageProps> = (props) => {
 
   const [items, setItems] = useState<Element[]>([]);
   const [oldItems, setOldItems] = useState<Element[]>([]);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(true);
   const [refreshDatabaseId, setRefreshDatabaseId] = useState<
     number | undefined
   >(undefined);
@@ -123,7 +123,6 @@ const Page: React.FC<PageProps> = (props) => {
   );
 
   const refreshDatabase = (id: number | undefined) => {
-    console.log("HERE");
     setRefreshDatabaseId(id);
   };
 

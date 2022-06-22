@@ -37,6 +37,7 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
   return (
     <Box>
       <Button
+        variant={"primary"}
         onClick={async () => {
           const database = databaseElement?.getDatabase;
           if (!database) {

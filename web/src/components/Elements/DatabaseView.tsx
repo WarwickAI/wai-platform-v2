@@ -46,11 +46,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
-  // const [{ data: databaseQuery }, getDatabase] = useGetDatabaseQuery({
-  //   variables: {
-  //     databaseId: elementProps.databaseId.value,
-  //   },
-  // });
   const [{ data: databaseQuery }] = useGetElementQuery({
     variables: { elementId: elementProps.databaseId.value },
   });
@@ -61,7 +56,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
       type: attributeType,
       value: attributeType === PropertyTypes.Text ? "" : 0,
     };
-    const editedDatabase = await editElement({
+    await editElement({
       elementId: elementProps.databaseId.value,
       props: {
         attributes: {
@@ -76,7 +71,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   };
 
   const addRow = async () => {
-    const editedDatabase = await createElement({
+    await createElement({
       index: 0,
       type: databaseQuery?.getElement.props.contentBaseType.value,
       props:
@@ -184,15 +179,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                                       elementId: row.id,
                                       props: newProps,
                                     });
-                                    // if (res.data?.editElementProps) {
-                                    //   const newContent = database.content;
-                                    //   newContent[rowIndex] = res.data
-                                    //     ?.editElementProps as Element;
-                                    //   setUpdatedDatabase({
-                                    //     ...database,
-                                    //     content: newContent,
-                                    //   });
-                                    // }
                                   }}
                                 />
                               </Td>
