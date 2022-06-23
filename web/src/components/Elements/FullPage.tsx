@@ -82,30 +82,12 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   const addElement = async (type: ElementType, index: number) => {
-    if (type === ElementType.Database) {
-      const newDatabase = await createElement({
-        index,
-        type,
-        props: ElementDefaultProps[type],
-      });
-      if (newDatabase.data?.createElement) {
-        const databaseViewProps = ElementDefaultProps[ElementType.DatabaseView];
-        databaseViewProps.databaseId.value = newDatabase.data.createElement.id;
-        await createElement({
-          index,
-          type: ElementType.DatabaseView,
-          props: databaseViewProps,
-          parent: props.element.id,
-        });
-      }
-    } else {
-      await createElement({
-        index,
-        type,
-        props: ElementDefaultProps[type],
-        parent: props.element.id,
-      });
-    }
+    await createElement({
+      index,
+      type,
+      props: ElementDefaultProps[type],
+      parent: props.element.id,
+    });
     props.refetchElement();
   };
 

@@ -48,6 +48,8 @@ import {
   GetElementDocument,
   RemoveElementMutation,
   ElementType,
+  GetDatabasesQuery,
+  GetDatabasesDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -651,6 +653,7 @@ export const createUrqlClient = (ssrExchange: any) => {
               );
             },
 
+            // Need to add database updates as well
             createElement: (_result, args, cache, info) => {
               const res = _result as CreateElementMutation;
               if (!res.createElement) {
@@ -692,6 +695,20 @@ export const createUrqlClient = (ssrExchange: any) => {
                   }
                 }
               );
+
+              if (newElement.type === ElementType.Database) {
+                betterUpdateQuery<CreateElementMutation, GetDatabasesQuery>(
+                  cache,
+                  {
+                    query: GetDatabasesDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases.push(newElement);
+                    return query;
+                  }
+                );
+              }
             },
 
             editElementProps: (_result, args, cache, info) => {
@@ -735,6 +752,23 @@ export const createUrqlClient = (ssrExchange: any) => {
                   }
                 }
               );
+              if (newElement.type === ElementType.Database) {
+                betterUpdateQuery<CreateElementMutation, GetDatabasesQuery>(
+                  cache,
+                  {
+                    query: GetDatabasesDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
             },
           },
         },

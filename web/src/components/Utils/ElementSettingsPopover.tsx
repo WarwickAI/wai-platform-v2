@@ -20,12 +20,16 @@ import {
 import { ChangeEvent, useState, useRef } from "react";
 import {
   Element,
+  ElementType,
+  useCreateElementMutation,
   useEditElementPropsMutation,
   useGetDatabasesQuery,
 } from "../../generated/graphql";
 import {
+  DatabaseBaseTypeAttributes,
   DatabaseBaseTypes,
   DatabaseElementProps,
+  ElementDefaultProps,
   Property,
   PropertyBase,
   PropertyTypes,
@@ -123,12 +127,12 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
       {props.prop.type === PropertyTypes.DatabaseID ? (
         <DatabaseSelect
           value={value}
-          onChange={async (e) => {
-            setValue(e.target.value);
+          onChange={async (v: string) => {
+            setValue(v);
             const newProps: any = {};
             newProps[props.propName] = {
               ...props.prop,
-              value: parseInt(e.target.value),
+              value: parseInt(v),
             };
 
             await editElement({
@@ -171,7 +175,7 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
 
 interface DatabaseSelectProps {
   value: any;
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (v: string) => void;
 }
 
 const DatabaseSelect: React.FC<DatabaseSelectProps> = (props) => {
@@ -186,12 +190,14 @@ const DatabaseSelect: React.FC<DatabaseSelectProps> = (props) => {
   const [newDatabaseBaseType, setNewDatabaseBaseType] =
     useState<DatabaseBaseTypes>(DatabaseBaseTypes.Page);
 
+  const [, createElement] = useCreateElementMutation();
+
   return (
     <>
       <Select
         placeholder="Select Database"
         value={props.value}
-        onChange={props.onChange}
+        onChange={(e) => props.onChange(e.target.value)}
       >
         {databasesQuery?.getDatabases.map((database) => {
           const databaseProps = database.props as DatabaseElementProps;
@@ -218,30 +224,68 @@ const DatabaseSelect: React.FC<DatabaseSelectProps> = (props) => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Select
-                onChange={(e) => {
-                  setNewDatabaseBaseType(
-                    e.target.value as unknown as DatabaseBaseTypes
-                  );
-                }}
-                value={newDatabaseBaseType}
-              >
-                {Object.keys(DatabaseBaseTypes).map((type) => {
-                  return (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  );
-                })}
-              </Select>
+              <Flex direction={"row"} alignItems="center" mb={2}>
+                <Text mr={2} whiteSpace="nowrap">
+                  Name:
+                </Text>
+                <Input
+                  onChange={(e) => {
+                    setNewDatabaseName(e.target.value);
+                  }}
+                  value={newDatabaseName}
+                />
+              </Flex>
+              <Flex direction={"row"} alignItems="center" mb={2}>
+                <Text mr={2} whiteSpace="nowrap">
+                  Base Type:
+                </Text>
+                <Select
+                  onChange={(e) => {
+                    setNewDatabaseBaseType(
+                      e.target.value as unknown as DatabaseBaseTypes
+                    );
+                  }}
+                  value={newDatabaseBaseType}
+                >
+                  {Object.keys(DatabaseBaseTypes).map((type) => {
+                    return (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </Flex>
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelAddRef} colorScheme="red" onClick={onAddClose}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={onAddClose} ml={3}>
-                Delete
+              <Button
+                variant="primary"
+                ml={3}
+                onClick={async () => {
+                  // Create new database, and set to be database for database view
+                  const newDatabaseProps =
+                    ElementDefaultProps[ElementType.Database];
+                  newDatabaseProps.title.value = newDatabaseName;
+                  newDatabaseProps.contentBaseType.value = newDatabaseBaseType;
+                  newDatabaseProps.attributes.value =
+                    DatabaseBaseTypeAttributes[newDatabaseBaseType];
+
+                  const newDatabase = await createElement({
+                    index: 0,
+                    type: ElementType.Database,
+                    props: newDatabaseProps,
+                  });
+                  if (newDatabase.data?.createElement) {
+                    props.onChange(newDatabase.data.createElement.id + "");
+                  }
+                  onAddClose();
+                }}
+              >
+                Create
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

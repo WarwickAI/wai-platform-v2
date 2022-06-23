@@ -13,9 +13,10 @@ import {
   PopoverTrigger,
   Tbody,
   Td,
+  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, {  } from "react";
+import React from "react";
 import {
   ElementType,
   useCreateElementMutation,
@@ -81,127 +82,129 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   return (
     <Box>
       {databaseQuery?.getElement &&
-        databaseQuery?.getElement.type === ElementType.Database && (
+      databaseQuery?.getElement.type === ElementType.Database ? (
+        <Box>
+          <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
           <Box>
-            <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
-            <Box>
-              <Table variant={"simple"}>
-                <Thead>
-                  <Tr>
-                    <Th>🔗</Th>
-                    {Object.keys(
-                      databaseQuery?.getElement.props.attributes.value
-                    ).map((attributeName: string) => {
-                      const attributeType =
-                        databaseQuery?.getElement.props.attributes.value[
-                          attributeName
-                        ].type;
-                      return (
-                        <Th key={attributeName}>
-                          {attributeName}-{attributeType}
-                        </Th>
-                      );
-                    })}
-                    <Th>
-                      <Popover>
-                        <PopoverTrigger>
-                          <Button size={"sm"} variant="outline">
-                            +
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          <PopoverBody>
-                            {Object.keys(PropertyTypes).map((type) => {
-                              if (isNaN(type as any)) {
-                                return (
-                                  <Button
-                                    size={"sm"}
-                                    key={type}
-                                    variant="outline"
-                                    onClick={() =>
-                                      // @ts-ignore
-                                      addAttribute(PropertyTypes[type])
-                                    }
-                                  >
-                                    {type}
-                                  </Button>
-                                );
-                              } else {
-                                return <div key={type}></div>;
-                              }
-                            })}
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {databaseQuery?.getElement.content.map((row, rowIndex) => {
+            <Table variant={"simple"}>
+              <Thead>
+                <Tr>
+                  <Th>🔗</Th>
+                  {Object.keys(
+                    databaseQuery?.getElement.props.attributes.value
+                  ).map((attributeName: string) => {
+                    const attributeType =
+                      databaseQuery?.getElement.props.attributes.value[
+                        attributeName
+                      ].type;
                     return (
-                      <Tr key={row.id}>
-                        <Td
-                          onClick={() => router.push(`/generic/${row.id}`)}
-                          _hover={{ cursor: "pointer" }}
-                        >
-                          ↗️
-                        </Td>
-                        {Object.keys(
-                          databaseQuery?.getElement.props.attributes.value
-                        ).map((attributeName: string) => {
-                          const attributeType =
-                            databaseQuery?.getElement.props.attributes.value[
-                              attributeName
-                            ].type;
-                          const rowAttribute = row.props[attributeName]
-                            ? row.props[attributeName].value
-                            : "";
-                          if (
-                            attributeType === PropertyTypes.Text ||
-                            attributeType === PropertyTypes.Url
-                          ) {
-                            return (
-                              <Td key={attributeName}>
-                                <Input
-                                  value={rowAttribute}
-                                  w={150}
-                                  onChange={async (e) => {
-                                    const newProps: any = {};
-                                    newProps[attributeName] = {
-                                      type: attributeType,
-                                      value: e.target.value,
-                                    };
-                                    const res = await editElement({
-                                      elementId: row.id,
-                                      props: newProps,
-                                    });
-                                  }}
-                                />
-                              </Td>
-                            );
-                          } else {
-                            return <Td key={attributeName}>OH-NO!!!</Td>;
-                          }
-                        })}
-                      </Tr>
+                      <Th key={attributeName}>
+                        {attributeName}-{attributeType}
+                      </Th>
                     );
                   })}
-                  <Tr>
-                    <Td>
-                      <Button
-                        size={"sm"}
-                        variant="outline"
-                        onClick={() => addRow()}
+                  <Th>
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button size={"sm"} variant="outline">
+                          +
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverBody>
+                          {Object.keys(PropertyTypes).map((type) => {
+                            if (isNaN(type as any)) {
+                              return (
+                                <Button
+                                  size={"sm"}
+                                  key={type}
+                                  variant="outline"
+                                  onClick={() =>
+                                    // @ts-ignore
+                                    addAttribute(PropertyTypes[type])
+                                  }
+                                >
+                                  {type}
+                                </Button>
+                              );
+                            } else {
+                              return <div key={type}></div>;
+                            }
+                          })}
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {databaseQuery?.getElement.content.map((row, rowIndex) => {
+                  return (
+                    <Tr key={row.id}>
+                      <Td
+                        onClick={() => router.push(`/generic/${row.id}`)}
+                        _hover={{ cursor: "pointer" }}
                       >
-                        +
-                      </Button>
-                    </Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </Box>
+                        ↗️
+                      </Td>
+                      {Object.keys(
+                        databaseQuery?.getElement.props.attributes.value
+                      ).map((attributeName: string) => {
+                        const attributeType =
+                          databaseQuery?.getElement.props.attributes.value[
+                            attributeName
+                          ].type;
+                        const rowAttribute = row.props[attributeName]
+                          ? row.props[attributeName].value
+                          : "";
+                        if (
+                          attributeType === PropertyTypes.Text ||
+                          attributeType === PropertyTypes.Url
+                        ) {
+                          return (
+                            <Td key={attributeName}>
+                              <Input
+                                value={rowAttribute}
+                                w={150}
+                                onChange={async (e) => {
+                                  const newProps: any = {};
+                                  newProps[attributeName] = {
+                                    type: attributeType,
+                                    value: e.target.value,
+                                  };
+                                  const res = await editElement({
+                                    elementId: row.id,
+                                    props: newProps,
+                                  });
+                                }}
+                              />
+                            </Td>
+                          );
+                        } else {
+                          return <Td key={attributeName}>OH-NO!!!</Td>;
+                        }
+                      })}
+                    </Tr>
+                  );
+                })}
+                <Tr>
+                  <Td>
+                    <Button
+                      size={"sm"}
+                      variant="outline"
+                      onClick={() => addRow()}
+                    >
+                      +
+                    </Button>
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </Box>
-        )}
+        </Box>
+      ) : (
+        <Text>No Database Selected (select in settings)</Text>
+      )}
     </Box>
   );
 };

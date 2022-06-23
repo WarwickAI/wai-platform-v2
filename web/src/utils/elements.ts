@@ -52,10 +52,56 @@ export enum DataTypes {
 }
 
 export enum DatabaseBaseTypes {
-  Page,
-  User,
-  Data,
+  Page = "Page",
+  User = "User",
+  Data = "Data",
 }
+
+export const DatabaseBaseTypeAttributes: {
+  [key in DatabaseBaseTypes]: PropertyBase;
+} = {
+  Page: {
+    title: {
+      type: PropertyTypes.Text,
+      value: "Enter title...",
+      friendly: "Title",
+      hint: "Title for page",
+      showInSettings: true,
+    } as Property,
+    coverImg: {
+      type: PropertyTypes.Url,
+      value: "",
+      friendly: "Cover Image",
+      hint: "Cover Image for page",
+      showInSettings: true,
+    } as Property,
+    iconImg: {
+      type: PropertyTypes.Url,
+      value: "",
+      friendly: "Icon Image",
+      hint: "Icon Image for page",
+      showInSettings: true,
+    } as Property,
+  },
+  User: {
+    id: {
+      type: PropertyTypes.Number,
+      value: -1,
+      friendly: "User ID",
+      hint: "User ID",
+      showInSettings: true,
+    } as Property,
+  },
+  Data: {
+    name: {
+      type: PropertyTypes.Text,
+      value: "",
+      friendly: "Name",
+      hint: "Name",
+      showInSettings: true,
+    },
+  },
+};
 
 export interface Property {
   type: PropertyTypes;
@@ -295,3 +341,5 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
     },
   },
 };
+
+export const ElementTypesToNotShowInAdd: [ElementType] = [ElementType.Database];
