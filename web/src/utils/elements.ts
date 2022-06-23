@@ -5,12 +5,13 @@ export enum PropertyTypes {
   FormattedText,
   Number,
   Bool,
-  ElementType,
+  DatabaseBaseType,
   PropertyList,
   Url,
   PropertyLink,
   ActionType,
   DataList,
+  DatabaseID,
 }
 
 export type SettingOptions = {
@@ -48,6 +49,12 @@ export enum DataTypes {
   User,
   Email,
   Name,
+}
+
+export enum DatabaseBaseTypes {
+  Page,
+  User,
+  Data,
 }
 
 export interface Property {
@@ -112,8 +119,8 @@ export type DatabaseElementProps = PropertyBase & {
     showInSettings: false;
   };
   contentBaseType: {
-    type: PropertyTypes.ElementType;
-    value: any;
+    type: PropertyTypes.DatabaseBaseType;
+    value: DatabaseBaseTypes;
     friendly: "Base Element Type";
     hint: "Base element type for rows";
     showInSettings: true;
@@ -122,7 +129,7 @@ export type DatabaseElementProps = PropertyBase & {
 
 export type DatabaseViewElementProps = PropertyBase & {
   databaseId: {
-    type: PropertyTypes.Number;
+    type: PropertyTypes.DatabaseID;
     value: any;
     friendly: "Database ID";
     hint: "Database ID of table we want to view";
@@ -239,8 +246,8 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
       showInSettings: false,
     },
     contentBaseType: {
-      type: PropertyTypes.ElementType,
-      value: ElementType.Page,
+      type: PropertyTypes.DatabaseBaseType,
+      value: DatabaseBaseTypes.Page,
       friendly: "Base Element Type",
       hint: "Base element type for rows",
       showInSettings: true,
@@ -248,7 +255,7 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
   } as DatabaseElementProps,
   DatabaseView: {
     databaseId: {
-      type: PropertyTypes.Number,
+      type: PropertyTypes.DatabaseID,
       value: 0,
       friendly: "Database ID",
       hint: "Database ID of table we want to view",

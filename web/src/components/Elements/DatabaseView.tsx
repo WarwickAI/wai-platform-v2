@@ -15,18 +15,14 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, {  } from "react";
 import {
-  Element,
   ElementType,
   useCreateElementMutation,
   useEditElementPropsMutation,
-  useGetDatabaseQuery,
   useGetElementQuery,
-  useGetElementsQuery,
 } from "../../generated/graphql";
 import {
-  DatabaseElementProps,
   DatabaseViewElementProps,
   ElementDefaultProps,
   ElementTyper,
