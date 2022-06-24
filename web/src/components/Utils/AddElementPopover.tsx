@@ -33,7 +33,7 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
       <PopoverContent>
         <PopoverBody>
           {Object.keys(ElementType).map((type) => {
-            if (ElementTypesToNotShowInAdd.includes(type)) {
+            if (ElementTypesToNotShowInAdd.includes(type as ElementType)) {
               return <></>;
             }
             return (

@@ -1,17 +1,19 @@
 import { Element, ElementType } from "../generated/graphql";
 
+// DO NOT CHANGE ORDER, ADD TO END ONLY!!!
 export enum PropertyTypes {
   Text,
   FormattedText,
   Number,
   Bool,
+  Url,
+  DatabaseID,
+  UserID,
+  PropertyLink,
   DatabaseBaseType,
   PropertyList,
-  Url,
-  PropertyLink,
   ActionType,
   DataList,
-  DatabaseID,
 }
 
 export type SettingOptions = {
@@ -194,8 +196,8 @@ export type PropertyLinkElementProps = PropertyBase & {
 };
 
 export type ButtonElementProps = PropertyBase & {
-  databseId: {
-    type: PropertyTypes.Number;
+  databaseId: {
+    type: PropertyTypes.DatabaseID;
     value: any;
     friendly: "Database ID";
     hint: "Database ID to update";
@@ -318,9 +320,9 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
     } as Property,
   } as PropertyLinkElementProps,
   Button: {
-    databseId: {
-      type: PropertyTypes.Number,
-      value: 0,
+    databaseId: {
+      type: PropertyTypes.DatabaseID,
+      value: -1,
       friendly: "Database ID",
       hint: "Database ID to update",
       showInSettings: true,

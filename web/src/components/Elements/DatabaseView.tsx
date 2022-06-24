@@ -16,7 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ElementType,
   useCreateElementMutation,
@@ -40,6 +40,8 @@ interface DatabaseViewProps {
 const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
   const router = useRouter();
   const elementProps = props.element.props as DatabaseViewElementProps;
+
+  const [databaseName, setDatabaseName] = useState<string>("");
 
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
@@ -67,6 +69,12 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
     });
   };
 
+  useEffect(() => {
+    if (databaseQuery?.getElement) {
+      setDatabaseName(databaseQuery.getElement.props.title.value);
+    }
+  }, [databaseQuery]);
+
   const addRow = async () => {
     await createElement({
       index: 0,
@@ -84,7 +92,26 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
       {databaseQuery?.getElement &&
       databaseQuery?.getElement.type === ElementType.Database ? (
         <Box>
-          <Heading>{databaseQuery?.getElement.props.title.value}</Heading>
+          <Input
+            w={300}
+            size="md"
+            fontSize={18}
+            fontWeight={600}
+            value={databaseName}
+            onChange={async (e) => {
+              setDatabaseName(e.target.value);
+              const newProps: any = {};
+              newProps.title = {
+                ...databaseQuery.getElement.props.title,
+                value: e.target.value,
+              };
+
+              await editElement({
+                elementId: databaseQuery.getElement.id,
+                props: newProps,
+              });
+            }}
+          />
           <Box>
             <Table variant={"simple"}>
               <Thead>

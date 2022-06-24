@@ -31,7 +31,7 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
   const [data, setData] = useState<any>(elementProps.data.value);
   const [, createElement] = useCreateElementMutation();
   const [{ data: databaseElement }, getDatabase] = useGetDatabaseQuery({
-    variables: { databaseId: elementProps.databseId.value },
+    variables: { databaseId: elementProps.databaseId.value },
   });
 
   return (

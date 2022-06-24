@@ -748,9 +748,11 @@ export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'Electi
 
 export type ElementWithoutChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
+export type ElementWithoutChildrenWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
+
 export type ElementWithoutChildrenWithoutParentWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any };
 
-export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> };
+export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type ElementAfterRemoveFragment = { __typename?: 'Element', type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
@@ -847,7 +849,7 @@ export type EditElementPropsMutationVariables = Exact<{
 }>;
 
 
-export type EditElementPropsMutation = { __typename?: 'Mutation', editElementProps: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+export type EditElementPropsMutation = { __typename?: 'Mutation', editElementProps: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> } };
 
 export type EditElementIndexMutationVariables = Exact<{
   index: Scalars['Float'];
@@ -855,7 +857,7 @@ export type EditElementIndexMutationVariables = Exact<{
 }>;
 
 
-export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> } };
 
 export type CreateElementMutationVariables = Exact<{
   type: ElementType;
@@ -865,7 +867,7 @@ export type CreateElementMutationVariables = Exact<{
 }>;
 
 
-export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } | null | undefined };
+export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> } | null | undefined };
 
 export type RemoveElementMutationVariables = Exact<{
   elementId: Scalars['Float'];
@@ -1121,19 +1123,19 @@ export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRo
 export type GetElementsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> }> };
+export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> }> };
 
 export type GetElementQueryVariables = Exact<{
   elementId: Scalars['Float'];
 }>;
 
 
-export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> } };
 
 export type GetParentPagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> }> };
+export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> }> };
 
 export type GetDatabasesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1145,7 +1147,7 @@ export type GetDatabaseQueryVariables = Exact<{
 }>;
 
 
-export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any }> } };
+export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> } };
 
 export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1424,6 +1426,19 @@ export const ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc = gq
   props
 }
     `;
+export const ElementWithoutChildrenWithoutCreatedByFragmentDoc = gql`
+    fragment ElementWithoutChildrenWithoutCreatedBy on Element {
+  id
+  createdAt
+  updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+    `;
 export const ElementWithChildrenFragmentDoc = gql`
     fragment ElementWithChildren on Element {
   id
@@ -1439,10 +1454,10 @@ export const ElementWithChildrenFragmentDoc = gql`
   index
   props
   content {
-    ...ElementWithoutChildrenWithoutParentWithoutCreatedBy
+    ...ElementWithoutChildrenWithoutCreatedBy
   }
 }
-    ${ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc}`;
+    ${ElementWithoutChildrenWithoutCreatedByFragmentDoc}`;
 export const ElementAfterRemoveFragmentDoc = gql`
     fragment ElementAfterRemove on Element {
   parent {

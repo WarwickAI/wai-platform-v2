@@ -1,50 +1,62 @@
 fragment ElementWithoutChildren on Element {
+  id
+  createdAt
+  updatedAt
+  createdBy {
     id
-    createdAt
-    updatedAt
-    createdBy {
-      id
-    }
-    parent {
-      id
-    }
-    type
-    index
-    props
+  }
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+
+fragment ElementWithoutChildrenWithoutCreatedBy on Element {
+  id
+  createdAt
+  updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
 }
 
 fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
-    id
-    createdAt
-    updatedAt
-    type
-    index
-    props
+  id
+  createdAt
+  updatedAt
+  type
+  index
+  props
 }
 
 fragment ElementWithChildren on Element {
+  id
+  createdAt
+  updatedAt
+  createdBy {
     id
-    createdAt
-    updatedAt
-    createdBy {
-      id
-    }
-    parent {
-      id
-    }
-    type
-    index
-    props
-    content {
-      ...ElementWithoutChildrenWithoutParentWithoutCreatedBy
-    }
+  }
+  parent {
+    id
+  }
+  type
+  index
+  props
+  content {
+    ...ElementWithoutChildrenWithoutCreatedBy
+  }
 }
 
 fragment ElementAfterRemove on Element {
-    parent {
-      id
-    }
-    type
-    index
-    props
+  parent {
+    id
+  }
+  type
+  index
+  props
 }
