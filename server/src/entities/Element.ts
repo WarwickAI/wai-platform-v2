@@ -13,12 +13,14 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { User } from "./User";
 
 export enum ElementType {
-  Text,
-  Page,
-  Database,
-  DatabaseView,
-  PropertyLink,
-  Button
+  Text = "Text",
+  Page = "Page",
+  Database = "Database",
+  DatabaseView = "DatabaseView",
+  PropertyLink = "PropertyLink",
+  Button = "Button",
+  User = "User",
+  Data = "Data",
 }
 
 registerEnumType(ElementType, {

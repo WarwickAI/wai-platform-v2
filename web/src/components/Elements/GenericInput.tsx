@@ -22,7 +22,6 @@ import {
   Element,
 } from "../../generated/graphql";
 import {
-  DatabaseBaseTypeAttributes,
   DatabaseBaseTypes,
   DatabaseElementProps,
   ElementDefaultProps,
@@ -40,7 +39,7 @@ const GenericInput: React.FC<GenericInputProps> = (
   props: GenericInputProps
 ) => {
   const value = props.value + "";
-  if (props.type === PropertyTypes.Text) {
+  if (props.type === PropertyTypes.Text || props.type === PropertyTypes.Url) {
     return <TextInput value={props.value} onChange={props.onChange} />;
   }
   if (props.type === PropertyTypes.Number) {
@@ -109,8 +108,9 @@ const DatabaseInput: React.FC<DatabaseInputProps> = (props) => {
   const [{ data: databasesQuery }] = useGetDatabasesQuery();
   const cancelAddRef = useRef<HTMLButtonElement | undefined>();
   const [newDatabaseName, setNewDatabaseName] = useState<string>("");
-  const [newDatabaseBaseType, setNewDatabaseBaseType] =
-    useState<DatabaseBaseTypes>(DatabaseBaseTypes.Page);
+  const [newDatabaseBaseType, setNewDatabaseBaseType] = useState<ElementType>(
+    ElementType.Page
+  );
 
   const [, createElement] = useCreateElementMutation();
 
@@ -165,12 +165,12 @@ const DatabaseInput: React.FC<DatabaseInputProps> = (props) => {
                 <Select
                   onChange={(e) => {
                     setNewDatabaseBaseType(
-                      e.target.value as unknown as DatabaseBaseTypes
+                      e.target.value as unknown as ElementType
                     );
                   }}
                   value={newDatabaseBaseType}
                 >
-                  {Object.keys(DatabaseBaseTypes).map((type) => {
+                  {DatabaseBaseTypes.map((type) => {
                     return (
                       <option key={type} value={type}>
                         {type}
@@ -200,7 +200,7 @@ const DatabaseInput: React.FC<DatabaseInputProps> = (props) => {
                   newDatabaseProps.title.value = newDatabaseName;
                   newDatabaseProps.contentBaseType.value = newDatabaseBaseType;
                   newDatabaseProps.attributes.value =
-                    DatabaseBaseTypeAttributes[newDatabaseBaseType];
+                    ElementDefaultProps[newDatabaseBaseType];
 
                   const newDatabase = await createElement({
                     index: 0,

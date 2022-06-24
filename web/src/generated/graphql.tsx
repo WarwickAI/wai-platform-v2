@@ -98,11 +98,13 @@ export type Element = {
 /** Different options for elements */
 export enum ElementType {
   Button = 'Button',
+  Data = 'Data',
   Database = 'Database',
   DatabaseView = 'DatabaseView',
   Page = 'Page',
   PropertyLink = 'PropertyLink',
-  Text = 'Text'
+  Text = 'Text',
+  User = 'User'
 }
 
 export type EventInput = {

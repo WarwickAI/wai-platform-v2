@@ -26,7 +26,6 @@ import {
   useGetDatabasesQuery,
 } from "../../generated/graphql";
 import {
-  DatabaseBaseTypeAttributes,
   DatabaseBaseTypes,
   DatabaseElementProps,
   ElementDefaultProps,

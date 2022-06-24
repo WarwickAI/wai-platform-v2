@@ -33,20 +33,18 @@ const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-  }, [elementProps, props])
-
   return (
     <Box>
       {parentElement?.getElement.props[elementProps.propertyName.value]
-        ?.value && (
+        ?.value !== undefined ? (
         <Text>
-          {elementProps.propertyName.value} -{" "}
           {
             parentElement?.getElement.props[elementProps.propertyName.value]
               .value
           }
         </Text>
+      ) :  (
+        <Text>Select Property</Text>
       )}
     </Box>
   );

@@ -53,57 +53,11 @@ export enum DataTypes {
   Name,
 }
 
-export enum DatabaseBaseTypes {
-  Page = "Page",
-  User = "User",
-  Data = "Data",
-}
-
-export const DatabaseBaseTypeAttributes: {
-  [key in DatabaseBaseTypes]: PropertyBase;
-} = {
-  Page: {
-    title: {
-      type: PropertyTypes.Text,
-      value: "Enter title...",
-      friendly: "Title",
-      hint: "Title for page",
-      showInSettings: true,
-    } as Property,
-    coverImg: {
-      type: PropertyTypes.Url,
-      value: "",
-      friendly: "Cover Image",
-      hint: "Cover Image for page",
-      showInSettings: true,
-    } as Property,
-    iconImg: {
-      type: PropertyTypes.Url,
-      value: "",
-      friendly: "Icon Image",
-      hint: "Icon Image for page",
-      showInSettings: true,
-    } as Property,
-  },
-  User: {
-    id: {
-      type: PropertyTypes.Number,
-      value: -1,
-      friendly: "User ID",
-      hint: "User ID",
-      showInSettings: true,
-    } as Property,
-  },
-  Data: {
-    name: {
-      type: PropertyTypes.Text,
-      value: "",
-      friendly: "Name",
-      hint: "Name",
-      showInSettings: true,
-    },
-  },
-};
+export const DatabaseBaseTypes: ElementType[] = [
+  ElementType.Page,
+  ElementType.User,
+  ElementType.Data,
+];
 
 export interface Property {
   type: PropertyTypes;
@@ -168,7 +122,7 @@ export type DatabaseElementProps = PropertyBase & {
   };
   contentBaseType: {
     type: PropertyTypes.DatabaseBaseType;
-    value: DatabaseBaseTypes;
+    value: ElementType;
     friendly: "Base Element Type";
     hint: "Base element type for rows";
     showInSettings: true;
@@ -215,6 +169,26 @@ export type ButtonElementProps = PropertyBase & {
     value: any;
     friendly: "Data";
     hint: "Data applied to database";
+    showInSettings: true;
+  };
+};
+
+export type UserElementProps = PropertyBase & {
+  id: {
+    type: PropertyTypes.Number;
+    value: -1;
+    friendly: "User ID";
+    hint: "User ID";
+    showInSettings: true;
+  };
+};
+
+export type DataElementProps = PropertyBase & {
+  name: {
+    type: PropertyTypes.Text;
+    value: "";
+    friendly: "Name";
+    hint: "Name";
     showInSettings: true;
   };
 };
@@ -295,7 +269,7 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
     },
     contentBaseType: {
       type: PropertyTypes.DatabaseBaseType,
-      value: DatabaseBaseTypes.Page,
+      value: ElementType.Page,
       friendly: "Base Element Type",
       hint: "Base element type for rows",
       showInSettings: true,
@@ -339,6 +313,24 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
       value: {},
       friendly: "Data",
       hint: "Data applied to database",
+      showInSettings: true,
+    },
+  },
+  User: {
+    id: {
+      type: PropertyTypes.Number,
+      value: -1,
+      friendly: "User ID",
+      hint: "User ID",
+      showInSettings: true,
+    },
+  },
+  Data: {
+    name: {
+      type: PropertyTypes.Text,
+      value: "",
+      friendly: "Name",
+      hint: "Name",
       showInSettings: true,
     },
   },

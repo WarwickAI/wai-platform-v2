@@ -14,6 +14,7 @@ import {
   Tbody,
   Td,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -22,13 +23,17 @@ import {
   useCreateElementMutation,
   useEditElementPropsMutation,
   useGetElementQuery,
+  Element,
 } from "../../generated/graphql";
 import {
+  DatabaseElementProps,
   DatabaseViewElementProps,
   ElementDefaultProps,
   ElementTyper,
+  Property,
   PropertyTypes,
 } from "../../utils/elements";
+import GenericInput from "./GenericInput";
 
 interface DatabaseViewProps {
   element: ElementTyper<DatabaseViewElementProps>;
@@ -177,39 +182,21 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                       {Object.keys(
                         databaseQuery?.getElement.props.attributes.value
                       ).map((attributeName: string) => {
-                        const attributeType =
-                          databaseQuery?.getElement.props.attributes.value[
-                            attributeName
-                          ].type;
-                        const rowAttribute = row.props[attributeName]
-                          ? row.props[attributeName].value
-                          : "";
-                        if (
-                          attributeType === PropertyTypes.Text ||
-                          attributeType === PropertyTypes.Url
-                        ) {
-                          return (
-                            <Td key={attributeName}>
-                              <Input
-                                value={rowAttribute}
-                                w={150}
-                                onChange={async (e) => {
-                                  const newProps: any = {};
-                                  newProps[attributeName] = {
-                                    type: attributeType,
-                                    value: e.target.value,
-                                  };
-                                  const res = await editElement({
-                                    elementId: row.id,
-                                    props: newProps,
-                                  });
-                                }}
-                              />
-                            </Td>
-                          );
-                        } else {
-                          return <Td key={attributeName}>OH-NO!!!</Td>;
-                        }
+                        const attribute = row.props[attributeName];
+                        return (
+                          <Td key={attributeName}>
+                            <RowAttribute
+                              element={row as Element}
+                              prop={attribute}
+                              propName={attributeName}
+                              refreshDatabase={() =>
+                                props.refreshDatabase(
+                                  databaseQuery.getElement.id
+                                )
+                              }
+                            />
+                          </Td>
+                        );
                       })}
                     </Tr>
                   );
@@ -233,6 +220,41 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
         <Text>No Database Selected (select in settings)</Text>
       )}
     </Box>
+  );
+};
+
+interface RowAttributeProps {
+  prop: Property;
+  propName: string;
+  element: Element;
+  refreshDatabase: () => void;
+}
+
+const RowAttribute: React.FC<RowAttributeProps> = (props) => {
+  const [value, setValue] = useState<any>(props.prop.value);
+
+  const [, editElement] = useEditElementPropsMutation();
+
+  return (
+    <GenericInput
+      element={props.element}
+      value={value}
+      type={props.prop.type}
+      onChange={async (v) => {
+        setValue(v);
+        const newProps: any = {};
+        newProps[props.propName] = {
+          ...props.prop,
+          value: v,
+        };
+
+        await editElement({
+          elementId: props.element.id,
+          props: newProps,
+        });
+        props.refreshDatabase();
+      }}
+    />
   );
 };
 
