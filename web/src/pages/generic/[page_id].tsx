@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
@@ -16,6 +16,9 @@ const Generic: React.FC<GenericProps> = ({}) => {
   const [{ data: element }, refetchElement] = useGetElementQuery({
     variables: { elementId: parseInt(page_id as string) },
   });
+  const [refreshDatabaseId, setRefreshDatabaseId] = useState<
+    number | undefined
+  >(-1);
 
   if (!element) {
     return (
@@ -30,8 +33,10 @@ const Generic: React.FC<GenericProps> = ({}) => {
           key={element.getElement.id}
           element={element.getElement as ElementTyper<PageElementProps>}
           refetchElement={() => {
-            refetchElement();
+            // refetchElement();
           }}
+          refreshDatabase={(id) => setRefreshDatabaseId(id)}
+          refreshDatabaseId={refreshDatabaseId}
         />
       </ElementPageWrapper>
     );

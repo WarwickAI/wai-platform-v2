@@ -18,7 +18,7 @@ query GetParentPages {
 
 query GetDatabases {
   getDatabases {
-    ...ElementWithoutChildren
+    ...ElementWithChildren
   }
 }
 

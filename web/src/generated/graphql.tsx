@@ -752,8 +752,6 @@ export type ElementWithoutChildrenFragment = { __typename?: 'Element', id: numbe
 
 export type ElementWithoutChildrenWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
-export type ElementWithoutChildrenWithoutParentWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any };
-
 export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type ElementAfterRemoveFragment = { __typename?: 'Element', type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
@@ -1142,7 +1140,7 @@ export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<
 export type GetDatabasesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDatabasesQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+export type GetDatabasesQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> }> };
 
 export type GetDatabaseQueryVariables = Exact<{
   databaseId: Scalars['Float'];
@@ -1413,16 +1411,6 @@ export const ElementWithoutChildrenFragmentDoc = gql`
   parent {
     id
   }
-  type
-  index
-  props
-}
-    `;
-export const ElementWithoutChildrenWithoutParentWithoutCreatedByFragmentDoc = gql`
-    fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
-  id
-  createdAt
-  updatedAt
   type
   index
   props
@@ -2238,10 +2226,10 @@ export function useGetParentPagesQuery(options: Omit<Urql.UseQueryArgs<GetParent
 export const GetDatabasesDocument = gql`
     query GetDatabases {
   getDatabases {
-    ...ElementWithoutChildren
+    ...ElementWithChildren
   }
 }
-    ${ElementWithoutChildrenFragmentDoc}`;
+    ${ElementWithChildrenFragmentDoc}`;
 
 export function useGetDatabasesQuery(options: Omit<Urql.UseQueryArgs<GetDatabasesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetDatabasesQuery>({ query: GetDatabasesDocument, ...options });

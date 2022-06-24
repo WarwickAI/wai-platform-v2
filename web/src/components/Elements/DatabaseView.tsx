@@ -28,6 +28,7 @@ import {
 import {
   DatabaseElementProps,
   DatabaseViewElementProps,
+  DefaultPropertyTypes,
   ElementDefaultProps,
   ElementTyper,
   Property,
@@ -50,14 +51,14 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 
   const [, editElement] = useEditElementPropsMutation();
   const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseQuery }] = useGetElementQuery({
+  const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
     variables: { elementId: elementProps.databaseId.value },
   });
 
   const addAttribute = async (attributeType: PropertyTypes) => {
     const newAttribute: any = {};
     newAttribute[makeid(5)] = {
-      type: attributeType,
+      ...DefaultPropertyTypes[attributeType],
       value: attributeType === PropertyTypes.Text ? "" : 0,
     };
     await editElement({
@@ -91,7 +92,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
       parent: elementProps.databaseId.value,
     });
   };
-
   return (
     <Box>
       {databaseQuery?.getElement &&
@@ -182,12 +182,16 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                       {Object.keys(
                         databaseQuery?.getElement.props.attributes.value
                       ).map((attributeName: string) => {
-                        const attribute = row.props[attributeName];
+                        const prop = row.props[attributeName];
+                        const attribute =
+                          databaseQuery?.getElement.props.attributes.value[
+                            attributeName
+                          ];
                         return (
                           <Td key={attributeName}>
                             <RowAttribute
                               element={row as Element}
-                              prop={attribute}
+                              prop={prop ? prop : attribute}
                               propName={attributeName}
                               refreshDatabase={() =>
                                 props.refreshDatabase(
@@ -231,7 +235,7 @@ interface RowAttributeProps {
 }
 
 const RowAttribute: React.FC<RowAttributeProps> = (props) => {
-  const [value, setValue] = useState<any>(props.prop.value);
+  const [value, setValue] = useState<any>(props.prop ? props.prop.value : "");
 
   const [, editElement] = useEditElementPropsMutation();
 
@@ -252,7 +256,6 @@ const RowAttribute: React.FC<RowAttributeProps> = (props) => {
           elementId: props.element.id,
           props: newProps,
         });
-        props.refreshDatabase();
       }}
     />
   );

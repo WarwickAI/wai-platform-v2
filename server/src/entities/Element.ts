@@ -7,6 +7,9 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
   UpdateDateColumn,
 } from "typeorm";
 import { GraphQLJSONObject } from "graphql-type-json";
@@ -29,6 +32,7 @@ registerEnumType(ElementType, {
 });
 
 @ObjectType()
+@Tree("materialized-path")
 @Entity()
 export class Element extends BaseEntity {
   @Field()
@@ -47,8 +51,10 @@ export class Element extends BaseEntity {
   @ManyToOne(() => User, (user) => user.elements)
   createdBy: User;
 
+  // @Field(() => Element, { nullable: true })
+  // @ManyToOne(() => Element, (element) => element.content, { nullable: true })
   @Field(() => Element, { nullable: true })
-  @ManyToOne(() => Element, (element) => element.content, { nullable: true })
+  @TreeParent()
   parent?: Element;
 
   @Field()
@@ -63,7 +69,9 @@ export class Element extends BaseEntity {
   @Column("simple-json")
   props: object;
 
+  // @Field(() => [Element])
+  // @OneToMany(() => Element, (element) => element.parent, { cascade: true })
   @Field(() => [Element])
-  @OneToMany(() => Element, (element) => element.parent, { cascade: true })
+  @TreeChildren()
   content: Element[];
 }

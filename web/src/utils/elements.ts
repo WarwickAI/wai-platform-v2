@@ -2,18 +2,18 @@ import { Element, ElementType } from "../generated/graphql";
 
 // DO NOT CHANGE ORDER, ADD TO END ONLY!!!
 export enum PropertyTypes {
-  Text,
-  FormattedText,
-  Number,
-  Bool,
-  Url,
-  DatabaseID,
-  UserID,
-  PropertyLink,
-  DatabaseBaseType,
-  PropertyList,
-  ActionType,
-  DataList,
+  Text = "Text",
+  FormattedText = "FormattedText",
+  Number = "Number",
+  Bool = "Bool",
+  Url = "Url",
+  DatabaseID = "DatabaseID",
+  UserID = "UserID",
+  PropertyLink = "PropertyLink",
+  DatabaseBaseType = "DatabaseBaseType",
+  PropertyList = "PropertyList",
+  ActionType = "ActionType",
+  DataList = "DataList",
 }
 
 export type SettingOptions = {
@@ -333,6 +333,93 @@ export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
       hint: "Name",
       showInSettings: true,
     },
+  },
+};
+
+export const DefaultPropertyTypes: { [key in PropertyTypes]: Property } = {
+  Text: {
+    type: PropertyTypes.Text,
+    value: "",
+    friendly: "Text",
+    hint: "Text",
+    showInSettings: true,
+  },
+  FormattedText: {
+    type: PropertyTypes.FormattedText,
+    value: "",
+    friendly: "Text",
+    hint: "Text",
+    showInSettings: true,
+  },
+  Number: {
+    type: PropertyTypes.Number,
+    value: -1,
+    friendly: "Number",
+    hint: "Number",
+    showInSettings: true,
+  },
+  Bool: {
+    type: PropertyTypes.Bool,
+    value: false,
+    friendly: "Bool",
+    hint: "Bool",
+    showInSettings: true,
+  },
+  Url: {
+    type: PropertyTypes.Url,
+    value: false,
+    friendly: "URL",
+    hint: "URL",
+    showInSettings: true,
+  },
+  DatabaseID: {
+    type: PropertyTypes.DatabaseID,
+    value: false,
+    friendly: "Database ID",
+    hint: "Database ID",
+    showInSettings: true,
+  },
+  UserID: {
+    type: PropertyTypes.UserID,
+    value: false,
+    friendly: "User ID",
+    hint: "User ID",
+    showInSettings: true,
+  },
+  PropertyLink: {
+    type: PropertyTypes.PropertyLink,
+    value: false,
+    friendly: "Property Link",
+    hint: "Property Link",
+    showInSettings: true,
+  },
+  DatabaseBaseType: {
+    type: PropertyTypes.DatabaseBaseType,
+    value: false,
+    friendly: "Database Base Type",
+    hint: "Database Base Type",
+    showInSettings: true,
+  },
+  PropertyList: {
+    type: PropertyTypes.PropertyList,
+    value: false,
+    friendly: "Property List",
+    hint: "Property List",
+    showInSettings: true,
+  },
+  ActionType: {
+    type: PropertyTypes.ActionType,
+    value: false,
+    friendly: "Action Type",
+    hint: "Action Type",
+    showInSettings: true,
+  },
+  DataList: {
+    type: PropertyTypes.DataList,
+    value: false,
+    friendly: "Data List",
+    hint: "Data List",
+    showInSettings: true,
   },
 };
 

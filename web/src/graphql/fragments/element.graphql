@@ -25,14 +25,14 @@ fragment ElementWithoutChildrenWithoutCreatedBy on Element {
   props
 }
 
-fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
-  id
-  createdAt
-  updatedAt
-  type
-  index
-  props
-}
+# fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
+#   id
+#   createdAt
+#   updatedAt
+#   type
+#   index
+#   props
+# }
 
 fragment ElementWithChildren on Element {
   id

@@ -107,7 +107,6 @@ const Page: React.FC<PageProps> = (props) => {
   const refreshDatabase = (id: number | undefined) => {
     setRefreshDatabaseId(id);
   };
-
   return (
     <>
       {coverImg && (

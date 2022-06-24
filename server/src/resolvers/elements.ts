@@ -67,7 +67,6 @@ export class ElementResolver {
     @Arg("index") index: number,
     @Arg("parent", { nullable: true }) parentId?: number
   ): Promise<Element | null> {
-    console.log(type)
     const element = new Element();
     element.props = props;
     element.type = type;
@@ -77,6 +76,22 @@ export class ElementResolver {
     element.index = index;
     element.createdBy = await User.findOneOrFail(payload?.userId);
     element.content = [];
+
+    if (element.parent?.type === ElementType.Database) {
+      // Need to ensure element has all props of parent database
+
+      Object.keys((element.parent.props as any).attributes.value).map(
+        (attributeName: string) => {
+          const attribute = (element.parent!.props as any).attributes.value[
+            attributeName
+          ];
+          if (!(element.props as any)[attributeName]) {
+            (element.props as any)[attributeName] = attribute;
+          }
+        }
+      );
+    }
+
     await element.save();
     return element ? element : null;
   }
@@ -92,6 +107,24 @@ export class ElementResolver {
     });
 
     element.props = { ...element.props, ...props };
+
+    if (element.type === ElementType.Database) {
+      // Need to ensure all content has same attributes
+
+      element.content.forEach((child) => {
+        Object.keys((element.props as any).attributes.value).map(
+          (attributeName: string) => {
+            const attribute = (element.props as any).attributes.value[
+              attributeName
+            ];
+            if (!(child.props as any)[attributeName]) {
+              (child.props as any)[attributeName] = attribute;
+            }
+          }
+        );
+        child.save();
+      });
+    }
 
     await element.save();
     return element;
@@ -110,7 +143,6 @@ export class ElementResolver {
     element.index = index;
 
     await element.save();
-    console.log(element);
     return element;
   }
 

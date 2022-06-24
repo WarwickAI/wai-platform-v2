@@ -235,6 +235,7 @@ const PropertyLinkInput: React.FC<PropertyLinkProps> = (props) => {
       elementId: props.element.parent ? props.element.parent.id : -1,
     },
   });
+
   return (
     <>
       <Select
