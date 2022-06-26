@@ -1135,7 +1135,7 @@ export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?:
 export type GetParentPagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> }> };
+export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type GetDatabasesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2215,10 +2215,10 @@ export function useGetElementQuery(options: Omit<Urql.UseQueryArgs<GetElementQue
 export const GetParentPagesDocument = gql`
     query GetParentPages {
   getParentPages {
-    ...ElementWithChildren
+    ...ElementWithoutChildrenWithoutCreatedBy
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${ElementWithoutChildrenWithoutCreatedByFragmentDoc}`;
 
 export function useGetParentPagesQuery(options: Omit<Urql.UseQueryArgs<GetParentPagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetParentPagesQuery>({ query: GetParentPagesDocument, ...options });

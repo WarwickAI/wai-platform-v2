@@ -71,7 +71,9 @@ export class ElementResolver {
     element.props = props;
     element.type = type;
     if (parentId) {
-      element.parent = await Element.findOneOrFail(parentId);
+      element.parent = await Element.findOneOrFail(parentId, {
+        relations: ["createdBy", "parent", "content"],
+      });
     }
     element.index = index;
     element.createdBy = await User.findOneOrFail(payload?.userId);
