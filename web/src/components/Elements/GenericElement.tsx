@@ -9,10 +9,10 @@ import {
   PropertyLinkElementProps,
   TextElementProps,
 } from "../../utils/elements";
-import PageElement from "./PageElement";
 import DatabaseView from "./DatabaseView";
 import PropertyLink from "./PropertyLink";
 import Button from "./Button";
+import Page from "./Page";
 
 interface MainProps {
   elementId: number;
@@ -36,9 +36,10 @@ const Main: React.FC<MainProps> = (props) => {
   }
   if (element.getElement.type === ElementType.Page) {
     return (
-      <PageElement
+      <Page
         element={element.getElement as ElementTyper<PageElementProps>}
         isEdit={props.isEdit}
+        isFullPage={false}
       />
     );
   }

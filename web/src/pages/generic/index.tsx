@@ -4,7 +4,7 @@ import Dashboard from "../../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetParentPagesQuery } from "../../generated/graphql";
-import Main from "../../components/Elements/Main";
+import Main from "../../components/Elements/GenericElement";
 
 interface GenericProps {}
 

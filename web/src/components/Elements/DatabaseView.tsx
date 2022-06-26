@@ -243,6 +243,7 @@ const RowAttribute: React.FC<RowAttributeProps> = (props) => {
           props: newProps,
         });
       }}
+      isEdit={true}
     />
   );
 };

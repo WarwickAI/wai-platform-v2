@@ -2,9 +2,9 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
 import { Element, ElementType } from "../../generated/graphql";
-import Main from "./Main";
-import AddElementPopover from "../Utils/AddElementPopover";
-import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
+import Main from "../Elements/GenericElement";
+import AddElementPopover from "./AddElementPopover";
+import ElementSettingsPopover from "./ElementSettingsPopover";
 
 interface PageItemProps {
   element: Element;
