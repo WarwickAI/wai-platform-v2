@@ -36,6 +36,8 @@ import { Vote } from "./entities/Vote";
 import { VoteResolver } from "./resolvers/vote";
 import { Element } from "./entities/Element";
 import { ElementResolver } from "./resolvers/elements";
+import { Group } from "./entities/Group";
+import { GroupResolver } from "./resolvers/group";
 
 const main = async () => {
   // Connect to DB
@@ -75,6 +77,7 @@ const main = async () => {
       RoleApplication,
       Vote,
       Element,
+      Group,
     ],
   });
   // await User.delete((await User.find()).map((user) => user.id));
@@ -153,6 +156,7 @@ const main = async () => {
         AdminResolver,
         VoteResolver,
         ElementResolver,
+        GroupResolver,
       ],
       validate: false,
     }),

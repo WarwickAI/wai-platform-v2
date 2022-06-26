@@ -17,6 +17,7 @@ import { Talk } from "./Talk";
 import { Tutorial } from "./Tutorial";
 import { Vote } from "./Vote";
 import { Element } from "./Element";
+import { Group } from "./Group";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -96,4 +97,8 @@ export class User extends BaseEntity {
   @Field(() => [Element])
   @OneToMany(() => Element, (element) => element.createdBy)
   elements: Element[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.users)
+  groups: Group[];
 }
