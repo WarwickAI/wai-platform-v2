@@ -18,6 +18,7 @@ import {
   Property,
 } from "../../utils/elements";
 import GenericProperty from "../Properties/GenericProperty";
+import PermissionsEdit from "./PermissionsEdit";
 
 interface ElementSettingsPopoverProps {
   onOpen: () => void;
@@ -81,6 +82,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
               />
             );
           })}
+          <PermissionsEdit element={props.element} />
           <Button
             size={"xs"}
             variant="outline"

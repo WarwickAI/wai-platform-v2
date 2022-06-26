@@ -29,7 +29,7 @@ export class GroupResolver {
   // Add functions here, can be queries or mutatations
 
   @Query(() => [Group])
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware()
   async groups(): Promise<Group[]> {
     return Group.find({ relations: ["users"] });
   }
@@ -75,7 +75,7 @@ export class GroupResolver {
   }
 
   @Mutation(() => Group)
-  @UseMiddleware(isAuth, isExec)
+  @UseMiddleware()
   async createGroup(
     @Arg("groupName") groupName: string
   ): Promise<Group | null> {

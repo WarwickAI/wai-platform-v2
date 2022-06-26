@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ import {
 } from "typeorm";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { User } from "./User";
+import { Group } from "./Group";
 
 export enum ElementType {
   Text = "Text",
@@ -74,4 +76,16 @@ export class Element extends BaseEntity {
   @Field(() => [Element])
   @TreeChildren()
   content: Element[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.canEditElements)
+  canEditGroups: Group[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.canViewElements)
+  canViewGroups: Group[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.canInteractElements)
+  canInteractGroups: Group[];
 }

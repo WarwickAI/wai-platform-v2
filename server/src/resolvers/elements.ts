@@ -10,32 +10,58 @@ import { Element, ElementType } from "../entities/Element";
 import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
+import { Group } from "../entities/Group";
 
 @Resolver()
 export class ElementResolver {
   @Query(() => [Element])
   @UseMiddleware()
   async getElements(): Promise<Element[]> {
-    return await Element.find({
-      relations: ["createdBy", "parent", "content"],
+    const elements = await Element.find({
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
+    console.log("ELEMENTS:", elements);
+    return elements;
   }
 
   @Query(() => Element)
   @UseMiddleware()
   async getElement(@Arg("elementId") elementId: number): Promise<Element> {
     return await Element.findOneOrFail(elementId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
   }
 
   @Query(() => [Element])
   @UseMiddleware()
   async getParentPages(): Promise<Element[]> {
-    return await Element.find({
+    const elements = await Element.find({
       where: { type: ElementType.Page, parent: null },
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
+    console.log("ELEMENTS:", elements);
+    return elements;
   }
 
   @Query(() => [Element])
@@ -43,7 +69,14 @@ export class ElementResolver {
   async getDatabases(): Promise<Element[]> {
     return await Element.find({
       where: { type: ElementType.Database },
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
   }
 
@@ -53,7 +86,14 @@ export class ElementResolver {
     return await Element.findOneOrFail(
       { id: elementId, type: ElementType.Database },
       {
-        relations: ["createdBy", "parent", "content"],
+        relations: [
+          "createdBy",
+          "parent",
+          "content",
+          "canEditGroups",
+          "canViewGroups",
+          "canInteractGroups",
+        ],
       }
     );
   }
@@ -70,10 +110,24 @@ export class ElementResolver {
     const element = new Element();
     element.props = props;
     element.type = type;
-    if (parentId) {
+    if (parentId && parentId !== null) {
       element.parent = await Element.findOneOrFail(parentId, {
-        relations: ["createdBy", "parent", "content"],
+        relations: [
+          "createdBy",
+          "parent",
+          "content",
+          "canEditGroups",
+          "canViewGroups",
+          "canInteractGroups",
+        ],
       });
+      element.canEditGroups = element.parent.canEditGroups;
+      element.canViewGroups = element.parent.canViewGroups;
+      element.canInteractGroups = element.parent.canInteractGroups;
+    } else {
+      element.canEditGroups = [];
+      element.canViewGroups = [];
+      element.canInteractGroups = [];
     }
     element.index = index;
     element.createdBy = await User.findOneOrFail(payload?.userId);
@@ -139,7 +193,14 @@ export class ElementResolver {
     @Arg("index") index: number
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
 
     element.index = index;
@@ -155,10 +216,24 @@ export class ElementResolver {
     @Arg("parentId") parentId: number
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
     const parent = await Element.findOneOrFail(parentId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
     element.parent = parent;
 
@@ -170,9 +245,53 @@ export class ElementResolver {
   @UseMiddleware()
   async removeElement(@Arg("elementId") elementId: number): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
     await element.remove();
+    return element;
+  }
+
+  @Mutation(() => Element)
+  @UseMiddleware()
+  async updatePermissions(
+    @Arg("elementId") elementId: number,
+    @Arg("canEditGroups", () => [Number], { nullable: true })
+    canEditGroups?: number[],
+    @Arg("canViewGroups", () => [Number], { nullable: true })
+    canViewGroups?: number[],
+    @Arg("canInteractGroups", () => [Number], { nullable: true })
+    canInteractGroups?: number[]
+  ): Promise<Element> {
+    const element = await Element.findOneOrFail(elementId, {
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
+    });
+    if (canEditGroups) {
+      const groups = await Group.findByIds(canEditGroups);
+      element.canEditGroups = groups;
+    }
+    if (canViewGroups) {
+      const groups = await Group.findByIds(canViewGroups);
+      element.canViewGroups = groups;
+    }
+    if (canInteractGroups) {
+      const groups = await Group.findByIds(canInteractGroups);
+      element.canInteractGroups = groups;
+    }
+    await element.save();
     return element;
   }
 }

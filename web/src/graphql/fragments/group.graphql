@@ -1,0 +1,12 @@
+fragment GroupWithoutUsers on Group {
+  id
+  name
+}
+
+fragment GroupWithUsers on Group {
+  id
+  name
+  users {
+    ...RegularUserWithoutEvents
+  }
+}

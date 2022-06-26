@@ -11,6 +11,15 @@ fragment ElementWithoutChildren on Element {
   type
   index
   props
+  canEditGroups {
+    ...GroupWithoutUsers
+  }
+  canViewGroups {
+    ...GroupWithoutUsers
+  }
+  canInteractGroups {
+    ...GroupWithoutUsers
+  }
 }
 
 fragment ElementWithoutChildrenWithoutCreatedBy on Element {
@@ -23,6 +32,15 @@ fragment ElementWithoutChildrenWithoutCreatedBy on Element {
   type
   index
   props
+  canEditGroups {
+    ...GroupWithoutUsers
+  }
+  canViewGroups {
+    ...GroupWithoutUsers
+  }
+  canInteractGroups {
+    ...GroupWithoutUsers
+  }
 }
 
 # fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
@@ -50,6 +68,15 @@ fragment ElementWithChildren on Element {
   content {
     ...ElementWithoutChildrenWithoutCreatedBy
   }
+  canEditGroups {
+    ...GroupWithoutUsers
+  }
+  canViewGroups {
+    ...GroupWithoutUsers
+  }
+  canInteractGroups {
+    ...GroupWithoutUsers
+  }
 }
 
 fragment ElementAfterRemove on Element {
@@ -59,4 +86,13 @@ fragment ElementAfterRemove on Element {
   type
   index
   props
+  canEditGroups {
+    ...GroupWithoutUsers
+  }
+  canViewGroups {
+    ...GroupWithoutUsers
+  }
+  canInteractGroups {
+    ...GroupWithoutUsers
+  }
 }

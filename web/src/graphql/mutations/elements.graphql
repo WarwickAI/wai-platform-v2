@@ -26,3 +26,19 @@ mutation RemoveElement($elementId: Float!) {
     ...ElementAfterRemove
   }
 }
+
+mutation UpdatePermissions(
+  $elementId: Float!
+  $canInteractGroups: [Float!]
+  $canViewGroups: [Float!]
+  $canEditGroups: [Float!]
+) {
+  updatePermissions(
+    elementId: $elementId
+    canInteractGroups: $canInteractGroups
+    canViewGroups: $canViewGroups
+    canEditGroups: $canEditGroups
+  ) {
+    ...ElementWithChildren
+  }
+}

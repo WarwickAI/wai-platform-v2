@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Element } from "./Element";
 import { User } from "./User";
 
 @ObjectType() // Is now an Object Type also for GraphQL
@@ -34,4 +35,19 @@ export class Group extends BaseEntity {
   @ManyToMany(() => User, (user) => user.groups)
   @JoinTable()
   users: User[];
+
+  @Field(() => [Element])
+  @ManyToMany(() => Element, (element) => element.canEditGroups)
+  @JoinTable()
+  canEditElements: Element[];
+
+  @Field(() => [Element])
+  @ManyToMany(() => Element, (element) => element.canViewGroups)
+  @JoinTable()
+  canViewElements: Element[];
+
+  @Field(() => [Element])
+  @ManyToMany(() => Element, (element) => element.canInteractGroups)
+  @JoinTable()
+  canInteractElements: Element[];
 }
