@@ -31,7 +31,7 @@ import {
   Property,
   PropertyTypes,
 } from "../../utils/elements";
-import GenericInput from "./GenericInput";
+import GenericInput from "../Properties/GenericProperty";
 
 interface DatabaseViewProps {
   element: ElementTyper<DatabaseViewElementProps>;

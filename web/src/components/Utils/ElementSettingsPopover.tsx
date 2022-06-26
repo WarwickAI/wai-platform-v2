@@ -17,7 +17,7 @@ import {
   GeneralPropertyInfo,
   Property,
 } from "../../utils/elements";
-import GenericInput from "../Elements/GenericInput";
+import GenericProperty from "../Properties/GenericProperty";
 
 interface ElementSettingsPopoverProps {
   onOpen: () => void;
@@ -114,7 +114,7 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
         :
       </Text>
 
-      <GenericInput
+      <GenericProperty
         element={props.element}
         value={value}
         type={props.prop.type}
@@ -131,6 +131,7 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
             props: newProps,
           });
         }}
+        isEdit={true}
       />
     </Flex>
   );
