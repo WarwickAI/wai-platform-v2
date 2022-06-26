@@ -9,17 +9,15 @@ import {
 import {
   ActionTypes,
   ButtonElementProps,
-  ElementDefaultProps,
+  createDefaultElementProps,
   ElementTyper,
   PropertyTypes,
-  SettingOptions,
 } from "../../utils/elements";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
 
 interface ButtonProps {
   element: ElementTyper<ButtonElementProps>;
-  refetchParent: () => void;
   isEdit: boolean;
 }
 
@@ -47,17 +45,12 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
             index: 0,
             type: database.props.contentBaseType.value,
             props: {
-              ...ElementDefaultProps[
-                database.props.contentBaseType.value as ElementType
-              ],
-              title: {
-                type: PropertyTypes.Text,
-                value: "ADDED",
-              },
+              ...createDefaultElementProps(
+                database.props.contentBaseType.value
+              ),
             },
             parent: database.id,
           });
-          props.refetchParent();
         }}
       >
         Do

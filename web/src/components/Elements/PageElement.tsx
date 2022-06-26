@@ -1,13 +1,5 @@
-import React, { useRef } from "react";
-import { Box, Flex, Text, Button } from "@chakra-ui/react";
-import { useEditElementPropsMutation } from "../../generated/graphql";
-import {
-  convertFromRaw,
-  convertToRaw,
-  Editor,
-  EditorState,
-  RichUtils,
-} from "draft-js";
+import React from "react";
+import { Button } from "@chakra-ui/react";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
 import { ElementTyper } from "../../utils/elements";

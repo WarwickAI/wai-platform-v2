@@ -11,36 +11,11 @@ export enum PropertyTypes {
   UserID = "UserID",
   PropertyLink = "PropertyLink",
   DatabaseBaseType = "DatabaseBaseType",
-  PropertyList = "PropertyList",
+  DatabaseProperties = "DatabaseProperties",
   ActionType = "ActionType",
   DataList = "DataList",
+  Image = "Image",
 }
-
-export type SettingOptions = {
-  label: string;
-  hint: string;
-  type: PropertyTypes;
-}[];
-
-export type Text = {
-  type: PropertyTypes.Text;
-  value: string;
-};
-
-export type FormattedText = {
-  type: PropertyTypes.FormattedText;
-  value: string;
-};
-
-export type Number = {
-  type: PropertyTypes.Number;
-  value: number;
-};
-
-export type Bool = {
-  type: PropertyTypes.Bool;
-  value: boolean;
-};
 
 export enum ActionTypes {
   Add,
@@ -53,18 +28,153 @@ export enum DataTypes {
   Name,
 }
 
+export type PropertyInfo = {
+  type: PropertyTypes;
+  defaultValue: any;
+  label: string;
+  hint: string;
+  showInSettings: boolean;
+};
+
 export const DatabaseBaseTypes: ElementType[] = [
   ElementType.Page,
   ElementType.User,
   ElementType.Data,
 ];
 
+export type DatabasePropertiesType = {
+  [key: string]: {
+    type: PropertyTypes;
+    value: any;
+  };
+};
+
+export type ElementPropsType = {
+  [key: string]: any;
+};
+
+export const ElementPropertyInfo: {
+  [key in ElementType]: { [key: string]: PropertyInfo };
+} = {
+  [ElementType.Text]: {
+    text: {
+      type: PropertyTypes.FormattedText,
+      defaultValue: `{"blocks":[{"key":"coa1e","text":"...","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`,
+      label: "Text",
+      hint: "",
+      showInSettings: false,
+    },
+  },
+  [ElementType.Page]: {
+    title: {
+      type: PropertyTypes.Text,
+      defaultValue: "New Page",
+      label: "Page Title",
+      hint: "The title of the page",
+      showInSettings: true,
+    },
+    coverImg: {
+      type: PropertyTypes.Image,
+      defaultValue: "",
+      label: "Cover Image",
+      hint: "The image to use as the cover image",
+      showInSettings: true,
+    },
+    iconImg: {
+      type: PropertyTypes.Image,
+      defaultValue: "",
+      label: "Icon Image",
+      hint: "The image to use as the icon image",
+      showInSettings: true,
+    },
+  },
+  [ElementType.Button]: {
+    databaseId: {
+      type: PropertyTypes.DatabaseID,
+      defaultValue: -1,
+      label: "Database ID",
+      hint: "The database ID of the button",
+      showInSettings: true,
+    },
+    action: {
+      type: PropertyTypes.ActionType,
+      defaultValue: ActionTypes.Add,
+      label: "Action",
+      hint: "The action to perform when the button is clicked",
+      showInSettings: true,
+    },
+    data: {
+      type: PropertyTypes.DataList,
+      defaultValue: [],
+      label: "Data",
+      hint: "The data to pass to the action",
+      showInSettings: true,
+    },
+  },
+  [ElementType.PropertyLink]: {
+    propertyName: {
+      type: PropertyTypes.PropertyLink,
+      defaultValue: "",
+      label: "Property Name",
+      hint: "The name of the property to link to",
+      showInSettings: true,
+    },
+  },
+  [ElementType.Database]: {
+    title: {
+      type: PropertyTypes.Text,
+      defaultValue: "New Database",
+      label: "Title",
+      hint: "The title of the database",
+      showInSettings: true,
+    },
+    attributes: {
+      type: PropertyTypes.DatabaseProperties,
+      defaultValue: {},
+      label: "Database Properties",
+      hint: "The database properties of the database",
+      showInSettings: false,
+    },
+    contentBaseType: {
+      type: PropertyTypes.DatabaseBaseType,
+      defaultValue: ElementType.Page,
+      label: "Content Base Type",
+      hint: "The base type of the content in the database",
+      showInSettings: true,
+    },
+  },
+  [ElementType.DatabaseView]: {
+    databaseId: {
+      type: PropertyTypes.DatabaseID,
+      defaultValue: -1,
+      label: "Database ID",
+      hint: "The database ID of the database view",
+      showInSettings: true,
+    },
+  },
+  [ElementType.User]: {
+    userId: {
+      type: PropertyTypes.UserID,
+      defaultValue: -1,
+      label: "User ID",
+      hint: "The user ID of the user",
+      showInSettings: true,
+    },
+  },
+  [ElementType.Data]: {
+    name: {
+      type: PropertyTypes.Text,
+      defaultValue: "",
+      label: "Name",
+      hint: "The name of the data",
+      showInSettings: true,
+    },
+  },
+};
+
 export interface Property {
   type: PropertyTypes;
   value: any;
-  friendly: string;
-  hint: string;
-  showInSettings: boolean;
 }
 
 export interface PropertyBase {
@@ -72,355 +182,159 @@ export interface PropertyBase {
 }
 
 export type TextElementProps = PropertyBase & {
-  text: {
-    type: PropertyTypes.FormattedText;
-    value: any;
-    friendly: "Text";
-    hint: "Text content for element";
-    showInSettings: false;
-  };
+  text: Property;
 };
 
 export type PageElementProps = PropertyBase & {
-  title: {
-    type: PropertyTypes.Text;
-    value: any;
-    friendly: "Title";
-    hint: "Title for page";
-    showInSettings: true;
-  };
-  coverImg: {
-    type: PropertyTypes.Text;
-    value: any;
-    friendly: "Cover Image";
-    hint: "Cover Image for page";
-    showInSettings: true;
-  };
-  iconImg: {
-    type: PropertyTypes.Url;
-    value: any;
-    friendly: "Icon Image";
-    hint: "Icon Image for page";
-    showInSettings: true;
-  };
+  title: Property;
+  coverImg: Property;
+  iconImg: Property;
 };
 
 export type DatabaseElementProps = PropertyBase & {
-  title: {
-    type: PropertyTypes.Text;
-    value: any;
-    friendly: "Title";
-    hint: "Title of database";
-    showInSettings: true;
-  };
-  attributes: {
-    type: PropertyTypes.PropertyList;
-    value: any;
-    friendly: "Attributes";
-    hint: "Table columns";
-    showInSettings: false;
-  };
-  contentBaseType: {
-    type: PropertyTypes.DatabaseBaseType;
-    value: ElementType;
-    friendly: "Base Element Type";
-    hint: "Base element type for rows";
-    showInSettings: true;
-  };
+  title: Property;
+  attributes: Property;
+  contentBaseType: Property;
 };
 
 export type DatabaseViewElementProps = PropertyBase & {
-  databaseId: {
-    type: PropertyTypes.DatabaseID;
-    value: any;
-    friendly: "Database ID";
-    hint: "Database ID of table we want to view";
-    showInSettings: true;
-  };
+  databaseId: Property;
 };
 
 export type PropertyLinkElementProps = PropertyBase & {
-  propertyName: {
-    type: PropertyTypes.PropertyLink;
-    value: any;
-    friendly: "Property";
-    hint: "Property name";
-    showInSettings: true;
-  };
+  propertyName: Property;
 };
 
 export type ButtonElementProps = PropertyBase & {
-  databaseId: {
-    type: PropertyTypes.DatabaseID;
-    value: any;
-    friendly: "Database ID";
-    hint: "Database ID to update";
-    showInSettings: true;
-  };
-  action: {
-    type: PropertyTypes.ActionType;
-    value: any;
-    friendly: "Action";
-    hint: "Action applied to database";
-    showInSettings: true;
-  };
-  data: {
-    type: PropertyTypes.DataList;
-    value: any;
-    friendly: "Data";
-    hint: "Data applied to database";
-    showInSettings: true;
-  };
+  databaseId: Property;
+  action: Property;
+  data: Property;
 };
 
 export type UserElementProps = PropertyBase & {
-  id: {
-    type: PropertyTypes.Number;
-    value: -1;
-    friendly: "User ID";
-    hint: "User ID";
-    showInSettings: true;
-  };
+  userId: Property;
 };
 
 export type DataElementProps = PropertyBase & {
-  name: {
-    type: PropertyTypes.Text;
-    value: "";
-    friendly: "Name";
-    hint: "Name";
-    showInSettings: true;
-  };
+  name: Property;
 };
 
 export type ElementTyper<T> = Element & {
   props: T;
 };
 
-export const ElementDefaultProps: { [key in ElementType]: PropertyBase } = {
-  Text: {
-    text: {
-      type: PropertyTypes.Text,
-      value: `{"blocks":[{"key":"coa1e","text":"...","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`,
-      friendly: "Text",
-      hint: "Text content for element",
-      showInSettings: false,
-    } as Property,
-  } as TextElementProps,
-  Page: {
-    title: {
-      type: PropertyTypes.Text,
-      value: "Enter title...",
-      friendly: "Title",
-      hint: "Title for page",
-      showInSettings: true,
-    } as Property,
-    coverImg: {
-      type: PropertyTypes.Url,
-      value: "",
-      friendly: "Cover Image",
-      hint: "Cover Image for page",
-      showInSettings: true,
-    } as Property,
-    iconImg: {
-      type: PropertyTypes.Url,
-      value: "",
-      friendly: "Icon Image",
-      hint: "Icon Image for page",
-      showInSettings: true,
-    } as Property,
-  } as PageElementProps,
-  Database: {
-    title: {
-      type: PropertyTypes.Text,
-      value: "Enter title...",
-      friendly: "Title",
-      hint: "Property name",
-      showInSettings: true,
-    } as Property,
-    attributes: {
-      type: PropertyTypes.PropertyList,
-      value: {
-        title: {
-          type: PropertyTypes.Text,
-          value: "Enter title...",
-          friendly: "Title",
-          hint: "Title for page",
-          showInSettings: true,
-        } as Property,
-        coverImg: {
-          type: PropertyTypes.Url,
-          value: "",
-          friendly: "Cover Image",
-          hint: "Cover Image for page",
-          showInSettings: true,
-        } as Property,
-        iconImg: {
-          type: PropertyTypes.Url,
-          value: "",
-          friendly: "Icon Image",
-          hint: "Icon Image for page",
-          showInSettings: true,
-        } as Property,
-      },
-      friendly: "Attributes",
-      hint: "Table columns",
-      showInSettings: false,
-    },
-    contentBaseType: {
-      type: PropertyTypes.DatabaseBaseType,
-      value: ElementType.Page,
-      friendly: "Base Element Type",
-      hint: "Base element type for rows",
-      showInSettings: true,
-    } as Property,
-  } as DatabaseElementProps,
-  DatabaseView: {
-    databaseId: {
-      type: PropertyTypes.DatabaseID,
-      value: 0,
-      friendly: "Database ID",
-      hint: "Database ID of table we want to view",
-      showInSettings: true,
-    },
-  },
-  PropertyLink: {
-    propertyName: {
-      type: PropertyTypes.PropertyLink,
-      value: "title",
-      friendly: "Property",
-      hint: "Property name",
-      showInSettings: true,
-    } as Property,
-  } as PropertyLinkElementProps,
-  Button: {
-    databaseId: {
-      type: PropertyTypes.DatabaseID,
-      value: -1,
-      friendly: "Database ID",
-      hint: "Database ID to update",
-      showInSettings: true,
-    },
-    action: {
-      type: PropertyTypes.ActionType,
-      value: ActionTypes.Add,
-      friendly: "Action",
-      hint: "Action applied to database",
-      showInSettings: true,
-    },
-    data: {
-      type: PropertyTypes.DataList,
-      value: {},
-      friendly: "Data",
-      hint: "Data applied to database",
-      showInSettings: true,
-    },
-  },
-  User: {
-    id: {
-      type: PropertyTypes.Number,
-      value: -1,
-      friendly: "User ID",
-      hint: "User ID",
-      showInSettings: true,
-    },
-  },
-  Data: {
-    name: {
-      type: PropertyTypes.Text,
-      value: "",
-      friendly: "Name",
-      hint: "Name",
-      showInSettings: true,
-    },
-  },
-};
-
-export const DefaultPropertyTypes: { [key in PropertyTypes]: Property } = {
-  Text: {
+export const GeneralPropertyInfo: { [key in PropertyTypes]: PropertyInfo } = {
+  [PropertyTypes.Text]: {
     type: PropertyTypes.Text,
-    value: "",
-    friendly: "Text",
+    defaultValue: "",
+    label: "Text",
     hint: "Text",
     showInSettings: true,
   },
-  FormattedText: {
+  [PropertyTypes.FormattedText]: {
     type: PropertyTypes.FormattedText,
-    value: "",
-    friendly: "Text",
+    defaultValue: "",
+    label: "Text",
     hint: "Text",
     showInSettings: true,
   },
-  Number: {
+  [PropertyTypes.Number]: {
     type: PropertyTypes.Number,
-    value: -1,
-    friendly: "Number",
+    defaultValue: -1,
+    label: "Number",
     hint: "Number",
     showInSettings: true,
   },
-  Bool: {
+  [PropertyTypes.Bool]: {
     type: PropertyTypes.Bool,
-    value: false,
-    friendly: "Bool",
+    defaultValue: false,
+    label: "Bool",
     hint: "Bool",
     showInSettings: true,
   },
-  Url: {
+  [PropertyTypes.Url]: {
     type: PropertyTypes.Url,
-    value: false,
-    friendly: "URL",
+    defaultValue: "",
+    label: "URL",
     hint: "URL",
     showInSettings: true,
   },
-  DatabaseID: {
+  [PropertyTypes.DatabaseID]: {
     type: PropertyTypes.DatabaseID,
-    value: false,
-    friendly: "Database ID",
+    defaultValue: -1,
+    label: "Database ID",
     hint: "Database ID",
     showInSettings: true,
   },
-  UserID: {
+  [PropertyTypes.UserID]: {
     type: PropertyTypes.UserID,
-    value: false,
-    friendly: "User ID",
+    defaultValue: -1,
+    label: "User ID",
     hint: "User ID",
     showInSettings: true,
   },
-  PropertyLink: {
+  [PropertyTypes.PropertyLink]: {
     type: PropertyTypes.PropertyLink,
-    value: false,
-    friendly: "Property Link",
+    defaultValue: "",
+    label: "Property Link",
     hint: "Property Link",
     showInSettings: true,
   },
-  DatabaseBaseType: {
+  [PropertyTypes.DatabaseBaseType]: {
     type: PropertyTypes.DatabaseBaseType,
-    value: false,
-    friendly: "Database Base Type",
+    defaultValue: ElementType.Page,
+    label: "Database Base Type",
     hint: "Database Base Type",
     showInSettings: true,
   },
-  PropertyList: {
-    type: PropertyTypes.PropertyList,
-    value: false,
-    friendly: "Property List",
-    hint: "Property List",
+  [PropertyTypes.DatabaseProperties]: {
+    type: PropertyTypes.DatabaseProperties,
+    defaultValue: {},
+    label: "Database Properties",
+    hint: "Database Properties",
     showInSettings: true,
   },
-  ActionType: {
+  [PropertyTypes.ActionType]: {
     type: PropertyTypes.ActionType,
-    value: false,
-    friendly: "Action Type",
+    defaultValue: ActionTypes.Add,
+    label: "Action Type",
     hint: "Action Type",
     showInSettings: true,
   },
-  DataList: {
+  [PropertyTypes.DataList]: {
     type: PropertyTypes.DataList,
-    value: false,
-    friendly: "Data List",
+    defaultValue: [],
+    label: "Data List",
     hint: "Data List",
+    showInSettings: true,
+  },
+  [PropertyTypes.Image]: {
+    type: PropertyTypes.Image,
+    defaultValue: "",
+    label: "Image",
+    hint: "Image",
     showInSettings: true,
   },
 };
 
 export const ElementTypesToNotShowInAdd: [ElementType] = [ElementType.Database];
+
+export const createDefaultElementProps = (elementType: ElementType) => {
+  const props: { [key: string]: Property } = {};
+
+  Object.keys(ElementPropertyInfo[elementType]).forEach((propName) => {
+    props[propName] = {
+      type: ElementPropertyInfo[elementType][propName].type,
+      value: ElementPropertyInfo[elementType][propName].defaultValue,
+    };
+  });
+
+  return props;
+};
+
+export const createDefaultProperty = (propertyType: PropertyTypes) => {
+  return {
+    type: GeneralPropertyInfo[propertyType].type,
+    value: GeneralPropertyInfo[propertyType].defaultValue,
+  };
+};

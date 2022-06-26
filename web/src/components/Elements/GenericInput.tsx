@@ -12,7 +12,6 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
-import { elementDragControls } from "framer-motion/types/gestures/drag/VisualElementDragControls";
 import { useRef, useState } from "react";
 import {
   ElementType,
@@ -22,9 +21,10 @@ import {
   Element,
 } from "../../generated/graphql";
 import {
+  createDefaultElementProps,
   DatabaseBaseTypes,
   DatabaseElementProps,
-  ElementDefaultProps,
+  ElementPropertyInfo,
   PropertyTypes,
 } from "../../utils/elements";
 
@@ -195,12 +195,13 @@ const DatabaseInput: React.FC<DatabaseInputProps> = (props) => {
                 ml={3}
                 onClick={async () => {
                   // Create new database, and set to be database for database view
-                  const newDatabaseProps =
-                    ElementDefaultProps[ElementType.Database];
+                  const newDatabaseProps = createDefaultElementProps(
+                    ElementType.Database
+                  );
                   newDatabaseProps.title.value = newDatabaseName;
                   newDatabaseProps.contentBaseType.value = newDatabaseBaseType;
                   newDatabaseProps.attributes.value =
-                    ElementDefaultProps[newDatabaseBaseType];
+                    createDefaultElementProps(newDatabaseBaseType);
 
                   const newDatabase = await createElement({
                     index: 0,
@@ -248,7 +249,11 @@ const PropertyLinkInput: React.FC<PropertyLinkProps> = (props) => {
             const property = parentQuery?.getElement.props[propertyName];
             return (
               <option key={propertyName} value={propertyName}>
-                {property.friendly}
+                {ElementPropertyInfo[parentQuery?.getElement.type][propertyName]
+                  ? ElementPropertyInfo[parentQuery?.getElement.type][
+                      propertyName
+                    ].label
+                  : propertyName}
               </option>
             );
           })}

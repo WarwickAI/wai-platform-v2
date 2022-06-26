@@ -8,30 +8,14 @@ import {
   useDisclosure,
   Text,
   Flex,
-  Input,
-  Select,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
+  propNames,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState, useRef } from "react";
+import { useState } from "react";
+import { Element, useEditElementPropsMutation } from "../../generated/graphql";
 import {
-  Element,
-  ElementType,
-  useCreateElementMutation,
-  useEditElementPropsMutation,
-  useGetDatabasesQuery,
-} from "../../generated/graphql";
-import {
-  DatabaseBaseTypes,
-  DatabaseElementProps,
-  ElementDefaultProps,
+  ElementPropertyInfo,
+  GeneralPropertyInfo,
   Property,
-  PropertyBase,
-  PropertyTypes,
 } from "../../utils/elements";
 import GenericInput from "../Elements/GenericInput";
 
@@ -41,7 +25,6 @@ interface ElementSettingsPopoverProps {
   removeElement: (elementId: number) => void;
   element: Element;
   disabled: boolean;
-  refetch: () => void | undefined;
 }
 
 const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
@@ -80,8 +63,12 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       <PopoverContent>
         <PopoverBody>
           {Object.keys(props.element.props).map((propName) => {
-            const elementProp = props.element.props[propName];
-            const propShowInSettings = elementProp.showInSettings;
+            const elementProp = props.element.props[propName] as Property;
+            const propShowInSettings = ElementPropertyInfo[props.element.type][
+              propName
+            ]
+              ? ElementPropertyInfo[props.element.type][propName].showInSettings
+              : GeneralPropertyInfo[elementProp.type];
             if (!propShowInSettings) {
               return <></>;
             }
@@ -91,7 +78,6 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                 prop={elementProp}
                 propName={propName}
                 element={props.element}
-                refetch={props.refetch}
               />
             );
           })}
@@ -112,7 +98,6 @@ interface ElementSettingProps {
   prop: Property;
   propName: string;
   element: Element;
-  refetch: () => void | undefined;
 }
 
 const ElementSetting: React.FC<ElementSettingProps> = (props) => {
@@ -123,7 +108,10 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   return (
     <Flex direction={"row"} alignItems="center" mb={2}>
       <Text mr={2} whiteSpace={"nowrap"}>
-        {props.prop.friendly}:
+        {ElementPropertyInfo[props.element.type][props.propName]
+          ? ElementPropertyInfo[props.element.type][props.propName].label
+          : props.propName}
+        :
       </Text>
 
       <GenericInput
@@ -142,9 +130,6 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
             elementId: props.element.id,
             props: newProps,
           });
-          if (props.refetch) {
-            props.refetch();
-          }
         }}
       />
     </Flex>

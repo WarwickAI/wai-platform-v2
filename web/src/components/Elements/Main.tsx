@@ -16,10 +16,7 @@ import Button from "./Button";
 
 interface MainProps {
   elementId: number;
-  refetchParent: () => void;
   isEdit: boolean;
-  refreshDatabase: (id: number | undefined) => void;
-  refreshDatabaseId: number | undefined;
 }
 
 const Main: React.FC<MainProps> = (props) => {
@@ -50,8 +47,6 @@ const Main: React.FC<MainProps> = (props) => {
       <DatabaseView
         element={element.getElement as ElementTyper<DatabaseViewElementProps>}
         isEdit={props.isEdit}
-        refreshDatabase={props.refreshDatabase}
-        refreshDatabaseId={props.refreshDatabaseId}
       />
     );
   }
@@ -67,7 +62,6 @@ const Main: React.FC<MainProps> = (props) => {
     return (
       <Button
         element={element.getElement as ElementTyper<ButtonElementProps>}
-        refetchParent={props.refetchParent}
         isEdit={props.isEdit}
       />
     );

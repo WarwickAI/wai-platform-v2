@@ -1,6 +1,5 @@
 import {
   Box,
-  Heading,
   Input,
   Table,
   Thead,
@@ -14,7 +13,6 @@ import {
   Tbody,
   Td,
   Text,
-  Flex,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -26,10 +24,9 @@ import {
   Element,
 } from "../../generated/graphql";
 import {
-  DatabaseElementProps,
+  createDefaultElementProps,
+  createDefaultProperty,
   DatabaseViewElementProps,
-  DefaultPropertyTypes,
-  ElementDefaultProps,
   ElementTyper,
   Property,
   PropertyTypes,
@@ -39,8 +36,6 @@ import GenericInput from "./GenericInput";
 interface DatabaseViewProps {
   element: ElementTyper<DatabaseViewElementProps>;
   isEdit: boolean;
-  refreshDatabaseId: number | undefined;
-  refreshDatabase: (id: number | undefined) => void;
 }
 
 const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
@@ -57,15 +52,13 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 
   const addAttribute = async (attributeType: PropertyTypes) => {
     const newAttribute: any = {};
-    newAttribute[makeid(5)] = {
-      ...DefaultPropertyTypes[attributeType],
-      value: attributeType === PropertyTypes.Text ? "" : 0,
-    };
+    newAttribute[makeid(5)] = createDefaultProperty(attributeType);
+
     await editElement({
       elementId: elementProps.databaseId.value,
       props: {
         attributes: {
-          type: PropertyTypes.PropertyList,
+          type: PropertyTypes.DatabaseProperties,
           value: {
             ...databaseQuery?.getElement.props.attributes.value,
             ...newAttribute,
@@ -85,10 +78,9 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
     await createElement({
       index: 0,
       type: databaseQuery?.getElement.props.contentBaseType.value,
-      props:
-        ElementDefaultProps[
-          databaseQuery?.getElement.props.contentBaseType.value as ElementType
-        ],
+      props: createDefaultElementProps(
+        databaseQuery?.getElement.props.contentBaseType.value
+      ),
       parent: elementProps.databaseId.value,
     });
   };
@@ -193,11 +185,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                               element={row as Element}
                               prop={prop ? prop : attribute}
                               propName={attributeName}
-                              refreshDatabase={() =>
-                                props.refreshDatabase(
-                                  databaseQuery.getElement.id
-                                )
-                              }
                             />
                           </Td>
                         );
@@ -231,7 +218,6 @@ interface RowAttributeProps {
   prop: Property;
   propName: string;
   element: Element;
-  refreshDatabase: () => void;
 }
 
 const RowAttribute: React.FC<RowAttributeProps> = (props) => {

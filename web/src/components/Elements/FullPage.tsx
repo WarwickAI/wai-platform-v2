@@ -20,19 +20,17 @@ import {
 } from "../../generated/graphql";
 import { Reorder } from "framer-motion";
 import {
-  ElementDefaultProps,
+  createDefaultElementProps,
   ElementTyper,
   PageElementProps,
   PropertyTypes,
 } from "../../utils/elements";
 import PageItem from "./PageItem";
 import AddElementPopover from "../Utils/AddElementPopover";
+import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
 
 interface PageProps {
   element: ElementTyper<PageElementProps>;
-  refetchElement: () => void;
-  refreshDatabase: (id: number | undefined) => void;
-  refreshDatabaseId: number | undefined;
 }
 
 const Page: React.FC<PageProps> = (props) => {
@@ -85,17 +83,13 @@ const Page: React.FC<PageProps> = (props) => {
     await createElement({
       index,
       type,
-      props: ElementDefaultProps[type],
+      props: createDefaultElementProps(type),
       parent: props.element.id,
     });
-    props.refetchElement();
   };
 
   const removeElement = async (id: number) => {
-    const res = await deleteElement({ elementId: id });
-    if (res.data?.removeElement) {
-      props.refetchElement();
-    }
+    await deleteElement({ elementId: id });
   };
 
   const coverImg = useMemo(
@@ -143,28 +137,37 @@ const Page: React.FC<PageProps> = (props) => {
           <Flex
             flexDirection={isMobile ? "column" : "row"}
             justifyContent="space-between"
+            position={"relative"}
           >
             {isEditMode ? (
-              <Input
-                value={pageTitle}
-                w={300}
-                size="lg"
-                fontSize={24}
-                fontWeight={600}
-                onChange={(e) => {
-                  setPageTitle(e.target.value);
-                  editElement({
-                    elementId: props.element.id,
-                    props: {
-                      title: {
-                        type: PropertyTypes.Text,
-                        value: e.target.value,
+              <>
+                <Input
+                  value={pageTitle}
+                  w={300}
+                  size="lg"
+                  fontSize={24}
+                  fontWeight={600}
+                  onChange={(e) => {
+                    setPageTitle(e.target.value);
+                    editElement({
+                      elementId: props.element.id,
+                      props: {
+                        title: {
+                          type: PropertyTypes.Text,
+                          value: e.target.value,
+                        },
                       },
-                    },
-                  });
-                  props.refetchElement();
-                }}
-              />
+                    });
+                  }}
+                />
+                <ElementSettingsPopover
+                  onOpen={() => {}}
+                  onClose={() => {}}
+                  element={props.element}
+                  removeElement={() => {}}
+                  disabled={false}
+                />
+              </>
             ) : (
               <Flex alignItems={"center"} h={12} w={300}>
                 <Heading
@@ -206,10 +209,7 @@ const Page: React.FC<PageProps> = (props) => {
                   onDragEnd={onDragEnd}
                   addElement={addElement}
                   removeElement={removeElement}
-                  refetchParent={props.refetchElement}
                   isEdit={isEditMode}
-                  refreshDatabase={refreshDatabase}
-                  refreshDatabaseId={props.refreshDatabaseId}
                 />
               );
             })}
