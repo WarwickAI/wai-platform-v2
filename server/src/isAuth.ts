@@ -4,6 +4,21 @@ import { MyContext } from "./types";
 import { ForbiddenError } from "apollo-server-express";
 import { User } from "./entities/User";
 
+export const getAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
+  const authorization = context.req.headers["authorization"];
+
+  if (authorization) {
+    try {
+      const token = authorization;
+      const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      context.payload = payload as any;
+    } catch (err) {
+      // Not an error, just wont add payload
+    }
+  }
+  return next();
+};
+
 export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
 

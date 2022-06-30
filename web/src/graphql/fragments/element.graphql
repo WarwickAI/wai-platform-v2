@@ -22,6 +22,18 @@ fragment ElementWithoutChildren on Element {
   }
 }
 
+fragment ElementWithoutChildrenWithoutCreatedByWithoutGroups on Element {
+  id
+  createdAt
+  updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+
 fragment ElementWithoutChildrenWithoutCreatedBy on Element {
   id
   createdAt

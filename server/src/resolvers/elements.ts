@@ -11,12 +11,13 @@ import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
+import { getAuth, isAuth, isExec, isSuper } from "../isAuth";
 
 @Resolver()
 export class ElementResolver {
   @Query(() => [Element])
-  @UseMiddleware()
-  async getElements(): Promise<Element[]> {
+  @UseMiddleware(getAuth)
+  async getElements(@Ctx() { payload }: MyContext): Promise<Element[]> {
     const elements = await Element.find({
       relations: [
         "createdBy",
@@ -27,14 +28,26 @@ export class ElementResolver {
         "canInteractGroups",
       ],
     });
+
+    const user = payload
+      ? await User.findOneOrFail(payload.userId, {
+          relations: ["groups"],
+        })
+      : undefined;
+    elements.filter(
+      async (element) => await checkPermissions(element.canViewGroups, user)
+    );
     console.log("ELEMENTS:", elements);
     return elements;
   }
 
   @Query(() => Element)
-  @UseMiddleware()
-  async getElement(@Arg("elementId") elementId: number): Promise<Element> {
-    return await Element.findOneOrFail(elementId, {
+  @UseMiddleware(getAuth)
+  async getElement(
+    @Ctx() { payload }: MyContext,
+    @Arg("elementId") elementId: number
+  ): Promise<Element> {
+    const element = await Element.findOneOrFail(elementId, {
       relations: [
         "createdBy",
         "parent",
@@ -44,6 +57,33 @@ export class ElementResolver {
         "canInteractGroups",
       ],
     });
+    // Need to also get groups for children to work properly, and make sure user is authorized
+
+    const user = payload
+      ? await User.findOneOrFail(payload.userId, {
+          relations: ["groups"],
+        })
+      : undefined;
+    console.log("USER:", user);
+    const filteredContent: Element[] = [];
+    for (let i = 0; i < element.content.length; i++) {
+      const childElem = await Element.findOneOrFail(element.content[i].id, {
+        relations: [
+          "createdBy",
+          "parent",
+          "canEditGroups",
+          "canViewGroups",
+          "canInteractGroups",
+        ],
+      });
+      console.log("ELEMENT:", childElem)
+
+      if (await checkPermissions(childElem.canViewGroups, user)) {
+        filteredContent.push(childElem);
+      }
+    }
+    element.content = filteredContent;
+    return element;
   }
 
   @Query(() => [Element])
@@ -99,7 +139,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element, { nullable: true })
-  @UseMiddleware()
+  @UseMiddleware(isAuth)
   async createElement(
     @Ctx() { payload }: MyContext,
     @Arg("props", () => GraphQLJSONObject) props: object,
@@ -129,8 +169,27 @@ export class ElementResolver {
       element.canViewGroups = [];
       element.canInteractGroups = [];
     }
+
+    if (!payload?.userId) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await User.findOneOrFail(payload.userId, {
+      relations: ["groups"],
+    });
+
+    if (parentId && parentId !== null) {
+      if (!checkPermissions(element.canEditGroups, user)) {
+        throw new Error("Not authorized");
+      }
+    } else {
+      if (user.role !== "exec") {
+        throw new Error("Not authorized");
+      }
+    }
+
     element.index = index;
-    element.createdBy = await User.findOneOrFail(payload?.userId);
+    element.createdBy = user;
     element.content = [];
 
     if (element.parent?.type === ElementType.Database) {
@@ -153,14 +212,33 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware()
+  @UseMiddleware(isAuth)
   async editElementProps(
+    @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
     @Arg("props", () => GraphQLJSONObject) props: object
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: ["createdBy", "parent", "content"],
+      relations: [
+        "createdBy",
+        "parent",
+        "content",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
     });
+
+    if (!payload?.userId) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await User.findOneOrFail(payload.userId, {
+      relations: ["groups"],
+    });
+    if (!checkPermissions(element.canEditGroups, user)) {
+      throw new Error("Not authorized");
+    }
 
     element.props = { ...element.props, ...props };
 
@@ -189,6 +267,7 @@ export class ElementResolver {
   @Mutation(() => Element)
   @UseMiddleware()
   async editElementIndex(
+    @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
     @Arg("index") index: number
   ): Promise<Element> {
@@ -203,6 +282,16 @@ export class ElementResolver {
       ],
     });
 
+    if (!payload?.userId) {
+      throw new Error("Not authenticated");
+    }
+
+    const users = await User.findOneOrFail(payload.userId, {
+      relations: ["groups"],
+    });
+    if (!checkPermissions(element.canEditGroups, users)) {
+      throw new Error("Not authorized");
+    }
     element.index = index;
 
     await element.save();
@@ -295,3 +384,20 @@ export class ElementResolver {
     return element;
   }
 }
+
+const checkPermissions = async (groups: Group[], user: User | undefined) => {
+  if (groups.length === 0) {
+    return true;
+  }
+  if (!user) {
+    return false;
+  }
+  for (const group of groups) {
+    for (const userGroup of user.groups) {
+      if (userGroup.id === group.id) {
+        return true;
+      }
+    }
+  }
+  return false;
+};

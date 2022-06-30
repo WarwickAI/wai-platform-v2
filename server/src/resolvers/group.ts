@@ -53,7 +53,6 @@ export class GroupResolver {
   }
 
   @Mutation(() => User, { nullable: true })
-  @UseMiddleware(isAuth, isExec)
   async addUserToGroup(
     @Arg("groupId") groupId: number,
     @Arg("userId") userId: number
@@ -71,6 +70,26 @@ export class GroupResolver {
     } catch (err) {
       console.log(err);
       return user;
+    }
+  }
+
+  @Mutation(() => [User])
+  async addUsersToGroup(
+    @Arg("groupId") groupId: number,
+    @Arg("userId", () => [Number]) userIds: number[]
+  ) {
+    const users = await User.findByIds(userIds, { relations: ["groups"] });
+    try {
+      const group = await Group.findOneOrFail(groupId);
+      console.log(users.map((user) => user.id));
+      users.forEach(async (user) => {
+        user.groups.push(group);
+        await user.save();
+      });
+      return users;
+    } catch (err) {
+      console.log(err);
+      return users;
     }
   }
 

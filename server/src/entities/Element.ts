@@ -78,14 +78,16 @@ export class Element extends BaseEntity {
   content: Element[];
 
   @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canEditElements)
+  @ManyToMany(() => Group, (group) => group.canEditElements, { cascade: true })
   canEditGroups: Group[];
 
   @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canViewElements)
+  @ManyToMany(() => Group, (group) => group.canViewElements, { cascade: true })
   canViewGroups: Group[];
 
   @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canInteractElements)
+  @ManyToMany(() => Group, (group) => group.canInteractElements, {
+    cascade: true,
+  })
   canInteractGroups: Group[];
 }

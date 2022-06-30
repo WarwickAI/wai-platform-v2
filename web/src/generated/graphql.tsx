@@ -180,6 +180,7 @@ export type Mutation = {
   addMemberInfo: Scalars['Boolean'];
   addRONApplication: Scalars['Boolean'];
   addUserToGroup?: Maybe<User>;
+  addUsersToGroup: Array<User>;
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createElement?: Maybe<Element>;
@@ -235,6 +236,12 @@ export type MutationAddRonApplicationArgs = {
 export type MutationAddUserToGroupArgs = {
   groupId: Scalars['Float'];
   userId: Scalars['Float'];
+};
+
+
+export type MutationAddUsersToGroupArgs = {
+  groupId: Scalars['Float'];
+  userId: Array<Scalars['Float']>;
 };
 
 
@@ -789,6 +796,8 @@ export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: num
 export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
 
 export type ElementWithoutChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
+
+export type ElementWithoutChildrenWithoutCreatedByWithoutGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
 export type ElementWithoutChildrenWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
@@ -1478,6 +1487,19 @@ export const ElementWithoutChildrenFragmentDoc = gql`
   }
 }
     ${GroupWithoutUsersFragmentDoc}`;
+export const ElementWithoutChildrenWithoutCreatedByWithoutGroupsFragmentDoc = gql`
+    fragment ElementWithoutChildrenWithoutCreatedByWithoutGroups on Element {
+  id
+  createdAt
+  updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+    `;
 export const ElementWithoutChildrenWithoutCreatedByFragmentDoc = gql`
     fragment ElementWithoutChildrenWithoutCreatedBy on Element {
   id
