@@ -1,96 +1,43 @@
-fragment ElementWithoutChildren on Element {
+fragment ElementNoChildrenCreatedByGroups on Element {
   id
   createdAt
   updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+
+fragment ElementNoChildrenCreatedBy on Element {
+  ...ElementNoChildrenCreatedByGroups
+  canViewGroups {
+    ...GroupWithoutUsers
+  }
+  canInteractGroups {
+    ...GroupWithoutUsers
+  }
+  canEditGroups {
+    ...GroupWithoutUsers
+  }
+}
+
+fragment ElementNoChildren on Element {
+  ...ElementNoChildrenCreatedBy
   createdBy {
-    id
-  }
-  parent {
-    id
-  }
-  type
-  index
-  props
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
-  canViewGroups {
-    ...GroupWithoutUsers
-  }
-  canInteractGroups {
-    ...GroupWithoutUsers
+    ...RegularUserWithoutEvents
   }
 }
 
-fragment ElementWithoutChildrenWithoutCreatedByWithoutGroups on Element {
-  id
-  createdAt
-  updatedAt
-  parent {
-    id
-  }
-  type
-  index
-  props
-}
-
-fragment ElementWithoutChildrenWithoutCreatedBy on Element {
-  id
-  createdAt
-  updatedAt
-  parent {
-    id
-  }
-  type
-  index
-  props
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
-  canViewGroups {
-    ...GroupWithoutUsers
-  }
-  canInteractGroups {
-    ...GroupWithoutUsers
+fragment FullElement on Element {
+  ...ElementNoChildren
+  children {
+    ...ElementNoChildren
   }
 }
 
-# fragment ElementWithoutChildrenWithoutParentWithoutCreatedBy on Element {
-#   id
-#   createdAt
-#   updatedAt
-#   type
-#   index
-#   props
-# }
-
-fragment ElementWithChildren on Element {
-  id
-  createdAt
-  updatedAt
-  createdBy {
-    id
-  }
-  parent {
-    id
-  }
-  type
-  index
-  props
-  content {
-    ...ElementWithoutChildrenWithoutCreatedBy
-  }
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
-  canViewGroups {
-    ...GroupWithoutUsers
-  }
-  canInteractGroups {
-    ...GroupWithoutUsers
-  }
-}
-
+# No ID field since gets removed
 fragment ElementAfterRemove on Element {
   parent {
     id

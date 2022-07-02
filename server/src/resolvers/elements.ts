@@ -11,38 +11,35 @@ import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
-import { getAuth, isAuth, isExec, isSuper } from "../isAuth";
+import { getAuth, getUser, isAuth, isExec, isSuper } from "../isAuth";
 
 @Resolver()
 export class ElementResolver {
   @Query(() => [Element])
-  @UseMiddleware(getAuth)
-  async getElements(@Ctx() { payload }: MyContext): Promise<Element[]> {
+  @UseMiddleware(getAuth, getUser)
+  async getElementsNoChildren(
+    @Ctx() { payload }: MyContext
+  ): Promise<Element[]> {
+    // First get all the elements, but don't include children
     const elements = await Element.find({
       relations: [
         "createdBy",
         "parent",
-        "content",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
       ],
     });
 
-    const user = payload
-      ? await User.findOneOrFail(payload.userId, {
-          relations: ["groups"],
-        })
-      : undefined;
-    elements.filter(
-      async (element) => await checkPermissions(element.canViewGroups, user)
+    // Now filter out the elements that the user can't see
+    elements.filter((element) =>
+      checkPermissions(element.canViewGroups, payload?.user)
     );
-    console.log("ELEMENTS:", elements);
     return elements;
   }
 
   @Query(() => Element)
-  @UseMiddleware(getAuth)
+  @UseMiddleware(getAuth, getUser)
   async getElement(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number
@@ -51,38 +48,34 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
       ],
     });
-    // Need to also get groups for children to work properly, and make sure user is authorized
-
-    const user = payload
-      ? await User.findOneOrFail(payload.userId, {
-          relations: ["groups"],
-        })
-      : undefined;
-    console.log("USER:", user);
-    const filteredContent: Element[] = [];
-    for (let i = 0; i < element.content.length; i++) {
-      const childElem = await Element.findOneOrFail(element.content[i].id, {
-        relations: [
-          "createdBy",
-          "parent",
-          "canEditGroups",
-          "canViewGroups",
-          "canInteractGroups",
-        ],
-      });
-      console.log("ELEMENT:", childElem)
-
-      if (await checkPermissions(childElem.canViewGroups, user)) {
-        filteredContent.push(childElem);
-      }
+    if (!checkPermissions(element.canViewGroups, payload?.user)) {
+      throw new Error("Not authorized");
     }
-    element.content = filteredContent;
+
+    element.children = await Promise.all(
+      element.children.map((child) =>
+        Element.findOneOrFail(child.id, {
+          relations: [
+            "createdBy",
+            "parent",
+            "canEditGroups",
+            "canViewGroups",
+            "canInteractGroups",
+          ],
+        })
+      )
+    );
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
     return element;
   }
 
@@ -94,13 +87,12 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
       ],
     });
-    console.log("ELEMENTS:", elements);
     return elements;
   }
 
@@ -112,7 +104,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -129,7 +121,7 @@ export class ElementResolver {
         relations: [
           "createdBy",
           "parent",
-          "content",
+          "children",
           "canEditGroups",
           "canViewGroups",
           "canInteractGroups",
@@ -155,7 +147,7 @@ export class ElementResolver {
         relations: [
           "createdBy",
           "parent",
-          "content",
+          "children",
           "canEditGroups",
           "canViewGroups",
           "canInteractGroups",
@@ -190,7 +182,7 @@ export class ElementResolver {
 
     element.index = index;
     element.createdBy = user;
-    element.content = [];
+    element.children = [];
 
     if (element.parent?.type === ElementType.Database) {
       // Need to ensure element has all props of parent database
@@ -222,7 +214,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -245,7 +237,7 @@ export class ElementResolver {
     if (element.type === ElementType.Database) {
       // Need to ensure all content has same attributes
 
-      element.content.forEach((child) => {
+      element.children.forEach((child) => {
         Object.keys((element.props as any).attributes.value).map(
           (attributeName: string) => {
             const attribute = (element.props as any).attributes.value[
@@ -275,7 +267,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -308,7 +300,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -318,7 +310,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -337,7 +329,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -362,7 +354,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
-        "content",
+        "children",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -385,7 +377,7 @@ export class ElementResolver {
   }
 }
 
-const checkPermissions = async (groups: Group[], user: User | undefined) => {
+const checkPermissions = (groups: Group[], user: User | undefined) => {
   if (groups.length === 0) {
     return true;
   }

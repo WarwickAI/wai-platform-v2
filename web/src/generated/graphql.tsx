@@ -87,7 +87,7 @@ export type Element = {
   canEditGroups: Array<Group>;
   canInteractGroups: Array<Group>;
   canViewGroups: Array<Group>;
-  content: Array<Element>;
+  children: Array<Element>;
   createdAt: Scalars['String'];
   createdBy: User;
   id: Scalars['Float'];
@@ -494,7 +494,7 @@ export type Query = {
   getDatabases: Array<Element>;
   getElectionRole?: Maybe<ElectionRole>;
   getElement: Element;
-  getElements: Array<Element>;
+  getElementsNoChildren: Array<Element>;
   getParentPages: Array<Element>;
   getRoleApplication?: Maybe<RoleApplication>;
   getRoleApplicationForVote: RoleApplicationResponseForVote;
@@ -783,10 +783,6 @@ export type Vote = {
   user: User;
 };
 
-export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
-
-export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
-
 export type RegularRoleApplicationFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined };
 
 export type RegularRoleApplicationWithElectionRoleFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined, role: { __typename?: 'ElectionRole', id: number, shortName: string, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, description: string, previewImg?: string | null | undefined } };
@@ -795,13 +791,13 @@ export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: num
 
 export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
 
-export type ElementWithoutChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
+export type ElementNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
-export type ElementWithoutChildrenWithoutCreatedByWithoutGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined };
+export type ElementNoChildrenCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
-export type ElementWithoutChildrenWithoutCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
+export type ElementNoChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
-export type ElementWithChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
+export type FullElementFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined };
 
 export type ElementAfterRemoveFragment = { __typename?: 'Element', type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
@@ -818,6 +814,10 @@ export type GroupWithoutUsersFragment = { __typename?: 'Group', id: number, name
 export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
 
 export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+
+export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }> };
+
+export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
 
 export type AddMemberInfoMutationVariables = Exact<{
   memberInfo: Array<MemberInfoInput> | MemberInfoInput;
@@ -902,7 +902,7 @@ export type EditElementPropsMutationVariables = Exact<{
 }>;
 
 
-export type EditElementPropsMutation = { __typename?: 'Mutation', editElementProps: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } };
+export type EditElementPropsMutation = { __typename?: 'Mutation', editElementProps: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type EditElementIndexMutationVariables = Exact<{
   index: Scalars['Float'];
@@ -910,7 +910,7 @@ export type EditElementIndexMutationVariables = Exact<{
 }>;
 
 
-export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } };
+export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type CreateElementMutationVariables = Exact<{
   type: ElementType;
@@ -920,7 +920,7 @@ export type CreateElementMutationVariables = Exact<{
 }>;
 
 
-export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } | null | undefined };
+export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
 
 export type RemoveElementMutationVariables = Exact<{
   elementId: Scalars['Float'];
@@ -937,7 +937,7 @@ export type UpdatePermissionsMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePermissionsMutation = { __typename?: 'Mutation', updatePermissions: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } };
+export type UpdatePermissionsMutation = { __typename?: 'Mutation', updatePermissions: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -1183,34 +1183,34 @@ export type HasUserVotedForRoleQueryVariables = Exact<{
 
 export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRole: boolean };
 
-export type GetElementsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetElementsNoChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+export type GetElementsNoChildrenQuery = { __typename?: 'Query', getElementsNoChildren: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type GetElementQueryVariables = Exact<{
   elementId: Scalars['Float'];
 }>;
 
 
-export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } };
+export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type GetParentPagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+export type GetParentPagesQuery = { __typename?: 'Query', getParentPages: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
-export type GetDatabasesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetDatabasesWithoutContentQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDatabasesQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+export type GetDatabasesWithoutContentQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type GetDatabaseQueryVariables = Exact<{
   databaseId: Scalars['Float'];
 }>;
 
 
-export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number }, parent?: { __typename?: 'Element', id: number } | null | undefined, content: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }> } };
+export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: ElementType, index: number, props: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1355,34 +1355,6 @@ export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never
 
 export type GetUserRoleApplicationsQuery = { __typename?: 'Query', getUserRoleApplications?: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> | null | undefined };
 
-export const RegularUserFragmentDoc = gql`
-    fragment RegularUser on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
-  projects {
-    id
-    shortName
-  }
-  talks {
-    id
-    shortName
-  }
-  courses {
-    id
-    shortName
-  }
-  tutorials {
-    id
-    shortName
-  }
-}
-    `;
 export const RegularRoleApplicationFragmentDoc = gql`
     fragment RegularRoleApplication on RoleApplication {
   id
@@ -1456,101 +1428,69 @@ export const RegularElectionRoleWithApplicationsFragmentDoc = gql`
   }
 }
     `;
+export const ElementNoChildrenCreatedByGroupsFragmentDoc = gql`
+    fragment ElementNoChildrenCreatedByGroups on Element {
+  id
+  createdAt
+  updatedAt
+  parent {
+    id
+  }
+  type
+  index
+  props
+}
+    `;
 export const GroupWithoutUsersFragmentDoc = gql`
     fragment GroupWithoutUsers on Group {
   id
   name
 }
     `;
-export const ElementWithoutChildrenFragmentDoc = gql`
-    fragment ElementWithoutChildren on Element {
-  id
-  createdAt
-  updatedAt
-  createdBy {
-    id
-  }
-  parent {
-    id
-  }
-  type
-  index
-  props
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
+export const ElementNoChildrenCreatedByFragmentDoc = gql`
+    fragment ElementNoChildrenCreatedBy on Element {
+  ...ElementNoChildrenCreatedByGroups
   canViewGroups {
     ...GroupWithoutUsers
   }
   canInteractGroups {
     ...GroupWithoutUsers
   }
-}
-    ${GroupWithoutUsersFragmentDoc}`;
-export const ElementWithoutChildrenWithoutCreatedByWithoutGroupsFragmentDoc = gql`
-    fragment ElementWithoutChildrenWithoutCreatedByWithoutGroups on Element {
-  id
-  createdAt
-  updatedAt
-  parent {
-    id
+  canEditGroups {
+    ...GroupWithoutUsers
   }
-  type
-  index
-  props
+}
+    ${ElementNoChildrenCreatedByGroupsFragmentDoc}
+${GroupWithoutUsersFragmentDoc}`;
+export const RegularUserWithoutEventsFragmentDoc = gql`
+    fragment RegularUserWithoutEvents on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
 }
     `;
-export const ElementWithoutChildrenWithoutCreatedByFragmentDoc = gql`
-    fragment ElementWithoutChildrenWithoutCreatedBy on Element {
-  id
-  createdAt
-  updatedAt
-  parent {
-    id
-  }
-  type
-  index
-  props
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
-  canViewGroups {
-    ...GroupWithoutUsers
-  }
-  canInteractGroups {
-    ...GroupWithoutUsers
-  }
-}
-    ${GroupWithoutUsersFragmentDoc}`;
-export const ElementWithChildrenFragmentDoc = gql`
-    fragment ElementWithChildren on Element {
-  id
-  createdAt
-  updatedAt
+export const ElementNoChildrenFragmentDoc = gql`
+    fragment ElementNoChildren on Element {
+  ...ElementNoChildrenCreatedBy
   createdBy {
-    id
-  }
-  parent {
-    id
-  }
-  type
-  index
-  props
-  content {
-    ...ElementWithoutChildrenWithoutCreatedBy
-  }
-  canEditGroups {
-    ...GroupWithoutUsers
-  }
-  canViewGroups {
-    ...GroupWithoutUsers
-  }
-  canInteractGroups {
-    ...GroupWithoutUsers
+    ...RegularUserWithoutEvents
   }
 }
-    ${ElementWithoutChildrenWithoutCreatedByFragmentDoc}
-${GroupWithoutUsersFragmentDoc}`;
+    ${ElementNoChildrenCreatedByFragmentDoc}
+${RegularUserWithoutEventsFragmentDoc}`;
+export const FullElementFragmentDoc = gql`
+    fragment FullElement on Element {
+  ...ElementNoChildren
+  children {
+    ...ElementNoChildren
+  }
+}
+    ${ElementNoChildrenFragmentDoc}`;
 export const ElementAfterRemoveFragmentDoc = gql`
     fragment ElementAfterRemove on Element {
   parent {
@@ -1646,18 +1586,6 @@ export const RegularTutorialFragmentDoc = gql`
   }
 }
     `;
-export const RegularUserWithoutEventsFragmentDoc = gql`
-    fragment RegularUserWithoutEvents on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
-}
-    `;
 export const GroupWithUsersFragmentDoc = gql`
     fragment GroupWithUsers on Group {
   id
@@ -1672,6 +1600,34 @@ export const RegularTagFragmentDoc = gql`
   id
   title
   color
+}
+    `;
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+  projects {
+    id
+    shortName
+  }
+  talks {
+    id
+    shortName
+  }
+  courses {
+    id
+    shortName
+  }
+  tutorials {
+    id
+    shortName
+  }
 }
     `;
 export const AddMemberInfoDocument = gql`
@@ -1808,10 +1764,10 @@ export function useAddRonApplicationMutation() {
 export const EditElementPropsDocument = gql`
     mutation EditElementProps($props: JSONObject!, $elementId: Float!) {
   editElementProps(props: $props, elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useEditElementPropsMutation() {
   return Urql.useMutation<EditElementPropsMutation, EditElementPropsMutationVariables>(EditElementPropsDocument);
@@ -1819,10 +1775,10 @@ export function useEditElementPropsMutation() {
 export const EditElementIndexDocument = gql`
     mutation EditElementIndex($index: Float!, $elementId: Float!) {
   editElementIndex(index: $index, elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useEditElementIndexMutation() {
   return Urql.useMutation<EditElementIndexMutation, EditElementIndexMutationVariables>(EditElementIndexDocument);
@@ -1830,10 +1786,10 @@ export function useEditElementIndexMutation() {
 export const CreateElementDocument = gql`
     mutation CreateElement($type: ElementType!, $props: JSONObject!, $index: Float!, $parent: Float) {
   createElement(type: $type, props: $props, index: $index, parent: $parent) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useCreateElementMutation() {
   return Urql.useMutation<CreateElementMutation, CreateElementMutationVariables>(CreateElementDocument);
@@ -1857,10 +1813,10 @@ export const UpdatePermissionsDocument = gql`
     canViewGroups: $canViewGroups
     canEditGroups: $canEditGroups
   ) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useUpdatePermissionsMutation() {
   return Urql.useMutation<UpdatePermissionsMutation, UpdatePermissionsMutationVariables>(UpdatePermissionsDocument);
@@ -2339,24 +2295,24 @@ export const HasUserVotedForRoleDocument = gql`
 export function useHasUserVotedForRoleQuery(options: Omit<Urql.UseQueryArgs<HasUserVotedForRoleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<HasUserVotedForRoleQuery>({ query: HasUserVotedForRoleDocument, ...options });
 };
-export const GetElementsDocument = gql`
-    query GetElements {
-  getElements {
-    ...ElementWithChildren
+export const GetElementsNoChildrenDocument = gql`
+    query GetElementsNoChildren {
+  getElementsNoChildren {
+    ...ElementNoChildren
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${ElementNoChildrenFragmentDoc}`;
 
-export function useGetElementsQuery(options: Omit<Urql.UseQueryArgs<GetElementsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetElementsQuery>({ query: GetElementsDocument, ...options });
+export function useGetElementsNoChildrenQuery(options: Omit<Urql.UseQueryArgs<GetElementsNoChildrenQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetElementsNoChildrenQuery>({ query: GetElementsNoChildrenDocument, ...options });
 };
 export const GetElementDocument = gql`
     query GetElement($elementId: Float!) {
   getElement(elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useGetElementQuery(options: Omit<Urql.UseQueryArgs<GetElementQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetElementQuery>({ query: GetElementDocument, ...options });
@@ -2364,32 +2320,32 @@ export function useGetElementQuery(options: Omit<Urql.UseQueryArgs<GetElementQue
 export const GetParentPagesDocument = gql`
     query GetParentPages {
   getParentPages {
-    ...ElementWithoutChildrenWithoutCreatedBy
+    ...ElementNoChildrenCreatedBy
   }
 }
-    ${ElementWithoutChildrenWithoutCreatedByFragmentDoc}`;
+    ${ElementNoChildrenCreatedByFragmentDoc}`;
 
 export function useGetParentPagesQuery(options: Omit<Urql.UseQueryArgs<GetParentPagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetParentPagesQuery>({ query: GetParentPagesDocument, ...options });
 };
-export const GetDatabasesDocument = gql`
-    query GetDatabases {
+export const GetDatabasesWithoutContentDocument = gql`
+    query GetDatabasesWithoutContent {
   getDatabases {
-    ...ElementWithChildren
+    ...ElementNoChildren
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${ElementNoChildrenFragmentDoc}`;
 
-export function useGetDatabasesQuery(options: Omit<Urql.UseQueryArgs<GetDatabasesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetDatabasesQuery>({ query: GetDatabasesDocument, ...options });
+export function useGetDatabasesWithoutContentQuery(options: Omit<Urql.UseQueryArgs<GetDatabasesWithoutContentQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetDatabasesWithoutContentQuery>({ query: GetDatabasesWithoutContentDocument, ...options });
 };
 export const GetDatabaseDocument = gql`
     query GetDatabase($databaseId: Float!) {
   getDatabase(databaseId: $databaseId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
-    ${ElementWithChildrenFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useGetDatabaseQuery(options: Omit<Urql.UseQueryArgs<GetDatabaseQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetDatabaseQuery>({ query: GetDatabaseDocument, ...options });

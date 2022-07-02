@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -6,7 +6,6 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
@@ -17,6 +16,7 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { User } from "./User";
 import { Group } from "./Group";
 
+// Types of elements
 export enum ElementType {
   Text = "Text",
   Page = "Page",
@@ -27,7 +27,7 @@ export enum ElementType {
   User = "User",
   Data = "Data",
 }
-
+// So that we can use it typegraphql
 registerEnumType(ElementType, {
   name: "ElementType",
   description: "Different options for elements",
@@ -53,8 +53,6 @@ export class Element extends BaseEntity {
   @ManyToOne(() => User, (user) => user.elements)
   createdBy: User;
 
-  // @Field(() => Element, { nullable: true })
-  // @ManyToOne(() => Element, (element) => element.content, { nullable: true })
   @Field(() => Element, { nullable: true })
   @TreeParent()
   parent?: Element;
@@ -71,23 +69,19 @@ export class Element extends BaseEntity {
   @Column("simple-json")
   props: object;
 
-  // @Field(() => [Element])
-  // @OneToMany(() => Element, (element) => element.parent, { cascade: true })
   @Field(() => [Element])
   @TreeChildren()
-  content: Element[];
+  children: Element[];
 
   @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canEditElements, { cascade: true })
-  canEditGroups: Group[];
-
-  @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canViewElements, { cascade: true })
+  @ManyToMany(() => Group, (group) => group.canViewElements)
   canViewGroups: Group[];
 
   @Field(() => [Group])
-  @ManyToMany(() => Group, (group) => group.canInteractElements, {
-    cascade: true,
-  })
+  @ManyToMany(() => Group, (group) => group.canInteractElements)
   canInteractGroups: Group[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.canEditElements)
+  canEditGroups: Group[];
 }

@@ -1,30 +1,7 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  Flex,
-  Input,
-  Select,
-  useDisclosure,
-  Text,
-} from "@chakra-ui/react";
-import { useRef, useState } from "react";
-import {
-  ElementType,
-  useCreateElementMutation,
-  useGetDatabasesQuery,
-  useGetElementQuery,
   Element,
 } from "../../generated/graphql";
 import {
-  createDefaultElementProps,
-  DatabaseBaseTypes,
-  DatabaseElementProps,
-  ElementPropertyInfo,
   PropertyTypes,
 } from "../../utils/elements";
 import DatabaseIdProperty from "./DatabaseId";

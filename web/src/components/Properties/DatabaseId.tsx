@@ -14,9 +14,9 @@ import {
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import {
-  useGetDatabasesQuery,
   ElementType,
   useCreateElementMutation,
+  useGetDatabasesWithoutContentQuery,
 } from "../../generated/graphql";
 import {
   DatabaseElementProps,
@@ -36,7 +36,7 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
     onOpen: onAddOpen,
     onClose: onAddClose,
   } = useDisclosure();
-  const [{ data: databasesQuery }] = useGetDatabasesQuery();
+  const [{ data: databasesQuery }] = useGetDatabasesWithoutContentQuery();
   const cancelAddRef = useRef<HTMLButtonElement | undefined>();
   const [newDatabaseName, setNewDatabaseName] = useState<string>("");
   const [newDatabaseBaseType, setNewDatabaseBaseType] = useState<ElementType>(

@@ -5,6 +5,7 @@ import {
   useCreateElementMutation,
   useEditElementPropsMutation,
   useGetDatabaseQuery,
+  useGetElementQuery,
 } from "../../generated/graphql";
 import {
   ActionTypes,
@@ -28,8 +29,8 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
   const [action, setAction] = useState<ActionTypes>(elementProps.action.value);
   const [data, setData] = useState<any>(elementProps.data.value);
   const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseElement }, getDatabase] = useGetDatabaseQuery({
-    variables: { databaseId: elementProps.databaseId.value },
+  const [{ data: databaseElement }] = useGetElementQuery({
+    variables: { elementId: elementProps.databaseId.value },
   });
 
   return (
@@ -37,7 +38,7 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
       <Button
         variant={"primary"}
         onClick={async () => {
-          const database = databaseElement?.getDatabase;
+          const database = databaseElement?.getElement;
           if (!database) {
             return;
           }

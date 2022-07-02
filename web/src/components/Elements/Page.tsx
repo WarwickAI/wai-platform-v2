@@ -52,12 +52,12 @@ const Page: React.FC<PageProps> = (props) => {
 
   // Initialise and update page content here
   useEffect(() => {
-    const contentSorted = props.element.content.sort(
+    const contentSorted = props.element.children.sort(
       (a, b) => a.index! - b.index!
     );
     setItems(contentSorted);
     setOldItems(contentSorted);
-  }, [props.element.content]);
+  }, [props.element.children]);
 
   // Modifiable props
   const [pageTitle, setPageTitle] = useState<string>(elementProps.title.value);

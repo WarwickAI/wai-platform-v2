@@ -1,29 +1,29 @@
-query GetElements {
-  getElements {
-    ...ElementWithChildren
+query GetElementsNoChildren {
+  getElementsNoChildren {
+    ...ElementNoChildren
   }
 }
 
 query GetElement($elementId: Float!) {
   getElement(elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
 
 query GetParentPages {
   getParentPages {
-    ...ElementWithoutChildrenWithoutCreatedBy
+    ...ElementNoChildrenCreatedBy
   }
 }
 
-query GetDatabases {
+query GetDatabasesWithoutContent {
   getDatabases {
-    ...ElementWithChildren
+    ...ElementNoChildren
   }
 }
 
 query GetDatabase($databaseId: Float!) {
   getDatabase(databaseId: $databaseId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }

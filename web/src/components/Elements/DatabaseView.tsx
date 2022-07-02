@@ -162,7 +162,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {databaseQuery?.getElement.content.map((row, rowIndex) => {
+                {databaseQuery?.getElement.children.map((row, rowIndex) => {
                   return (
                     <Tr key={row.id}>
                       <Td

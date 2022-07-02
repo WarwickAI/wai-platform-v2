@@ -1,12 +1,12 @@
 mutation EditElementProps($props: JSONObject!, $elementId: Float!) {
   editElementProps(props: $props, elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
 
 mutation EditElementIndex($index: Float!, $elementId: Float!) {
   editElementIndex(index: $index, elementId: $elementId) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
 
@@ -17,7 +17,7 @@ mutation CreateElement(
   $parent: Float
 ) {
   createElement(type: $type, props: $props, index: $index, parent: $parent) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }
 
@@ -39,6 +39,6 @@ mutation UpdatePermissions(
     canViewGroups: $canViewGroups
     canEditGroups: $canEditGroups
   ) {
-    ...ElementWithChildren
+    ...FullElement
   }
 }

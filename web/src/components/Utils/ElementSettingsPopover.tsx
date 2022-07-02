@@ -10,7 +10,7 @@ import {
   Flex,
   propNames,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { Component, useState } from "react";
 import { Element, useEditElementPropsMutation } from "../../generated/graphql";
 import {
   ElementPropertyInfo,
@@ -106,7 +106,7 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   const [value, setValue] = useState<any>(props.prop.value);
 
   const [, editElement] = useEditElementPropsMutation();
-
+  
   return (
     <Flex direction={"row"} alignItems="center" mb={2}>
       <Text mr={2} whiteSpace={"nowrap"}>

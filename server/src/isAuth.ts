@@ -19,6 +19,18 @@ export const getAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   return next();
 };
 
+export const getUser: MiddlewareFn<MyContext> = async ({ context }, next) => {
+  context.payload = context.payload?.userId
+    ? {
+        ...context.payload,
+        user: await User.findOne(context.payload.userId, {
+          relations: ["groups"],
+        }),
+      }
+    : { ...context.payload, user: undefined };
+  return next();
+};
+
 export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
 
