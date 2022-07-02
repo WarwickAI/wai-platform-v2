@@ -1,10 +1,7 @@
-import {
-  Element,
-} from "../../generated/graphql";
-import {
-  PropertyTypes,
-} from "../../utils/elements";
+import { Element } from "../../generated/graphql";
+import { PropertyTypes } from "../../utils/elements";
 import DatabaseIdProperty from "./DatabaseId";
+import ImageProperty from "./Image";
 import NumberProperty from "./Number";
 import PropertyLinkProperty from "./PropertyLink";
 import TextProperty from "./Text";
@@ -52,6 +49,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
     return (
       <PropertyLinkProperty
         element={props.element}
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === PropertyTypes.Image) {
+    return (
+      <ImageProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

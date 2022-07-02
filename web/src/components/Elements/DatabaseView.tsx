@@ -185,6 +185,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                               element={row as Element}
                               prop={prop ? prop : attribute}
                               propName={attributeName}
+                              isEdit={props.isEdit}
                             />
                           </Td>
                         );
@@ -218,6 +219,7 @@ interface RowAttributeProps {
   prop: Property;
   propName: string;
   element: Element;
+  isEdit: boolean;
 }
 
 const RowAttribute: React.FC<RowAttributeProps> = (props) => {
@@ -243,7 +245,7 @@ const RowAttribute: React.FC<RowAttributeProps> = (props) => {
           props: newProps,
         });
       }}
-      isEdit={true}
+      isEdit={props.isEdit}
     />
   );
 };

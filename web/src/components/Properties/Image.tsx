@@ -1,13 +1,12 @@
 import { Input, Text } from "@chakra-ui/react";
 
-interface TextPropertyProps {
+interface ImagePropertyProps {
   value: string;
   onChange: (v: string) => void;
   isEdit: boolean;
 }
 
-const TextProperty: React.FC<TextPropertyProps> = (props) => {
-  console.log("Text", props.isEdit);
+const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
   if (!props.isEdit) {
     return <Text>{props.value}</Text>;
   } else {
@@ -23,4 +22,4 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
   }
 };
 
-export default TextProperty;
+export default ImageProperty;

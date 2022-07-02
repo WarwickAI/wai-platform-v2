@@ -111,7 +111,7 @@ const Page: React.FC<PageProps> = (props) => {
   if (!props.isFullPage) {
     return (
       <Button
-      colorScheme={"blue"}
+        colorScheme={"blue"}
         onClick={() => {
           router.push(`/generic/${props.element.id}`);
         }}
@@ -207,7 +207,10 @@ const Page: React.FC<PageProps> = (props) => {
                 <Switch
                   id="edit-mode"
                   isChecked={isEditMode}
-                  onChange={(e) => setIsEditMode(e.target.checked)}
+                  onChange={(e) => {
+                    console.log(e.target.checked);
+                    setIsEditMode(e.target.checked);
+                  }}
                 />
               </FormControl>
             </Flex>
