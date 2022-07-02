@@ -2398,12 +2398,12 @@ ccount@^2.0.0:
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-2.0.1.tgz#17a3bf82302e0870d6da43a01311a8bc02a3ecf5"
   integrity sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==
 
-chakra-react-select@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/chakra-react-select/-/chakra-react-select-4.0.3.tgz#6760a92ee0b814ec89181503dde796584360e03d"
-  integrity sha512-QEjySGsd666s0LSrLxpJiOv0mVFPVHVjPMcj3JRga3H/rHpUukZ6ydYX0uXl0WMZtUST7R9hcKNs0bzA6RTP8Q==
+chakra-react-select@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/chakra-react-select/-/chakra-react-select-4.1.2.tgz#22ffa6b7b8820aabca13b625c8055b4402664fc7"
+  integrity sha512-9y2bVdLoq4JGMjzBooYidaetzw/ME1FrD7ZeOZDqyuV+lbrO9W4F/ox4gwWZqhWZfOPZ9StXaMPeInxg0gPRig==
   dependencies:
-    react-select "^5.3.2"
+    react-select "^5.4.0"
 
 chakra-ui-markdown-renderer@^4.0.0:
   version "4.0.0"
@@ -5557,10 +5557,10 @@ react-remove-scroll@2.4.1:
     use-callback-ref "^1.2.3"
     use-sidecar "^1.0.1"
 
-react-select@^5.3.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-5.3.2.tgz#ecee0d5c59ed4acb7f567f7de3c75a488d93dacb"
-  integrity sha512-W6Irh7U6Ha7p5uQQ2ZnemoCQ8mcfgOtHfw3wuMzG6FAu0P+CYicgofSLOq97BhjMx8jS+h+wwWdCBeVVZ9VqlQ==
+react-select@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-5.4.0.tgz#81f6ac73906126706f104751ee14437bd16798f4"
+  integrity sha512-CjE9RFLUvChd5SdlfG4vqxZd55AZJRrLrHzkQyTYeHlpOztqcgnyftYAolJ0SGsBev6zAs6qFrjm6KU3eo2hzg==
   dependencies:
     "@babel/runtime" "^7.12.0"
     "@emotion/cache" "^11.4.0"

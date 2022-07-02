@@ -48,8 +48,8 @@ import {
   GetElementDocument,
   RemoveElementMutation,
   ElementType,
-  GetDatabasesQuery,
-  GetDatabasesDocument,
+  GetDatabasesWithoutContentDocument,
+  GetDatabasesWithoutContentQuery,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -636,10 +636,10 @@ export const createUrqlClient = (ssrExchange: any) => {
                         _result,
                         (_, query2) => {
                           const indexOfRemovedElement =
-                            query2.getElement.content.findIndex(
+                            query2.getElement.children.findIndex(
                               (val) => val.id === elementId
                             );
-                          query2.getElement.content.splice(
+                          query2.getElement.children.splice(
                             indexOfRemovedElement,
                             1
                           );
@@ -683,7 +683,7 @@ export const createUrqlClient = (ssrExchange: any) => {
                         _result,
                         (_, query2) => {
                           const parentElement = query2.getElement;
-                          parentElement.content.push(result.createElement!);
+                          parentElement.children.push(result.createElement!);
                           return query2;
                         }
                       );
@@ -697,10 +697,13 @@ export const createUrqlClient = (ssrExchange: any) => {
               );
 
               if (newElement.type === ElementType.Database) {
-                betterUpdateQuery<CreateElementMutation, GetDatabasesQuery>(
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetDatabasesWithoutContentQuery
+                >(
                   cache,
                   {
-                    query: GetDatabasesDocument,
+                    query: GetDatabasesWithoutContentDocument,
                   },
                   _result,
                   (_, query) => {
@@ -738,8 +741,8 @@ export const createUrqlClient = (ssrExchange: any) => {
                         },
                         _result,
                         (_, query2) => {
-                          query2.getElement.content[
-                            query2.getElement.content.findIndex(
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
                               (val) => val.id === result.editElementProps.id
                             )
                           ] = result.editElementProps;
@@ -754,10 +757,13 @@ export const createUrqlClient = (ssrExchange: any) => {
                 }
               );
               if (newElement.type === ElementType.Database) {
-                betterUpdateQuery<CreateElementMutation, GetDatabasesQuery>(
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetDatabasesWithoutContentQuery
+                >(
                   cache,
                   {
-                    query: GetDatabasesDocument,
+                    query: GetDatabasesWithoutContentDocument,
                   },
                   _result,
                   (_, query) => {
