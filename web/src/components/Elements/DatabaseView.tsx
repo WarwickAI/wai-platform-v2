@@ -17,50 +17,52 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
-  ElementType,
   useCreateElementMutation,
-  useEditElementPropsMutation,
+  useEditElementDataMutation,
   useGetElementQuery,
-  Element,
 } from "../../generated/graphql";
+import { DataTypeKeys } from "../../utils/base_data_types";
+import { DatabaseViewElementData } from "../../utils/base_element_types";
 import {
-  createDefaultElementProps,
-  createDefaultProperty,
-  DatabaseViewElementProps,
-  ElementTyper,
-  Property,
-  PropertyTypes,
-} from "../../utils/elements";
+  createDefaultData,
+  createDefaultElementData,
+  DataTypeKeysT,
+  DataTypesDef,
+  Element,
+  ElementDataPiece,
+  ElementTypeKeys,
+} from "../../utils/config";
 import GenericInput from "../Properties/GenericProperty";
+import TextProperty from "../Properties/Text";
 
 interface DatabaseViewProps {
-  element: ElementTyper<DatabaseViewElementProps>;
+  element: Element<DatabaseViewElementData>;
   isEdit: boolean;
 }
 
-const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
+const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const router = useRouter();
-  const elementProps = props.element.props as DatabaseViewElementProps;
+  const elementData = element.data as DatabaseViewElementData;
 
   const [databaseName, setDatabaseName] = useState<string>("");
 
-  const [, editElement] = useEditElementPropsMutation();
+  const [, editElement] = useEditElementDataMutation();
   const [, createElement] = useCreateElementMutation();
   const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
-    variables: { elementId: elementProps.databaseId.value },
+    variables: { elementId: elementData.database.value },
   });
 
-  const addAttribute = async (attributeType: PropertyTypes) => {
+  const addAttribute = async (attributeType: DataTypeKeysT) => {
     const newAttribute: any = {};
-    newAttribute[makeid(5)] = createDefaultProperty(attributeType);
+    newAttribute[makeid(5)] = createDefaultData(attributeType);
 
     await editElement({
-      elementId: elementProps.databaseId.value,
-      props: {
+      elementId: elementData.database.value,
+      data: {
         attributes: {
-          type: PropertyTypes.DatabaseProperties,
+          type: "DatabaseAttributeTypes",
           value: {
-            ...databaseQuery?.getElement.props.attributes.value,
+            ...databaseQuery?.getElement.data.attributes.value,
             ...newAttribute,
           },
         },
@@ -70,44 +72,48 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 
   useEffect(() => {
     if (databaseQuery?.getElement) {
-      setDatabaseName(databaseQuery.getElement.props.title.value);
+      setDatabaseName(databaseQuery.getElement.data.title.value);
     }
   }, [databaseQuery]);
 
   const addRow = async () => {
     await createElement({
       index: 0,
-      type: databaseQuery?.getElement.props.contentBaseType.value,
-      props: createDefaultElementProps(
-        databaseQuery?.getElement.props.contentBaseType.value
+      type: databaseQuery?.getElement.data.contentBaseType
+        .value as ElementTypeKeys,
+      data: createDefaultElementData(
+        databaseQuery?.getElement.data.contentBaseType.value
       ),
-      parent: elementProps.databaseId.value,
+      parent: elementData.database.value,
     });
   };
   return (
     <Box>
       {databaseQuery?.getElement &&
-      databaseQuery?.getElement.type === ElementType.Database ? (
+      databaseQuery?.getElement.type === "Database" ? (
         <Box>
-          <Input
-            w={300}
+          <TextProperty
+            style={{
+              w: 300,
+              fontSize: 18,
+              fontWeight: 300,
+            }}
             size="md"
-            fontSize={18}
-            fontWeight={600}
             value={databaseName}
-            onChange={async (e) => {
-              setDatabaseName(e.target.value);
-              const newProps: any = {};
-              newProps.title = {
-                ...databaseQuery.getElement.props.title,
-                value: e.target.value,
+            onChange={async (v) => {
+              setDatabaseName(v);
+              const newData: any = {};
+              newData.title = {
+                ...databaseQuery.getElement.data.title,
+                value: v,
               };
 
               await editElement({
                 elementId: databaseQuery.getElement.id,
-                props: newProps,
+                data: newData,
               });
             }}
+            isEdit={isEdit}
           />
           <Box>
             <Table variant={"simple"}>
@@ -115,10 +121,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                 <Tr>
                   <Th>🔗</Th>
                   {Object.keys(
-                    databaseQuery?.getElement.props.attributes.value
+                    databaseQuery?.getElement.data.attributes.value
                   ).map((attributeName: string) => {
                     const attributeType =
-                      databaseQuery?.getElement.props.attributes.value[
+                      databaseQuery?.getElement.data.attributes.value[
                         attributeName
                       ].type;
                     return (
@@ -136,24 +142,17 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                       </PopoverTrigger>
                       <PopoverContent>
                         <PopoverBody>
-                          {Object.keys(PropertyTypes).map((type) => {
-                            if (isNaN(type as any)) {
-                              return (
-                                <Button
-                                  size={"sm"}
-                                  key={type}
-                                  variant="outline"
-                                  onClick={() =>
-                                    // @ts-ignore
-                                    addAttribute(PropertyTypes[type])
-                                  }
-                                >
-                                  {type}
-                                </Button>
-                              );
-                            } else {
-                              return <div key={type}></div>;
-                            }
+                          {DataTypeKeys.map((dataTypeKey: DataTypeKeysT) => {
+                            return (
+                              <Button
+                                size={"sm"}
+                                key={dataTypeKey}
+                                variant="outline"
+                                onClick={() => addAttribute(dataTypeKey)}
+                              >
+                                {DataTypesDef[dataTypeKey]}
+                              </Button>
+                            );
                           })}
                         </PopoverBody>
                       </PopoverContent>
@@ -172,20 +171,20 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
                         ↗️
                       </Td>
                       {Object.keys(
-                        databaseQuery?.getElement.props.attributes.value
+                        databaseQuery?.getElement.data.attributes.value
                       ).map((attributeName: string) => {
-                        const prop = row.props[attributeName];
-                        const attribute =
-                          databaseQuery?.getElement.props.attributes.value[
+                        const attribute = row.data[attributeName];
+                        const attributeDefault =
+                          databaseQuery?.getElement.data.attributes.value[
                             attributeName
                           ];
                         return (
                           <Td key={attributeName}>
                             <RowAttribute
-                              element={row as Element}
-                              prop={prop ? prop : attribute}
-                              propName={attributeName}
-                              isEdit={props.isEdit}
+                              element={row as Element<any>}
+                              attribute={attribute ? attribute : attributeDefault}
+                              attributeName={attributeName}
+                              isEdit={isEdit}
                             />
                           </Td>
                         );
@@ -216,33 +215,33 @@ const DatabaseView: React.FC<DatabaseViewProps> = (props) => {
 };
 
 interface RowAttributeProps {
-  prop: Property;
-  propName: string;
-  element: Element;
+  attribute: ElementDataPiece<any>;
+  attributeName: string;
+  element: Element<any>;
   isEdit: boolean;
 }
 
 const RowAttribute: React.FC<RowAttributeProps> = (props) => {
-  const [value, setValue] = useState<any>(props.prop ? props.prop.value : "");
+  const [value, setValue] = useState<any>(props.attribute ? props.attribute.value : "");
 
-  const [, editElement] = useEditElementPropsMutation();
+  const [, editElement] = useEditElementDataMutation();
 
   return (
     <GenericInput
       element={props.element}
       value={value}
-      type={props.prop.type}
+      type={props.attribute.type}
       onChange={async (v) => {
         setValue(v);
-        const newProps: any = {};
-        newProps[props.propName] = {
-          ...props.prop,
+        const newData: any = {};
+        newData[props.attributeName] = {
+          ...props.attribute,
           value: v,
         };
 
         await editElement({
           elementId: props.element.id,
-          props: newProps,
+          data: newData,
         });
       }}
       isEdit={props.isEdit}

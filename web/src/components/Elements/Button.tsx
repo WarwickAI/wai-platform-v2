@@ -1,36 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Input } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Button } from "@chakra-ui/react";
 import {
-  ElementType,
   useCreateElementMutation,
-  useEditElementPropsMutation,
-  useGetDatabaseQuery,
   useGetElementQuery,
 } from "../../generated/graphql";
-import {
-  ActionTypes,
-  ButtonElementProps,
-  createDefaultElementProps,
-  ElementTyper,
-  PropertyTypes,
-} from "../../utils/elements";
 import "draft-js/dist/Draft.css";
-import { useRouter } from "next/router";
+import { ActionTypeKeys } from "../../utils/base_data_types";
+import { createDefaultElementData, Element } from "../../utils/config";
+import { ButtonElementData } from "../../utils/base_element_types";
 
 interface ButtonProps {
-  element: ElementTyper<ButtonElementProps>;
+  element: Element<ButtonElementData>;
   isEdit: boolean;
 }
 
-const ButtonLink: React.FC<ButtonProps> = (props) => {
-  const router = useRouter();
-  const elementProps = props.element.props as ButtonElementProps;
-  const [databaseId, setDatabaseId] = useState<number>(-1);
-  const [action, setAction] = useState<ActionTypes>(elementProps.action.value);
-  const [data, setData] = useState<any>(elementProps.data.value);
+const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
+  const elementData = element.data as ButtonElementData;
+  const [action, setAction] = useState<ActionTypeKeys>(
+    elementData.action.value
+  );
   const [, createElement] = useCreateElementMutation();
   const [{ data: databaseElement }] = useGetElementQuery({
-    variables: { elementId: elementProps.databaseId.value },
+    variables: { elementId: elementData.database.value },
   });
 
   return (
@@ -44,17 +35,15 @@ const ButtonLink: React.FC<ButtonProps> = (props) => {
           }
           await createElement({
             index: 0,
-            type: database.props.contentBaseType.value,
-            props: {
-              ...createDefaultElementProps(
-                database.props.contentBaseType.value
-              ),
+            type: database.data.contentBaseType.value,
+            data: {
+              ...createDefaultElementData(database.data.contentBaseType.value),
             },
             parent: database.id,
           });
         }}
       >
-        Do
+        Add To Database
       </Button>
     </Box>
   );

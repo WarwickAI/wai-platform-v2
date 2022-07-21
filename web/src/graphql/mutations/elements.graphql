@@ -1,5 +1,5 @@
-mutation EditElementProps($props: JSONObject!, $elementId: Float!) {
-  editElementProps(props: $props, elementId: $elementId) {
+mutation EditElementData($data: JSONObject!, $elementId: Float!) {
+  editElementData(data: $data, elementId: $elementId) {
     ...FullElement
   }
 }
@@ -11,12 +11,12 @@ mutation EditElementIndex($index: Float!, $elementId: Float!) {
 }
 
 mutation CreateElement(
-  $type: ElementType!
-  $props: JSONObject!
+  $type: String!
+  $data: JSONObject!
   $index: Float!
   $parent: Float
 ) {
-  createElement(type: $type, props: $props, index: $index, parent: $parent) {
+  createElement(type: $type, data: $data, index: $index, parent: $parent) {
     ...FullElement
   }
 }

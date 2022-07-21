@@ -1,11 +1,5 @@
 import React, { useRef } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { useEditElementPropsMutation } from "../../generated/graphql";
-import {
-  ElementTyper,
-  PropertyTypes,
-  TextElementProps,
-} from "../../utils/elements";
 import {
   convertFromRaw,
   convertToRaw,
@@ -14,6 +8,9 @@ import {
   RichUtils,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
+import { Element } from "../../utils/config";
+import { TextElementData } from "../../utils/base_element_types";
+import { useEditElementDataMutation } from "../../generated/graphql";
 
 interface StyleButtonsProps {
   onToggle: (style: string) => void;
@@ -96,16 +93,16 @@ const StyleButtons: React.FC<StyleButtonsProps> = (props) => {
 };
 
 interface TextProps {
-  element: ElementTyper<TextElementProps>;
+  element: Element<TextElementData>; 
   isEdit: boolean;
 }
 
 const Text: React.FC<TextProps> = (props) => {
-  const elementProps = props.element.props as TextElementProps;
+  const elementProps = props.element.data as TextElementData;
 
   const editorRef = useRef(null);
 
-  const [, editElement] = useEditElementPropsMutation();
+  const [, editElement] = useEditElementDataMutation();
   const [editorState, setEditorState] = React.useState(() =>
     elementProps.text.value && elementProps.text.value.length > 0
       ? EditorState.createWithContent(
@@ -132,9 +129,9 @@ const Text: React.FC<TextProps> = (props) => {
     setEditorState(state);
     editElement({
       elementId: props.element.id,
-      props: {
+      data: {
         text: {
-          type: PropertyTypes.Text,
+          type: "Text",
           value: JSON.stringify(convertToRaw(state.getCurrentContent())),
         },
       },

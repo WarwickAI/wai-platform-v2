@@ -16,7 +16,7 @@ query GetParentPages {
   }
 }
 
-query GetDatabasesWithoutContent {
+query GetDatabasesWithoutChildren {
   getDatabases {
     ...ElementNoChildren
   }

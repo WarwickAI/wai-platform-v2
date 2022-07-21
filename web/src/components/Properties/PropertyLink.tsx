@@ -1,12 +1,12 @@
 import { Input, Select, Text } from "@chakra-ui/react";
-import { Element, useGetElementQuery } from "../../generated/graphql";
-import { ElementPropertyInfo } from "../../utils/elements";
+import { useGetElementQuery } from "../../generated/graphql";
+import { Element, ElementTypesDef } from "../../utils/config";
 
 interface PropertyLinkPropertyProps {
   value: string;
   onChange: (v: string) => void;
   isEdit: boolean;
-  element: Element;
+  element: Element<any>;
 }
 
 const PropertyLinkProperty: React.FC<PropertyLinkPropertyProps> = (props) => {
@@ -20,9 +20,9 @@ const PropertyLinkProperty: React.FC<PropertyLinkPropertyProps> = (props) => {
     return (
       <Text>
         {parentQuery?.getElement &&
-        ElementPropertyInfo[parentQuery?.getElement.type][props.value]
-          ? ElementPropertyInfo[parentQuery?.getElement.type][props.value].label
-          : props.value}
+        (parentQuery?.getElement as Element<any>).data[props.value]
+          ? props.value
+          : "Not available in parent"}
       </Text>
     );
   } else {
@@ -34,17 +34,11 @@ const PropertyLinkProperty: React.FC<PropertyLinkPropertyProps> = (props) => {
           onChange={(e) => props.onChange(e.target.value)}
         >
           {parentQuery?.getElement &&
-            Object.keys(parentQuery?.getElement.props).map((propertyName) => {
-              const property = parentQuery?.getElement.props[propertyName];
+            Object.keys(parentQuery?.getElement.data).map((propertyName) => {
+              const property = parentQuery?.getElement.data[propertyName];
               return (
                 <option key={propertyName} value={propertyName}>
-                  {ElementPropertyInfo[parentQuery?.getElement.type][
-                    propertyName
-                  ]
-                    ? ElementPropertyInfo[parentQuery?.getElement.type][
-                        propertyName
-                      ].label
-                    : propertyName}
+                  {propertyName}
                 </option>
               );
             })}

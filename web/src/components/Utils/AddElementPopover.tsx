@@ -6,13 +6,12 @@ import {
   PopoverBody,
   Tooltip,
 } from "@chakra-ui/react";
-import { ElementType } from "../../generated/graphql";
-import { ElementTypesToNotShowInAdd } from "../../utils/elements";
+import { ElementTypeKeys, ElementTypesDef, ElementTypesToNotShowInAdd } from "../../utils/config";
 
 interface AddElementPopoverProps {
   onOpen: () => void;
   onClose: () => void;
-  addElement: (type: ElementType, index: number) => void;
+  addElement: (type: ElementTypeKeys, index: number) => void;
   atIndex: number;
 }
 
@@ -32,8 +31,8 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody>
-          {Object.keys(ElementType).map((type) => {
-            if (ElementTypesToNotShowInAdd.includes(type as ElementType)) {
+          {Object.keys(ElementTypesDef).map((type) => {
+            if (ElementTypesToNotShowInAdd.includes(type as ElementTypeKeys)) {
               return <></>;
             }
             return (
@@ -44,7 +43,7 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
                   p={2}
                   variant="outline"
                   onClick={() => {
-                    props.addElement(type as ElementType, props.atIndex);
+                    props.addElement(type as ElementTypeKeys, props.atIndex);
                   }}
                 >
                   {type}

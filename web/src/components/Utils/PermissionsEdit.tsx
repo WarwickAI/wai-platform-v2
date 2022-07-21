@@ -1,14 +1,14 @@
 import {
-  Element,
   Group,
   useGetGroupsQuery,
   useUpdatePermissionsMutation,
 } from "../../generated/graphql";
 import { Select, GroupBase, MultiValue } from "chakra-react-select";
 import { Flex, Text } from "@chakra-ui/react";
+import { Element } from "../../utils/config";
 
 interface PermissionsEditProps {
-  element: Element;
+  element: Element<any>;
 }
 const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
   const [, updatePermissions] = useUpdatePermissionsMutation();

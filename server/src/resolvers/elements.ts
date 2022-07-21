@@ -6,7 +6,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { Element, ElementType } from "../entities/Element";
+import { Element } from "../entities/Element";
 import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
@@ -83,7 +83,7 @@ export class ElementResolver {
   @UseMiddleware()
   async getParentPages(): Promise<Element[]> {
     const elements = await Element.find({
-      where: { type: ElementType.Page, parent: null },
+      where: { type: "Page", parent: null },
       relations: [
         "createdBy",
         "parent",
@@ -100,7 +100,7 @@ export class ElementResolver {
   @UseMiddleware()
   async getDatabases(): Promise<Element[]> {
     return await Element.find({
-      where: { type: ElementType.Database },
+      where: { type: "Database" },
       relations: [
         "createdBy",
         "parent",
@@ -116,7 +116,7 @@ export class ElementResolver {
   @UseMiddleware()
   async getDatabase(@Arg("databaseId") elementId: number): Promise<Element> {
     return await Element.findOneOrFail(
-      { id: elementId, type: ElementType.Database },
+      { id: elementId, type: "Database" },
       {
         relations: [
           "createdBy",
@@ -131,16 +131,16 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element, { nullable: true })
-  @UseMiddleware(isAuth)
+  @UseMiddleware(getAuth, getUser)
   async createElement(
     @Ctx() { payload }: MyContext,
-    @Arg("props", () => GraphQLJSONObject) props: object,
-    @Arg("type", () => ElementType) type: ElementType,
+    @Arg("data", () => GraphQLJSONObject) data: object,
+    @Arg("type") type: string,
     @Arg("index") index: number,
     @Arg("parent", { nullable: true }) parentId?: number
   ): Promise<Element | null> {
     const element = new Element();
-    element.props = props;
+    element.data = data;
     element.type = type;
     if (parentId && parentId !== null) {
       element.parent = await Element.findOneOrFail(parentId, {
@@ -162,38 +162,30 @@ export class ElementResolver {
       element.canInteractGroups = [];
     }
 
-    if (!payload?.userId) {
-      throw new Error("Not authenticated");
+    // Check user has permissions to edit parent (i.e. add an element to it)
+    if (!checkPermissions(element.canViewGroups, payload?.user)) {
+      throw new Error("Not authorized");
     }
 
-    const user = await User.findOneOrFail(payload.userId, {
-      relations: ["groups"],
-    });
-
-    if (parentId && parentId !== null) {
-      if (!checkPermissions(element.canEditGroups, user)) {
-        throw new Error("Not authorized");
-      }
-    } else {
-      if (user.role !== "exec") {
-        throw new Error("Not authorized");
-      }
+    // Check logged in (must be logged in to create an element)
+    if (!payload || !payload.user) {
+      throw new Error("Not logged in");
     }
 
     element.index = index;
-    element.createdBy = user;
+    element.createdBy = payload.user;
     element.children = [];
 
-    if (element.parent?.type === ElementType.Database) {
-      // Need to ensure element has all props of parent database
+    if (element.parent?.type === "Database") {
+      // Need to ensure element has all data of parent database
 
-      Object.keys((element.parent.props as any).attributes.value).map(
+      Object.keys((element.parent.data as any).attributes.value).map(
         (attributeName: string) => {
-          const attribute = (element.parent!.props as any).attributes.value[
+          const attribute = (element.parent!.data as any).attributes.value[
             attributeName
           ];
-          if (!(element.props as any)[attributeName]) {
-            (element.props as any)[attributeName] = attribute;
+          if (!(element.data as any)[attributeName]) {
+            (element.data as any)[attributeName] = attribute;
           }
         }
       );
@@ -205,10 +197,10 @@ export class ElementResolver {
 
   @Mutation(() => Element)
   @UseMiddleware(isAuth)
-  async editElementProps(
+  async editElementData(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
-    @Arg("props", () => GraphQLJSONObject) props: object
+    @Arg("data", () => GraphQLJSONObject) data: object
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
       relations: [
@@ -232,19 +224,19 @@ export class ElementResolver {
       throw new Error("Not authorized");
     }
 
-    element.props = { ...element.props, ...props };
+    element.data = { ...element.data, ...data };
 
-    if (element.type === ElementType.Database) {
-      // Need to ensure all content has same attributes
+    if (element.type === "Database") {
+      // Need to ensure all children has same attributes
 
       element.children.forEach((child) => {
-        Object.keys((element.props as any).attributes.value).map(
+        Object.keys((element.data as any).attributes.value).map(
           (attributeName: string) => {
-            const attribute = (element.props as any).attributes.value[
+            const attribute = (element.data as any).attributes.value[
               attributeName
             ];
-            if (!(child.props as any)[attributeName]) {
-              (child.props as any)[attributeName] = attribute;
+            if (!(child.data as any)[attributeName]) {
+              (child.data as any)[attributeName] = attribute;
             }
           }
         );

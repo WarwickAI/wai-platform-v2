@@ -1,16 +1,16 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
-import { Element, ElementType } from "../../generated/graphql";
+import { Element, ElementTypeKeys } from "../../utils/config";
 import Main from "../Elements/GenericElement";
 import AddElementPopover from "./AddElementPopover";
 import ElementSettingsPopover from "./ElementSettingsPopover";
 
 interface PageItemProps {
-  element: Element;
+  element: Element<any>;
   onDragStart: (e: MouseEvent | TouchEvent | PointerEvent) => void;
   onDragEnd: (e: MouseEvent | TouchEvent | PointerEvent) => void;
-  addElement: (type: ElementType, index: number) => void;
+  addElement: (type: ElementTypeKeys, index: number) => void;
   removeElement: (elementId: number) => void;
   isEdit: boolean;
 }
@@ -63,10 +63,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
         </Flex>
         {/* Element Content */}
         <Flex alignItems="center">
-          <Main
-            elementId={props.element.id}
-            isEdit={props.isEdit}
-          />
+          <Main elementId={props.element.id} isEdit={props.isEdit} />
         </Flex>
         {(showControls || addElementPopoverOpen) && props.isEdit && (
           <Flex

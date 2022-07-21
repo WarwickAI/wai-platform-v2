@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
-import { ElementType, useGetElementQuery } from "../../generated/graphql";
+import { useGetElementQuery } from "../../generated/graphql";
 import Page from "../../components/Elements/Page";
 import { Text } from "@chakra-ui/react";
 import ElementPageWrapper from "../../components/Utils/ElementPageWrapper";
-import { ElementTyper, PageElementProps } from "../../utils/elements";
+import { Element } from "../../utils/config";
+import { PageElementData } from "../../utils/base_element_types";
 
 interface GenericProps {}
 
@@ -23,7 +24,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
         <Text>Loading...</Text>
       </ElementPageWrapper>
     );
-  } else if (element.getElement.type !== ElementType.Page) {
+  } else if (element.getElement.type !== "Page") {
     return (
       <ElementPageWrapper>
         <Text>This element is not a page</Text>
@@ -34,7 +35,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
       <ElementPageWrapper>
         <Page
           key={element.getElement.id}
-          element={element.getElement as ElementTyper<PageElementProps>}
+          element={element.getElement as Element<PageElementData>}
           isFullPage={true}
           isEdit={false}
         />

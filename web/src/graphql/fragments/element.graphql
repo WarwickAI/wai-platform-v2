@@ -7,7 +7,7 @@ fragment ElementNoChildrenCreatedByGroups on Element {
   }
   type
   index
-  props
+  data
 }
 
 fragment ElementNoChildrenCreatedBy on Element {
@@ -44,7 +44,7 @@ fragment ElementAfterRemove on Element {
   }
   type
   index
-  props
+  data
   canEditGroups {
     ...GroupWithoutUsers
   }

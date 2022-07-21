@@ -16,23 +16,6 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { User } from "./User";
 import { Group } from "./Group";
 
-// Types of elements
-export enum ElementType {
-  Text = "Text",
-  Page = "Page",
-  Database = "Database",
-  DatabaseView = "DatabaseView",
-  PropertyLink = "PropertyLink",
-  Button = "Button",
-  User = "User",
-  Data = "Data",
-}
-// So that we can use it typegraphql
-registerEnumType(ElementType, {
-  name: "ElementType",
-  description: "Different options for elements",
-});
-
 @ObjectType()
 @Tree("materialized-path")
 @Entity()
@@ -61,13 +44,13 @@ export class Element extends BaseEntity {
   @Column()
   index: number;
 
-  @Field(() => ElementType)
+  @Field()
   @Column()
-  type: ElementType;
+  type: string;
 
   @Field(() => GraphQLJSONObject)
   @Column("simple-json")
-  props: object;
+  data: object;
 
   @Field(() => [Element])
   @TreeChildren()

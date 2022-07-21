@@ -12,47 +12,38 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import {
-  Element,
-  ElementType,
   useCreateElementMutation,
+  useEditElementDataMutation,
   useEditElementIndexMutation,
-  useEditElementPropsMutation,
   useRemoveElementMutation,
 } from "../../generated/graphql";
 import { Reorder } from "framer-motion";
-import {
-  createDefaultElementProps,
-  ElementTyper,
-  PageElementProps,
-  PropertyTypes,
-} from "../../utils/elements";
 import PageItem from "../Utils/PageItem";
 import AddElementPopover from "../Utils/AddElementPopover";
 import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
 import { useRouter } from "next/router";
+import { createDefaultElementData, Element, ElementTypeKeys } from "../../utils/config";
+import { PageElementData } from "../../utils/base_element_types";
 
 interface PageProps {
-  element: ElementTyper<PageElementProps>;
+  element: Element<PageElementData>;
   isEdit: boolean;
   isFullPage: boolean;
 }
 
 const Page: React.FC<PageProps> = (props) => {
   const router = useRouter();
-  const elementProps = props.element.props as PageElementProps;
+  const elementProps = props.element.data as PageElementData;
 
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
 
-  const [items, setItems] = useState<Element[]>([]);
-  const [oldItems, setOldItems] = useState<Element[]>([]);
+  const [items, setItems] = useState<Element<any>[]>([]);
+  const [oldItems, setOldItems] = useState<Element<any>[]>([]);
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
-  const [refreshDatabaseId, setRefreshDatabaseId] = useState<
-    number | undefined
-  >(undefined);
 
   // Initialise and update page content here
   useEffect(() => {
-    const contentSorted = props.element.children.sort(
+    const contentSorted = (props.element.children as Element<any>[]).sort(
       (a, b) => a.index! - b.index!
     );
     setItems(contentSorted);
@@ -63,11 +54,11 @@ const Page: React.FC<PageProps> = (props) => {
   const [pageTitle, setPageTitle] = useState<string>(elementProps.title.value);
 
   const [, createElement] = useCreateElementMutation();
-  const [, editElement] = useEditElementPropsMutation();
+  const [, editElement] = useEditElementDataMutation();
   const [, editElementIndex] = useEditElementIndexMutation();
   const [, deleteElement] = useRemoveElementMutation();
 
-  const updateIndex = (oldOrder: Element[], newOrder: Element[]) => {
+  const updateIndex = (oldOrder: Element<any>[], newOrder: Element<any>[]) => {
     newOrder.forEach((item, index) => {
       if (oldOrder[index] !== item) {
         editElementIndex({ elementId: item.id, index: index });
@@ -85,11 +76,11 @@ const Page: React.FC<PageProps> = (props) => {
     updateIndex(oldItems, items);
   };
 
-  const addElement = async (type: ElementType, index: number) => {
+  const addElement = async (type: ElementTypeKeys, index: number) => {
     await createElement({
       index,
       type,
-      props: createDefaultElementProps(type),
+      data: createDefaultElementData(type),
       parent: props.element.id,
     });
   };
@@ -103,10 +94,6 @@ const Page: React.FC<PageProps> = (props) => {
       elementProps.coverImg.value ? elementProps.coverImg.value : undefined,
     [elementProps.coverImg.value]
   );
-
-  const refreshDatabase = (id: number | undefined) => {
-    setRefreshDatabaseId(id);
-  };
 
   if (!props.isFullPage) {
     return (
@@ -170,9 +157,9 @@ const Page: React.FC<PageProps> = (props) => {
                       setPageTitle(e.target.value);
                       editElement({
                         elementId: props.element.id,
-                        props: {
+                        data: {
                           title: {
-                            type: PropertyTypes.Text,
+                            type: "Text",
                             value: e.target.value,
                           },
                         },

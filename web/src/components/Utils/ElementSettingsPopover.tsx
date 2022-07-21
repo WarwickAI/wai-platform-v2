@@ -11,12 +11,8 @@ import {
   propNames,
 } from "@chakra-ui/react";
 import { Component, useState } from "react";
-import { Element, useEditElementPropsMutation } from "../../generated/graphql";
-import {
-  ElementPropertyInfo,
-  GeneralPropertyInfo,
-  Property,
-} from "../../utils/elements";
+import { useEditElementDataMutation } from "../../generated/graphql";
+import { Element, ElementDataPiece } from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";
 import PermissionsEdit from "./PermissionsEdit";
 
@@ -24,7 +20,7 @@ interface ElementSettingsPopoverProps {
   onOpen: () => void;
   onClose: () => void;
   removeElement: (elementId: number) => void;
-  element: Element;
+  element: Element<any>;
   disabled: boolean;
 }
 
@@ -33,7 +29,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 ) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
 
-  const [, editElement] = useEditElementPropsMutation();
+  const [, editElement] = useEditElementDataMutation();
   return (
     <Popover
       autoFocus={false}
@@ -63,21 +59,15 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody>
-          {Object.keys(props.element.props).map((propName) => {
-            const elementProp = props.element.props[propName] as Property;
-            const propShowInSettings = ElementPropertyInfo[props.element.type][
-              propName
-            ]
-              ? ElementPropertyInfo[props.element.type][propName].showInSettings
-              : GeneralPropertyInfo[elementProp.type];
-            if (!propShowInSettings) {
-              return <></>;
-            }
+          {Object.keys(props.element.data).map((dataPieceName) => {
+            const elementDataPiece = props.element.data[
+              dataPieceName
+            ] as ElementDataPiece<any>;
             return (
               <ElementSetting
-                key={propName}
-                prop={elementProp}
-                propName={propName}
+                key={dataPieceName}
+                elementDataPiece={elementDataPiece}
+                dataPieceName={dataPieceName}
                 element={props.element}
               />
             );
@@ -97,40 +87,37 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 };
 
 interface ElementSettingProps {
-  prop: Property;
-  propName: string;
-  element: Element;
+  elementDataPiece: ElementDataPiece<any>;
+  dataPieceName: string;
+  element: Element<any>;
 }
 
 const ElementSetting: React.FC<ElementSettingProps> = (props) => {
-  const [value, setValue] = useState<any>(props.prop.value);
+  const [value, setValue] = useState<any>(props.elementDataPiece.value);
 
-  const [, editElement] = useEditElementPropsMutation();
-  
+  const [, editElement] = useEditElementDataMutation();
+
   return (
     <Flex direction={"row"} alignItems="center" mb={2}>
       <Text mr={2} whiteSpace={"nowrap"}>
-        {ElementPropertyInfo[props.element.type][props.propName]
-          ? ElementPropertyInfo[props.element.type][props.propName].label
-          : props.propName}
-        :
+        {props.dataPieceName}:
       </Text>
 
       <GenericProperty
         element={props.element}
         value={value}
-        type={props.prop.type}
+        type={props.elementDataPiece.type}
         onChange={async (v) => {
           setValue(v);
-          const newProps: any = {};
-          newProps[props.propName] = {
-            ...props.prop,
+          const newData: any = {};
+          newData[props.dataPieceName] = {
+            ...props.elementDataPiece,
             value: v,
           };
 
           await editElement({
             elementId: props.element.id,
-            props: newProps,
+            data: newData,
           });
         }}
         isEdit={true}

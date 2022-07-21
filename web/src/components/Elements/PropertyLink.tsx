@@ -1,14 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, Text, Button, Input } from "@chakra-ui/react";
 import {
-  useEditElementPropsMutation,
   useGetElementQuery,
 } from "../../generated/graphql";
-import {
-  ElementTyper,
-  PropertyLinkElementProps,
-  PropertyTypes,
-} from "../../utils/elements";
 import {
   convertFromRaw,
   convertToRaw,
@@ -18,15 +12,17 @@ import {
 } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
+import { PropertyLinkElementData } from "../../utils/base_element_types";
+import { Element } from "../../utils/config";
 
 interface PropertyLinkProps {
-  element: ElementTyper<PropertyLinkElementProps>;
+  element: Element<PropertyLinkElementData>;
   isEdit: boolean;
 }
 
 const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
   const router = useRouter();
-  const elementProps = props.element.props as PropertyLinkElementProps;
+  const elementProps = props.element.data as PropertyLinkElementData;
   const [{ data: parentElement }] = useGetElementQuery({
     variables: {
       elementId: props.element.parent ? props.element.parent.id : 0,
@@ -35,11 +31,11 @@ const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
 
   return (
     <Box>
-      {parentElement?.getElement.props[elementProps.propertyName.value]
+      {parentElement?.getElement.data[elementProps.property.value]
         ?.value !== undefined ? (
         <Text>
           {
-            parentElement?.getElement.props[elementProps.propertyName.value]
+            parentElement?.getElement.data[elementProps.property.value]
               .value
           }
         </Text>

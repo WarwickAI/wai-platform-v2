@@ -14,15 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import {
-  ElementType,
   useCreateElementMutation,
-  useGetDatabasesWithoutContentQuery,
+  useGetDatabasesWithoutChildrenQuery,
 } from "../../generated/graphql";
-import {
-  DatabaseElementProps,
-  DatabaseBaseTypes,
-  createDefaultElementProps,
-} from "../../utils/elements";
+import { DatabaseBaseTypeValue } from "../../utils/base_data_types";
+import { DatabaseElementData } from "../../utils/base_element_types";
+import { createDefaultElementData, ElementTypesDef } from "../../utils/config";
 
 interface DatabaseIdPropertyProps {
   value: number;
@@ -36,12 +33,11 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
     onOpen: onAddOpen,
     onClose: onAddClose,
   } = useDisclosure();
-  const [{ data: databasesQuery }] = useGetDatabasesWithoutContentQuery();
+  const [{ data: databasesQuery }] = useGetDatabasesWithoutChildrenQuery();
   const cancelAddRef = useRef<HTMLButtonElement | undefined>();
   const [newDatabaseName, setNewDatabaseName] = useState<string>("");
-  const [newDatabaseBaseType, setNewDatabaseBaseType] = useState<ElementType>(
-    ElementType.Page
-  );
+  const [newDatabaseBaseType, setNewDatabaseBaseType] =
+    useState<DatabaseBaseTypeValue>("Page");
 
   const [, createElement] = useCreateElementMutation();
 
@@ -51,7 +47,7 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
         {databasesQuery &&
           databasesQuery?.getDatabases[
             databasesQuery.getDatabases.findIndex((db) => db.id === props.value)
-          ].props.title.value}
+          ].data.title.value}
       </>
     );
   }
@@ -64,7 +60,7 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
         onChange={(e) => props.onChange(parseInt(e.target.value))}
       >
         {databasesQuery?.getDatabases.map((database) => {
-          const databaseProps = database.props as DatabaseElementProps;
+          const databaseProps = database.data as DatabaseElementData;
           return (
             <option key={database.id} value={database.id}>
               {databaseProps.title.value}
@@ -107,12 +103,12 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
                 <Select
                   onChange={(e) => {
                     setNewDatabaseBaseType(
-                      e.target.value as unknown as ElementType
+                      e.target.value as DatabaseBaseTypeValue
                     );
                   }}
-                  value={newDatabaseBaseType as string}
+                  value={newDatabaseBaseType}
                 >
-                  {DatabaseBaseTypes.map((type) => {
+                  {Object.keys(ElementTypesDef).map((type) => {
                     return (
                       <option key={type} value={type}>
                         {type}
@@ -137,18 +133,16 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
                 ml={3}
                 onClick={async () => {
                   // Create new database, and set to be database for database view
-                  const newDatabaseProps = createDefaultElementProps(
-                    ElementType.Database
-                  );
-                  newDatabaseProps.title.value = newDatabaseName;
-                  newDatabaseProps.contentBaseType.value = newDatabaseBaseType;
-                  newDatabaseProps.attributes.value =
-                    createDefaultElementProps(newDatabaseBaseType);
+                  const newDatabaseData = createDefaultElementData("Database") as DatabaseElementData;
+                  newDatabaseData.title.value = newDatabaseName;
+                  newDatabaseData.childrenBaseType.value = newDatabaseBaseType;
+                  newDatabaseData.attributes.value =
+                    createDefaultElementData(newDatabaseBaseType);
 
                   const newDatabase = await createElement({
                     index: 0,
-                    type: ElementType.Database,
-                    props: newDatabaseProps,
+                    type: "Database",
+                    data: newDatabaseData,
                   });
                   if (newDatabase.data?.createElement) {
                     props.onChange(newDatabase.data.createElement.id);
