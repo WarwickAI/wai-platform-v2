@@ -6,9 +6,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
 import {
   useGetDatabaseQuery,
-  useGetElementQuery,
 } from "../../generated/graphql";
-import FullPage from "../../components/Elements/Page";
 
 interface GenericProps {}
 

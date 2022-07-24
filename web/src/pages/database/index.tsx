@@ -4,19 +4,17 @@ import Dashboard from "../../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { Text } from "@chakra-ui/react";
-import {
-  useGetDatabasesQuery,
-} from "../../generated/graphql";
+import { useGetDatabasesWithoutChildrenQuery } from "../../generated/graphql";
 
 interface GenericProps {}
 
 const Generic: React.FC<GenericProps> = ({}) => {
-  const [{ data: databases }] = useGetDatabasesQuery();
+  const [{ data: databases }] = useGetDatabasesWithoutChildrenQuery();
   return (
-    <Dashboard title="Generic">
+    <Dashboard title="Databases">
       {databases &&
         databases.getDatabases.map((database) => {
-          return <Text key={database.id}>{database.props.title}</Text>;
+          return <Text key={database.id}>{database.data.title}</Text>;
         })}
     </Dashboard>
   );

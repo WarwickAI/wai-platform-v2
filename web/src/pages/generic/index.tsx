@@ -14,7 +14,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
     <Dashboard title="Generic">
       {parentPages &&
         parentPages.getParentPages.map((page) => {
-          return <Main key={page.id} elementId={page.id} />;
+          return <Main key={page.id} elementId={page.id} isEdit={false} />;
         })}
     </Dashboard>
   );

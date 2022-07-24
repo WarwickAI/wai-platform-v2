@@ -42,14 +42,13 @@ import {
   RegularTalkFragment,
   RegularCourseFragment,
   RegularTutorialFragment,
-  EditElementPropsMutation,
   GetElementQuery,
   CreateElementMutation,
   GetElementDocument,
   RemoveElementMutation,
-  ElementType,
-  GetDatabasesWithoutContentDocument,
-  GetDatabasesWithoutContentQuery,
+  GetDatabasesWithoutChildrenQuery,
+  GetDatabasesWithoutChildrenDocument,
+  EditElementDataMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -696,14 +695,14 @@ export const createUrqlClient = (ssrExchange: any) => {
                 }
               );
 
-              if (newElement.type === ElementType.Database) {
+              if (newElement.type === "Database") {
                 betterUpdateQuery<
                   CreateElementMutation,
-                  GetDatabasesWithoutContentQuery
+                  GetDatabasesWithoutChildrenQuery
                 >(
                   cache,
                   {
-                    query: GetDatabasesWithoutContentDocument,
+                    query: GetDatabasesWithoutChildrenDocument,
                   },
                   _result,
                   (_, query) => {
@@ -714,28 +713,28 @@ export const createUrqlClient = (ssrExchange: any) => {
               }
             },
 
-            editElementProps: (_result, args, cache, info) => {
-              const res = _result as EditElementPropsMutation;
-              if (!res.editElementProps) {
+            editElementData: (_result, args, cache, info) => {
+              const res = _result as EditElementDataMutation;
+              if (!res.editElementData) {
                 return;
               }
-              const newElement = res.editElementProps;
+              const newElement = res.editElementData;
               const elementId = newElement.id;
-              betterUpdateQuery<EditElementPropsMutation, GetElementQuery>(
+              betterUpdateQuery<EditElementDataMutation, GetElementQuery>(
                 cache,
                 { query: GetElementDocument, variables: { elementId } },
                 _result,
                 (result, query) => {
-                  if (!result.editElementProps) {
+                  if (!result.editElementData) {
                     return query;
                   } else {
-                    if (result.editElementProps.parent) {
+                    if (result.editElementData.parent) {
                       betterUpdateQuery<CreateElementMutation, GetElementQuery>(
                         cache,
                         {
                           query: GetElementDocument,
                           variables: {
-                            elementId: result.editElementProps.parent
+                            elementId: result.editElementData.parent
                               .id as Scalar,
                           },
                         },
@@ -743,27 +742,27 @@ export const createUrqlClient = (ssrExchange: any) => {
                         (_, query2) => {
                           query2.getElement.children[
                             query2.getElement.children.findIndex(
-                              (val) => val.id === result.editElementProps.id
+                              (val) => val.id === result.editElementData.id
                             )
-                          ] = result.editElementProps;
+                          ] = result.editElementData;
                           return query2;
                         }
                       );
                     }
-                    query.getElement = result.editElementProps;
+                    query.getElement = result.editElementData;
                     console.log("UPDATED:", query);
                     return query;
                   }
                 }
               );
-              if (newElement.type === ElementType.Database) {
+              if (newElement.type === "Database") {
                 betterUpdateQuery<
                   CreateElementMutation,
-                  GetDatabasesWithoutContentQuery
+                  GetDatabasesWithoutChildrenQuery
                 >(
                   cache,
                   {
-                    query: GetDatabasesWithoutContentDocument,
+                    query: GetDatabasesWithoutChildrenDocument,
                   },
                   _result,
                   (_, query) => {

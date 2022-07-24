@@ -131,7 +131,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element, { nullable: true })
-  @UseMiddleware(getAuth, getUser)
+  @UseMiddleware(isAuth, getUser)
   async createElement(
     @Ctx() { payload }: MyContext,
     @Arg("data", () => GraphQLJSONObject) data: object,
@@ -196,7 +196,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, getUser)
   async editElementData(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
@@ -213,14 +213,7 @@ export class ElementResolver {
       ],
     });
 
-    if (!payload?.userId) {
-      throw new Error("Not authenticated");
-    }
-
-    const user = await User.findOneOrFail(payload.userId, {
-      relations: ["groups"],
-    });
-    if (!checkPermissions(element.canEditGroups, user)) {
+    if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
 
@@ -266,14 +259,7 @@ export class ElementResolver {
       ],
     });
 
-    if (!payload?.userId) {
-      throw new Error("Not authenticated");
-    }
-
-    const users = await User.findOneOrFail(payload.userId, {
-      relations: ["groups"],
-    });
-    if (!checkPermissions(element.canEditGroups, users)) {
+    if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
     element.index = index;
