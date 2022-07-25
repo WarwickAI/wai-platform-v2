@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
-import { useGetElementQuery } from "../../generated/graphql";
+import { useGetElementQuery, useMeQuery } from "../../generated/graphql";
 import Page from "../../components/Elements/Page";
 import { Text } from "@chakra-ui/react";
 import ElementPageWrapper from "../../components/Utils/ElementPageWrapper";
@@ -17,6 +17,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
   const [{ data: element }] = useGetElementQuery({
     variables: { elementId: parseInt(page_id as string) },
   });
+  const [{ data: userData }] = useMeQuery();
 
   if (!element) {
     return (
@@ -37,7 +38,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
           key={element.getElement.id}
           element={element.getElement as Element<PageElementData>}
           isFullPage={true}
-          isEdit={false}
+          isEdit={!!userData?.me}
         />
       </ElementPageWrapper>
     );

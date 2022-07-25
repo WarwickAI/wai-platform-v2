@@ -15,6 +15,7 @@ import {
   useCreateElementMutation,
   useEditElementDataMutation,
   useEditElementIndexMutation,
+  useMeQuery,
   useRemoveElementMutation,
 } from "../../generated/graphql";
 import { Reorder } from "framer-motion";
@@ -22,7 +23,11 @@ import PageItem from "../Utils/PageItem";
 import AddElementPopover from "../Utils/AddElementPopover";
 import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
 import { useRouter } from "next/router";
-import { createDefaultElementData, Element, ElementTypeKeys } from "../../utils/config";
+import {
+  createDefaultElementData,
+  Element,
+  ElementTypeKeys,
+} from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
 
 interface PageProps {
@@ -36,10 +41,11 @@ const Page: React.FC<PageProps> = (props) => {
   const elementProps = props.element.data as PageElementData;
 
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
+  const [{ data: userData }] = useMeQuery();
 
   const [items, setItems] = useState<Element<any>[]>([]);
   const [oldItems, setOldItems] = useState<Element<any>[]>([]);
-  const [isEditMode, setIsEditMode] = useState<boolean>(true);
+  const [isEditMode, setIsEditMode] = useState<boolean>(!!userData?.me);
 
   // Initialise and update page content here
   useEffect(() => {
@@ -187,19 +193,21 @@ const Page: React.FC<PageProps> = (props) => {
                   </Heading>
                 </Flex>
               )}
-              <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="edit-mode" mb="0">
-                  Edit Mode?
-                </FormLabel>
-                <Switch
-                  id="edit-mode"
-                  isChecked={isEditMode}
-                  onChange={(e) => {
-                    console.log(e.target.checked);
-                    setIsEditMode(e.target.checked);
-                  }}
-                />
-              </FormControl>
+              {!!userData?.me && (
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="edit-mode" mb="0">
+                    Edit Mode?
+                  </FormLabel>
+                  <Switch
+                    id="edit-mode"
+                    isChecked={isEditMode}
+                    onChange={(e) => {
+                      console.log(e.target.checked);
+                      setIsEditMode(e.target.checked);
+                    }}
+                  />
+                </FormControl>
+              )}
             </Flex>
           </Box>
           <Box

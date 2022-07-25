@@ -37,6 +37,13 @@ fragment FullElement on Element {
   }
 }
 
+fragment FullElementChildrenNoChildrenCreatedByGroups on Element {
+  ...ElementNoChildren
+  children {
+    ...ElementNoChildrenCreatedByGroups
+  }
+}
+
 # No ID field since gets removed
 fragment ElementAfterRemove on Element {
   parent {

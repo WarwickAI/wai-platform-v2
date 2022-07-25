@@ -79,10 +79,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const addRow = async () => {
     await createElement({
       index: 0,
-      type: databaseQuery?.getElement.data.contentBaseType
+      type: databaseQuery?.getElement.data.childrenBaseType
         .value as ElementTypeKeys,
       data: createDefaultElementData(
-        databaseQuery?.getElement.data.contentBaseType.value
+        databaseQuery?.getElement.data.childrenBaseType.value
       ),
       parent: elementData.database.value,
     });
@@ -150,7 +150,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                                 variant="outline"
                                 onClick={() => addAttribute(dataTypeKey)}
                               >
-                                {DataTypesDef[dataTypeKey]}
+                                {DataTypesDef[dataTypeKey].label}
                               </Button>
                             );
                           })}
