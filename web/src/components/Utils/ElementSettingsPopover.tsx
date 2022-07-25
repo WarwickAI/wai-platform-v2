@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Component, useState } from "react";
 import { useEditElementDataMutation } from "../../generated/graphql";
-import { Element, ElementDataPiece } from "../../utils/config";
+import { Element, ElementDataPiece, ElementTypesDef } from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";
 import PermissionsEdit from "./PermissionsEdit";
 
@@ -29,7 +29,6 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 ) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
 
-  const [, editElement] = useEditElementDataMutation();
   return (
     <Popover
       autoFocus={false}
@@ -63,14 +62,20 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
             const elementDataPiece = props.element.data[
               dataPieceName
             ] as ElementDataPiece<any>;
-            return (
-              <ElementSetting
-                key={dataPieceName}
-                elementDataPiece={elementDataPiece}
-                dataPieceName={dataPieceName}
-                element={props.element}
-              />
-            );
+            if (
+              ElementTypesDef[props.element.type].data[dataPieceName]?.inSettings
+            ) {
+              return (
+                <ElementSetting
+                  key={dataPieceName}
+                  elementDataPiece={elementDataPiece}
+                  dataPieceName={dataPieceName}
+                  element={props.element}
+                />
+              );
+            } else {
+              return <></>;
+            }
           })}
           <PermissionsEdit element={props.element} />
           <Button
@@ -100,7 +105,9 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   return (
     <Flex direction={"row"} alignItems="center" mb={2}>
       <Text mr={2} whiteSpace={"nowrap"}>
-        {props.dataPieceName}:
+        {ElementTypesDef[props.element.type].data[props.dataPieceName]?.label ||
+          props.dataPieceName}
+        :
       </Text>
 
       <GenericProperty

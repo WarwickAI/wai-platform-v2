@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import { Text } from "@chakra-ui/react";
 import ElementPageWrapper from "../../components/Utils/ElementPageWrapper";
 import { Element } from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
+import { EditContext } from "../../utils/EditContext";
 
 interface GenericProps {}
 
@@ -17,7 +18,10 @@ const Generic: React.FC<GenericProps> = ({}) => {
   const [{ data: element }] = useGetElementQuery({
     variables: { elementId: parseInt(page_id as string) },
   });
+
   const [{ data: userData }] = useMeQuery();
+  const [isEditMode, setIsEditMode] = React.useState<boolean>(false);
+  const editContextValue = { isEdit: isEditMode, setIsEdit: setIsEditMode };
 
   if (!element) {
     return (
@@ -33,14 +37,16 @@ const Generic: React.FC<GenericProps> = ({}) => {
     );
   } else {
     return (
-      <ElementPageWrapper>
-        <Page
-          key={element.getElement.id}
-          element={element.getElement as Element<PageElementData>}
-          isFullPage={true}
-          isEdit={!!userData?.me}
-        />
-      </ElementPageWrapper>
+      <EditContext.Provider value={editContextValue}>
+        <ElementPageWrapper>
+          <Page
+            key={element.getElement.id}
+            element={element.getElement as Element<PageElementData>}
+            isFullPage={true}
+            isEdit={isEditMode}
+          />
+        </ElementPageWrapper>
+      </EditContext.Provider>
     );
   }
 };

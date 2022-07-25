@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -29,6 +29,7 @@ import {
   ElementTypeKeys,
 } from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
+import { EditContext } from "../../utils/EditContext";
 
 interface PageProps {
   element: Element<PageElementData>;
@@ -41,11 +42,10 @@ const Page: React.FC<PageProps> = (props) => {
   const elementProps = props.element.data as PageElementData;
 
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
-  const [{ data: userData }] = useMeQuery();
 
   const [items, setItems] = useState<Element<any>[]>([]);
   const [oldItems, setOldItems] = useState<Element<any>[]>([]);
-  const [isEditMode, setIsEditMode] = useState<boolean>(!!userData?.me);
+  const { isEdit } = useContext(EditContext);
 
   // Initialise and update page content here
   useEffect(() => {
@@ -151,7 +151,7 @@ const Page: React.FC<PageProps> = (props) => {
               justifyContent="space-between"
               position={"relative"}
             >
-              {isEditMode ? (
+              {isEdit ? (
                 <>
                   <Input
                     value={pageTitle}
@@ -193,21 +193,6 @@ const Page: React.FC<PageProps> = (props) => {
                   </Heading>
                 </Flex>
               )}
-              {!!userData?.me && (
-                <FormControl display="flex" alignItems="center">
-                  <FormLabel htmlFor="edit-mode" mb="0">
-                    Edit Mode?
-                  </FormLabel>
-                  <Switch
-                    id="edit-mode"
-                    isChecked={isEditMode}
-                    onChange={(e) => {
-                      console.log(e.target.checked);
-                      setIsEditMode(e.target.checked);
-                    }}
-                  />
-                </FormControl>
-              )}
             </Flex>
           </Box>
           <Box
@@ -231,7 +216,7 @@ const Page: React.FC<PageProps> = (props) => {
                     onDragEnd={onDragEnd}
                     addElement={addElement}
                     removeElement={removeElement}
-                    isEdit={isEditMode}
+                    isEdit={isEdit}
                   />
                 );
               })}

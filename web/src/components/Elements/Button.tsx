@@ -43,7 +43,7 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
           });
         }}
       >
-        Add To Database
+        {elementData.text.value}
       </Button>
     </Box>
   );

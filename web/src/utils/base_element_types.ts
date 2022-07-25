@@ -21,6 +21,7 @@ export type ElementDataDef = {
     hint?: string;
     constraints?: {};
     defaultValue?: {};
+    inSettings: boolean;
   };
 };
 
@@ -35,6 +36,7 @@ export const ElementTypesDef = {
     data: {
       text: {
         type: "FormattedText",
+        inSettings: false,
       },
     },
   } as ElementTypeDef,
@@ -43,12 +45,18 @@ export const ElementTypesDef = {
     data: {
       title: {
         type: "Text",
+        label: "Title",
+        inSettings: true,
       },
       coverImg: {
         type: "Image",
+        label: "Cover Image",
+        inSettings: true,
       },
       iconImg: {
         type: "Image",
+        label: "Icon Image",
+        inSettings: true,
       },
     },
   } as ElementTypeDef,
@@ -57,15 +65,23 @@ export const ElementTypesDef = {
     data: {
       text: {
         type: "Text",
+        label: "Text",
+        inSettings: true,
       },
       database: {
         type: "DatabaseID",
+        label: "Database",
+        inSettings: true,
       },
       action: {
         type: "ActionType",
+        label: "Action",
+        inSettings: true,
       },
       data: {
         type: "DataList",
+        label: "Data",
+        inSettings: true,
       },
     },
   } as ElementTypeDef,
@@ -74,12 +90,15 @@ export const ElementTypesDef = {
     data: {
       title: {
         type: "Text",
+        inSettings: false,
       },
       attributes: {
         type: "DatabaseAttributes",
+        inSettings: false,
       },
       childrenBaseType: {
         type: "DatabaseBaseType",
+        inSettings: false,
       },
     },
   } as ElementTypeDef,
@@ -88,6 +107,8 @@ export const ElementTypesDef = {
     data: {
       database: {
         type: "DatabaseID",
+        label: "Database",
+        inSettings: true,
       },
     },
   } as ElementTypeDef,
@@ -96,6 +117,8 @@ export const ElementTypesDef = {
     data: {
       image: {
         type: "Image",
+        label: "Image",
+        inSettings: true,
       },
     },
   } as ElementTypeDef,
@@ -104,6 +127,8 @@ export const ElementTypesDef = {
     data: {
       property: {
         type: "PropertyLink",
+        label: "Property",
+        inSettings: true,
       },
     },
   } as ElementTypeDef,
