@@ -152,7 +152,29 @@ const Page: React.FC<PageProps> = (props) => {
               position={"relative"}
             >
               {isEdit ? (
-                <>
+                <Box position="relative" p={2} my={2}>
+                  {/* Element Controls */}
+                  <Flex
+                    height={"full"}
+                    position="absolute"
+                    left="-5"
+                    my={-2}
+                    alignItems={"center"}
+                    opacity={0.2}
+                    _hover={{
+                      opacity: 1,
+                    }}
+                  >
+                    {props.isEdit && (
+                      <ElementSettingsPopover
+                        onOpen={() => {}}
+                        onClose={() => {}}
+                        element={props.element}
+                        removeElement={() => {}}
+                        disabled={false}
+                      />
+                    )}
+                  </Flex>
                   <Input
                     value={pageTitle}
                     w={300}
@@ -172,14 +194,7 @@ const Page: React.FC<PageProps> = (props) => {
                       });
                     }}
                   />
-                  <ElementSettingsPopover
-                    onOpen={() => {}}
-                    onClose={() => {}}
-                    element={props.element}
-                    removeElement={() => {}}
-                    disabled={false}
-                  />
-                </>
+                </Box>
               ) : (
                 <Flex alignItems={"center"} h={12} w={300}>
                   <Heading

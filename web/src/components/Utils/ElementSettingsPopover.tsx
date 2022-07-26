@@ -31,7 +31,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 
   return (
     <Popover
-      autoFocus={false}
+      autoFocus={true}
       returnFocusOnClose={false}
       isOpen={isOpen}
       onClose={() => {

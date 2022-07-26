@@ -750,7 +750,6 @@ export const createUrqlClient = (ssrExchange: any) => {
                       );
                     }
                     query.getElement = result.editElementData;
-                    console.log("UPDATED:", query);
                     return query;
                   }
                 }
