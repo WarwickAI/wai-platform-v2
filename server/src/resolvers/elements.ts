@@ -44,33 +44,11 @@ export class ElementResolver {
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number
   ): Promise<Element> {
-    const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
-    });
+    const element = await Element.getElementByIdWithChildren(elementId);
+
     if (!checkPermissions(element.canViewGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
-
-    element.children = await Promise.all(
-      element.children.map((child) =>
-        Element.findOneOrFail(child.id, {
-          relations: [
-            "createdBy",
-            "parent",
-            "canEditGroups",
-            "canViewGroups",
-            "canInteractGroups",
-          ],
-        })
-      )
-    );
 
     // Now filter out the elements that the user can't see
     element.children = element.children.filter((child) =>
@@ -202,29 +180,23 @@ export class ElementResolver {
     @Arg("elementId") elementId: number,
     @Arg("data", () => GraphQLJSONObject) data: object
   ): Promise<Element> {
-    const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
-    });
+    const element = await Element.getElementByIdWithChildren(elementId);
 
     if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
 
+    // Update element with new data
     element.data = { ...element.data, ...data };
 
     if (element.type === "Database") {
       // Need to ensure all children has same attributes
-
       element.children.forEach((child) => {
-        Object.keys((element.data as any).attributes.value).map(
+        Object.keys((element.data as any).attributes.value).forEach(
           (attributeName: string) => {
+            if (!checkPermissions(child.canEditGroups, payload?.user)) {
+              return;
+            }
             const attribute = (element.data as any).attributes.value[
               attributeName
             ];
@@ -236,6 +208,11 @@ export class ElementResolver {
         child.save();
       });
     }
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
 
     await element.save();
     return element;

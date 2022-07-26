@@ -1,6 +1,6 @@
 mutation EditElementData($data: JSONObject!, $elementId: Float!) {
   editElementData(data: $data, elementId: $elementId) {
-    ...FullElementChildrenNoChildrenCreatedByGroups
+    ...FullElement
   }
 }
 

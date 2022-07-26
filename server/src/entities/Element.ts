@@ -67,4 +67,32 @@ export class Element extends BaseEntity {
   @Field(() => [Group])
   @ManyToMany(() => Group, (group) => group.canEditElements)
   canEditGroups: Group[];
+
+  static async getElementByIdWithChildren(id: number): Promise<Element> {
+    const element = await Element.findOneOrFail(id, {
+      relations: [
+        "createdBy",
+        "parent",
+        "children",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
+    });
+
+    element.children = await Promise.all(
+      element.children.map((child) =>
+        Element.findOneOrFail(child.id, {
+          relations: [
+            "createdBy",
+            "parent",
+            "canEditGroups",
+            "canViewGroups",
+            "canInteractGroups",
+          ],
+        })
+      )
+    );
+    return element;
+  }
 }

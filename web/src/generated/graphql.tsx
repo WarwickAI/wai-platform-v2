@@ -892,7 +892,7 @@ export type EditElementDataMutationVariables = Exact<{
 }>;
 
 
-export type EditElementDataMutation = { __typename?: 'Mutation', editElementData: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
+export type EditElementDataMutation = { __typename?: 'Mutation', editElementData: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type EditElementIndexMutationVariables = Exact<{
   index: Scalars['Float'];
@@ -1763,10 +1763,10 @@ export function useAddRonApplicationMutation() {
 export const EditElementDataDocument = gql`
     mutation EditElementData($data: JSONObject!, $elementId: Float!) {
   editElementData(data: $data, elementId: $elementId) {
-    ...FullElementChildrenNoChildrenCreatedByGroups
+    ...FullElement
   }
 }
-    ${FullElementChildrenNoChildrenCreatedByGroupsFragmentDoc}`;
+    ${FullElementFragmentDoc}`;
 
 export function useEditElementDataMutation() {
   return Urql.useMutation<EditElementDataMutation, EditElementDataMutationVariables>(EditElementDataDocument);
