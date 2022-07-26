@@ -152,13 +152,12 @@ const Page: React.FC<PageProps> = (props) => {
               position={"relative"}
             >
               {isEdit ? (
-                <Box position="relative" p={2} my={2}>
+                <Box position="relative" px={2} my={2}>
                   {/* Element Controls */}
                   <Flex
                     height={"full"}
                     position="absolute"
                     left="-5"
-                    my={-2}
                     alignItems={"center"}
                     opacity={0.2}
                     _hover={{
