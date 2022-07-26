@@ -63,7 +63,8 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
               dataPieceName
             ] as ElementDataPiece<any>;
             if (
-              ElementTypesDef[props.element.type].data[dataPieceName]?.inSettings
+              ElementTypesDef[props.element.type].data[dataPieceName]
+                ?.inSettings
             ) {
               return (
                 <ElementSetting
@@ -74,7 +75,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                 />
               );
             } else {
-              return <></>;
+              return;
             }
           })}
           <PermissionsEdit element={props.element} />

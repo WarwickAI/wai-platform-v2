@@ -6,7 +6,11 @@ import {
   PopoverBody,
   Tooltip,
 } from "@chakra-ui/react";
-import { ElementTypeKeys, ElementTypesDef, ElementTypesToNotShowInAdd } from "../../utils/config";
+import {
+  ElementTypeKeys,
+  ElementTypesDef,
+  ElementTypesToNotShowInAdd,
+} from "../../utils/config";
 
 interface AddElementPopoverProps {
   onOpen: () => void;
@@ -33,7 +37,7 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
         <PopoverBody>
           {Object.keys(ElementTypesDef).map((type) => {
             if (ElementTypesToNotShowInAdd.includes(type as ElementTypeKeys)) {
-              return <></>;
+              return;
             }
             return (
               <Tooltip key={type} label={type}>
