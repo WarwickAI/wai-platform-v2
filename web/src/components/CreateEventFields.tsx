@@ -45,7 +45,6 @@ const CreateEventFields: React.FC<CreateEventFieldsProps> = (props) => {
     <Formik
       initialValues={eventInitialValues}
       onSubmit={async (values, { setErrors }) => {
-        console.log(tags);
         const response = await props.handleCreate({
           ...values,
           tags: tags.map((tag) => tag.id),

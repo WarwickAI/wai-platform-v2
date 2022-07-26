@@ -9,7 +9,6 @@ interface TextPropertyProps {
 }
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
-  console.log("Text", props.isEdit);
   if (!props.isEdit) {
     return <Text {...props.style}>{props.value}</Text>;
   } else {

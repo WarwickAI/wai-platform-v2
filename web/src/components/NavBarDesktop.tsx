@@ -114,7 +114,6 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
                   id="edit-mode"
                   isChecked={isEdit}
                   onChange={(e) => {
-                    console.log(e.target.checked);
                     setIsEdit(e.target.checked);
                   }}
                 />
@@ -124,7 +123,6 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
         </Box>
       )}
       {sidebarConfig.map(({ title, path, icon }) => {
-        // console.log(title);
         return (
           <NavItem
             key={title}

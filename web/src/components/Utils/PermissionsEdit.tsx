@@ -92,7 +92,6 @@ const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
         return { label: group.name, value: group as Group };
       })}
       onChange={(e) => {
-        console.log(e);
         props.onChange(e.map((v) => v.value));
       }}
       chakraStyles={{

@@ -87,7 +87,6 @@ const NavDrawer: React.FC<NavDrawerProps> = (props) => {
           </Link>
           <AccountPopover isMobile={true} />
           {sidebarConfig.map(({ title, path, icon }) => {
-            // console.log(title);
             return (
               <NavItem
                 key={title}
