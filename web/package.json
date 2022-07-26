@@ -6,11 +6,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen": "graphql-codegen --config codegen.yml"
+    "gen": "graphql-codegen --config codegen.yml",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.2",
+    "@chakra-ui/storybook-addon": "^4.0.4",
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@ericz1803/react-google-calendar": "^4.2.1",
@@ -41,14 +44,25 @@
     "urql": "^2.0.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.9",
     "@graphql-codegen/cli": "2.3.0",
     "@graphql-codegen/typescript": "2.4.1",
     "@graphql-codegen/typescript-operations": "2.2.1",
     "@graphql-codegen/typescript-urql": "^3.4.1",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/builder-webpack5": "^6.5.9",
+    "@storybook/manager-webpack5": "^6.5.9",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
     "@types/draft-js": "^0.11.9",
     "@types/react": "^17.0.37",
+    "babel-loader": "^8.2.5",
     "eslint": "7",
     "eslint-config-next": "12.0.4",
+    "eslint-plugin-storybook": "^0.6.1",
     "typescript": "^4.5.2"
   }
 }

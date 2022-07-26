@@ -89,6 +89,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   };
   return (
     <Box>
+      <TextProperty isEdit={false} onChange={() => {}} value="Some Text" />
       {databaseQuery?.getElement &&
       databaseQuery?.getElement.type === "Database" ? (
         <Box>
@@ -182,7 +183,9 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                           <Td key={attributeName}>
                             <RowAttribute
                               element={row as Element<any>}
-                              attribute={attribute ? attribute : attributeDefault}
+                              attribute={
+                                attribute ? attribute : attributeDefault
+                              }
                               attributeName={attributeName}
                               isEdit={isEdit}
                             />
@@ -222,7 +225,9 @@ interface RowAttributeProps {
 }
 
 const RowAttribute: React.FC<RowAttributeProps> = (props) => {
-  const [value, setValue] = useState<any>(props.attribute ? props.attribute.value : "");
+  const [value, setValue] = useState<any>(
+    props.attribute ? props.attribute.value : ""
+  );
 
   const [, editElement] = useEditElementDataMutation();
 

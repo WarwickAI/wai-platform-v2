@@ -1,16 +1,25 @@
-import { ChakraProps, Input, StyleProps, Text } from "@chakra-ui/react";
+import { Box, ChakraProps, Input, StyleProps, Text } from "@chakra-ui/react";
 
 interface TextPropertyProps {
   value: string;
   onChange: (v: string) => void;
   isEdit: boolean;
-  style?: ChakraProps;
-  size?: string;
+  isTitle?: boolean;
 }
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
-    return <Text {...props.style}>{props.value}</Text>;
+    return (
+      <Box m={2}>
+        <Text
+          mx={2}
+          fontWeight={props.isTitle ? "bold" : "normal"}
+          fontSize={props.isTitle ? "lg" : "md"}
+        >
+          {props.value}
+        </Text>
+      </Box>
+    );
   } else {
     return (
       <Input
@@ -19,8 +28,8 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         onChange={async (e) => {
           props.onChange(e.target.value);
         }}
-        size={props.size}
-        {...props.style}
+        size={props.isTitle ? "lg" : "md"}
+        fontWeight={props.isTitle ? "bold" : "normal"}
       />
     );
   }
