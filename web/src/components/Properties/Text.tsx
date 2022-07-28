@@ -1,4 +1,11 @@
-import { Box, ChakraProps, Input, StyleProps, Text } from "@chakra-ui/react";
+import {
+  Box,
+  ChakraProps,
+  Flex,
+  Input,
+  StyleProps,
+  Text,
+} from "@chakra-ui/react";
 
 interface TextPropertyProps {
   value: string;
@@ -10,15 +17,22 @@ interface TextPropertyProps {
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
     return (
-      <Box m={2}>
+      <Flex
+        height={10}
+        paddingInlineStart={4}
+        paddingInlineEnd={4}
+        alignItems="center"
+        borderWidth={1}
+        borderRadius="md"
+        borderColor="white"
+      >
         <Text
-          mx={2}
           fontWeight={props.isTitle ? "bold" : "normal"}
           fontSize={props.isTitle ? "lg" : "md"}
         >
           {props.value}
         </Text>
-      </Box>
+      </Flex>
     );
   } else {
     return (

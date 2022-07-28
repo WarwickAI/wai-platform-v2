@@ -2,7 +2,7 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import Text from "./Text";
+import TextProperty from "./Text";
 
 export default {
   /* 👇 The title prop is optional.
@@ -10,24 +10,20 @@ export default {
    * to learn how to generate automatic titles
    */
   title: "Text Property",
-  component: Text,
+  component: TextProperty,
   argTypes: {
     value: { control: "text" },
     isEdit: { control: "boolean" },
   },
-} as ComponentMeta<typeof Text>;
+} as ComponentMeta<typeof TextProperty>;
 
-const Template: ComponentStory<typeof Text> = (args) => <Text {...args} />;
+const Template: ComponentStory<typeof TextProperty> = (args) => (
+  <TextProperty {...args} />
+);
 
 export const Primary = Template.bind({});
 Primary.args = {
   value: "Some Text",
   isEdit: false,
   isTitle: false,
-};
-
-export const Secondary = Template.bind({});
-Secondary.args = {
-  value: "Some Text",
-  isEdit: false,
 };
