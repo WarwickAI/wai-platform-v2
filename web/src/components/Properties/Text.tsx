@@ -18,7 +18,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
     return (
       <Flex
-        height={props.isTitle ? 12 : 10}
+        height={props.isTitle ? 14 : 10}
         paddingInlineStart={4}
         paddingInlineEnd={4}
         alignItems="center"
@@ -29,7 +29,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
       >
         <Text
           fontWeight={props.isTitle ? "bold" : "normal"}
-          fontSize={props.isTitle ? "lg" : "md"}
+          fontSize={props.isTitle ? "2xl" : "md"}
         >
           {props.value}
         </Text>
@@ -43,7 +43,8 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         onChange={async (e) => {
           props.onChange(e.target.value);
         }}
-        size={props.isTitle ? "lg" : "md"}
+        height={props.isTitle ? 14 : 10}
+        fontSize={props.isTitle ? "2xl" : "md"}
         fontWeight={props.isTitle ? "bold" : "normal"}
       />
     );
