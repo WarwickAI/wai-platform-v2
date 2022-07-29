@@ -30,6 +30,7 @@ import {
 } from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
 import { EditContext } from "../../utils/EditContext";
+import TextProperty from "../Properties/Text";
 
 interface PageProps {
   element: Element<PageElementData>;
@@ -151,62 +152,36 @@ const Page: React.FC<PageProps> = (props) => {
               justifyContent="space-between"
               position={"relative"}
             >
-              {isEdit ? (
-                <Box position="relative" px={2} my={2}>
-                  {/* Element Controls */}
-                  <Flex
-                    height={"full"}
-                    position="absolute"
-                    left="-5"
-                    alignItems={"center"}
-                    opacity={0.2}
-                    _hover={{
-                      opacity: 1,
-                    }}
-                  >
-                    {props.isEdit && (
-                      <ElementSettingsPopover
-                        onOpen={() => {}}
-                        onClose={() => {}}
-                        element={props.element}
-                        removeElement={() => {}}
-                        disabled={false}
-                      />
-                    )}
-                  </Flex>
-                  <Input
-                    value={pageTitle}
-                    w={300}
-                    size="lg"
-                    fontSize={24}
-                    fontWeight={600}
-                    onChange={(e) => {
-                      setPageTitle(e.target.value);
-                      editElement({
-                        elementId: props.element.id,
-                        data: {
-                          title: {
-                            type: "Text",
-                            value: e.target.value,
-                          },
-                        },
-                      });
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Flex alignItems={"center"} h={12} w={300}>
-                  <Heading
-                    mx={4}
-                    fontSize={24}
-                    fontWeight={600}
-                    borderWidth={1}
-                    borderColor="white"
-                  >
-                    {pageTitle}
-                  </Heading>
+              <Box position="relative" px={2} my={2}>
+                {/* Element Controls */}
+                <Flex
+                  height={"full"}
+                  position="absolute"
+                  left="-5"
+                  alignItems={"center"}
+                  opacity={0.2}
+                  _hover={{
+                    opacity: 1,
+                  }}
+                >
+                  {props.isEdit && (
+                    <ElementSettingsPopover
+                      onOpen={() => {}}
+                      onClose={() => {}}
+                      element={props.element}
+                      removeElement={() => {}}
+                      disabled={false}
+                    />
+                  )}
                 </Flex>
-              )}
+
+                <TextProperty
+                  value={pageTitle}
+                  onChange={(v) => setPageTitle(v)}
+                  isEdit={isEdit}
+                  isTitle={true}
+                />
+              </Box>
             </Flex>
           </Box>
           <Box

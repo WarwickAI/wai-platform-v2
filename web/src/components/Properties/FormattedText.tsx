@@ -127,7 +127,7 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
     <Flex
       minHeight={10}
       paddingInlineStart={4}
-      paddingInlineEnd={2}
+      paddingInlineEnd={4}
       paddingY={"0.4rem"}
       alignItems="center"
       borderWidth={1}
@@ -148,10 +148,10 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
           readOnly={!props.isEdit}
         />
       </Box>
-      {/* <StyleButtons
+      <StyleButtons
         onToggle={onInlineClick}
         isEditorFocused={isEditorFocused}
-      /> */}
+      />
     </Flex>
   );
 };

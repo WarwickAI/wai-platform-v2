@@ -32,7 +32,7 @@ import {
   ElementDataPiece,
   ElementTypeKeys,
 } from "../../utils/config";
-import GenericInput from "../Properties/GenericProperty";
+import GenericProperty from "../Properties/GenericProperty";
 import TextProperty from "../Properties/Text";
 
 interface DatabaseViewProps {
@@ -94,12 +94,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       databaseQuery?.getElement.type === "Database" ? (
         <Box>
           <TextProperty
-            style={{
-              w: 300,
-              fontSize: 18,
-              fontWeight: 300,
-            }}
-            size="md"
             value={databaseName}
             onChange={async (v) => {
               setDatabaseName(v);
@@ -232,7 +226,7 @@ const RowAttribute: React.FC<RowAttributeProps> = (props) => {
   const [, editElement] = useEditElementDataMutation();
 
   return (
-    <GenericInput
+    <GenericProperty
       element={props.element}
       value={value}
       type={props.attribute.type}

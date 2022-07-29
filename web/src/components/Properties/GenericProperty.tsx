@@ -17,7 +17,7 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   props: GenericPropertyProps
 ) => {
   const value = props.value + "";
-  if (props.type === "Text" || props.type === "Url") {
+  if (props.type === "Text" || props.type === "Url" || props.type === "Image") {
     return (
       <TextProperty
         value={props.value}
@@ -48,15 +48,6 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
     return (
       <PropertyLinkProperty
         element={props.element}
-        value={props.value}
-        isEdit={props.isEdit}
-        onChange={props.onChange}
-      />
-    );
-  }
-  if (props.type === "Image") {
-    return (
-      <ImageProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}
