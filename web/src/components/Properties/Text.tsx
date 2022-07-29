@@ -18,13 +18,14 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
     return (
       <Flex
-        height={10}
+        height={props.isTitle ? 12 : 10}
         paddingInlineStart={4}
         paddingInlineEnd={4}
         alignItems="center"
         borderWidth={1}
         borderRadius="md"
         borderColor="white"
+        overflow={"hidden"}
       >
         <Text
           fontWeight={props.isTitle ? "bold" : "normal"}
