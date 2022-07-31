@@ -177,7 +177,13 @@ const Page: React.FC<PageProps> = (props) => {
 
                 <TextProperty
                   value={pageTitle}
-                  onChange={(v) => setPageTitle(v)}
+                  onChange={(v) => {
+                    setPageTitle(v);
+                    editElement({
+                      elementId: props.element.id,
+                      data: { title: { type: "Text", value: v } },
+                    });
+                  }}
                   isEdit={isEdit}
                   isTitle={true}
                 />
