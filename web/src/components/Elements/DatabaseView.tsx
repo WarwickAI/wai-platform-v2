@@ -174,7 +174,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                             attributeName
                           ];
                         return (
-                          <Td key={attributeName}>
+                          <Td key={attributeName} maxWidth={60}>
                             <RowAttribute
                               element={row as Element<any>}
                               attribute={
