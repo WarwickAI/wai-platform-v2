@@ -35,9 +35,9 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
           }
           await createElement({
             index: 0,
-            type: database.data.contentBaseType.value,
+            type: database.data.childrenBaseType.value,
             data: {
-              ...createDefaultElementData(database.data.contentBaseType.value),
+              ...createDefaultElementData(database.data.childrenBaseType.value),
             },
             parent: database.id,
           });
