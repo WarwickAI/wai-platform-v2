@@ -7,10 +7,13 @@ import { Data, Variables } from "@urql/exchange-graphcache";
 export const getAuth = async ({ authState }) => {
   if (!authState) {
     // Initial load
-    const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh_token`, {
-      method: "POST",
-      credentials: "include",
-    });
+    const refreshResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/refresh_token`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
     const refreshData = await refreshResponse.json();
     const accessToken: string = refreshData.accessToken;
 
@@ -22,28 +25,12 @@ export const getAuth = async ({ authState }) => {
     return null;
   }
 
-  // Try and refresh access token
-  const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh_token`, {
-    method: "POST",
-    credentials: "include",
-  });
-
-  const refreshData = await refreshResponse.json();
-  const accessToken: string = refreshData.accessToken;
-
-  if (accessToken) {
-    setAccessToken(accessToken);
-
-    return {
-      token: accessToken,
-    };
-  }
-  
   return null;
 };
 
 // @ts-ignore
 export const addAuthToOperation = ({ authState, operation }) => {
+  console.log(authState);
   if (!authState || !authState.token) {
     return operation;
   }
@@ -60,7 +47,7 @@ export const addAuthToOperation = ({ authState, operation }) => {
       headers: {
         ...fetchOptions.headers,
         // Add token to header
-        "authorization": authState.token,
+        authorization: authState.token,
       },
     },
   });
@@ -68,7 +55,9 @@ export const addAuthToOperation = ({ authState, operation }) => {
 
 // @ts-ignore
 export const didAuthError = ({ error }) => {
-  return error.graphQLErrors.some((e: any) => e.extensions?.code === "FORBIDDEN");
+  return error.graphQLErrors.some(
+    (e: any) => e.extensions?.code === "FORBIDDEN"
+  );
 };
 
 // @ts-ignore
@@ -96,7 +85,7 @@ export const willAuthError = ({ operation, authState }) => {
 
   if (
     decodedToken?.payload.exp &&
-    decodedToken?.payload.exp < dateNow.getTime()
+    decodedToken?.payload.exp < dateNow.getTime() / 1000
   ) {
     // JWT has expired
     return true;
