@@ -7,6 +7,8 @@ import bookOpenFill from "@iconify/icons-eva/book-open-fill";
 import calendarFill from "@iconify/icons-eva/calendar-fill";
 import shoppingCartFill from "@iconify/icons-eva/shopping-cart-fill";
 import awardFill from "@iconify/icons-eva/award-fill";
+import heartFill from "@iconify/icons-eva/heart-fill";
+
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +56,11 @@ const sidebarConfig = [
     title: "elections",
     path: "/elections",
     icon: getIcon(awardFill),
+  },
+  {
+    title: "generic",
+    path: "/generic",
+    icon: getIcon(heartFill),
   },
 ];
 
