@@ -6,6 +6,7 @@ import {
   StyleProps,
   Text,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 interface TextPropertyProps {
   value: string;
@@ -15,6 +16,12 @@ interface TextPropertyProps {
 }
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
+  const [value, setValue] = useState<string>(props.value);
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
+
   if (!props.isEdit) {
     return (
       <Flex
@@ -35,16 +42,17 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
           minWidth={0}
           noOfLines={1}
         >
-          {props.value}
+          {value}
         </Text>
       </Flex>
     );
   } else {
     return (
       <Input
-        value={props.value}
+        value={value}
         type={"text"}
         onChange={async (e) => {
+          setValue(e.target.value);
           props.onChange(e.target.value);
         }}
         height={props.isTitle ? 14 : 10}

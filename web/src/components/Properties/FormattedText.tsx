@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import {
   convertFromRaw,
@@ -122,6 +122,14 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
     setEditorState(state);
     props.onChange(JSON.stringify(convertToRaw(state.getCurrentContent())));
   };
+
+  useEffect(() => {
+    setEditorState(
+      props.value
+        ? EditorState.createWithContent(convertFromRaw(JSON.parse(props.value)))
+        : EditorState.createEmpty()
+    );
+  }, [props.value]);
 
   return (
     <Flex
