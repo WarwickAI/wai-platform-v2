@@ -13,6 +13,7 @@ import {
   Tbody,
   Td,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -34,6 +35,10 @@ import {
 } from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";
 import TextProperty from "../Properties/Text";
+import textOutline from "@iconify/icons-eva/text-outline";
+import hashOutline from "@iconify/icons-eva/hash-outline";
+import imageOutline from "@iconify/icons-eva/image-outline";
+import { getIcon } from "../SidebarConfig";
 
 interface DatabaseViewProps {
   element: Element<DatabaseViewElementData>;
@@ -125,7 +130,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                       ].type;
                     return (
                       <Th key={attributeName}>
-                        {attributeName}-{attributeType}
+                        <Flex flexDirection={"row"} alignItems={"center"}>
+                          {typeToIcon[attributeType]}
+                          <Text textTransform={"none"}>{attributeName}</Text>
+                        </Flex>
                       </Th>
                     );
                   })}
@@ -261,3 +269,9 @@ function makeid(length: number) {
 }
 
 export default DatabaseView;
+
+const typeToIcon: { [key: string]: JSX.Element } = {
+  Text: getIcon(textOutline),
+  Number: getIcon(hashOutline),
+  Image: getIcon(imageOutline),
+};
