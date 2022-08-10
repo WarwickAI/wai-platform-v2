@@ -3,7 +3,7 @@ import {
   ActionTypeValue,
   DatabaseAttributesValue,
   DatabaseBaseTypeValue,
-  DatabaseIDValue,
+  DatabaseValue,
   DataListValue,
   DataTypeKeysT,
   FormattedTextValue,
@@ -69,7 +69,7 @@ export const ElementTypesDef = {
         inSettings: true,
       },
       database: {
-        type: "DatabaseID",
+        type: "Database",
         label: "Database",
         inSettings: true,
       },
@@ -106,7 +106,7 @@ export const ElementTypesDef = {
     label: "Database View",
     data: {
       database: {
-        type: "DatabaseID",
+        type: "Database",
         label: "Database",
         inSettings: true,
       },
@@ -151,7 +151,7 @@ export type PageElementData = {
 
 export type ButtonElementData = {
   text: ElementDataPiece<TextValue>;
-  database: ElementDataPiece<DatabaseIDValue>;
+  database: ElementDataPiece<DatabaseValue>;
   action: ElementDataPiece<ActionTypeValue>;
   data: ElementDataPiece<DataListValue>;
 };
@@ -163,7 +163,7 @@ export type DatabaseElementData = {
 };
 
 export type DatabaseViewElementData = {
-  database: ElementDataPiece<DatabaseIDValue>;
+  database: ElementDataPiece<DatabaseValue>;
 };
 
 export type ImageElementData = {

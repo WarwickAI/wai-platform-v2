@@ -72,9 +72,9 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: "",
   } as DateTypesDef,
-  DatabaseID: {
-    label: "Database ID",
-    hint: "Database ID",
+  Database: {
+    label: "Database",
+    hint: "Database",
     constraints: {},
     defaultValue: -1,
   } as DateTypesDef,
@@ -134,7 +134,7 @@ export type FormattedTextValue = string;
 export type NumberValue = number;
 export type BoolValue = boolean;
 export type UrlValue = string;
-export type DatabaseIDValue = number;
+export type DatabaseValue = number;
 export type UserIDValue = number;
 export type PropertyLinkValue = string;
 export type DatabaseBaseTypeValue = ElementTypeKeys;

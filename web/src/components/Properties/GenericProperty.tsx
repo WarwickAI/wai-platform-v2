@@ -1,5 +1,5 @@
 import { DataTypeKeysT, Element } from "../../utils/config";
-import DatabaseIdProperty from "./DatabaseId";
+import DatabaseProperty from "./Database";
 import ImageProperty from "./Image";
 import NumberProperty from "./Number";
 import PropertyLinkProperty from "./PropertyLink";
@@ -35,9 +35,9 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
       />
     );
   }
-  if (props.type === "DatabaseID") {
+  if (props.type === "Database") {
     return (
-      <DatabaseIdProperty
+      <DatabaseProperty
         value={props.value}
         onChange={props.onChange}
         isEdit={props.isEdit}

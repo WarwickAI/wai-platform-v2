@@ -21,13 +21,13 @@ import { DatabaseBaseTypeValue } from "../../utils/base_data_types";
 import { DatabaseElementData } from "../../utils/base_element_types";
 import { createDefaultElementData, ElementTypesDef } from "../../utils/config";
 
-interface DatabaseIdPropertyProps {
+interface DatabasePropertyProps {
   value: number;
   onChange: (v: number) => void;
   isEdit: boolean;
 }
 
-const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
+const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
   const {
     isOpen: isAddOpen,
     onOpen: onAddOpen,
@@ -160,4 +160,4 @@ const DatabaseIdProperty: React.FC<DatabaseIdPropertyProps> = (props) => {
   );
 };
 
-export default DatabaseIdProperty;
+export default DatabaseProperty;
