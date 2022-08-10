@@ -133,6 +133,8 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
       borderWidth={1}
       borderRadius="md"
       borderColor={props.isEdit ? "gray.200" : "white"}
+      onClick={() => focusEditor()}
+      _hover={{ cursor: "text" }}
       position={"relative"}
     >
       <Box
