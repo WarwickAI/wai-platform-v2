@@ -30,7 +30,6 @@ export const getAuth = async ({ authState }) => {
 
 // @ts-ignore
 export const addAuthToOperation = ({ authState, operation }) => {
-  console.log(authState);
   if (!authState || !authState.token) {
     return operation;
   }
