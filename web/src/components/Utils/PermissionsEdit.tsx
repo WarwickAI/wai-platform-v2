@@ -3,7 +3,7 @@ import {
   useGetGroupsQuery,
   useUpdatePermissionsMutation,
 } from "../../generated/graphql";
-import { Select, GroupBase, MultiValue } from "chakra-react-select";
+import { Select, GroupBase } from "chakra-react-select";
 import { Flex, Text } from "@chakra-ui/react";
 import { Element } from "../../utils/config";
 
