@@ -99,7 +99,9 @@ export class GroupResolver {
     @Arg("groupName") groupName: string
   ): Promise<Group | null> {
     try {
-      const group = await Group.create({ name: groupName }).save();
+      const group = Group.create({ name: groupName });
+      group.users = [];
+      await group.save();
       return group;
     } catch (err) {
       console.log(err);
