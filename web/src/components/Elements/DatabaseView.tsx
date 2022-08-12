@@ -97,25 +97,23 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       {databaseQuery?.getElement &&
       databaseQuery?.getElement.type === "Database" ? (
         <Box>
-          <Box width={40}>
-            <TextProperty
-              value={databaseName}
-              onChange={async (v) => {
-                setDatabaseName(v);
-                const newData: any = {};
-                newData.title = {
-                  ...databaseQuery.getElement.data.title,
-                  value: v,
-                };
+          <TextProperty
+            value={databaseName}
+            onChange={async (v) => {
+              setDatabaseName(v);
+              const newData: any = {};
+              newData.title = {
+                ...databaseQuery.getElement.data.title,
+                value: v,
+              };
 
-                await editElement({
-                  elementId: databaseQuery.getElement.id,
-                  data: newData,
-                });
-              }}
-              isEdit={isEdit}
-            />
-          </Box>
+              await editElement({
+                elementId: databaseQuery.getElement.id,
+                data: newData,
+              });
+            }}
+            isEdit={isEdit}
+          />
           <Box>
             <Table variant={"simple"}>
               <Thead>
@@ -183,7 +181,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                             attributeName
                           ];
                         return (
-                          <Td key={attributeName} maxWidth={60}>
+                          <Td key={attributeName} width={60}>
                             <RowAttribute
                               element={row as Element<any>}
                               attribute={

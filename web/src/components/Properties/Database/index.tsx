@@ -1,12 +1,5 @@
-import {
-  Button,
-  Flex,
-  Select,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  useGetDatabasesWithoutChildrenQuery,
-} from "../../../generated/graphql";
+import { Box, Button, Flex, Select, useDisclosure } from "@chakra-ui/react";
+import { useGetDatabasesWithoutChildrenQuery } from "../../../generated/graphql";
 import { DatabaseElementData } from "../../../utils/base_element_types";
 import CreateDatabaseWindow from "./CreateDatabaseWindow";
 

@@ -62,7 +62,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
           )}
         </Flex>
         {/* Element Content */}
-        <Flex alignItems="center">
+        <Flex alignItems="center" width={"full"}>
           <Main elementId={props.element.id} isEdit={props.isEdit} />
         </Flex>
         {(showControls || addElementPopoverOpen) && props.isEdit && (

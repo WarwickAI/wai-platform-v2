@@ -25,8 +25,6 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
     return (
       <Flex
-        width="full"
-        minWidth={0}
         height={props.isTitle ? 14 : 10}
         paddingInlineStart={4}
         paddingInlineEnd={4}
@@ -38,9 +36,8 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         <Text
           fontWeight={props.isTitle ? "bold" : "normal"}
           fontSize={props.isTitle ? "2xl" : "md"}
-          width="full"
-          minWidth={0}
           noOfLines={1}
+          wordBreak={'break-word'}
         >
           {value}
         </Text>
