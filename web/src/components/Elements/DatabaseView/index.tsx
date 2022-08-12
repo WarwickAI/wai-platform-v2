@@ -46,24 +46,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     variables: { elementId: elementData.database.value },
   });
 
-  const addAttribute = async (attributeType: DataTypeKeysT) => {
-    const newAttribute: any = {};
-    newAttribute[makeid(5)] = createDefaultData(attributeType);
-
-    await editElement({
-      elementId: elementData.database.value,
-      data: {
-        attributes: {
-          type: "DatabaseAttributeTypes",
-          value: {
-            ...databaseQuery?.getElement.data.attributes.value,
-            ...newAttribute,
-          },
-        },
-      },
-    });
-  };
-
   const database: Element<DatabaseElementData> | undefined = useMemo(() => {
     if (
       databaseQuery?.getElement &&
@@ -79,6 +61,36 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       setDatabaseName(databaseQuery.getElement.data.title.value);
     }
   }, [databaseQuery]);
+
+  const addAttribute = async (name: string, attributeType: DataTypeKeysT) => {
+    if (!database) {
+      return;
+    }
+
+    // If the name exists as an attribute already (or is small), generate name
+    if (
+      Object.keys(database.data.attributes).includes(name) ||
+      name.length < 3
+    ) {
+      name = makeid(5);
+    }
+
+    const newAttribute: any = {};
+    newAttribute[name] = createDefaultData(attributeType);
+
+    await editElement({
+      elementId: elementData.database.value,
+      data: {
+        attributes: {
+          type: "DatabaseAttributeTypes",
+          value: {
+            ...database.data.attributes.value,
+            ...newAttribute,
+          },
+        },
+      },
+    });
+  };
 
   const addRow = async () => {
     await createElement({
