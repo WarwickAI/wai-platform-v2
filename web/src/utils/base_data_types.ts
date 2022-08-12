@@ -120,6 +120,12 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: {},
   },
+  User: {
+    label: "User",
+    hint: "User",
+    constraints: {},
+    defaultValue: -1,
+  },
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -142,3 +148,4 @@ export type ImageValue = string;
 export type ActionTypeValue = ActionTypeKeys;
 export type DataListValue = any[];
 export type DatabaseAttributesValue = ElementData;
+export type UserValue = number;

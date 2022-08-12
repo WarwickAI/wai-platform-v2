@@ -19,7 +19,7 @@ import {
   ElementTypesDef,
   DatabaseElementData,
 } from "../../../utils/base_element_types";
-import { createDefaultElementData } from "../../../utils/config";
+import { createDefaultElementData, DatabaseBaseTypes } from "../../../utils/config";
 
 interface CreateDatabaseWindowProps {
   isOpen: boolean;
@@ -75,7 +75,7 @@ const CreateDatabaseWindow: React.FC<CreateDatabaseWindowProps> = (
                 }}
                 value={newDatabaseBaseType}
               >
-                {Object.keys(ElementTypesDef).map((type) => {
+                {DatabaseBaseTypes.map((type) => {
                   return (
                     <option key={type} value={type}>
                       {type}

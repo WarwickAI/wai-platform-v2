@@ -130,7 +130,18 @@ export const ElementTypesDef = {
       },
     },
   } as ElementTypeDef,
+  User: {
+    label: "User",
+    data: {
+      user: {
+        type: "User",
+        label: "User",
+        inSettings: false,
+      },
+    },
+  } as ElementTypeDef,
 };
+
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
 
 const keys = getKeys(ElementTypesDef);
