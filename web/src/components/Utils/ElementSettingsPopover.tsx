@@ -8,9 +8,8 @@ import {
   useDisclosure,
   Text,
   Flex,
-  propNames,
 } from "@chakra-ui/react";
-import { Component, useState } from "react";
+import { useState } from "react";
 import { useEditElementDataMutation } from "../../generated/graphql";
 import { Element, ElementDataPiece, ElementTypesDef } from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";

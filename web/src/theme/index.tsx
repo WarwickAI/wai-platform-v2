@@ -30,7 +30,7 @@ export const markdownTheme = {
 };
 
 // 2. Call `extendTheme` and pass your custom values
-const theme = extendTheme({
+export const theme = extendTheme({
   styles: {
     global: {
       a: {

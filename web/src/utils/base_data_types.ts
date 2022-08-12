@@ -84,7 +84,7 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: -1,
   } as DateTypesDef,
-  PropertyLink: {
+  DataLink: {
     label: "Property Link",
     hint: "Property Link",
     constraints: {},
@@ -136,7 +136,7 @@ export type BoolValue = boolean;
 export type UrlValue = string;
 export type DatabaseValue = number;
 export type UserIDValue = number;
-export type PropertyLinkValue = string;
+export type DataLinkValue = string;
 export type DatabaseBaseTypeValue = ElementTypeKeys;
 export type ImageValue = string;
 export type ActionTypeValue = ActionTypeKeys;

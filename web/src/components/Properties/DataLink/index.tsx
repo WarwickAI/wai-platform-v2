@@ -1,15 +1,15 @@
 import { Input, Select, Text } from "@chakra-ui/react";
-import { useGetElementQuery } from "../../generated/graphql";
-import { Element, ElementTypesDef } from "../../utils/config";
+import { useGetElementQuery } from "../../../generated/graphql";
+import { Element, ElementTypesDef } from "../../../utils/config";
 
-interface PropertyLinkPropertyProps {
+interface DataLinkPropertyProps {
   value: string;
   onChange: (v: string) => void;
   isEdit: boolean;
   element: Element<any>;
 }
 
-const PropertyLinkProperty: React.FC<PropertyLinkPropertyProps> = (props) => {
+const DataLinkProperty: React.FC<DataLinkPropertyProps> = (props) => {
   const [{ data: parentQuery }] = useGetElementQuery({
     variables: {
       elementId: props.element.parent ? props.element.parent.id : -1,
@@ -48,4 +48,4 @@ const PropertyLinkProperty: React.FC<PropertyLinkPropertyProps> = (props) => {
   }
 };
 
-export default PropertyLinkProperty;
+export default DataLinkProperty;

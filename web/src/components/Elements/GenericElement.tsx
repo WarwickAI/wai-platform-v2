@@ -2,7 +2,7 @@ import React from "react";
 import Text from "./Text";
 import { useGetElementQuery } from "../../generated/graphql";
 import DatabaseView from "./DatabaseView";
-import PropertyLink from "./PropertyLink";
+import DataLink from "./DataLink";
 import Button from "./Button";
 import Page from "./Page";
 import { Element } from "../../utils/config";
@@ -10,7 +10,7 @@ import {
   DatabaseViewElementData,
   PageElementData,
   TextElementData,
-  PropertyLinkElementData,
+  DataLinkElementData,
   ButtonElementData,
 } from "../../utils/base_element_types";
 
@@ -59,10 +59,10 @@ const Main: React.FC<MainProps> = (props) => {
       />
     );
   }
-  if (element.getElement.type === "PropertyLink") {
+  if (element.getElement.type === "DataLink") {
     return (
-      <PropertyLink
-        element={element.getElement as Element<PropertyLinkElementData>}
+      <DataLink
+        element={element.getElement as Element<DataLinkElementData>}
         isEdit={props.isEdit}
       />
     );

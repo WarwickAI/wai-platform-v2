@@ -2,7 +2,7 @@ import { DataTypeKeysT, Element } from "../../utils/config";
 import DatabaseProperty from "./Database";
 import ImageProperty from "./Image";
 import NumberProperty from "./Number";
-import PropertyLinkProperty from "./PropertyLink";
+import DataLinkProperty from "./DataLink";
 import TextProperty from "./Text";
 
 interface GenericPropertyProps {
@@ -44,9 +44,9 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
       />
     );
   }
-  if (props.type === "PropertyLink") {
+  if (props.type === "DataLink") {
     return (
-      <PropertyLinkProperty
+      <DataLinkProperty
         element={props.element}
         value={props.value}
         isEdit={props.isEdit}

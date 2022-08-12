@@ -12,17 +12,17 @@ import {
 } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
-import { PropertyLinkElementData } from "../../utils/base_element_types";
+import { DataLinkElementData } from "../../utils/base_element_types";
 import { Element } from "../../utils/config";
 
-interface PropertyLinkProps {
-  element: Element<PropertyLinkElementData>;
+interface DataLinkProps {
+  element: Element<DataLinkElementData>;
   isEdit: boolean;
 }
 
-const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
+const DataLink: React.FC<DataLinkProps> = (props) => {
   const router = useRouter();
-  const elementProps = props.element.data as PropertyLinkElementData;
+  const elementProps = props.element.data as DataLinkElementData;
   const [{ data: parentElement }] = useGetElementQuery({
     variables: {
       elementId: props.element.parent ? props.element.parent.id : 0,
@@ -46,4 +46,4 @@ const PropertyLink: React.FC<PropertyLinkProps> = (props) => {
   );
 };
 
-export default PropertyLink;
+export default DataLink;

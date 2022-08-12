@@ -2,7 +2,7 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import NumberProperty from "./Number";
+import NumberProperty from ".";
 
 export default {
   /* 👇 The title prop is optional.

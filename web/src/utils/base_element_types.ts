@@ -1,5 +1,4 @@
 import {
-  ActionTypeKeys,
   ActionTypeValue,
   DatabaseAttributesValue,
   DatabaseBaseTypeValue,
@@ -8,11 +7,10 @@ import {
   DataTypeKeysT,
   FormattedTextValue,
   ImageValue,
-  NumberValue,
-  PropertyLinkValue,
+  DataLinkValue,
   TextValue,
 } from "./base_data_types";
-import { Element, ElementData, ElementDataPiece } from "./config";
+import { ElementDataPiece } from "./config";
 
 export type ElementDataDef = {
   [key: string]: {
@@ -122,12 +120,12 @@ export const ElementTypesDef = {
       },
     },
   } as ElementTypeDef,
-  PropertyLink: {
-    label: "Property Link",
+  DataLink: {
+    label: "Data Link",
     data: {
       property: {
-        type: "PropertyLink",
-        label: "Property",
+        type: "DataLink",
+        label: "Data Link",
         inSettings: true,
       },
     },
@@ -170,6 +168,6 @@ export type ImageElementData = {
   image: ElementDataPiece<ImageValue>;
 };
 
-export type PropertyLinkElementData = {
-  property: ElementDataPiece<PropertyLinkValue>;
+export type DataLinkElementData = {
+  property: ElementDataPiece<DataLinkValue>;
 };
