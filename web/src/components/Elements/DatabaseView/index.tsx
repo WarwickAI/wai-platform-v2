@@ -92,6 +92,35 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     });
   };
 
+  const modifyAttributeName = async (oldName: string, newName: string) => {
+    if (!database || oldName === newName) {
+      return;
+    }
+
+    // If the name exists as an attribute already (or is small), generate name
+    if (
+      Object.keys(database.data.attributes).includes(newName) ||
+      newName.length < 3
+    ) {
+      newName = makeid(5);
+    }
+
+    // Update the name (i.e. the key)
+    database.data.attributes.value[newName] =
+      database.data.attributes.value[oldName];
+    delete database.data.attributes.value[oldName];
+
+    await editElement({
+      elementId: elementData.database.value,
+      data: {
+        attributes: {
+          type: "DatabaseAttributeTypes",
+          value: database.data.attributes.value,
+        },
+      },
+    });
+  };
+
   const addRow = async () => {
     await createElement({
       index: 0,
@@ -137,6 +166,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                       database={database}
                       isEdit={isEdit}
                       name={name}
+                      modifyAttributeName={modifyAttributeName}
                     />
                   ))}
                   {isEdit && (

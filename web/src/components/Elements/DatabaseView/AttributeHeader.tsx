@@ -38,10 +38,12 @@ interface AttributeHeaderProps {
   database: Element<DatabaseElementData>;
   isEdit: boolean;
   name: string;
+  modifyAttributeName: (oldName: string, newName: string) => void;
 }
 
 const AttributeHeader: React.FC<AttributeHeaderProps> = (props) => {
   const attributeType = props.database.data.attributes.value[props.name].type;
+  const [newName, setNewName] = useState<string>(props.name);
 
   return (
     <Th>
@@ -54,6 +56,38 @@ const AttributeHeader: React.FC<AttributeHeaderProps> = (props) => {
           <Tooltip label="Cannot edit mandatory field">
             {getIcon(lockOutline)}
           </Tooltip>
+        )}
+        {props.isEdit && (
+          <Popover>
+            <PopoverTrigger>
+              <Button size={"sm"} variant="outline">
+                $
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverBody>
+                <Flex direction={"row"} alignItems="center" mb={2}>
+                  <Text mr={2} whiteSpace="nowrap">
+                    Name:
+                  </Text>
+                  <Input
+                    onChange={(e) => {
+                      setNewName(e.target.value);
+                    }}
+                    value={newName}
+                    placeholder="Name..."
+                  />
+                  <Button
+                    onClick={() =>
+                      props.modifyAttributeName(props.name, newName)
+                    }
+                  >
+                    {"->"}
+                  </Button>
+                </Flex>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
         )}
       </Flex>
     </Th>
