@@ -1,6 +1,7 @@
 import { addDecorator } from "@storybook/react";
+import { urqlDecorator } from "@urql/storybook-addon";
 
-import ThemeConfig from "../src/theme";
+import { theme } from "../src/theme";
 import "../src/pages/index.css";
 
 export const parameters = {
@@ -11,6 +12,9 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  chakra: {
+    theme: theme,
+  },
 };
 
-addDecorator((storyFn) => <ThemeConfig>{storyFn()}</ThemeConfig>);
+addDecorator(urqlDecorator);
