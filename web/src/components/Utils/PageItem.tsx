@@ -42,16 +42,22 @@ const PageItem: React.FC<PageItemProps> = (props) => {
     >
       <Box position="relative" p={2} my={2}>
         {/* Element Controls */}
-        <Flex
-          height={"full"}
-          onPointerDown={(e) => controls.start(e)}
-          position="absolute"
-          left="-5"
-          my={-2}
-          alignItems={"center"}
-          opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
-        >
-          {props.isEdit && (
+        {props.isEdit && (
+          <Flex
+            height={"full"}
+            onPointerDown={(e) => controls.start(e)}
+            position="absolute"
+            left="-10"
+            my={-2}
+            alignItems={"center"}
+            opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
+          >
+            <AddElementPopover
+              onOpen={() => setAddElementPopoverOpen(true)}
+              onClose={() => setAddElementPopoverOpen(false)}
+              addElement={props.addElement}
+              atIndex={props.element.index + 1}
+            />
             <ElementSettingsPopover
               onOpen={() => setAddElementPopoverOpen(true)}
               onClose={() => setAddElementPopoverOpen(false)}
@@ -59,8 +65,8 @@ const PageItem: React.FC<PageItemProps> = (props) => {
               removeElement={props.removeElement}
               disabled={isDragging}
             />
-          )}
-        </Flex>
+          </Flex>
+        )}
         {/* Element Content */}
         <Flex alignItems="center" width={"full"}>
           <Main elementId={props.element.id} isEdit={props.isEdit} />
@@ -71,14 +77,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
             justifyContent={"center"}
             width={"full"}
             zIndex={1}
-          >
-            <AddElementPopover
-              onOpen={() => setAddElementPopoverOpen(true)}
-              onClose={() => setAddElementPopoverOpen(false)}
-              addElement={props.addElement}
-              atIndex={props.element.index + 1}
-            />
-          </Flex>
+          ></Flex>
         )}
       </Box>
     </Reorder.Item>

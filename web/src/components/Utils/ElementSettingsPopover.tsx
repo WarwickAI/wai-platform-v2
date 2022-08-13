@@ -8,6 +8,7 @@ import {
   useDisclosure,
   Text,
   Flex,
+  Box,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useEditElementDataMutation } from "../../generated/graphql";
@@ -39,12 +40,16 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       }}
     >
       <PopoverTrigger>
-        <Button
-          size={"xs"}
-          height={8}
-          width={2}
-          backgroundColor={"white"}
-          variant="outline"
+        <Box
+          h={6}
+          w={4}
+          p={1}
+          borderRadius={"md"}
+          textAlign={"center"}
+          justifyContent={"center"}
+          display={"flex"}
+          alignItems={"center"}
+          _hover={{ cursor: "grab", backgroundColor: "gray.200" }}
           onClick={(e) => {
             if (!props.disabled) {
               onToggle();
@@ -53,7 +58,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
           }}
         >
           <DragHandleIcon />
-        </Button>
+        </Box>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody>

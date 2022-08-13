@@ -5,12 +5,15 @@ import {
   PopoverContent,
   PopoverBody,
   Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import {
   ElementTypeKeys,
   ElementTypesDef,
   ElementTypesToNotShowInAdd,
 } from "../../utils/config";
+
+import { AddIcon } from "@chakra-ui/icons";
 
 interface AddElementPopoverProps {
   onOpen: () => void;
@@ -23,15 +26,19 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
   return (
     <Popover onOpen={() => props.onOpen()} onClose={() => props.onClose()}>
       <PopoverTrigger>
-        <Button
-          size={"xs"}
-          height={6}
-          width={10}
-          backgroundColor={"white"}
-          variant="outline"
+        <Box
+          h={6}
+          w={6}
+          p={1}
+          borderRadius={"md"}
+          textAlign={"center"}
+          justifyContent={"center"}
+          display={"flex"}
+          alignItems={"center"}
+          _hover={{ cursor: "pointer", backgroundColor: "gray.200" }}
         >
-          +
-        </Button>
+          <AddIcon />
+        </Box>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody>
