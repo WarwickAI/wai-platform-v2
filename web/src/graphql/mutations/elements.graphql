@@ -4,6 +4,12 @@ mutation EditElementData($data: JSONObject!, $elementId: Float!) {
   }
 }
 
+mutation EditDatabaseAttributeName($elementId: Float!, $attributeName: String!, $newAttributeName: String!) {
+  editDatabaseAttributeName(elementId: $elementId, attributeName: $attributeName, newAttributeName: $newAttributeName) {
+    ...FullElement
+  }
+}
+
 mutation EditElementIndex($index: Float!, $elementId: Float!) {
   editElementIndex(index: $index, elementId: $elementId) {
     ...FullElement

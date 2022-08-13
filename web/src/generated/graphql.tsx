@@ -181,6 +181,7 @@ export type Mutation = {
   createTutorial: TutorialResponse;
   deleteAllUsers: Scalars['Boolean'];
   editCourse: CourseResponse;
+  editDatabaseAttributeName: Element;
   editElectionRole: ElectionRoleResponse;
   editElementData: Element;
   editElementIndex: Element;
@@ -291,6 +292,13 @@ export type MutationCreateTutorialArgs = {
 export type MutationEditCourseArgs = {
   courseInfo: EventInput;
   id: Scalars['Float'];
+};
+
+
+export type MutationEditDatabaseAttributeNameArgs = {
+  attributeName: Scalars['String'];
+  elementId: Scalars['Float'];
+  newAttributeName: Scalars['String'];
 };
 
 
@@ -893,6 +901,15 @@ export type EditElementDataMutationVariables = Exact<{
 
 
 export type EditElementDataMutation = { __typename?: 'Mutation', editElementData: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
+
+export type EditDatabaseAttributeNameMutationVariables = Exact<{
+  elementId: Scalars['Float'];
+  attributeName: Scalars['String'];
+  newAttributeName: Scalars['String'];
+}>;
+
+
+export type EditDatabaseAttributeNameMutation = { __typename?: 'Mutation', editDatabaseAttributeName: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type EditElementIndexMutationVariables = Exact<{
   index: Scalars['Float'];
@@ -1770,6 +1787,21 @@ export const EditElementDataDocument = gql`
 
 export function useEditElementDataMutation() {
   return Urql.useMutation<EditElementDataMutation, EditElementDataMutationVariables>(EditElementDataDocument);
+};
+export const EditDatabaseAttributeNameDocument = gql`
+    mutation EditDatabaseAttributeName($elementId: Float!, $attributeName: String!, $newAttributeName: String!) {
+  editDatabaseAttributeName(
+    elementId: $elementId
+    attributeName: $attributeName
+    newAttributeName: $newAttributeName
+  ) {
+    ...FullElement
+  }
+}
+    ${FullElementFragmentDoc}`;
+
+export function useEditDatabaseAttributeNameMutation() {
+  return Urql.useMutation<EditDatabaseAttributeNameMutation, EditDatabaseAttributeNameMutationVariables>(EditDatabaseAttributeNameDocument);
 };
 export const EditElementIndexDocument = gql`
     mutation EditElementIndex($index: Float!, $elementId: Float!) {

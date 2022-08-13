@@ -219,6 +219,61 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
+  @UseMiddleware(isAuth, getUser)
+  async editDatabaseAttributeName(
+    @Ctx() { payload }: MyContext,
+    @Arg("elementId") elementId: number,
+    @Arg("attributeName") attributeName: string,
+    @Arg("newAttributeName") newAttributeName: string
+  ): Promise<Element> {
+    const element = await Element.getElementByIdWithChildren(elementId);
+
+    if (element.type !== "Database") {
+      throw new Error("Not a database");
+    }
+
+    if (!checkPermissions(element.canEditGroups, payload?.user)) {
+      throw new Error("Not authorized");
+    }
+
+    Object.keys((element.data as any).attributes.value).forEach((attName) => {
+      if (attName === newAttributeName) {
+        throw new Error("Attribute name already exists");
+      }
+    });
+
+    const oldAttribute = (element.data as any).attributes.value[attributeName];
+    if (!oldAttribute) {
+      throw new Error("Attribute does not exist");
+    }
+
+    (element.data as any).attributes.value[newAttributeName] = oldAttribute;
+    delete (element.data as any).attributes.value[attributeName];
+
+    // Update children with new attribute name
+    element.children.forEach((child) => {
+      if (!checkPermissions(child.canEditGroups, payload?.user)) {
+        return;
+      }
+
+      (child.data as any)[newAttributeName] = (child.data as any)[
+        attributeName
+      ];
+      delete (child.data as any)[attributeName];
+      child.save();
+    });
+
+    element.save();
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
+
+    return element;
+  }
+
+  @Mutation(() => Element)
   @UseMiddleware()
   async editElementIndex(
     @Ctx() { payload }: MyContext,

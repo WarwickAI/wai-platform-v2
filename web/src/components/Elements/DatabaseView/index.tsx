@@ -12,6 +12,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import {
   useCreateElementMutation,
+  useEditDatabaseAttributeNameMutation,
   useEditElementDataMutation,
   useGetElementQuery,
 } from "../../../generated/graphql";
@@ -41,6 +42,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const [databaseName, setDatabaseName] = useState<string>("");
 
   const [, editElement] = useEditElementDataMutation();
+  const [, editAttributeName] = useEditDatabaseAttributeNameMutation();
   const [, createElement] = useCreateElementMutation();
   const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
     variables: { elementId: elementData.database.value },
@@ -105,19 +107,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       newName = makeid(5);
     }
 
-    // Update the name (i.e. the key)
-    database.data.attributes.value[newName] =
-      database.data.attributes.value[oldName];
-    delete database.data.attributes.value[oldName];
-
-    await editElement({
+    editAttributeName({
       elementId: elementData.database.value,
-      data: {
-        attributes: {
-          type: "DatabaseAttributeTypes",
-          value: database.data.attributes.value,
-        },
-      },
+      attributeName: oldName,
+      newAttributeName: newName,
     });
   };
 
