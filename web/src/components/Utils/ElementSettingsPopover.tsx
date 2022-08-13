@@ -9,8 +9,9 @@ import {
   Box,
   VStack,
   StackDivider,
+  Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useEditElementDataMutation } from "../../generated/graphql";
 import { Element, ElementDataPiece, ElementTypesDef } from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";
@@ -28,6 +29,20 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
   props
 ) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
+
+  const attributes = useMemo(() => {
+    var attributes = Object.keys(props.element.data).map((attributeName) => {
+      const att = props.element.data[attributeName];
+      att.attributeName = attributeName;
+      return att;
+    });
+    var attributes = attributes.filter((att) => {
+      return ElementTypesDef[props.element.type].data[att.attributeName]
+        ?.inSettings;
+    });
+
+    return attributes;
+  }, [props.element.data, props.element.type]);
 
   return (
     <Popover
@@ -65,26 +80,21 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       <PopoverContent w={40} p={0}>
         <PopoverBody m={2} p={0}>
           <VStack divider={<StackDivider borderColor="gray.200" />} spacing={1}>
-            {Object.keys(props.element.data).map((dataPieceName) => {
-              const elementDataPiece = props.element.data[
-                dataPieceName
-              ] as ElementDataPiece<any>;
-              if (
-                ElementTypesDef[props.element.type].data[dataPieceName]
-                  ?.inSettings
-              ) {
-                return (
-                  <ElementSetting
-                    key={dataPieceName}
-                    elementDataPiece={elementDataPiece}
-                    dataPieceName={dataPieceName}
-                    element={props.element}
-                  />
-                );
-              } else {
-                return;
-              }
-            })}
+            {attributes.length > 0 && (
+              <VStack w={"full"}>
+                <Text>Attributes</Text>
+                {attributes.map((att) => {
+                  return (
+                    <ElementSetting
+                      key={att.attributeName}
+                      elementDataPiece={att}
+                      dataPieceName={att.attributeName}
+                      element={props.element}
+                    />
+                  );
+                })}
+              </VStack>
+            )}
             <PermissionsEdit element={props.element} />
             <Button
               size={"sm"}
