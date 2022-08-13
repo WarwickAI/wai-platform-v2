@@ -24,7 +24,11 @@ interface AddElementPopoverProps {
 
 const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
   return (
-    <Popover onOpen={() => props.onOpen()} onClose={() => props.onClose()}>
+    <Popover
+      onOpen={() => props.onOpen()}
+      returnFocusOnClose={false}
+      onClose={() => props.onClose()}
+    >
       <PopoverTrigger>
         <Box
           h={6}

@@ -190,13 +190,13 @@ export class ElementResolver {
     element.data = { ...element.data, ...data };
 
     if (element.type === "Database") {
-      // Need to ensure all children has same attributes
       element.children.forEach((child) => {
+        if (!checkPermissions(child.canEditGroups, payload?.user)) {
+          return;
+        }
+        // Check child is not missing attributes
         Object.keys((element.data as any).attributes.value).forEach(
           (attributeName: string) => {
-            if (!checkPermissions(child.canEditGroups, payload?.user)) {
-              return;
-            }
             const attribute = (element.data as any).attributes.value[
               attributeName
             ];
@@ -205,6 +205,12 @@ export class ElementResolver {
             }
           }
         );
+        // Check child doesn't have extra attributes
+        Object.keys(child.data).forEach((attributeName: string) => {
+          if (!(element.data as any).attributes.value[attributeName]) {
+            delete (child.data as any)[attributeName];
+          }
+        });
         child.save();
       });
     }

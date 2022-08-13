@@ -26,6 +26,7 @@ import {
   DataTypeKeysT,
   Element,
   ElementTypeKeys,
+  ElementTypesDef,
 } from "../../../utils/config";
 import TextProperty from "../../Properties/Text";
 import AttributeHeader, { AddAttributeHeader } from "./AttributeHeader";
@@ -94,8 +95,42 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     });
   };
 
+  const removeAttribute = async (name: string) => {
+    if (!database) {
+      return;
+    }
+
+    // If the name is a mandotary attribute, don't remove it
+    if (
+      ElementTypesDef[database.data.childrenBaseType.value as ElementTypeKeys]
+        .data[name]
+    ) {
+      return;
+    }
+
+    const newAttributes: any = database.data.attributes.value;
+    delete newAttributes[name];
+
+    await editElement({
+      elementId: elementData.database.value,
+      data: {
+        attributes: {
+          type: "DatabaseAttributeTypes",
+          value: newAttributes,
+        },
+      },
+    });
+  };
+
   const modifyAttributeName = async (oldName: string, newName: string) => {
     if (!database || oldName === newName) {
+      return;
+    }
+
+    if (
+      ElementTypesDef[database.data.childrenBaseType.value as ElementTypeKeys]
+        .data[oldName]
+    ) {
       return;
     }
 
@@ -159,6 +194,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
                       database={database}
                       isEdit={isEdit}
                       name={name}
+                      removeAttribute={removeAttribute}
                       modifyAttributeName={modifyAttributeName}
                     />
                   ))}

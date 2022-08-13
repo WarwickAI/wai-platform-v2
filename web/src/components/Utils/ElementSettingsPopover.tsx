@@ -81,7 +81,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
         <PopoverBody m={2} p={0}>
           <VStack divider={<StackDivider borderColor="gray.200" />} spacing={1}>
             {attributes.length > 0 && (
-              <VStack w={"full"}>
+              <VStack w={"full"} spacing={1}>
                 <Text>Attributes</Text>
                 {attributes.map((att) => {
                   return (
@@ -122,7 +122,7 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   const [, editElement] = useEditElementDataMutation();
 
   return (
-    <Popover autoFocus={true} placement={"right"}>
+    <Popover autoFocus={true} returnFocusOnClose={false} placement={"right"}>
       <PopoverTrigger>
         <Button size={"sm"} variant="setting">
           {ElementTypesDef[props.element.type].data[props.dataPieceName]

@@ -20,7 +20,7 @@ interface PermissionsEditProps {
 const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
   const [, updatePermissions] = useUpdatePermissionsMutation();
   return (
-    <Popover autoFocus={true} placement={"right"}>
+    <Popover autoFocus={true} returnFocusOnClose={false} placement={"right"}>
       <PopoverTrigger>
         <Button size={"sm"} variant="setting">
           Permissions
