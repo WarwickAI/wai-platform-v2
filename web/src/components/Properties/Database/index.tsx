@@ -31,6 +31,7 @@ const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
   return (
     <Flex direction={"row"}>
       <Select
+        size={"sm"}
         placeholder="Select Database"
         value={props.value}
         onChange={(e) => props.onChange(parseInt(e.target.value))}
@@ -44,7 +45,7 @@ const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
           );
         })}
       </Select>
-      <Button variant="primary" onClick={onAddOpen}>
+      <Button size={"sm"} variant="primary" onClick={onAddOpen}>
         +
       </Button>
       <CreateDatabaseWindow

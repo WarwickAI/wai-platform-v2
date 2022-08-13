@@ -6,9 +6,9 @@ import {
   PopoverContent,
   PopoverBody,
   useDisclosure,
-  Text,
-  Flex,
   Box,
+  VStack,
+  StackDivider,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useEditElementDataMutation } from "../../generated/graphql";
@@ -38,6 +38,8 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
         onClose();
         props.onClose();
       }}
+      placement={"left"}
+      gutter={4}
     >
       <PopoverTrigger>
         <Box
@@ -60,36 +62,38 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
           <DragHandleIcon />
         </Box>
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverBody>
-          {Object.keys(props.element.data).map((dataPieceName) => {
-            const elementDataPiece = props.element.data[
-              dataPieceName
-            ] as ElementDataPiece<any>;
-            if (
-              ElementTypesDef[props.element.type].data[dataPieceName]
-                ?.inSettings
-            ) {
-              return (
-                <ElementSetting
-                  key={dataPieceName}
-                  elementDataPiece={elementDataPiece}
-                  dataPieceName={dataPieceName}
-                  element={props.element}
-                />
-              );
-            } else {
-              return;
-            }
-          })}
-          <PermissionsEdit element={props.element} />
-          <Button
-            size={"xs"}
-            variant="outline"
-            onClick={() => props.removeElement(props.element.id)}
-          >
-            Remove
-          </Button>
+      <PopoverContent w={40} p={0}>
+        <PopoverBody m={2} p={0}>
+          <VStack divider={<StackDivider borderColor="gray.200" />} spacing={1}>
+            {Object.keys(props.element.data).map((dataPieceName) => {
+              const elementDataPiece = props.element.data[
+                dataPieceName
+              ] as ElementDataPiece<any>;
+              if (
+                ElementTypesDef[props.element.type].data[dataPieceName]
+                  ?.inSettings
+              ) {
+                return (
+                  <ElementSetting
+                    key={dataPieceName}
+                    elementDataPiece={elementDataPiece}
+                    dataPieceName={dataPieceName}
+                    element={props.element}
+                  />
+                );
+              } else {
+                return;
+              }
+            })}
+            <PermissionsEdit element={props.element} />
+            <Button
+              size={"sm"}
+              variant="setting"
+              onClick={() => props.removeElement(props.element.id)}
+            >
+              Remove
+            </Button>
+          </VStack>
         </PopoverBody>
       </PopoverContent>
     </Popover>
@@ -108,33 +112,37 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   const [, editElement] = useEditElementDataMutation();
 
   return (
-    <Flex direction={"row"} alignItems="center" mb={2}>
-      <Text mr={2} whiteSpace={"nowrap"}>
-        {ElementTypesDef[props.element.type].data[props.dataPieceName]?.label ||
-          props.dataPieceName}
-        :
-      </Text>
+    <Popover autoFocus={true} placement={"right"}>
+      <PopoverTrigger>
+        <Button size={"sm"} variant="setting">
+          {ElementTypesDef[props.element.type].data[props.dataPieceName]
+            ?.label || props.dataPieceName}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent w={80}>
+        <PopoverBody>
+          <GenericProperty
+            element={props.element}
+            value={value}
+            type={props.elementDataPiece.type}
+            onChange={async (v) => {
+              setValue(v);
+              const newData: any = {};
+              newData[props.dataPieceName] = {
+                ...props.elementDataPiece,
+                value: v,
+              };
 
-      <GenericProperty
-        element={props.element}
-        value={value}
-        type={props.elementDataPiece.type}
-        onChange={async (v) => {
-          setValue(v);
-          const newData: any = {};
-          newData[props.dataPieceName] = {
-            ...props.elementDataPiece,
-            value: v,
-          };
-
-          await editElement({
-            elementId: props.element.id,
-            data: newData,
-          });
-        }}
-        isEdit={true}
-      />
-    </Flex>
+              await editElement({
+                elementId: props.element.id,
+                data: newData,
+              });
+            }}
+            isEdit={true}
+          />
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
   );
 };
 
