@@ -52,6 +52,7 @@ import {
   GetTemplatesWithoutChildrenQuery,
   GetTemplatesWithoutChildrenDocument,
   UpdatePermissionsMutation,
+  InheritDatabaseAttributesMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -878,6 +879,92 @@ export const createUrqlClient = (ssrExchange: any) => {
               if (newElement.type === "Template") {
                 betterUpdateQuery<
                   UpdatePermissionsMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+            },
+            inheritDatabaseAttributes: (_result, args, cache, info) => {
+              const res = _result as InheritDatabaseAttributesMutation;
+              if (!res.inheritDatabaseAttributes) {
+                return;
+              }
+              const newElement = res.inheritDatabaseAttributes;
+              const elementId = newElement.id;
+              betterUpdateQuery<
+                InheritDatabaseAttributesMutation,
+                GetElementQuery
+              >(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.inheritDatabaseAttributes) {
+                    return query;
+                  } else {
+                    if (result.inheritDatabaseAttributes.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.inheritDatabaseAttributes.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
+                              (val) =>
+                                val.id === result.inheritDatabaseAttributes.id
+                            )
+                          ] = result.inheritDatabaseAttributes;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.inheritDatabaseAttributes;
+                    return query;
+                  }
+                }
+              );
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  InheritDatabaseAttributesMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  InheritDatabaseAttributesMutation,
                   GetTemplatesWithoutChildrenQuery
                 >(
                   cache,

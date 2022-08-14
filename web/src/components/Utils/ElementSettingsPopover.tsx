@@ -11,6 +11,7 @@ import {
   StackDivider,
   Text,
 } from "@chakra-ui/react";
+import { el } from "date-fns/locale";
 import { useMemo, useState } from "react";
 import {
   useEditElementDataMutation,
@@ -21,6 +22,7 @@ import {
   DatabaseViewElementData,
 } from "../../utils/base_element_types";
 import {
+  DataTypeKeysT,
   Element,
   ElementDataPiece,
   ElementTypeKeys,
@@ -36,6 +38,13 @@ interface ElementSettingsPopoverProps {
   element: Element<any>;
   hideAttributes?: boolean;
   disabled: boolean;
+  extraAttributes?: {
+    key: string;
+    label: string;
+    type: DataTypeKeysT;
+    value: any;
+    editValue: (value: any) => void;
+  }[];
 }
 
 const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
@@ -159,6 +168,27 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                 })}
               </VStack>
             )}
+            {!props.hideAttributes &&
+              props.extraAttributes &&
+              props.extraAttributes.length > 0 && (
+                <VStack w={"full"} spacing={1}>
+                  <Text>Other Attributes</Text>
+                  {props.extraAttributes.map((att) => {
+                    return (
+                      <ElementSetting
+                        key={att.key}
+                        elementDataPiece={{
+                          type: att.type,
+                          value: att.value,
+                        }}
+                        dataPieceName={att.label}
+                        element={props.element as Element<any>}
+                        editValue={att.editValue}
+                      />
+                    );
+                  })}
+                </VStack>
+              )}
             <PermissionsEdit element={props.element} />
             <Button
               size={"sm"}
@@ -178,6 +208,7 @@ interface ElementSettingProps {
   elementDataPiece: ElementDataPiece<any>;
   dataPieceName: string;
   element: Element<any>;
+  editValue?: (value: any) => void;
 }
 
 const ElementSetting: React.FC<ElementSettingProps> = (props) => {
@@ -206,11 +237,14 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
                 ...props.elementDataPiece,
                 value: v,
               };
-
-              await editElement({
-                elementId: props.element.id,
-                data: newData,
-              });
+              if (!props.editValue) {
+                await editElement({
+                  elementId: props.element.id,
+                  data: newData,
+                });
+              } else {
+                props.editValue(v);
+              }
             }}
             isEdit={true}
           />

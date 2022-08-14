@@ -191,6 +191,7 @@ export type Mutation = {
   editRoleApplication: RoleApplicationResponse;
   editTalk: TalkResponse;
   editTutorial: TutorialResponse;
+  inheritDatabaseAttributes: Element;
   joinCourse: Scalars['Boolean'];
   joinProject: Scalars['Boolean'];
   joinTalk: Scalars['Boolean'];
@@ -353,6 +354,12 @@ export type MutationEditTalkArgs = {
 export type MutationEditTutorialArgs = {
   id: Scalars['Float'];
   tutorialInfo: EventInput;
+};
+
+
+export type MutationInheritDatabaseAttributesArgs = {
+  databaseId: Scalars['Float'];
+  elementId: Scalars['Float'];
 };
 
 
@@ -940,6 +947,14 @@ export type UpdatePermissionsMutationVariables = Exact<{
 
 
 export type UpdatePermissionsMutation = { __typename?: 'Mutation', updatePermissions: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
+
+export type InheritDatabaseAttributesMutationVariables = Exact<{
+  databaseId: Scalars['Float'];
+  elementId: Scalars['Float'];
+}>;
+
+
+export type InheritDatabaseAttributesMutation = { __typename?: 'Mutation', inheritDatabaseAttributes: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -1847,6 +1862,17 @@ export const UpdatePermissionsDocument = gql`
 
 export function useUpdatePermissionsMutation() {
   return Urql.useMutation<UpdatePermissionsMutation, UpdatePermissionsMutationVariables>(UpdatePermissionsDocument);
+};
+export const InheritDatabaseAttributesDocument = gql`
+    mutation InheritDatabaseAttributes($databaseId: Float!, $elementId: Float!) {
+  inheritDatabaseAttributes(databaseId: $databaseId, elementId: $elementId) {
+    ...FullElement
+  }
+}
+    ${FullElementFragmentDoc}`;
+
+export function useInheritDatabaseAttributesMutation() {
+  return Urql.useMutation<InheritDatabaseAttributesMutation, InheritDatabaseAttributesMutationVariables>(InheritDatabaseAttributesDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {

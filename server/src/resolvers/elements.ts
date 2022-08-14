@@ -412,6 +412,31 @@ export class ElementResolver {
     await element.save();
     return element;
   }
+
+  @Mutation(() => Element)
+  @UseMiddleware()
+  async inheritDatabaseAttributes(
+    @Arg("databaseId") databaseId: number,
+    @Arg("elementId") elementId: number
+  ): Promise<Element> {
+    const database = await Element.getElementByIdWithChildren(databaseId);
+    if (!database || database.type !== "Database") {
+      throw new Error("Database not found");
+    }
+
+    const element = await Element.getElementByIdWithChildren(elementId);
+
+    Object.keys((database.data as any).attributes.value).forEach((attName) => {
+      if (!(element.data as any)[attName]) {
+        (element.data as any)[attName] = (
+          database.data as any
+        ).attributes.value[attName];
+      }
+    });
+
+    await element.save();
+    return element;
+  }
 }
 
 const checkPermissions = (groups: Group[], user: User | undefined) => {

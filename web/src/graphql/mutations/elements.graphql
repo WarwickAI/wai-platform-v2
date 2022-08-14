@@ -48,3 +48,15 @@ mutation UpdatePermissions(
     ...FullElement
   }
 }
+
+mutation InheritDatabaseAttributes(
+  $databaseId: Float!
+  $elementId: Float!
+) {
+  inheritDatabaseAttributes(
+    databaseId: $databaseId
+    elementId: $elementId
+  ) {
+    ...FullElement
+  }
+}

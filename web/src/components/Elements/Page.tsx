@@ -4,6 +4,7 @@ import {
   useCreateElementMutation,
   useEditElementDataMutation,
   useEditElementIndexMutation,
+  useInheritDatabaseAttributesMutation,
   useMeQuery,
   User,
   useRemoveElementMutation,
@@ -41,6 +42,10 @@ const Page: React.FC<PageProps> = (props) => {
   const [oldItems, setOldItems] = useState<Element<any>[]>([]);
   const { isEdit } = useContext(EditContext);
 
+  const isTemplate = useMemo(() => {
+    return props.element.type === "Template";
+  }, [props.element.type]);
+
   // Initialise and update page content here
   useEffect(() => {
     const contentSorted = (props.element.children as Element<any>[]).sort(
@@ -62,6 +67,7 @@ const Page: React.FC<PageProps> = (props) => {
   const [, editElement] = useEditElementDataMutation();
   const [, editElementIndex] = useEditElementIndexMutation();
   const [, deleteElement] = useRemoveElementMutation();
+  const [, inheritDatabaseAttributes] = useInheritDatabaseAttributesMutation();
 
   const updateIndex = (oldOrder: Element<any>[], newOrder: Element<any>[]) => {
     newOrder.forEach((item, index) => {
@@ -169,6 +175,23 @@ const Page: React.FC<PageProps> = (props) => {
                       element={props.element}
                       removeElement={() => {}}
                       disabled={false}
+                      extraAttributes={
+                        isTemplate
+                          ? [
+                              {
+                                key: "Inherit_Database_Atts",
+                                label: "Inherit Database Atts",
+                                value: -1,
+                                type: "Database",
+                                editValue: (value) =>
+                                  inheritDatabaseAttributes({
+                                    databaseId: parseInt(value),
+                                    elementId: props.element.id,
+                                  }),
+                              },
+                            ]
+                          : []
+                      }
                     />
                   )}
                 </Flex>
