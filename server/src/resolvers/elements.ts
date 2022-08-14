@@ -396,16 +396,7 @@ export class ElementResolver {
     @Arg("canInteractGroups", () => [Number], { nullable: true })
     canInteractGroups?: number[]
   ): Promise<Element> {
-    const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
-    });
+    const element = await Element.getElementByIdWithChildren(elementId);
     if (canEditGroups) {
       const groups = await Group.findByIds(canEditGroups);
       element.canEditGroups = groups;

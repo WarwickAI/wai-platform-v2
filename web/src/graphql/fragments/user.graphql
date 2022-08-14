@@ -23,6 +23,9 @@ fragment RegularUser on User {
     id
     shortName
   }
+  groups {
+    ...GroupWithoutUsers
+  }
 }
 
 fragment RegularUserWithoutEvents on User {

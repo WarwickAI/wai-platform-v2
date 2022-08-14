@@ -109,7 +109,14 @@ export class UserResolver {
       return null;
     }
     const user = await User.findOne(parseInt(payload.userId), {
-      relations: ["projects", "talks", "courses", "tutorials", "votes"],
+      relations: [
+        "projects",
+        "talks",
+        "courses",
+        "tutorials",
+        "votes",
+        "groups",
+      ],
     });
 
     if (!user) {

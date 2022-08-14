@@ -5,6 +5,8 @@ import {
   useEditDatabaseAttributeNameMutation,
   useEditElementDataMutation,
   useGetElementQuery,
+  useMeQuery,
+  User,
   useRemoveElementMutation,
 } from "../../../generated/graphql";
 import {
@@ -19,6 +21,7 @@ import {
   ElementTypeKeys,
   ElementTypesDef,
 } from "../../../utils/config";
+import { checkPermissions } from "../../../utils/isAuth";
 import TextProperty from "../../Properties/Text";
 import AttributeHeader, { AddAttributeHeader } from "./AttributeHeader";
 import Row from "./Row";
@@ -40,6 +43,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     variables: { elementId: elementData.database.value },
   });
   const [, removeElement] = useRemoveElementMutation();
+  const [{ data: meData }] = useMeQuery();
 
   const database: Element<DatabaseElementData> | undefined = useMemo(() => {
     if (
@@ -53,12 +57,14 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
 
   const rows: Element<any>[] = useMemo(() => {
     if (database) {
-      return (database.children as Element<any>[]).sort(
-        (a, b) => a.index - b.index
-      );
+      return (database.children as Element<any>[])
+        .sort((a, b) => a.index - b.index)
+        .filter((item) =>
+          checkPermissions(item.canViewGroups, meData?.me as User | undefined)
+        );
     }
     return [];
-  }, [database]);
+  }, [database, meData]);
 
   useEffect(() => {
     if (databaseQuery?.getElement) {

@@ -1,21 +1,11 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Image,
-  Input,
-  Switch,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Image, useBreakpointValue } from "@chakra-ui/react";
 import {
   useCreateElementMutation,
   useEditElementDataMutation,
   useEditElementIndexMutation,
   useMeQuery,
+  User,
   useRemoveElementMutation,
 } from "../../generated/graphql";
 import { Reorder } from "framer-motion";
@@ -31,6 +21,7 @@ import {
 import { PageElementData } from "../../utils/base_element_types";
 import { EditContext } from "../../utils/EditContext";
 import TextProperty from "../Properties/Text";
+import { checkPermissions } from "../../utils/isAuth";
 
 interface PageProps {
   element: Element<PageElementData>;
@@ -44,6 +35,8 @@ const Page: React.FC<PageProps> = (props) => {
 
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
 
+  const [{ data: meData }, meQuery] = useMeQuery();
+
   const [items, setItems] = useState<Element<any>[]>([]);
   const [oldItems, setOldItems] = useState<Element<any>[]>([]);
   const { isEdit } = useContext(EditContext);
@@ -53,9 +46,14 @@ const Page: React.FC<PageProps> = (props) => {
     const contentSorted = (props.element.children as Element<any>[]).sort(
       (a, b) => a.index! - b.index!
     );
-    setItems(contentSorted);
-    setOldItems(contentSorted);
-  }, [props.element.children]);
+    // Filter out non-visible elements
+    const contentFiltered = contentSorted.filter((item) =>
+      checkPermissions(item.canViewGroups, meData?.me as User | undefined)
+    );
+
+    setItems(contentFiltered);
+    setOldItems(contentFiltered);
+  }, [props.element.children, meData?.me]);
 
   // Modifiable props
   const [pageTitle, setPageTitle] = useState<string>(elementProps.title.value);

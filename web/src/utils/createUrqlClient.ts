@@ -51,6 +51,7 @@ import {
   EditElementDataMutation,
   GetTemplatesWithoutChildrenQuery,
   GetTemplatesWithoutChildrenDocument,
+  UpdatePermissionsMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -774,7 +775,7 @@ export const createUrqlClient = (ssrExchange: any) => {
               );
               if (newElement.type === "Database") {
                 betterUpdateQuery<
-                  CreateElementMutation,
+                  EditElementDataMutation,
                   GetDatabasesWithoutChildrenQuery
                 >(
                   cache,
@@ -794,7 +795,89 @@ export const createUrqlClient = (ssrExchange: any) => {
               }
               if (newElement.type === "Template") {
                 betterUpdateQuery<
-                  CreateElementMutation,
+                  EditElementDataMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+            },
+            updatePermissions: (_result, args, cache, info) => {
+              const res = _result as UpdatePermissionsMutation;
+              if (!res.updatePermissions) {
+                return;
+              }
+              const newElement = res.updatePermissions;
+              const elementId = newElement.id;
+              betterUpdateQuery<UpdatePermissionsMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.updatePermissions) {
+                    return query;
+                  } else {
+                    if (result.updatePermissions.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.updatePermissions.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
+                              (val) => val.id === result.updatePermissions.id
+                            )
+                          ] = result.updatePermissions;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.updatePermissions;
+                    return query;
+                  }
+                }
+              );
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  UpdatePermissionsMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  UpdatePermissionsMutation,
                   GetTemplatesWithoutChildrenQuery
                 >(
                   cache,
