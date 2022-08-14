@@ -27,9 +27,3 @@ query GetTemplatesWithoutChildren {
     ...ElementNoChildren
   }
 }
-
-query GetDatabase($databaseId: Float!) {
-  getDatabase(databaseId: $databaseId) {
-    ...FullElement
-  }
-}

@@ -106,24 +106,6 @@ export class ElementResolver {
     });
   }
 
-  @Query(() => Element)
-  @UseMiddleware()
-  async getDatabase(@Arg("databaseId") elementId: number): Promise<Element> {
-    return await Element.findOneOrFail(
-      { id: elementId, type: "Database" },
-      {
-        relations: [
-          "createdBy",
-          "parent",
-          "children",
-          "canEditGroups",
-          "canViewGroups",
-          "canInteractGroups",
-        ],
-      }
-    );
-  }
-
   @Mutation(() => Element, { nullable: true })
   @UseMiddleware(isAuth, getUser)
   async createElement(

@@ -4,18 +4,12 @@ import Dashboard from "../../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
-import {
-  useGetDatabaseQuery,
-} from "../../generated/graphql";
 
 interface GenericProps {}
 
 const Generic: React.FC<GenericProps> = ({}) => {
   const router = useRouter();
   const { database_id } = router.query;
-  const [{ data: element }] = useGetDatabaseQuery({
-    variables: { databaseId: parseInt(database_id as string) },
-  });
 
   return (
     <Dashboard title="Generic">

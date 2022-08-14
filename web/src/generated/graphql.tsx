@@ -486,7 +486,6 @@ export type Query = {
   electionRoleApplications: Array<RoleApplication>;
   electionRoles: Array<ElectionRole>;
   getAllVotes: Array<Vote>;
-  getDatabase: Element;
   getDatabases: Array<Element>;
   getElectionRole?: Maybe<ElectionRole>;
   getElement: Element;
@@ -541,11 +540,6 @@ export type QueryElectionRoleAllApplicationsArgs = {
 export type QueryElectionRoleApplicationsArgs = {
   roleId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetDatabaseArgs = {
-  databaseId: Scalars['Float'];
 };
 
 
@@ -1217,13 +1211,6 @@ export type GetTemplatesWithoutChildrenQueryVariables = Exact<{ [key: string]: n
 
 
 export type GetTemplatesWithoutChildrenQuery = { __typename?: 'Query', getTemplates: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
-
-export type GetDatabaseQueryVariables = Exact<{
-  databaseId: Scalars['Float'];
-}>;
-
-
-export type GetDatabaseQuery = { __typename?: 'Query', getDatabase: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2386,17 +2373,6 @@ export const GetTemplatesWithoutChildrenDocument = gql`
 
 export function useGetTemplatesWithoutChildrenQuery(options: Omit<Urql.UseQueryArgs<GetTemplatesWithoutChildrenQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTemplatesWithoutChildrenQuery>({ query: GetTemplatesWithoutChildrenDocument, ...options });
-};
-export const GetDatabaseDocument = gql`
-    query GetDatabase($databaseId: Float!) {
-  getDatabase(databaseId: $databaseId) {
-    ...FullElement
-  }
-}
-    ${FullElementFragmentDoc}`;
-
-export function useGetDatabaseQuery(options: Omit<Urql.UseQueryArgs<GetDatabaseQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetDatabaseQuery>({ query: GetDatabaseDocument, ...options });
 };
 export const GetGroupsDocument = gql`
     query GetGroups {
