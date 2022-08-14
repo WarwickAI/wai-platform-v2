@@ -90,6 +90,22 @@ export class ElementResolver {
     });
   }
 
+  @Query(() => [Element])
+  @UseMiddleware()
+  async getTemplates(): Promise<Element[]> {
+    return await Element.find({
+      where: { type: "Template" },
+      relations: [
+        "createdBy",
+        "parent",
+        "children",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
+    });
+  }
+
   @Query(() => Element)
   @UseMiddleware()
   async getDatabase(@Arg("databaseId") elementId: number): Promise<Element> {
@@ -154,7 +170,7 @@ export class ElementResolver {
     element.createdBy = payload.user;
     element.children = [];
 
-    if (element.parent?.type === "Database") {
+    if (element.parent && element.parent?.type === "Database") {
       // Need to ensure element has all data of parent database
 
       Object.keys((element.parent.data as any).attributes.value).map(
@@ -167,6 +183,38 @@ export class ElementResolver {
           }
         }
       );
+
+      // Need to add the template if it exists
+
+      if ((element.parent.data as any).template?.value) {
+        const templateElement = await Element.getElementByIdWithChildren(
+          (element.parent.data as any).template.value
+        );
+        console.log(templateElement);
+        // Copy the templates children
+        element.children = await Promise.all(
+          templateElement.children.map(async (child) => {
+            const {
+              id,
+              children,
+              parent,
+              createdAt,
+              updatedAt,
+              createdBy,
+              ...childInfo
+            } = child;
+            const newChild = Element.create({ ...childInfo });
+            newChild.canEditGroups = element.parent?.canEditGroups || [];
+            newChild.canViewGroups = element.parent?.canViewGroups || [];
+            newChild.canInteractGroups =
+              element.parent?.canInteractGroups || [];
+            newChild.createdBy = payload.user!; // Will exists, we did the check earlier
+
+            await newChild.save();
+            return newChild;
+          })
+        );
+      }
     }
 
     await element.save();

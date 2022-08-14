@@ -89,7 +89,7 @@ export const DataTypesDef = {
     hint: "Property Link",
     constraints: {},
     defaultValue: "",
-  },
+  } as DateTypesDef,
   DatabaseBaseType: {
     label: "Database Base Type",
     hint: "Database Base Type",
@@ -113,19 +113,25 @@ export const DataTypesDef = {
     hint: "Data List",
     constraints: {},
     defaultValue: [],
-  },
+  } as DateTypesDef,
   DatabaseAttributes: {
     label: "Database Attributes",
     hint: "Database Attributes",
     constraints: {},
     defaultValue: {},
-  },
+  } as DateTypesDef,
   User: {
     label: "User",
     hint: "User",
     constraints: {},
     defaultValue: -1,
-  },
+  } as DateTypesDef,
+  Template: {
+    label: "Template",
+    hint: "Template",
+    constraints: {},
+    defaultValue: -1,
+  } as DateTypesDef,
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -149,3 +155,4 @@ export type ActionTypeValue = ActionTypeKeys;
 export type DataListValue = any[];
 export type DatabaseAttributesValue = ElementData;
 export type UserValue = number;
+export type TemplateValue = number;

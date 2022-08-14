@@ -4,6 +4,7 @@ import ImageProperty from "./Image";
 import NumberProperty from "./Number";
 import DataLinkProperty from "./DataLink";
 import TextProperty from "./Text";
+import TemplateProperty from "./Template";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -48,6 +49,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
     return (
       <DataLinkProperty
         element={props.element}
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "Template") {
+    return (
+      <TemplateProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

@@ -22,6 +22,12 @@ query GetDatabasesWithoutChildren {
   }
 }
 
+query GetTemplatesWithoutChildren {
+  getTemplates {
+    ...ElementNoChildren
+  }
+}
+
 query GetDatabase($databaseId: Float!) {
   getDatabase(databaseId: $databaseId) {
     ...FullElement

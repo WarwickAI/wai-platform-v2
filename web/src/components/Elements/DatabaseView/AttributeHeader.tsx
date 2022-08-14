@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   HStack,
@@ -8,12 +7,10 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  RadioProps,
   StackDivider,
   Text,
   Th,
   Tooltip,
-  useRadio,
   useRadioGroup,
   VStack,
 } from "@chakra-ui/react";
@@ -29,6 +26,7 @@ import lockOutline from "@iconify/icons-eva/lock-outline";
 import { getIcon } from "../../SidebarConfig";
 import { DataTypeKeys } from "../../../utils/base_data_types";
 import { useMemo, useState } from "react";
+import RadioItem from "../../Utils/RadioItem";
 
 interface AttributeHeaderProps {
   database: Element<DatabaseElementData>;
@@ -163,9 +161,9 @@ export const AddAttributeHeader: React.FC<AddAttributeHeaderProps> = (
               const radio = getRadioProps({ value: dataTypeKey });
 
               return (
-                <AttributeTypeRadio key={dataTypeKey} {...radio}>
+                <RadioItem key={dataTypeKey} {...radio}>
                   {dataTypeKey}
-                </AttributeTypeRadio>
+                </RadioItem>
               );
             })}
           </Flex>
@@ -178,39 +176,6 @@ export const AddAttributeHeader: React.FC<AddAttributeHeaderProps> = (
         </PopoverBody>
       </PopoverContent>
     </Popover>
-  );
-};
-
-const AttributeTypeRadio: React.FC<RadioProps> = (props) => {
-  const { getInputProps, getCheckboxProps } = useRadio(props);
-
-  const input = getInputProps();
-  const checkbox = getCheckboxProps();
-
-  return (
-    <Box as="label">
-      <input {...input} />
-      <Box
-        {...checkbox}
-        cursor="pointer"
-        borderWidth="1px"
-        borderRadius="md"
-        boxShadow="md"
-        _checked={{
-          bg: "teal.600",
-          color: "white",
-          borderColor: "teal.600",
-        }}
-        _focus={{
-          boxShadow: "outline",
-        }}
-        px={2}
-        py={1}
-        m={1}
-      >
-        {props.children}
-      </Box>
-    </Box>
   );
 };
 

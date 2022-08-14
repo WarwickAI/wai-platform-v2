@@ -71,14 +71,6 @@ const PageItem: React.FC<PageItemProps> = (props) => {
         <Flex alignItems="center" width={"full"}>
           <Main elementId={props.element.id} isEdit={props.isEdit} />
         </Flex>
-        {(showControls || addElementPopoverOpen) && props.isEdit && (
-          <Flex
-            position={"absolute"}
-            justifyContent={"center"}
-            width={"full"}
-            zIndex={1}
-          ></Flex>
-        )}
       </Box>
     </Reorder.Item>
   );

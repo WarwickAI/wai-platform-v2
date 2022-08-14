@@ -49,6 +49,8 @@ import {
   GetDatabasesWithoutChildrenQuery,
   GetDatabasesWithoutChildrenDocument,
   EditElementDataMutation,
+  GetTemplatesWithoutChildrenQuery,
+  GetTemplatesWithoutChildrenDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -711,6 +713,22 @@ export const createUrqlClient = (ssrExchange: any) => {
                   }
                 );
               }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates.push(newElement);
+                    return query;
+                  }
+                );
+              }
             },
 
             editElementData: (_result, args, cache, info) => {
@@ -767,6 +785,26 @@ export const createUrqlClient = (ssrExchange: any) => {
                   (_, query) => {
                     query.getDatabases[
                       query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
                         (val) => val.id === newElement.id
                       )
                     ] = newElement;

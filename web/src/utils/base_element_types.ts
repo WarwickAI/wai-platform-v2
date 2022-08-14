@@ -9,6 +9,7 @@ import {
   ImageValue,
   DataLinkValue,
   TextValue,
+  TemplateValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -98,6 +99,11 @@ export const ElementTypesDef = {
         type: "DatabaseBaseType",
         inSettings: false,
       },
+      template: {
+        type: "Template",
+        label: "Template",
+        inSettings: true,
+      },
     },
   } as ElementTypeDef,
   DatabaseView: {
@@ -140,6 +146,26 @@ export const ElementTypesDef = {
       },
     },
   } as ElementTypeDef,
+  Template: {
+    label: "Template",
+    data: {
+      title: {
+        type: "Text",
+        label: "Title",
+        inSettings: true,
+      },
+      coverImg: {
+        type: "Image",
+        label: "Cover Image",
+        inSettings: true,
+      },
+      iconImg: {
+        type: "Image",
+        label: "Icon Image",
+        inSettings: true,
+      },
+    },
+  } as ElementTypeDef,
 };
 
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
@@ -169,6 +195,7 @@ export type DatabaseElementData = {
   title: ElementDataPiece<TextValue>;
   attributes: ElementDataPiece<DatabaseAttributesValue>;
   childrenBaseType: ElementDataPiece<DatabaseBaseTypeValue>;
+  template: ElementDataPiece<TemplateValue>;
 };
 
 export type DatabaseViewElementData = {
@@ -181,4 +208,10 @@ export type ImageElementData = {
 
 export type DataLinkElementData = {
   property: ElementDataPiece<DataLinkValue>;
+};
+
+export type TemplateElementData = {
+  title: ElementDataPiece<TextValue>;
+  coverImg: ElementDataPiece<ImageValue>;
+  iconImg: ElementDataPiece<ImageValue>;
 };

@@ -12,8 +12,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { useEditElementDataMutation } from "../../generated/graphql";
-import { Element, ElementDataPiece, ElementTypesDef } from "../../utils/config";
+import {
+  useEditElementDataMutation,
+  useGetElementQuery,
+} from "../../generated/graphql";
+import {
+  DatabaseElementData,
+  DatabaseViewElementData,
+} from "../../utils/base_element_types";
+import {
+  Element,
+  ElementDataPiece,
+  ElementTypeKeys,
+  ElementTypesDef,
+} from "../../utils/config";
 import GenericProperty from "../Properties/GenericProperty";
 import PermissionsEdit from "./PermissionsEdit";
 
@@ -30,6 +42,23 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 ) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
 
+  const [{ data: databaseQuery }] = useGetElementQuery({
+    variables: {
+      elementId:
+        (props.element.data as DatabaseViewElementData).database?.value || -1,
+    },
+  });
+
+  const database = useMemo(() => {
+    if (
+      databaseQuery?.getElement &&
+      databaseQuery?.getElement.type === "Database"
+    ) {
+      return databaseQuery.getElement as Element<DatabaseElementData>;
+    }
+    return;
+  }, [databaseQuery?.getElement]);
+
   const attributes = useMemo(() => {
     var attributes = Object.keys(props.element.data).map((attributeName) => {
       const att = props.element.data[attributeName];
@@ -43,6 +72,25 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
 
     return attributes;
   }, [props.element.data, props.element.type]);
+
+  const dbAttributes = useMemo(() => {
+    if (!database) {
+      return [];
+    }
+
+    var attributes = Object.keys(database.data).map((attributeName) => {
+      const att = database.data[attributeName];
+      att.attributeName = attributeName;
+      return att;
+    });
+    var attributes = attributes.filter((att) => {
+      return ElementTypesDef[database.type as ElementTypeKeys].data[
+        att.attributeName
+      ]?.inSettings;
+    });
+
+    return attributes;
+  }, [database]);
 
   return (
     <Popover
@@ -90,6 +138,21 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                       elementDataPiece={att}
                       dataPieceName={att.attributeName}
                       element={props.element}
+                    />
+                  );
+                })}
+              </VStack>
+            )}
+            {dbAttributes.length > 0 && (
+              <VStack w={"full"} spacing={1}>
+                <Text>DB Attributes</Text>
+                {dbAttributes.map((att) => {
+                  return (
+                    <ElementSetting
+                      key={att.attributeName}
+                      elementDataPiece={att}
+                      dataPieceName={att.attributeName}
+                      element={database as Element<any>}
                     />
                   );
                 })}

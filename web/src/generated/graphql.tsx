@@ -495,6 +495,7 @@ export type Query = {
   getRoleApplication?: Maybe<RoleApplication>;
   getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
+  getTemplates: Array<Element>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
   getUsersGroups?: Maybe<Array<Group>>;
   groups: Array<Group>;
@@ -1211,6 +1212,11 @@ export type GetDatabasesWithoutChildrenQueryVariables = Exact<{ [key: string]: n
 
 
 export type GetDatabasesWithoutChildrenQuery = { __typename?: 'Query', getDatabases: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+
+export type GetTemplatesWithoutChildrenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTemplatesWithoutChildrenQuery = { __typename?: 'Query', getTemplates: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
 
 export type GetDatabaseQueryVariables = Exact<{
   databaseId: Scalars['Float'];
@@ -2369,6 +2375,17 @@ export const GetDatabasesWithoutChildrenDocument = gql`
 
 export function useGetDatabasesWithoutChildrenQuery(options: Omit<Urql.UseQueryArgs<GetDatabasesWithoutChildrenQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetDatabasesWithoutChildrenQuery>({ query: GetDatabasesWithoutChildrenDocument, ...options });
+};
+export const GetTemplatesWithoutChildrenDocument = gql`
+    query GetTemplatesWithoutChildren {
+  getTemplates {
+    ...ElementNoChildren
+  }
+}
+    ${ElementNoChildrenFragmentDoc}`;
+
+export function useGetTemplatesWithoutChildrenQuery(options: Omit<Urql.UseQueryArgs<GetTemplatesWithoutChildrenQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTemplatesWithoutChildrenQuery>({ query: GetTemplatesWithoutChildrenDocument, ...options });
 };
 export const GetDatabaseDocument = gql`
     query GetDatabase($databaseId: Float!) {

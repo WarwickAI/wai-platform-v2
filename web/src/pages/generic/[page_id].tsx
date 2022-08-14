@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
@@ -29,10 +29,13 @@ const Generic: React.FC<GenericProps> = ({}) => {
         <Text>Loading...</Text>
       </ElementPageWrapper>
     );
-  } else if (element.getElement.type !== "Page") {
+  } else if (
+    element.getElement.type !== "Page" &&
+    element.getElement.type !== "Template"
+  ) {
     return (
       <ElementPageWrapper>
-        <Text>This element is not a page</Text>
+        <Text>This element is not a page or a template</Text>
       </ElementPageWrapper>
     );
   } else {
