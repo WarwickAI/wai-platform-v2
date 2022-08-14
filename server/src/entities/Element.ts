@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -37,7 +37,7 @@ export class Element extends BaseEntity {
   createdBy: User;
 
   @Field(() => Element, { nullable: true })
-  @TreeParent()
+  @TreeParent({ onDelete: "CASCADE" })
   parent?: Element;
 
   @Field()

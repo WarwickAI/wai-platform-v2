@@ -1,20 +1,11 @@
-import {
-  Box,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Button,
-  Tbody,
-  Td,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Table, Thead, Tr, Th, Tbody, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   useCreateElementMutation,
   useEditDatabaseAttributeNameMutation,
   useEditElementDataMutation,
   useGetElementQuery,
+  useRemoveElementMutation,
 } from "../../../generated/graphql";
 import {
   DatabaseElementData,
@@ -48,6 +39,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
     variables: { elementId: elementData.database.value },
   });
+  const [, removeElement] = useRemoveElementMutation();
 
   const database: Element<DatabaseElementData> | undefined = useMemo(() => {
     if (
@@ -58,6 +50,15 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     }
     return undefined;
   }, [databaseQuery?.getElement]);
+
+  const rows: Element<any>[] = useMemo(() => {
+    if (database) {
+      return (database.children as Element<any>[]).sort(
+        (a, b) => a.index - b.index
+      );
+    }
+    return [];
+  }, [database]);
 
   useEffect(() => {
     if (databaseQuery?.getElement) {
@@ -149,9 +150,9 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     });
   };
 
-  const addRow = async () => {
+  const addRow = async (atIndex: number) => {
     await createElement({
-      index: 0,
+      index: atIndex,
       type: databaseQuery?.getElement.data.childrenBaseType
         .value as ElementTypeKeys,
       data: createDefaultElementData(
@@ -207,29 +208,18 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
               </Thead>
               {/* Database Children */}
               <Tbody>
-                {databaseQuery?.getElement.children.map((row) => {
+                {rows.map((row) => {
                   return (
                     <Row
                       key={row.id}
                       database={database}
                       element={row as Element<any>}
+                      addElement={addRow}
+                      removeElement={(id) => removeElement({ elementId: id })}
                       isEdit={isEdit}
                     />
                   );
                 })}
-                {isEdit && (
-                  <Tr>
-                    <Td>
-                      <Button
-                        size={"sm"}
-                        variant="outline"
-                        onClick={() => addRow()}
-                      >
-                        +
-                      </Button>
-                    </Td>
-                  </Tr>
-                )}
               </Tbody>
             </Table>
           </Box>

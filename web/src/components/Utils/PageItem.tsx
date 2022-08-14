@@ -40,15 +40,15 @@ const PageItem: React.FC<PageItemProps> = (props) => {
       onHoverStart={() => setShowControls(true)}
       onHoverEnd={() => setShowControls(false)}
     >
-      <Box position="relative" p={2} my={2}>
+      <Box position="relative" my={2}>
         {/* Element Controls */}
         {props.isEdit && (
           <Flex
-            height={"full"}
+          justifyContent={"center"}
+            height={10}
             onPointerDown={(e) => controls.start(e)}
             position="absolute"
-            left="-10"
-            my={-2}
+            left={-12}
             alignItems={"center"}
             opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
           >

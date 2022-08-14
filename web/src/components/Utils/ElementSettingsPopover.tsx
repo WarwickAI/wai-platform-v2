@@ -34,6 +34,7 @@ interface ElementSettingsPopoverProps {
   onClose: () => void;
   removeElement: (elementId: number) => void;
   element: Element<any>;
+  hideAttributes?: boolean;
   disabled: boolean;
 }
 
@@ -128,7 +129,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
       <PopoverContent w={40} p={0}>
         <PopoverBody m={2} p={0}>
           <VStack divider={<StackDivider borderColor="gray.200" />} spacing={1}>
-            {attributes.length > 0 && (
+            {!props.hideAttributes && attributes.length > 0 && (
               <VStack w={"full"} spacing={1}>
                 <Text>Attributes</Text>
                 {attributes.map((att) => {
@@ -143,7 +144,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                 })}
               </VStack>
             )}
-            {dbAttributes.length > 0 && (
+            {!props.hideAttributes && dbAttributes.length > 0 && (
               <VStack w={"full"} spacing={1}>
                 <Text>DB Attributes</Text>
                 {dbAttributes.map((att) => {
