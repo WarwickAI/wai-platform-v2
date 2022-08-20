@@ -33,7 +33,7 @@ export const markdownTheme = {
 };
 
 // 2. Call `extendTheme` and pass your custom values
-export const theme: ChakraTheme = extendTheme({
+export const theme: any = extendTheme({
   styles: {
     global: {
       a: {
