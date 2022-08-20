@@ -25,6 +25,23 @@ export const getAuth = async ({ authState }) => {
     return null;
   }
 
+  // Try and refresh access token
+  const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh_token`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const refreshData = await refreshResponse.json();
+  const accessToken: string = refreshData.accessToken;
+
+  if (accessToken) {
+    setAccessToken(accessToken);
+
+    return {
+      token: accessToken,
+    };
+  }
+
   return null;
 };
 
