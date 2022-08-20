@@ -1,13 +1,5 @@
 import React, { useRef } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
-import {
-  convertFromRaw,
-  convertToRaw,
-  Editor,
-  EditorState,
-  RichUtils,
-} from "draft-js";
-import "draft-js/dist/Draft.css";
 import { Element } from "../../utils/config";
 import { TextElementData } from "../../utils/base_element_types";
 import { useEditElementDataMutation } from "../../generated/graphql";
@@ -101,34 +93,7 @@ interface TextProps {
 const Text: React.FC<TextProps> = (props) => {
   const elementProps = props.element.data as TextElementData;
 
-  const editorRef = useRef(null);
-
   const [, editElement] = useEditElementDataMutation();
-  const [editorState, setEditorState] = React.useState(() =>
-    elementProps.text.value && elementProps.text.value.length > 0
-      ? EditorState.createWithContent(
-          convertFromRaw(JSON.parse(elementProps.text.value))
-        )
-      : EditorState.createEmpty()
-  );
-
-  const [isEditorFocused, setIsEditorFocused] = React.useState(false);
-
-  const focusEditor = () => {
-    if (editorRef.current) {
-      setIsEditorFocused(true);
-      (editorRef.current as any).focus();
-    }
-  };
-
-  const onInlineClick = (type: string) => {
-    let nextState = RichUtils.toggleInlineStyle(editorState, type);
-    setEditorState(nextState);
-  };
-
-  const onEdit = (state: EditorState) => {
-    setEditorState(state);
-  };
 
   return (
     <FormattedText

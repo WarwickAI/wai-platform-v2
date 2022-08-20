@@ -5,6 +5,7 @@ import NumberProperty from "./Number";
 import DataLinkProperty from "./DataLink";
 import TextProperty from "./Text";
 import TemplateProperty from "./Template";
+import FormattedText from "./FormattedText";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -17,10 +18,18 @@ interface GenericPropertyProps {
 const GenericProperty: React.FC<GenericPropertyProps> = (
   props: GenericPropertyProps
 ) => {
-  const value = props.value + "";
   if (props.type === "Text" || props.type === "Url" || props.type === "Image") {
     return (
       <TextProperty
+        value={props.value}
+        onChange={props.onChange}
+        isEdit={props.isEdit}
+      />
+    );
+  }
+  if (props.type === "FormattedText") {
+    return (
+      <FormattedText
         value={props.value}
         onChange={props.onChange}
         isEdit={props.isEdit}

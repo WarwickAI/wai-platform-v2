@@ -43,7 +43,7 @@ const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
         const radio = getRadioProps({ value: database.id });
 
         return (
-          <RadioItem key={database.id} {...radio}>
+          <RadioItem key={database.id} {...radio} inSettings={true}>
             {databaseProps.title.value}
           </RadioItem>
         );

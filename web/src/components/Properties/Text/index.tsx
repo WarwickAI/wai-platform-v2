@@ -55,6 +55,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         height={props.isTitle ? 14 : 10}
         fontSize={props.isTitle ? "2xl" : "md"}
         fontWeight={props.isTitle ? "bold" : "normal"}
+        borderColor={"gray.200"}
       />
     );
   }

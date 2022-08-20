@@ -1,5 +1,7 @@
 import {
+  Box,
   Button,
+  Flex,
   HStack,
   useDisclosure,
   useRadioGroup,
@@ -10,6 +12,8 @@ import { useMemo } from "react";
 import { useGetTemplatesWithoutChildrenQuery } from "../../../generated/graphql";
 import RadioItem from "../../Utils/RadioItem";
 import CreateTemplateWindow from "./CreateTemplateWindow";
+import editOutline from "@iconify/icons-eva/edit-outline";
+import { getIcon } from "../../SidebarConfig";
 
 interface TemplatePropertyProps {
   value: number;
@@ -46,17 +50,24 @@ const TemplateProperty: React.FC<TemplatePropertyProps> = (props) => {
         const radio = getRadioProps({ value: template.id });
 
         return (
-          <HStack key={template.id}>
-            <RadioItem {...radio}>{template.data.title.value}</RadioItem>
-            <Button
-              size={"sm"}
-              onClick={() => {
-                router.push(`/generic/${template.id}`);
-              }}
+          <RadioItem key={template.id} {...radio} inSettings={true}>
+            <Flex
+              w={"full"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
             >
-              🔗
-            </Button>
-          </HStack>
+              <Box flexGrow={1}>{template.data.title.value}</Box>
+              <Button
+                size={"sm"}
+                onClick={() => {
+                  router.push(`/generic/${template.id}`);
+                }}
+                color="blue.500"
+              >
+                {getIcon(editOutline)}
+              </Button>
+            </Flex>
+          </RadioItem>
         );
       })}
       <Button size={"sm"} variant={"setting"} onClick={onAddOpen}>
