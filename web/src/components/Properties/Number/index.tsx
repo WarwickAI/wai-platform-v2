@@ -35,7 +35,7 @@ const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
           fontWeight={props.isTitle ? "bold" : "normal"}
           fontSize={props.isTitle ? "2xl" : "md"}
           noOfLines={1}
-          wordBreak={'break-word'}
+          wordBreak={"break-word"}
         >
           {parseFloat(value)}
         </Text>
@@ -65,6 +65,7 @@ const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
         height={props.isTitle ? 14 : 10}
         fontSize={props.isTitle ? "2xl" : "md"}
         fontWeight={props.isTitle ? "bold" : "normal"}
+        borderColor={"gray.200"}
       />
     );
   }
