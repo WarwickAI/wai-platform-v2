@@ -17,16 +17,20 @@ import {
 import {
   DatabaseElementData,
   ElementTypeKeys,
-} from "../../../utils/base_element_types";
-import { DataTypeKeysT, Element, ElementTypesDef } from "../../../utils/config";
+} from "../../../../utils/base_element_types";
+import {
+  DataTypeKeysT,
+  Element,
+  ElementTypesDef,
+} from "../../../../utils/config";
 import textOutline from "@iconify/icons-eva/text-outline";
 import hashOutline from "@iconify/icons-eva/hash-outline";
 import imageOutline from "@iconify/icons-eva/image-outline";
 import lockOutline from "@iconify/icons-eva/lock-outline";
-import { getIcon } from "../../SidebarConfig";
-import { DataTypeKeys } from "../../../utils/base_data_types";
+import { getIcon } from "../../../SidebarConfig";
+import { DataTypeKeys } from "../../../../utils/base_data_types";
 import { useMemo, useState } from "react";
-import RadioItem from "../../Utils/RadioItem";
+import RadioItem from "../../../Utils/RadioItem";
 
 interface AttributeHeaderProps {
   database: Element<DatabaseElementData>;

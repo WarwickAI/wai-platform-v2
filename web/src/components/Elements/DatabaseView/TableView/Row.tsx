@@ -2,11 +2,11 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Tr, Td, Flex, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useEditElementDataMutation } from "../../../generated/graphql";
-import { DatabaseElementData } from "../../../utils/base_element_types";
-import { Element, ElementDataPiece } from "../../../utils/config";
-import GenericProperty from "../../Properties/GenericProperty";
-import ElementSettingsPopover from "../../Utils/ElementSettingsPopover";
+import { useEditElementDataMutation } from "../../../../generated/graphql";
+import { DatabaseElementData } from "../../../../utils/base_element_types";
+import { Element, ElementDataPiece } from "../../../../utils/config";
+import GenericProperty from "../../../Properties/GenericProperty";
+import ElementSettingsPopover from "../../../Utils/ElementSettingsPopover";
 
 interface RowProps {
   element: Element<any>;

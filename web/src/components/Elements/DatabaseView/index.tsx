@@ -1,4 +1,4 @@
-import { Box, Table, Thead, Tr, Th, Tbody, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   useCreateElementMutation,
@@ -22,9 +22,7 @@ import {
   ElementTypesDef,
 } from "../../../utils/config";
 import { checkPermissions } from "../../../utils/isAuth";
-import TextProperty from "../../Properties/Text";
-import AttributeHeader, { AddAttributeHeader } from "./AttributeHeader";
-import Row from "./Row";
+import TableView from "./TableView";
 
 interface DatabaseViewProps {
   element: Element<DatabaseViewElementData>;
@@ -167,69 +165,37 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       parent: elementData.database.value,
     });
   };
+
+  const editDbName = async (newName: string) => {
+    if (!database) {
+      return;
+    }
+    const newData: any = {};
+    newData.title = {
+      ...database.data.title,
+      value: newName,
+    };
+
+    await editElement({
+      elementId: database.id,
+      data: newData,
+    });
+  };
+
   return (
     <Box>
       {database ? (
-        <Box>
-          {/* Database Title */}
-          <TextProperty
-            value={databaseName}
-            onChange={async (v) => {
-              setDatabaseName(v);
-              const newData: any = {};
-              newData.title = {
-                ...database.data.title,
-                value: v,
-              };
-
-              await editElement({
-                elementId: database.id,
-                data: newData,
-              });
-            }}
-            isEdit={isEdit}
-          />
-          <Box>
-            <Table variant={"simple"}>
-              {/* Database Headers */}
-              <Thead>
-                <Tr>
-                  <Th>🔗</Th>
-                  {Object.keys(database.data.attributes.value).map((name) => (
-                    <AttributeHeader
-                      key={name}
-                      database={database}
-                      isEdit={isEdit}
-                      name={name}
-                      removeAttribute={removeAttribute}
-                      modifyAttributeName={modifyAttributeName}
-                    />
-                  ))}
-                  {isEdit && (
-                    <Th>
-                      <AddAttributeHeader addAttribute={addAttribute} />
-                    </Th>
-                  )}
-                </Tr>
-              </Thead>
-              {/* Database Children */}
-              <Tbody>
-                {rows.map((row) => {
-                  return (
-                    <Row
-                      key={row.id}
-                      database={database}
-                      element={row as Element<any>}
-                      addElement={addRow}
-                      removeElement={(id) => removeElement({ elementId: id })}
-                      isEdit={isEdit}
-                    />
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </Box>
-        </Box>
+        <TableView
+          database={database}
+          rows={rows}
+          isEdit={isEdit}
+          addAttribute={addAttribute}
+          removeAttribute={removeAttribute}
+          modifyAttributeName={modifyAttributeName}
+          addRow={addRow}
+          editDatabaseName={editDbName}
+          removeRow={(id: number) => removeElement({ elementId: id })}
+        />
       ) : (
         <Text>No Database Selected (select in settings)</Text>
       )}
