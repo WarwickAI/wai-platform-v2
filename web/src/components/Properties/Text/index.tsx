@@ -1,12 +1,6 @@
-import {
-  Box,
-  ChakraProps,
-  Flex,
-  Input,
-  StyleProps,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 interface TextPropertyProps {
   value: string;
@@ -17,6 +11,12 @@ interface TextPropertyProps {
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
   const [value, setValue] = useState<string>(props.value);
+  const debounced = useDebouncedCallback(
+    (value) => {
+      props.onChange(value);
+    },
+    1500
+  );
 
   useEffect(() => {
     setValue(props.value);
@@ -37,7 +37,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
           fontWeight={props.isTitle ? "bold" : "normal"}
           fontSize={props.isTitle ? "2xl" : "md"}
           noOfLines={1}
-          wordBreak={'break-word'}
+          wordBreak={"break-word"}
         >
           {value}
         </Text>
@@ -50,7 +50,8 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         type={"text"}
         onChange={async (e) => {
           setValue(e.target.value);
-          props.onChange(e.target.value);
+          debounced.cancel();
+          debounced(e.target.value);
         }}
         height={props.isTitle ? 14 : 10}
         fontSize={props.isTitle ? "2xl" : "md"}

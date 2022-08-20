@@ -1,5 +1,6 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 interface NumberPropertyProps {
   value: number;
@@ -10,6 +11,10 @@ interface NumberPropertyProps {
 
 const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
   const [value, setValue] = useState<string>(props.value + "");
+
+  const debounced = useDebouncedCallback((value) => {
+    props.onChange(value);
+  }, 1500);
 
   useEffect(() => {
     setValue(props.value + "");
@@ -53,7 +58,8 @@ const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
             // Remove commas
             e.target.value = e.target.value.replace(/,/g, "");
             setValue(parseFloat(e.target.value) + "");
-            props.onChange(parseFloat(e.target.value));
+            debounced.cancel();
+            debounced(parseFloat(e.target.value));
           }
         }}
         height={props.isTitle ? 14 : 10}

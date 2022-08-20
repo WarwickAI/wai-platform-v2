@@ -8,6 +8,7 @@ import {
   RichUtils,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
+import { useDebouncedCallback } from "use-debounce";
 
 interface StyleButtonsProps {
   onToggle: (style: string) => void;
@@ -120,8 +121,13 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
 
   const onEdit = (state: EditorState) => {
     setEditorState(state);
-    props.onChange(JSON.stringify(convertToRaw(state.getCurrentContent())));
+    debounced.cancel();
+    debounced(JSON.stringify(convertToRaw(state.getCurrentContent())));
   };
+
+  const debounced = useDebouncedCallback((value) => {
+    props.onChange(value);
+  }, 1500);
 
   useEffect(() => {
     setEditorState(
