@@ -13,6 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Element } from "../../utils/config";
+import { useState } from "react";
 
 interface PermissionsEditProps {
   element: Element<any>;
@@ -74,6 +75,9 @@ interface PermissionsSelectProps {
 
 const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
   const [{ data: groups }] = useGetGroupsQuery();
+  const [groupsSelected, setGroupsSelected] = useState<Group[]>(
+    props.groupsSelected
+  );
 
   return (
     <Select<
@@ -95,10 +99,11 @@ const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
             : [],
         },
       ]}
-      value={props.groupsSelected.map((group) => {
+      value={groupsSelected.map((group) => {
         return { label: group.name, value: group as Group };
       })}
       onChange={(e) => {
+        setGroupsSelected(e.map((group) => group.value));
         props.onChange(e.map((v) => v.value));
       }}
       chakraStyles={{
