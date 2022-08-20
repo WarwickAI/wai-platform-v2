@@ -31,9 +31,13 @@ export type Element<T> = DBElement & {
   data: T;
 };
 
-export const ElementTypesToNotShowInAdd: [ElementTypeKeys] = ["Database"];
+export const ElementTypesToNotShowInAdd: ElementTypeKeys[] = [
+  "Database",
+  "Template",
+  "User",
+];
 
-export const DatabaseBaseTypes: ElementTypeKeys[] = ['Page', 'User']
+export const DatabaseBaseTypes: ElementTypeKeys[] = ["Page", "User"];
 
 export const createDefaultElementData = (elementType: ElementTypeKeys) => {
   const data: ElementData = {};

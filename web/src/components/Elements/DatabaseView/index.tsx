@@ -1,5 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   useCreateElementMutation,
   useEditDatabaseAttributeNameMutation,
@@ -22,6 +22,7 @@ import {
   ElementTypesDef,
 } from "../../../utils/config";
 import { checkPermissions } from "../../../utils/isAuth";
+import CardView from "./CardView";
 import TableView from "./TableView";
 
 interface DatabaseViewProps {
@@ -31,8 +32,6 @@ interface DatabaseViewProps {
 
 const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const elementData = element.data as DatabaseViewElementData;
-
-  const [databaseName, setDatabaseName] = useState<string>("");
 
   const [, editElement] = useEditElementDataMutation();
   const [, editAttributeName] = useEditDatabaseAttributeNameMutation();
@@ -63,12 +62,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     }
     return [];
   }, [database, meData]);
-
-  useEffect(() => {
-    if (databaseQuery?.getElement) {
-      setDatabaseName(databaseQuery.getElement.data.title.value);
-    }
-  }, [databaseQuery]);
 
   const addAttribute = async (name: string, attributeType: DataTypeKeysT) => {
     if (!database) {
@@ -185,17 +178,30 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   return (
     <Box>
       {database ? (
-        <TableView
-          database={database}
-          rows={rows}
-          isEdit={isEdit}
-          addAttribute={addAttribute}
-          removeAttribute={removeAttribute}
-          modifyAttributeName={modifyAttributeName}
-          addRow={addRow}
-          editDatabaseName={editDbName}
-          removeRow={(id: number) => removeElement({ elementId: id })}
-        />
+        <>
+          {elementData.view.value === "List" && (
+            <TableView
+              database={database}
+              rows={rows}
+              isEdit={isEdit}
+              addAttribute={addAttribute}
+              removeAttribute={removeAttribute}
+              modifyAttributeName={modifyAttributeName}
+              addRow={addRow}
+              editDatabaseName={editDbName}
+              removeRow={(id: number) => removeElement({ elementId: id })}
+            />
+          )}
+          {elementData.view.value === "Card" && (
+            <CardView
+              database={database}
+              rows={rows}
+              isEdit={isEdit}
+              addRow={addRow}
+              removeRow={(id: number) => removeElement({ elementId: id })}
+            />
+          )}
+        </>
       ) : (
         <Text>No Database Selected (select in settings)</Text>
       )}

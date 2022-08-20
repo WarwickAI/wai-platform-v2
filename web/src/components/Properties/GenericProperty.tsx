@@ -6,6 +6,7 @@ import DataLinkProperty from "./DataLink";
 import TextProperty from "./Text";
 import TemplateProperty from "./Template";
 import FormattedText from "./FormattedText";
+import DatabaseViewAsProperty from "./DatabaseViewAs";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -67,6 +68,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "Template") {
     return (
       <TemplateProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "DatabaseViewAs") {
+    return (
+      <DatabaseViewAsProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

@@ -10,6 +10,7 @@ import {
   DataLinkValue,
   TextValue,
   TemplateValue,
+  DatabaseViewAsValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -114,6 +115,11 @@ export const ElementTypesDef = {
         label: "Database",
         inSettings: true,
       },
+      view: {
+        type: "DatabaseViewAs",
+        label: "View",
+        inSettings: true,
+      }
     },
   } as ElementTypeDef,
   Image: {
@@ -200,6 +206,7 @@ export type DatabaseElementData = {
 
 export type DatabaseViewElementData = {
   database: ElementDataPiece<DatabaseValue>;
+  view: ElementDataPiece<DatabaseViewAsValue>;
 };
 
 export type ImageElementData = {

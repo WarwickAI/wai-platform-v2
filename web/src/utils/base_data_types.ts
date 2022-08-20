@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Text from "../components/Elements/Text";
 import NumberProperty from "../components/Properties/Number";
-import { ElementData, ElementTypeKeys } from "./config";
+import { DatabaseBaseTypes, ElementData, ElementTypeKeys } from "./config";
 
 type ActionTypeDef = {
   label: string;
@@ -19,11 +19,28 @@ export const ActionTypesDef = {
   } as ActionTypeDef,
 };
 
+export type DatabaseViewAsTypeDef = {
+  label: string;
+  limitToBaseTypes?: typeof DatabaseBaseTypes;
+};
+
+export const DatabaseViewsAs = {
+  List: {
+    label: "List",
+  } as DatabaseViewAsTypeDef,
+  Card: {
+    label: "Card",
+    limitToChildTypes: ["Page"],
+  } as DatabaseViewAsTypeDef,
+};
+
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
 
 const actionTypeKeys = getKeys(ActionTypesDef);
+const databaseViewAsKeys = getKeys(DatabaseViewsAs);
 
 export type ActionTypeKeys = typeof actionTypeKeys[number];
+export type DatabaseViewAsKeys = typeof databaseViewAsKeys[number];
 
 /**
  * Type used for the data type definitions.
@@ -132,6 +149,12 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: -1,
   } as DateTypesDef,
+  DatabaseViewAs: {
+    label: "Database View As",
+    hint: "Database View As",
+    constraints: {},
+    defaultValue: "List",
+  } as DateTypesDef,
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -156,3 +179,4 @@ export type DataListValue = any[];
 export type DatabaseAttributesValue = ElementData;
 export type UserValue = number;
 export type TemplateValue = number;
+export type DatabaseViewAsValue = DatabaseViewAsKeys;
