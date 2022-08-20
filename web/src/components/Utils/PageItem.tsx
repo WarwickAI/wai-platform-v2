@@ -44,7 +44,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
         {/* Element Controls */}
         {props.isEdit && (
           <Flex
-          justifyContent={"center"}
+            justifyContent={"center"}
             height={10}
             onPointerDown={(e) => controls.start(e)}
             position="absolute"
