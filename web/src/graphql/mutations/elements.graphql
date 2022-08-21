@@ -4,8 +4,16 @@ mutation EditElementData($data: JSONObject!, $elementId: Float!) {
   }
 }
 
-mutation EditDatabaseAttributeName($elementId: Float!, $attributeName: String!, $newAttributeName: String!) {
-  editDatabaseAttributeName(elementId: $elementId, attributeName: $attributeName, newAttributeName: $newAttributeName) {
+mutation EditDatabaseAttributeName(
+  $elementId: Float!
+  $attributeName: String!
+  $newAttributeName: String!
+) {
+  editDatabaseAttributeName(
+    elementId: $elementId
+    attributeName: $attributeName
+    newAttributeName: $newAttributeName
+  ) {
     ...FullElement
   }
 }
@@ -49,14 +57,14 @@ mutation UpdatePermissions(
   }
 }
 
-mutation InheritDatabaseAttributes(
-  $databaseId: Float!
-  $elementId: Float!
-) {
-  inheritDatabaseAttributes(
-    databaseId: $databaseId
-    elementId: $elementId
-  ) {
+mutation InheritDatabaseAttributes($databaseId: Float!, $elementId: Float!) {
+  inheritDatabaseAttributes(databaseId: $databaseId, elementId: $elementId) {
     ...FullElement
+  }
+}
+
+mutation AssignUserPage($uniId: Float!, $pageId: Float!) {
+  assignUserPage(uniId: $uniId, pageId: $pageId) {
+    id
   }
 }

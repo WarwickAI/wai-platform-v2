@@ -971,6 +971,14 @@ export type InheritDatabaseAttributesMutationVariables = Exact<{
 
 export type InheritDatabaseAttributesMutation = { __typename?: 'Mutation', inheritDatabaseAttributes: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
+export type AssignUserPageMutationVariables = Exact<{
+  uniId: Scalars['Float'];
+  pageId: Scalars['Float'];
+}>;
+
+
+export type AssignUserPageMutation = { __typename?: 'Mutation', assignUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
   roleId?: InputMaybe<Scalars['Float']>;
@@ -1895,6 +1903,17 @@ export const InheritDatabaseAttributesDocument = gql`
 
 export function useInheritDatabaseAttributesMutation() {
   return Urql.useMutation<InheritDatabaseAttributesMutation, InheritDatabaseAttributesMutationVariables>(InheritDatabaseAttributesDocument);
+};
+export const AssignUserPageDocument = gql`
+    mutation AssignUserPage($uniId: Float!, $pageId: Float!) {
+  assignUserPage(uniId: $uniId, pageId: $pageId) {
+    id
+  }
+}
+    `;
+
+export function useAssignUserPageMutation() {
+  return Urql.useMutation<AssignUserPageMutation, AssignUserPageMutationVariables>(AssignUserPageDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
