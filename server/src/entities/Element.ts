@@ -6,6 +6,7 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
@@ -67,6 +68,10 @@ export class Element extends BaseEntity {
   @Field(() => [Group])
   @ManyToMany(() => Group, (group) => group.canEditElements)
   canEditGroups: Group[];
+
+  @Field(() => User, { nullable: true })
+  @OneToOne(() => User, (user) => user.page, { nullable: true })
+  user: User;
 
   static async getElementByIdWithChildren(id: number): Promise<Element> {
     const element = await Element.findOneOrFail(id, {

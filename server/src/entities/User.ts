@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -101,4 +103,9 @@ export class User extends BaseEntity {
   @Field(() => [Group])
   @ManyToMany(() => Group, (group) => group.users)
   groups: Group[];
+
+  @Field(() => Element, { nullable: true })
+  @OneToOne(() => Element, (page) => page.user, { nullable: true })
+  @JoinColumn()
+  page: Element;
 }

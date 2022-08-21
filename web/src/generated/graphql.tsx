@@ -96,6 +96,7 @@ export type Element = {
   parent?: Maybe<Element>;
   type: Scalars['String'];
   updatedAt: Scalars['String'];
+  user?: Maybe<User>;
 };
 
 export type EventInput = {
@@ -169,6 +170,7 @@ export type Mutation = {
   addRONApplication: Scalars['Boolean'];
   addUserToGroup?: Maybe<User>;
   addUsersToGroup: Array<User>;
+  assignUserPage?: Maybe<Element>;
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
   createElement?: Maybe<Element>;
@@ -232,6 +234,12 @@ export type MutationAddUserToGroupArgs = {
 export type MutationAddUsersToGroupArgs = {
   groupId: Scalars['Float'];
   userId: Array<Scalars['Float']>;
+};
+
+
+export type MutationAssignUserPageArgs = {
+  pageId: Scalars['Float'];
+  uniId: Scalars['Float'];
 };
 
 
@@ -502,6 +510,7 @@ export type Query = {
   getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
   getTemplates: Array<Element>;
+  getUserPage?: Maybe<Element>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
   getUsersGroups?: Maybe<Array<Group>>;
   groups: Array<Group>;
@@ -575,6 +584,11 @@ export type QueryGetRoleApplicationForVoteArgs = {
 export type QueryGetRoleVoteCountArgs = {
   roleId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetUserPageArgs = {
+  uniId: Scalars['Float'];
 };
 
 
@@ -750,6 +764,7 @@ export type User = {
   isMember?: Maybe<Scalars['Boolean']>;
   lastName: Scalars['String'];
   memberFromDate?: Maybe<Scalars['String']>;
+  page?: Maybe<Element>;
   projects: Array<Project>;
   role: Scalars['String'];
   talks: Array<Talk>;
@@ -1226,6 +1241,13 @@ export type GetTemplatesWithoutChildrenQueryVariables = Exact<{ [key: string]: n
 
 
 export type GetTemplatesWithoutChildrenQuery = { __typename?: 'Query', getTemplates: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+
+export type GetUserPageQueryVariables = Exact<{
+  uniId: Scalars['Float'];
+}>;
+
+
+export type GetUserPageQuery = { __typename?: 'Query', getUserPage?: { __typename?: 'Element', id: number } | null | undefined };
 
 export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2402,6 +2424,17 @@ export const GetTemplatesWithoutChildrenDocument = gql`
 
 export function useGetTemplatesWithoutChildrenQuery(options: Omit<Urql.UseQueryArgs<GetTemplatesWithoutChildrenQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTemplatesWithoutChildrenQuery>({ query: GetTemplatesWithoutChildrenDocument, ...options });
+};
+export const GetUserPageDocument = gql`
+    query GetUserPage($uniId: Float!) {
+  getUserPage(uniId: $uniId) {
+    id
+  }
+}
+    `;
+
+export function useGetUserPageQuery(options: Omit<Urql.UseQueryArgs<GetUserPageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserPageQuery>({ query: GetUserPageDocument, ...options });
 };
 export const GetGroupsDocument = gql`
     query GetGroups {

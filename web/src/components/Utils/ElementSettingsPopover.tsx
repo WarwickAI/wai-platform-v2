@@ -194,6 +194,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
               size={"sm"}
               variant="setting"
               onClick={() => props.removeElement(props.element.id)}
+              disabled={!props.element.parent}
             >
               Remove
             </Button>

@@ -369,8 +369,11 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware()
-  async removeElement(@Arg("elementId") elementId: number): Promise<Element> {
+  @UseMiddleware(isAuth, getUser)
+  async removeElement(
+    @Ctx() { payload }: MyContext,
+    @Arg("elementId") elementId: number
+  ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
       relations: [
         "createdBy",
@@ -381,6 +384,13 @@ export class ElementResolver {
         "canInteractGroups",
       ],
     });
+    // Check have permission to remove
+    if (
+      !checkPermissions(element.canEditGroups, payload?.user) ||
+      (!element.parent && payload!.user!.email !== "Edward.Upton@warwick.ac.uk")
+    ) {
+      throw new Error("Not authorized");
+    }
     await element.remove();
     return element;
   }
@@ -436,6 +446,42 @@ export class ElementResolver {
 
     await element.save();
     return element;
+  }
+
+  @Query(() => Element, { nullable: true })
+  @UseMiddleware(isAuth, getUser)
+  async getUserPage(
+    @Ctx() { payload }: MyContext,
+    @Arg("uniId") uniId: number
+  ): Promise<Element | null> {
+    const user = await User.findOneOrFail(
+      { uniId: uniId },
+      {
+        relations: ["page"],
+      }
+    );
+    return user.page;
+  }
+
+  @Mutation(() => Element, { nullable: true })
+  @UseMiddleware(isAuth, getUser)
+  async assignUserPage(
+    @Ctx() { payload }: MyContext,
+    @Arg("uniId") uniId: number,
+    @Arg("pageId") pageId: number
+  ): Promise<Element | null> {
+    const user = await User.findOneOrFail(
+      { uniId: uniId },
+      {
+        relations: ["page"],
+      }
+    );
+    const page = await Element.findOneOrFail(pageId, {
+      relations: ["user"],
+    });
+    user.page = page;
+    await user.save();
+    return page;
   }
 }
 
