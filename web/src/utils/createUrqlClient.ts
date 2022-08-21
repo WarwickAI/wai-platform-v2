@@ -57,6 +57,7 @@ import {
   GetGroupsWithUsersQuery,
   GetGroupsWithUsersDocument,
   RemoveUserFromGroupMutation,
+  CreateGroupMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -1029,6 +1030,19 @@ export const createUrqlClient = (ssrExchange: any) => {
                     return query;
                   }
                   query.groupsWithUsers[groupIndex].users = users;
+                  return query;
+                }
+              );
+            },
+            createGroup: (_result, args, cache, info) => {
+              const res = _result as CreateGroupMutation;
+              const newGroup = res.createGroup;
+              betterUpdateQuery<CreateGroupMutation, GetGroupsWithUsersQuery>(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  query.groupsWithUsers.push(newGroup);
                   return query;
                 }
               );

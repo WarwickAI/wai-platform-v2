@@ -9,3 +9,9 @@ mutation RemoveUserFromGroup($groupId: Float!, $userId: Float!) {
     ...GroupWithUsers
   }
 }
+
+mutation CreateGroup($groupName: String!) {
+  createGroup(groupName: $groupName) {
+    ...GroupWithUsers
+  }
+}

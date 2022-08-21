@@ -1009,6 +1009,13 @@ export type RemoveUserFromGroupMutationVariables = Exact<{
 
 export type RemoveUserFromGroupMutation = { __typename?: 'Mutation', removeUserFromGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
 
+export type CreateGroupMutationVariables = Exact<{
+  groupName: Scalars['String'];
+}>;
+
+
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
+
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
   roleId?: InputMaybe<Scalars['Float']>;
@@ -2020,6 +2027,17 @@ export const RemoveUserFromGroupDocument = gql`
 
 export function useRemoveUserFromGroupMutation() {
   return Urql.useMutation<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>(RemoveUserFromGroupDocument);
+};
+export const CreateGroupDocument = gql`
+    mutation CreateGroup($groupName: String!) {
+  createGroup(groupName: $groupName) {
+    ...GroupWithUsers
+  }
+}
+    ${GroupWithUsersFragmentDoc}`;
+
+export function useCreateGroupMutation() {
+  return Urql.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {

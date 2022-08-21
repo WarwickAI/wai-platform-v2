@@ -3,26 +3,22 @@ import Dashboard from "../../../components/Dashboard";
 import {
   Group,
   useAddUserToGroupMutation,
-  useAssignUserPageMutation,
-  useCreateElementMutation,
+  useCreateGroupMutation,
   useGetGroupsWithUsersQuery,
   useGetUsersQuery,
   useRemoveUserFromGroupMutation,
-  useUsersQuery,
 } from "../../../generated/graphql";
 import {
   Button,
-  Box,
-  Heading,
   Input,
   Select,
-  Text,
   Table,
   Th,
   Tbody,
   Thead,
   Tr,
   Td,
+  HStack,
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
@@ -37,6 +33,7 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
   const [{ data: usersQuery }] = useGetUsersQuery();
   const [, addUserToGroup] = useAddUserToGroupMutation();
   const [, removeUserFromGroup] = useRemoveUserFromGroupMutation();
+  const [, createGroup] = useCreateGroupMutation();
 
   const groups = useMemo(() => {
     if (groupsQuery?.groupsWithUsers) {
@@ -54,6 +51,8 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
 
   const [selectedGroup, setSelectedGroup] = useState<Group | undefined>();
   const [selectedUser, setSelectedUser] = useState<number | undefined>();
+
+  const [newGroupName, setNewGroupName] = useState<string>("");
 
   return (
     <Dashboard title="Groups Admin">
@@ -135,6 +134,19 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
           </Tbody>
         </Table>
       )}
+      <HStack mt={4}>
+        <Input
+          placeholder={"New group name..."}
+          value={newGroupName}
+          onChange={(e) => setNewGroupName(e.target.value)}
+        />
+        <Button
+          variant={"admin"}
+          onClick={() => createGroup({ groupName: newGroupName })}
+        >
+          +
+        </Button>
+      </HStack>
     </Dashboard>
   );
 };
