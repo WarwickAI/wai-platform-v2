@@ -11,7 +11,7 @@ import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
-import { getAuth, getUser, isAuth, isExec, isSuper } from "../isAuth";
+import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
 
 @Resolver()
 export class ElementResolver {
@@ -537,16 +537,12 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element, { nullable: true })
-  @UseMiddleware(isAuth, getUser)
+  @UseMiddleware(isAuth, getUser, isAdmin)
   async assignUserPage(
     @Ctx() { payload }: MyContext,
     @Arg("uniId") uniId: number,
     @Arg("pageId") pageId: number
   ): Promise<Element | null> {
-    if (payload?.user!.email !== "Edward.Upton@warwick.ac.uk") {
-      throw new Error("Not authorized");
-    }
-
     const user = await User.findOneOrFail(
       { uniId: uniId },
       {

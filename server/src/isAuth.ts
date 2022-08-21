@@ -99,3 +99,35 @@ export const isSuper: MiddlewareFn<MyContext> = async ({ context }, next) => {
 
   return next();
 };
+
+export const isAdmin: MiddlewareFn<MyContext> = async ({ context }, next) => {
+  // If haven't extracted the user from the payload, do so first
+  if (!context.payload?.user) {
+    if (!context.payload?.userId) {
+      throw new ForbiddenError("not user id");
+    }
+
+    const user = await User.findOne(context.payload.userId, {
+      relations: ["groups"],
+    });
+
+    if (!user) {
+      throw new ForbiddenError("no user found with id");
+    }
+
+    context.payload = {
+      ...context.payload,
+      user,
+    };
+  }
+
+  // We know at this point we have a user
+  const user = context.payload.user!;
+
+  // Check that the user has a group `Admin`
+  if (!user.groups.some((g) => g.name === "Admin")) {
+    throw new ForbiddenError("not admin");
+  }
+
+  return next();
+};
