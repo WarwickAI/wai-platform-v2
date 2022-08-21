@@ -57,11 +57,11 @@ const sidebarConfig = [
     path: "/elections",
     icon: getIcon(awardFill),
   },
-  {
-    title: "generic",
-    path: "/generic",
-    icon: getIcon(heartFill),
-  },
+  // {
+  //   title: "generic",
+  //   path: "/generic",
+  //   icon: getIcon(heartFill),
+  // },
 ];
 
 export default sidebarConfig;
