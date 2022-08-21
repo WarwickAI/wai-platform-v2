@@ -62,7 +62,7 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
-    logging: true,
+    logging: false,
     synchronize: true,
     migrations: [],
     entities: [
@@ -104,9 +104,7 @@ const main = async () => {
 
   // Create refresh token route
   app.post("/refresh_token", async (req, res) => {
-    console.log("received refresh token request");
     const token = req.cookies.jid;
-    console.log(token);
     if (!token) {
       return res.send({ ok: false, accessToken: "" });
     }
