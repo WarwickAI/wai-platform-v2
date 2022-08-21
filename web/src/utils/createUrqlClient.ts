@@ -53,6 +53,10 @@ import {
   GetTemplatesWithoutChildrenDocument,
   UpdatePermissionsMutation,
   InheritDatabaseAttributesMutation,
+  AddUserToGroupMutation,
+  GetGroupsWithUsersQuery,
+  GetGroupsWithUsersDocument,
+  RemoveUserFromGroupMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -982,6 +986,52 @@ export const createUrqlClient = (ssrExchange: any) => {
                   }
                 );
               }
+            },
+            addUserToGroup: (_result, args, cache, info) => {
+              const res = _result as AddUserToGroupMutation;
+              const groupId = res.addUserToGroup.id;
+              const users = res.addUserToGroup.users;
+              betterUpdateQuery<
+                AddUserToGroupMutation,
+                GetGroupsWithUsersQuery
+              >(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  const groupIndex = query.groupsWithUsers.findIndex(
+                    (val) => val.id === groupId
+                  );
+                  if (groupIndex === -1) {
+                    return query;
+                  }
+                  query.groupsWithUsers[groupIndex].users = users;
+                  return query;
+                }
+              );
+            },
+            removeUserFromGroup: (_result, args, cache, info) => {
+              const res = _result as RemoveUserFromGroupMutation;
+              const groupId = res.removeUserFromGroup.id;
+              const users = res.removeUserFromGroup.users;
+              betterUpdateQuery<
+                RemoveUserFromGroupMutation,
+                GetGroupsWithUsersQuery
+              >(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  const groupIndex = query.groupsWithUsers.findIndex(
+                    (val) => val.id === groupId
+                  );
+                  if (groupIndex === -1) {
+                    return query;
+                  }
+                  query.groupsWithUsers[groupIndex].users = users;
+                  return query;
+                }
+              );
             },
           },
         },

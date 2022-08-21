@@ -33,6 +33,11 @@ export class UserResolver {
     return User.find();
   }
 
+  @Query(() => [User])
+  async getUsers(): Promise<User[]> {
+    return await User.find({ relations: ["groups"] });
+  }
+
   @Mutation(() => User, { nullable: true })
   @UseMiddleware(isAuth)
   async verifyLogin(@Ctx() { payload }: MyContext) {

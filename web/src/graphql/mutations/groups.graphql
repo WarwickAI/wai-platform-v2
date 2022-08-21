@@ -1,0 +1,11 @@
+mutation AddUserToGroup($groupId: Float!, $userId: Float!) {
+  addUserToGroup(groupId: $groupId, userId: $userId) {
+    ...GroupWithUsers
+  }
+}
+
+mutation RemoveUserFromGroup($groupId: Float!, $userId: Float!) {
+  removeUserFromGroup(groupId: $groupId, userId: $userId) {
+    ...GroupWithUsers
+  }
+}

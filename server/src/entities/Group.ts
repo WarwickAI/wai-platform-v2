@@ -28,7 +28,7 @@ export class Group extends BaseEntity {
   updatedAt: Date;
 
   @Field(() => String)
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Field(() => [User])

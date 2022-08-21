@@ -4,28 +4,14 @@ import {
   useAssignUserPageMutation,
   useCreateElementMutation,
 } from "../../../generated/graphql";
-import {
-  Button,
-  Box,
-  Heading,
-  Input,
-} from "@chakra-ui/react";
+import { Button, Box, Heading, Input } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { createDefaultElementData } from "../../../utils/config";
 
-const JoinedField: React.FC<{ dateString?: string | null }> = (props) => {
-  if (props.dateString) {
-    const date = new Date(parseInt(props.dateString));
-    return <>{date.toLocaleString()}</>;
-  } else {
-    return <></>;
-  }
-};
+interface PagesAdminProps {}
 
-interface UsersProps {}
-
-const Users: React.FC<UsersProps> = ({}) => {
+const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
   const [pageTitle, setPageTitle] = useState<string>("");
   const [userUniId, setUserUniId] = useState<number | undefined>();
 
@@ -74,4 +60,4 @@ const Users: React.FC<UsersProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Users);
+export default withUrqlClient(createUrqlClient, { ssr: false })(PagesAdmin);

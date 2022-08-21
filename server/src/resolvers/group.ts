@@ -10,10 +10,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { sendRefreshToken } from "../sendRefreshToken";
-import { isAuth, isExec } from "../isAuth";
-import { RoleApplication } from "../entities/RoleApplication";
-import { ElectionRole } from "../entities/ElectionRole";
+import { getAuth, getUser, isAdmin, isAuth } from "../isAuth";
 import { Group } from "../entities/Group";
 
 @ObjectType()
@@ -31,70 +28,89 @@ export class GroupResolver {
   @Query(() => [Group])
   @UseMiddleware()
   async groups(): Promise<Group[]> {
+    return Group.find();
+  }
+
+  @Query(() => [Group])
+  @UseMiddleware(getAuth, isAdmin)
+  async groupsWithUsers(): Promise<Group[]> {
     return Group.find({ relations: ["users"] });
   }
 
   @Query(() => [Group], { nullable: true })
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, getUser)
   async getUsersGroups(@Ctx() { payload }: MyContext) {
-    if (!payload || !payload.userId) {
-      console.log("access token invalid");
-      return null;
-    }
-    const user = await User.findOne(parseInt(payload.userId), {
-      relations: ["groups"],
-    });
-
-    if (!user) {
-      console.log("user id in access token invalid");
-      return null;
-    }
-    return user.groups;
+    return payload?.user?.groups;
   }
 
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => Group)
+  @UseMiddleware(isAuth, isAdmin)
   async addUserToGroup(
     @Arg("groupId") groupId: number,
     @Arg("userId") userId: number
   ) {
     const user = await User.findOne(userId, { relations: ["groups"] });
     if (!user) {
-      console.log("No user found with that email");
-      return null;
+      throw new Error("User not found");
     }
     try {
-      const group = await Group.findOneOrFail(groupId);
-      user.groups.push(group);
-      await user.save();
-      return user;
+      const group = await Group.findOneOrFail(groupId, {
+        relations: ["users"],
+      });
+      group.users.push(user);
+      await group.save();
+      return group;
     } catch (err) {
       console.log(err);
-      return user;
+      throw new Error("Error adding user to group");
     }
   }
 
-  @Mutation(() => [User])
+  @Mutation(() => Group)
+  @UseMiddleware(isAuth, isAdmin)
   async addUsersToGroup(
     @Arg("groupId") groupId: number,
     @Arg("userId", () => [Number]) userIds: number[]
   ) {
     const users = await User.findByIds(userIds, { relations: ["groups"] });
     try {
-      const group = await Group.findOneOrFail(groupId);
-      console.log(users.map((user) => user.id));
-      users.forEach(async (user) => {
-        user.groups.push(group);
-        await user.save();
+      const group = await Group.findOneOrFail(groupId, {
+        relations: ["users"],
       });
-      return users;
+      group.users.push(...users);
+      group.save();
+      return group;
     } catch (err) {
       console.log(err);
-      return users;
+      throw new Error("Error adding users to group");
     }
   }
 
   @Mutation(() => Group)
-  @UseMiddleware()
+  @UseMiddleware(isAuth, isAdmin)
+  async removeUserFromGroup(
+    @Arg("groupId") groupId: number,
+    @Arg("userId") userId: number
+  ) {
+    const user = await User.findOne(userId, { relations: ["groups"] });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    try {
+      const group = await Group.findOneOrFail(groupId, {
+        relations: ["users"],
+      });
+      group.users = group.users.filter((u) => u.id !== userId);
+      await group.save();
+      return group;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Error removing user from group");
+    }
+  }
+
+  @Mutation(() => Group)
+  @UseMiddleware(isAuth, isAdmin)
   async createGroup(
     @Arg("groupName") groupName: string
   ): Promise<Group | null> {

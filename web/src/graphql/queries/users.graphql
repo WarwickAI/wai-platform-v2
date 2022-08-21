@@ -4,6 +4,12 @@ query Users {
   }
 }
 
+query GetUsers {
+  getUsers {
+    ...UserNoElements
+  }
+}
+
 query GetUserRoleApplications {
   getUserRoleApplications {
     ...RegularElectionRole

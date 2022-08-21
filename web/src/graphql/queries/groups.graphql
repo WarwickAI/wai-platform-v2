@@ -4,3 +4,8 @@ query GetGroups {
   }
 }
 
+query GetGroupsWithUsers {
+  groupsWithUsers {
+    ...GroupWithUsers
+  }
+}

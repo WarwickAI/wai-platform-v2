@@ -170,8 +170,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addMemberInfo: Scalars['Boolean'];
   addRONApplication: Scalars['Boolean'];
-  addUserToGroup?: Maybe<User>;
-  addUsersToGroup: Array<User>;
+  addUserToGroup: Group;
+  addUsersToGroup: Group;
   assignUserPage?: Maybe<Element>;
   createCourse: CourseResponse;
   createElectionRole: ElectionRoleResponse;
@@ -202,6 +202,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   removeElement: Element;
   removeUserFromCourse: Scalars['Boolean'];
+  removeUserFromGroup: Group;
   removeUserFromProject: Scalars['Boolean'];
   removeUserFromTalk: Scalars['Boolean'];
   removeUserFromTutorial: Scalars['Boolean'];
@@ -402,6 +403,12 @@ export type MutationRemoveUserFromCourseArgs = {
 };
 
 
+export type MutationRemoveUserFromGroupArgs = {
+  groupId: Scalars['Float'];
+  userId: Scalars['Float'];
+};
+
+
 export type MutationRemoveUserFromProjectArgs = {
   projectId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
@@ -508,8 +515,10 @@ export type Query = {
   getTemplates: Array<Element>;
   getUserPage?: Maybe<Element>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
+  getUsers: Array<User>;
   getUsersGroups?: Maybe<Array<Group>>;
   groups: Array<Group>;
+  groupsWithUsers: Array<Group>;
   hasUserVotedForRole: Scalars['Boolean'];
   hello: Scalars['String'];
   me?: Maybe<User>;
@@ -826,6 +835,14 @@ export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: s
 
 export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
 
+export type UserNoGroupsElementsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
+
+export type UserNoElementsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
+
+export type UserNoGroupsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+
+export type UserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }>, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, parent?: { __typename?: 'Element', id: number } | null | undefined }> };
+
 export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }>, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
 export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
@@ -975,6 +992,22 @@ export type AssignUserPageMutationVariables = Exact<{
 
 
 export type AssignUserPageMutation = { __typename?: 'Mutation', assignUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+
+export type AddUserToGroupMutationVariables = Exact<{
+  groupId: Scalars['Float'];
+  userId: Scalars['Float'];
+}>;
+
+
+export type AddUserToGroupMutation = { __typename?: 'Mutation', addUserToGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
+
+export type RemoveUserFromGroupMutationVariables = Exact<{
+  groupId: Scalars['Float'];
+  userId: Scalars['Float'];
+}>;
+
+
+export type RemoveUserFromGroupMutation = { __typename?: 'Mutation', removeUserFromGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
 
 export type RoleApplyMutationVariables = Exact<{
   roleShortName?: InputMaybe<Scalars['String']>;
@@ -1259,6 +1292,11 @@ export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetGroupsQuery = { __typename?: 'Query', groups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
+export type GetGroupsWithUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGroupsWithUsersQuery = { __typename?: 'Query', groupsWithUsers: Array<{ __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> }> };
+
 export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1391,6 +1429,11 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
+
+export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
 
 export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1659,6 +1702,43 @@ export const RegularTagFragmentDoc = gql`
   color
 }
     `;
+export const UserNoGroupsElementsFragmentDoc = gql`
+    fragment UserNoGroupsElements on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+}
+    `;
+export const UserNoElementsFragmentDoc = gql`
+    fragment UserNoElements on User {
+  ...UserNoGroupsElements
+  groups {
+    ...GroupWithoutUsers
+  }
+}
+    ${UserNoGroupsElementsFragmentDoc}
+${GroupWithoutUsersFragmentDoc}`;
+export const UserNoGroupsFragmentDoc = gql`
+    fragment UserNoGroups on User {
+  ...UserNoGroupsElements
+  elements {
+    ...ElementNoChildrenCreatedByGroups
+  }
+}
+    ${UserNoGroupsElementsFragmentDoc}
+${ElementNoChildrenCreatedByGroupsFragmentDoc}`;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  ...UserNoElements
+  ...UserNoGroups
+}
+    ${UserNoElementsFragmentDoc}
+${UserNoGroupsFragmentDoc}`;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -1918,6 +1998,28 @@ export const AssignUserPageDocument = gql`
 
 export function useAssignUserPageMutation() {
   return Urql.useMutation<AssignUserPageMutation, AssignUserPageMutationVariables>(AssignUserPageDocument);
+};
+export const AddUserToGroupDocument = gql`
+    mutation AddUserToGroup($groupId: Float!, $userId: Float!) {
+  addUserToGroup(groupId: $groupId, userId: $userId) {
+    ...GroupWithUsers
+  }
+}
+    ${GroupWithUsersFragmentDoc}`;
+
+export function useAddUserToGroupMutation() {
+  return Urql.useMutation<AddUserToGroupMutation, AddUserToGroupMutationVariables>(AddUserToGroupDocument);
+};
+export const RemoveUserFromGroupDocument = gql`
+    mutation RemoveUserFromGroup($groupId: Float!, $userId: Float!) {
+  removeUserFromGroup(groupId: $groupId, userId: $userId) {
+    ...GroupWithUsers
+  }
+}
+    ${GroupWithUsersFragmentDoc}`;
+
+export function useRemoveUserFromGroupMutation() {
+  return Urql.useMutation<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>(RemoveUserFromGroupDocument);
 };
 export const RoleApplyDocument = gql`
     mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
@@ -2470,6 +2572,17 @@ export const GetGroupsDocument = gql`
 export function useGetGroupsQuery(options: Omit<Urql.UseQueryArgs<GetGroupsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGroupsQuery>({ query: GetGroupsDocument, ...options });
 };
+export const GetGroupsWithUsersDocument = gql`
+    query GetGroupsWithUsers {
+  groupsWithUsers {
+    ...GroupWithUsers
+  }
+}
+    ${GroupWithUsersFragmentDoc}`;
+
+export function useGetGroupsWithUsersQuery(options: Omit<Urql.UseQueryArgs<GetGroupsWithUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGroupsWithUsersQuery>({ query: GetGroupsWithUsersDocument, ...options });
+};
 export const RoleApplicationsDocument = gql`
     query RoleApplications {
   roleApplications {
@@ -2731,6 +2844,17 @@ export const UsersDocument = gql`
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });
+};
+export const GetUsersDocument = gql`
+    query GetUsers {
+  getUsers {
+    ...UserNoElements
+  }
+}
+    ${UserNoElementsFragmentDoc}`;
+
+export function useGetUsersQuery(options: Omit<Urql.UseQueryArgs<GetUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUsersQuery>({ query: GetUsersDocument, ...options });
 };
 export const GetUserRoleApplicationsDocument = gql`
     query GetUserRoleApplications {
