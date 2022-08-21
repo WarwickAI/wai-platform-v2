@@ -13,12 +13,6 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
 import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
 
-var adminGroup: Group;
-
-async () => {
-  adminGroup = await Group.findOneOrFail({ where: { name: "admin" } });
-};
-
 @Resolver()
 export class ElementResolver {
   @Query(() => [Element])
@@ -147,6 +141,10 @@ export class ElementResolver {
     element.data = data;
     element.type = type;
 
+    const adminGroup = await Group.findOneOrFail({
+      where: { name: "Admin" },
+    });
+
     if (parentId && parentId !== null) {
       element.parent = await Element.findOneOrFail(parentId, {
         relations: [
@@ -159,10 +157,14 @@ export class ElementResolver {
           "canInteractGroups",
         ],
       });
-      element.canModifyPermsGroups = element.canModifyPermsGroups;
-      element.canEditGroups = element.parent.canEditGroups;
-      element.canViewGroups = element.parent.canViewGroups;
-      element.canInteractGroups = element.parent.canInteractGroups;
+      element.canModifyPermsGroups = element.canModifyPermsGroups || [
+        adminGroup,
+      ];
+      element.canEditGroups = element.parent.canEditGroups || [adminGroup];
+      element.canViewGroups = element.parent.canViewGroups || [adminGroup];
+      element.canInteractGroups = element.parent.canInteractGroups || [
+        adminGroup,
+      ];
     } else {
       element.canModifyPermsGroups = [adminGroup];
       element.canEditGroups = [adminGroup];

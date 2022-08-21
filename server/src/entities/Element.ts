@@ -70,7 +70,7 @@ export class Element extends BaseEntity {
   @ManyToMany(() => Group, (group) => group.canEditElements)
   canEditGroups: Group[];
 
-  @Field(() => [Group])
+  @Field(() => [Group], { defaultValue: [] })
   @ManyToMany(() => Group, (group) => group.canModifyPermsElements)
   canModifyPermsGroups: Group[];
 
