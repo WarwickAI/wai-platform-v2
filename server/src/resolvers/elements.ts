@@ -13,6 +13,12 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
 import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
 
+var adminGroup: Group;
+
+async () => {
+  adminGroup = await Group.findOneOrFail({ where: { name: "admin" } });
+};
+
 @Resolver()
 export class ElementResolver {
   @Query(() => [Element])
@@ -137,10 +143,10 @@ export class ElementResolver {
     if (!payload || !payload.user) {
       throw new Error("Not logged in");
     }
-
     const element = new Element();
     element.data = data;
     element.type = type;
+
     if (parentId && parentId !== null) {
       element.parent = await Element.findOneOrFail(parentId, {
         relations: [
@@ -158,18 +164,14 @@ export class ElementResolver {
       element.canViewGroups = element.parent.canViewGroups;
       element.canInteractGroups = element.parent.canInteractGroups;
     } else {
-      element.canModifyPermsGroups = [];
-      element.canEditGroups = [];
-      element.canViewGroups = [];
-      element.canInteractGroups = [];
+      element.canModifyPermsGroups = [adminGroup];
+      element.canEditGroups = [adminGroup];
+      element.canViewGroups = [adminGroup];
+      element.canInteractGroups = [adminGroup];
     }
 
-    // Check user has permissions to edit parent (i.e. add an element to it),
-    // if parent does not exists, we have a special case
-    if (
-      !checkPermissions(element.canEditGroups, payload?.user) ||
-      (!element.parent && payload!.user!.email !== "Edward.Upton@warwick.ac.uk")
-    ) {
+    // Check user has permissions to edit parent (i.e. add an element to it)
+    if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
 
@@ -211,12 +213,17 @@ export class ElementResolver {
               ...childInfo
             } = child;
             const newChild = Element.create({ ...childInfo });
-            newChild.canModifyPermsGroups =
-              element.parent?.canModifyPermsGroups || [];
-            newChild.canEditGroups = element.parent?.canEditGroups || [];
-            newChild.canViewGroups = element.parent?.canViewGroups || [];
-            newChild.canInteractGroups =
-              element.parent?.canInteractGroups || [];
+            newChild.canModifyPermsGroups = element.parent
+              ?.canModifyPermsGroups || [adminGroup];
+            newChild.canEditGroups = element.parent?.canEditGroups || [
+              adminGroup,
+            ];
+            newChild.canViewGroups = element.parent?.canViewGroups || [
+              adminGroup,
+            ];
+            newChild.canInteractGroups = element.parent?.canInteractGroups || [
+              adminGroup,
+            ];
             newChild.createdBy = payload.user!; // Will exists, we did the check earlier
 
             await newChild.save();
@@ -428,10 +435,11 @@ export class ElementResolver {
         "canInteractGroups",
       ],
     });
-    // Check have permission to remove
+    // Check have permission to remove, if no parent then check user is admin
     if (
       !checkPermissions(element.canEditGroups, payload?.user) ||
-      (!element.parent && payload!.user!.email !== "Edward.Upton@warwick.ac.uk")
+      (!element.parent &&
+        payload?.user?.groups.findIndex((g) => g.name === "Admin") !== -1)
     ) {
       throw new Error("Not authorized");
     }
