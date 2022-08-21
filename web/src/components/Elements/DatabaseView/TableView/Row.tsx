@@ -33,6 +33,8 @@ const Row: React.FC<RowProps> = (props) => {
           left={-12}
           alignItems={"center"}
           opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
+          onMouseEnter={() => setShowControls(true)}
+          onMouseLeave={() => setShowControls(false)}
         >
           <Box
             h={6}
@@ -59,8 +61,8 @@ const Row: React.FC<RowProps> = (props) => {
         </Flex>
       )}
       <Tr
-        onHoverStart={() => setShowControls(true)}
-        onHoverEnd={() => setShowControls(false)}
+        onMouseEnter={() => setShowControls(true)}
+        onMouseLeave={() => setShowControls(false)}
       >
         <Td>
           <Box
