@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  FindManyOptions,
   ManyToMany,
   ManyToOne,
   OneToOne,
@@ -69,6 +70,10 @@ export class Element extends BaseEntity {
   @ManyToMany(() => Group, (group) => group.canEditElements)
   canEditGroups: Group[];
 
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.canModifyPermsElements)
+  canModifyPermsGroups: Group[];
+
   @Field(() => User, { nullable: true })
   @OneToOne(() => User, (user) => user.page, { nullable: true })
   user: User;
@@ -79,6 +84,7 @@ export class Element extends BaseEntity {
         "createdBy",
         "parent",
         "children",
+        "canModifyPermsGroups",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -91,6 +97,7 @@ export class Element extends BaseEntity {
           relations: [
             "createdBy",
             "parent",
+            "canModifyPermsGroups",
             "canEditGroups",
             "canViewGroups",
             "canInteractGroups",
@@ -99,5 +106,44 @@ export class Element extends BaseEntity {
       )
     );
     return element;
+  }
+
+  static async getElementsWithChildren(
+    findOptions: FindManyOptions<Element>
+  ): Promise<Element[]> {
+    const elements = await Element.find({
+      ...findOptions,
+      relations: [
+        "createdBy",
+        "parent",
+        "children",
+        "canModifyPermsGroups",
+        "canEditGroups",
+        "canViewGroups",
+        "canInteractGroups",
+      ],
+    });
+
+    const elementsWithChildren = await Promise.all(
+      elements.map(async (element) => {
+        element.children = await Promise.all(
+          element.children.map((child) =>
+            Element.findOneOrFail(child.id, {
+              relations: [
+                "createdBy",
+                "parent",
+                "canModifyPermsGroups",
+                "canEditGroups",
+                "canViewGroups",
+                "canInteractGroups",
+              ],
+            })
+          )
+        );
+        return element;
+      })
+    );
+
+    return elementsWithChildren;
   }
 }

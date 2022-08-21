@@ -21,6 +21,9 @@ fragment ElementNoChildrenCreatedBy on Element {
   canEditGroups {
     ...GroupWithoutUsers
   }
+  canModifyPermsGroups {
+    ...GroupWithoutUsers
+  }
 }
 
 fragment ElementNoChildren on Element {
@@ -59,6 +62,9 @@ fragment ElementAfterRemove on Element {
     ...GroupWithoutUsers
   }
   canInteractGroups {
+    ...GroupWithoutUsers
+  }
+  canModifyPermsGroups {
     ...GroupWithoutUsers
   }
 }

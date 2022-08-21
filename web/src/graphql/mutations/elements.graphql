@@ -46,12 +46,14 @@ mutation UpdatePermissions(
   $canInteractGroups: [Float!]
   $canViewGroups: [Float!]
   $canEditGroups: [Float!]
+  $canModifyPermsGroups: [Float!]
 ) {
   updatePermissions(
     elementId: $elementId
     canInteractGroups: $canInteractGroups
     canViewGroups: $canViewGroups
     canEditGroups: $canEditGroups
+    canModifyPermsGroups: $canModifyPermsGroups
   ) {
     ...FullElement
   }

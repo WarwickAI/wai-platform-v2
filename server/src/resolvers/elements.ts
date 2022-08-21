@@ -25,6 +25,7 @@ export class ElementResolver {
       relations: [
         "createdBy",
         "parent",
+        "canModifyPermsGroups",
         "canEditGroups",
         "canViewGroups",
         "canInteractGroups",
@@ -58,52 +59,69 @@ export class ElementResolver {
   }
 
   @Query(() => [Element])
-  @UseMiddleware()
-  async getParentPages(): Promise<Element[]> {
-    const elements = await Element.find({
-      where: { type: "Page", parent: null },
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
+  @UseMiddleware(getAuth, getUser)
+  async getParentPages(@Ctx() { payload }: MyContext): Promise<Element[]> {
+    const elements = await Element.getElementsWithChildren({
+      where: {
+        type: "Page",
+        parent: null,
+      },
     });
-    return elements;
+
+    // Now filter out the elements and children that the user can't see
+    const filteredElements = elements.filter((element) =>
+      checkPermissions(element.canViewGroups, payload?.user)
+    );
+
+    filteredElements.forEach((element) => {
+      element.children = element.children.filter((child) =>
+        checkPermissions(child.canViewGroups, payload?.user)
+      );
+    });
+
+    return filteredElements;
   }
 
   @Query(() => [Element])
-  @UseMiddleware()
-  async getDatabases(): Promise<Element[]> {
-    return await Element.find({
+  @UseMiddleware(getAuth, getUser)
+  async getDatabases(@Ctx() { payload }: MyContext): Promise<Element[]> {
+    const elements = await Element.getElementsWithChildren({
       where: { type: "Database" },
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
     });
+
+    // Now filter out the elements and children that the user can't see
+    const filteredElements = elements.filter((element) =>
+      checkPermissions(element.canViewGroups, payload?.user)
+    );
+
+    filteredElements.forEach((element) => {
+      element.children = element.children.filter((child) =>
+        checkPermissions(child.canViewGroups, payload?.user)
+      );
+    });
+
+    return filteredElements;
   }
 
   @Query(() => [Element])
-  @UseMiddleware()
-  async getTemplates(): Promise<Element[]> {
-    return await Element.find({
+  @UseMiddleware(getAuth, getUser)
+  async getTemplates(@Ctx() { payload }: MyContext): Promise<Element[]> {
+    const elements = await Element.getElementsWithChildren({
       where: { type: "Template" },
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
     });
+
+    // Now filter out the elements and children that the user can't see
+    const filteredElements = elements.filter((element) =>
+      checkPermissions(element.canViewGroups, payload?.user)
+    );
+
+    filteredElements.forEach((element) => {
+      element.children = element.children.filter((child) =>
+        checkPermissions(child.canViewGroups, payload?.user)
+      );
+    });
+
+    return filteredElements;
   }
 
   @Mutation(() => Element, { nullable: true })
@@ -115,6 +133,11 @@ export class ElementResolver {
     @Arg("index") index: number,
     @Arg("parent", { nullable: true }) parentId?: number
   ): Promise<Element | null> {
+    // Check logged in (must be logged in to create an element)
+    if (!payload || !payload.user) {
+      throw new Error("Not logged in");
+    }
+
     const element = new Element();
     element.data = data;
     element.type = type;
@@ -124,28 +147,30 @@ export class ElementResolver {
           "createdBy",
           "parent",
           "children",
+          "canModifyPermsGroups",
           "canEditGroups",
           "canViewGroups",
           "canInteractGroups",
         ],
       });
+      element.canModifyPermsGroups = element.canModifyPermsGroups;
       element.canEditGroups = element.parent.canEditGroups;
       element.canViewGroups = element.parent.canViewGroups;
       element.canInteractGroups = element.parent.canInteractGroups;
     } else {
+      element.canModifyPermsGroups = [];
       element.canEditGroups = [];
       element.canViewGroups = [];
       element.canInteractGroups = [];
     }
 
-    // Check user has permissions to edit parent (i.e. add an element to it)
-    if (!checkPermissions(element.canViewGroups, payload?.user)) {
+    // Check user has permissions to edit parent (i.e. add an element to it),
+    // if parent does not exists, we have a special case
+    if (
+      !checkPermissions(element.canEditGroups, payload?.user) ||
+      (!element.parent && payload!.user!.email !== "Edward.Upton@warwick.ac.uk")
+    ) {
       throw new Error("Not authorized");
-    }
-
-    // Check logged in (must be logged in to create an element)
-    if (!payload || !payload.user) {
-      throw new Error("Not logged in");
     }
 
     element.index = index;
@@ -186,6 +211,8 @@ export class ElementResolver {
               ...childInfo
             } = child;
             const newChild = Element.create({ ...childInfo });
+            newChild.canModifyPermsGroups =
+              element.parent?.canModifyPermsGroups || [];
             newChild.canEditGroups = element.parent?.canEditGroups || [];
             newChild.canViewGroups = element.parent?.canViewGroups || [];
             newChild.canInteractGroups =
@@ -310,7 +337,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware()
+  @UseMiddleware(isAuth, getUser)
   async editElementIndex(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
@@ -330,43 +357,60 @@ export class ElementResolver {
     if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
     }
+
+    const parent = await Element.findOneOrFail(
+      element.parent ? element.parent.id : -1,
+      {
+        relations: ["canEditGroups"],
+      }
+    );
+
+    if (parent) {
+      if (!checkPermissions(parent.canEditGroups, payload?.user)) {
+        throw new Error("Not authorized");
+      }
+    } else {
+      throw new Error("Parent does not exist");
+    }
+
     element.index = index;
 
     await element.save();
     return element;
   }
 
-  @Mutation(() => Element)
-  @UseMiddleware()
-  async editElementParent(
-    @Arg("elementId") elementId: number,
-    @Arg("parentId") parentId: number
-  ): Promise<Element> {
-    const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
-    });
-    const parent = await Element.findOneOrFail(parentId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
-    });
-    element.parent = parent;
+  // @Mutation(() => Element)
+  // @UseMiddleware(getAuth, getUser)
+  // async editElementParent(
+  //   @Ctx() { payload }: MyContext,
+  //   @Arg("elementId") elementId: number,
+  //   @Arg("parentId") parentId: number
+  // ): Promise<Element> {
+  //   const element = await Element.findOneOrFail(elementId, {
+  //     relations: [
+  //       "createdBy",
+  //       "parent",
+  //       "children",
+  //       "canEditGroups",
+  //       "canViewGroups",
+  //       "canInteractGroups",
+  //     ],
+  //   });
+  //   const parent = await Element.findOneOrFail(parentId, {
+  //     relations: [
+  //       "createdBy",
+  //       "parent",
+  //       "children",
+  //       "canEditGroups",
+  //       "canViewGroups",
+  //       "canInteractGroups",
+  //     ],
+  //   });
+  //   element.parent = parent;
 
-    await element.save();
-    return element;
-  }
+  //   await element.save();
+  //   return element;
+  // }
 
   @Mutation(() => Element)
   @UseMiddleware(isAuth, getUser)
@@ -396,9 +440,12 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware()
+  @UseMiddleware(getAuth, getUser)
   async updatePermissions(
+    @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
+    @Arg("canModifyPermsGroups", () => [Number], { nullable: true })
+    canModifyPermsGroups?: number[],
     @Arg("canEditGroups", () => [Number], { nullable: true })
     canEditGroups?: number[],
     @Arg("canViewGroups", () => [Number], { nullable: true })
@@ -407,6 +454,15 @@ export class ElementResolver {
     canInteractGroups?: number[]
   ): Promise<Element> {
     const element = await Element.getElementByIdWithChildren(elementId);
+
+    if (!checkPermissions(element.canModifyPermsGroups, payload?.user)) {
+      throw new Error("Not authorized");
+    }
+
+    if (canModifyPermsGroups) {
+      const groups = await Group.findByIds(canModifyPermsGroups);
+      element.canModifyPermsGroups = groups;
+    }
     if (canEditGroups) {
       const groups = await Group.findByIds(canEditGroups);
       element.canEditGroups = groups;
@@ -424,17 +480,26 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware()
+  @UseMiddleware(getAuth, getUser)
   async inheritDatabaseAttributes(
+    @Ctx() { payload }: MyContext,
     @Arg("databaseId") databaseId: number,
     @Arg("elementId") elementId: number
   ): Promise<Element> {
     const database = await Element.getElementByIdWithChildren(databaseId);
-    if (!database || database.type !== "Database") {
+    if (database.type !== "Database") {
       throw new Error("Database not found");
     }
 
+    if (!checkPermissions(database.canViewGroups, payload?.user)) {
+      throw new Error("Not authorized");
+    }
+
     const element = await Element.getElementByIdWithChildren(elementId);
+
+    if (!checkPermissions(element.canEditGroups, payload?.user)) {
+      throw new Error("Not authorized");
+    }
 
     Object.keys((database.data as any).attributes.value).forEach((attName) => {
       if (!(element.data as any)[attName]) {
@@ -460,6 +525,14 @@ export class ElementResolver {
         relations: ["page"],
       }
     );
+
+    const page = await Element.findOneOrFail(user.page.id, {
+      relations: ["canViewGroups"],
+    });
+
+    if (!checkPermissions(page.canViewGroups, payload?.user)) {
+      throw new Error("Not authorized");
+    }
     return user.page;
   }
 
@@ -470,6 +543,10 @@ export class ElementResolver {
     @Arg("uniId") uniId: number,
     @Arg("pageId") pageId: number
   ): Promise<Element | null> {
+    if (payload?.user!.email !== "Edward.Upton@warwick.ac.uk") {
+      throw new Error("Not authorized");
+    }
+
     const user = await User.findOneOrFail(
       { uniId: uniId },
       {

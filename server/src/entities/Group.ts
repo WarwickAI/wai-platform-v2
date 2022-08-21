@@ -50,4 +50,9 @@ export class Group extends BaseEntity {
   @ManyToMany(() => Element, (element) => element.canInteractGroups)
   @JoinTable()
   canInteractElements: Element[];
+
+  @Field(() => [Element])
+  @ManyToMany(() => Element, (element) => element.canModifyPermsGroups)
+  @JoinTable()
+  canModifyPermsElements: Element[];
 }
