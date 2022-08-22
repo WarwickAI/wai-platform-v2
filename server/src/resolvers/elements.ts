@@ -551,7 +551,6 @@ export class ElementResolver {
   @Mutation(() => Element, { nullable: true })
   @UseMiddleware(isAuth, getUser, isAdmin)
   async assignUserPage(
-    @Ctx() { payload }: MyContext,
     @Arg("uniId") uniId: number,
     @Arg("pageId") pageId: number
   ): Promise<Element | null> {
