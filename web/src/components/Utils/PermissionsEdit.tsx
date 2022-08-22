@@ -31,7 +31,7 @@ const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
         <PopoverBody>
           <VStack>
             <PermissionsSelect
-              groupsSelected={props.element.canModifyPermsGroups}
+              groupsSelected={props.element.canModifyPermsGroups || []}
               onChange={(groups) => {
                 updatePermissions({
                   elementId: props.element.id,
