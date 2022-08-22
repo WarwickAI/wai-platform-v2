@@ -197,12 +197,13 @@ export class ElementResolver {
       );
 
       // Need to add the template if it exists
-
-      if ((element.parent.data as any).template?.value) {
+      if (
+        (element.parent.data as any).template?.value &&
+        (element.parent.data as any).template?.value !== -1
+      ) {
         const templateElement = await Element.getElementByIdWithChildren(
           (element.parent.data as any).template.value
         );
-        console.log(templateElement);
         // Copy the templates children
         element.children = await Promise.all(
           templateElement.children.map(async (child) => {

@@ -1,10 +1,11 @@
-import { Box, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
+import { Box, Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { DatabaseElementData } from "../../../../utils/base_element_types";
 import { DataTypeKeysT, Element } from "../../../../utils/config";
 import TextProperty from "../../../Properties/Text";
 import AttributeHeader, { AddAttributeHeader } from "./AttributeHeader";
 import Row from "./Row";
+import { AddIcon } from "@chakra-ui/icons";
 
 interface TableViewProps {
   database: Element<DatabaseElementData>;
@@ -75,6 +76,26 @@ const TableView: React.FC<TableViewProps> = (props) => {
                 />
               );
             })}
+            {props.isEdit && props.rows.length === 0 && (
+              <Tr>
+                <Td>
+                  <Box
+                    h={6}
+                    w={6}
+                    p={1}
+                    borderRadius={"md"}
+                    textAlign={"center"}
+                    justifyContent={"center"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    _hover={{ cursor: "pointer", backgroundColor: "gray.200" }}
+                    onClick={() => props.addRow(0)}
+                  >
+                    <AddIcon />
+                  </Box>
+                </Td>
+              </Tr>
+            )}
           </Tbody>
         </Table>
       </Box>
