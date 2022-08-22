@@ -67,8 +67,9 @@ import {
   willAuthError,
   didAuthError,
 } from "./urqlAuthExchange";
+import { NextUrqlClientConfig } from "next-urql";
 
-export const createUrqlClient = (ssrExchange: any) => {
+export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
   return {
     url: `${process.env.NEXT_PUBLIC_API_URL as string}/graphql`,
     fetchOptions: { credentials: "include" as const },
