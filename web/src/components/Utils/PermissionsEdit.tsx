@@ -98,7 +98,7 @@ const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
       isMulti
       options={[
         {
-          label: "Groups",
+          label: props.placeholder || "Groups",
           options: groups
             ? groups?.groups.map((group) => {
                 return {

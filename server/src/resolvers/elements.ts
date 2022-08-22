@@ -12,6 +12,7 @@ import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
 import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
+import { group } from "console";
 
 @Resolver()
 export class ElementResolver {
@@ -569,11 +570,18 @@ export class ElementResolver {
 }
 
 const checkPermissions = (groups: Group[], user: User | undefined) => {
-  if (groups.length === 0) {
-    return true;
+  for (const group of groups) {
+    if (group.name === "All") {
+      return true;
+    }
   }
   if (!user) {
     return false;
+  }
+  for (const userGroup of user.groups) {
+    if (userGroup.name === "Admin") {
+      return true;
+    }
   }
   for (const group of groups) {
     for (const userGroup of user.groups) {
