@@ -62,11 +62,6 @@ const EventPage: React.FC<EventPageProps> = ({
               variant="primary"
               onClick={async () => {
                 const response = await handleJoin(eventDetails.id);
-                if (response) {
-                  console.log("JOINED COURSE");
-                } else {
-                  console.log("FAILED JOINING COURSE");
-                }
               }}
               disabled={userInEvent}
             >

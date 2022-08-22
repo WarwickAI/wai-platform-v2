@@ -1,0 +1,35 @@
+query GetElementsNoChildren {
+  getElementsNoChildren {
+    ...ElementNoChildren
+  }
+}
+
+query GetElement($elementId: Float!) {
+  getElement(elementId: $elementId) {
+    ...FullElement
+  }
+}
+
+query GetParentPages {
+  getParentPages {
+    ...ElementNoChildrenCreatedBy
+  }
+}
+
+query GetDatabasesWithoutChildren {
+  getDatabases {
+    ...ElementNoChildren
+  }
+}
+
+query GetTemplatesWithoutChildren {
+  getTemplates {
+    ...ElementNoChildren
+  }
+}
+
+query GetUserPage($uniId: Float!) {
+  getUserPage(uniId: $uniId) {
+    id
+  }
+}

@@ -28,6 +28,7 @@ interface NavItemProps {
 
 const NavItem: React.FC<NavItemProps> = (props) => {
   const router = useRouter();
+
   return (
     <Link key={props.title} href={props.path} as={NextLink}>
       <Flex
@@ -69,10 +70,7 @@ const NavDrawer: React.FC<NavDrawerProps> = (props) => {
       <DrawerOverlay />
       <DrawerContent px={3} py={3} w={0}>
         <DrawerCloseButton />
-        <Box
-          overflowY="auto"
-          overflowX="hidden"
-          mx={-3}>
+        <Box overflowY="auto" overflowX="hidden" mx={-3}>
           <Link href={"/"} as={NextLink}>
             <Flex
               h={20}
@@ -81,7 +79,7 @@ const NavDrawer: React.FC<NavDrawerProps> = (props) => {
               justifyContent="center"
               alignItems="center"
               _hover={{
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             >
               <Image src="/static/logo2.png" alt="WAI Logo" width={20} />
@@ -89,7 +87,6 @@ const NavDrawer: React.FC<NavDrawerProps> = (props) => {
           </Link>
           <AccountPopover isMobile={true} />
           {sidebarConfig.map(({ title, path, icon }) => {
-            // console.log(title);
             return (
               <NavItem
                 key={title}

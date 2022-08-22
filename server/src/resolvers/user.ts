@@ -33,6 +33,11 @@ export class UserResolver {
     return User.find();
   }
 
+  @Query(() => [User])
+  async getUsers(): Promise<User[]> {
+    return await User.find({ relations: ["groups"] });
+  }
+
   @Mutation(() => User, { nullable: true })
   @UseMiddleware(isAuth)
   async verifyLogin(@Ctx() { payload }: MyContext) {
@@ -109,7 +114,14 @@ export class UserResolver {
       return null;
     }
     const user = await User.findOne(parseInt(payload.userId), {
-      relations: ["projects", "talks", "courses", "tutorials", "votes"],
+      relations: [
+        "projects",
+        "talks",
+        "courses",
+        "tutorials",
+        "votes",
+        "groups",
+      ],
     });
 
     if (!user) {

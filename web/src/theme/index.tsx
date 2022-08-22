@@ -1,9 +1,8 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, ChakraTheme } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 
 import "@fontsource/public-sans/700.css";
 import "@fontsource/public-sans/400.css";
-import { HTMLProps } from "react";
 
 const PRIMARY = {
   lighter: "#C8FACD",
@@ -25,12 +24,16 @@ const SECONDARY = {
 export const markdownTheme = {
   a: (props: any) => {
     const { children, href } = props;
-    return <a href={href} style={{ color: "primary.main" }}>{children}</a>;
+    return (
+      <a href={href} style={{ color: "primary.main" }}>
+        {children}
+      </a>
+    );
   },
 };
 
 // 2. Call `extendTheme` and pass your custom values
-const theme = extendTheme({
+export const theme: any = extendTheme({
   styles: {
     global: {
       a: {
@@ -38,9 +41,6 @@ const theme = extendTheme({
       },
       html: {
         overflowY: "scroll",
-      },
-      option: {
-        fontFamily: "Public Sans",
       },
     },
   },
@@ -75,6 +75,16 @@ const theme = extendTheme({
           bg: "rgb(99, 115, 129)",
           "&:hover": {
             bg: "gray",
+          },
+        },
+        setting: {
+          border: "none",
+          boxShadow: "none",
+          textColor: "gray.700",
+          w: "full",
+          bg: "white",
+          "&:hover": {
+            bg: "gray.200",
           },
         },
       },

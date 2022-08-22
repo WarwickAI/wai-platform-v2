@@ -24,6 +24,7 @@ const Page: React.FC<PageProps> = (props) => {
     props.coverImg && props.coverImg.length > 0 ? props.coverImg : undefined;
 
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
+
   return (
     <Box>
       <Head>

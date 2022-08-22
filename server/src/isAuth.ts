@@ -4,6 +4,33 @@ import { MyContext } from "./types";
 import { ForbiddenError } from "apollo-server-express";
 import { User } from "./entities/User";
 
+export const getAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
+  const authorization = context.req.headers["authorization"];
+
+  if (authorization) {
+    try {
+      const token = authorization;
+      const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      context.payload = payload as any;
+    } catch (err) {
+      // Not an error, just wont add payload
+    }
+  }
+  return next();
+};
+
+export const getUser: MiddlewareFn<MyContext> = async ({ context }, next) => {
+  context.payload = context.payload?.userId
+    ? {
+        ...context.payload,
+        user: await User.findOne(context.payload.userId, {
+          relations: ["groups"],
+        }),
+      }
+    : { ...context.payload, user: undefined };
+  return next();
+};
+
 export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
 
@@ -68,6 +95,38 @@ export const isSuper: MiddlewareFn<MyContext> = async ({ context }, next) => {
   } catch (err) {
     console.log(err);
     throw new ForbiddenError("not authenticated");
+  }
+
+  return next();
+};
+
+export const isAdmin: MiddlewareFn<MyContext> = async ({ context }, next) => {
+  // If haven't extracted the user from the payload, do so first
+  if (!context.payload?.user) {
+    if (!context.payload?.userId) {
+      throw new ForbiddenError("not user id");
+    }
+
+    const user = await User.findOne(context.payload.userId, {
+      relations: ["groups"],
+    });
+
+    if (!user) {
+      throw new ForbiddenError("no user found with id");
+    }
+
+    context.payload = {
+      ...context.payload,
+      user,
+    };
+  }
+
+  // We know at this point we have a user
+  const user = context.payload.user!;
+
+  // Check that the user has a group `Admin`
+  if (!user.groups.some((g) => g.name === "Admin")) {
+    throw new ForbiddenError("not admin");
   }
 
   return next();

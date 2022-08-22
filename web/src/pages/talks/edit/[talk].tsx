@@ -18,7 +18,7 @@ const EditTalk: React.FC<EditTalkProps> = ({}) => {
   const [{ data }] = useTalkByShortNameQuery({
     variables: { shortName: talk as string },
   });
-  console.log(data);
+
   const [, editTalk] = useEditTalkMutation();
   return (
     <Dashboard title="Edit Talk">

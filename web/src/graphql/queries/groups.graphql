@@ -1,0 +1,11 @@
+query GetGroups {
+  groups {
+    ...GroupWithoutUsers
+  }
+}
+
+query GetGroupsWithUsers {
+  groupsWithUsers {
+    ...GroupWithUsers
+  }
+}

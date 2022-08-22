@@ -1,0 +1,70 @@
+fragment UserNoGroupsElements on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+}
+
+fragment UserNoElements on User {
+  ...UserNoGroupsElements
+  groups {
+    ...GroupWithoutUsers
+  }
+}
+
+fragment UserNoGroups on User {
+  ...UserNoGroupsElements
+  elements {
+    ...ElementNoChildrenCreatedByGroups
+  }
+}
+
+fragment User on User {
+  ...UserNoElements
+  ...UserNoGroups
+}
+
+fragment RegularUser on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+  projects {
+    id
+    shortName
+  }
+  talks {
+    id
+    shortName
+  }
+  courses {
+    id
+    shortName
+  }
+  tutorials {
+    id
+    shortName
+  }
+  groups {
+    ...GroupWithoutUsers
+  }
+}
+
+fragment RegularUserWithoutEvents on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+}

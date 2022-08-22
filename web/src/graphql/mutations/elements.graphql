@@ -1,0 +1,72 @@
+mutation EditElementData($data: JSONObject!, $elementId: Float!) {
+  editElementData(data: $data, elementId: $elementId) {
+    ...FullElement
+  }
+}
+
+mutation EditDatabaseAttributeName(
+  $elementId: Float!
+  $attributeName: String!
+  $newAttributeName: String!
+) {
+  editDatabaseAttributeName(
+    elementId: $elementId
+    attributeName: $attributeName
+    newAttributeName: $newAttributeName
+  ) {
+    ...FullElement
+  }
+}
+
+mutation EditElementIndex($index: Float!, $elementId: Float!) {
+  editElementIndex(index: $index, elementId: $elementId) {
+    ...FullElement
+  }
+}
+
+mutation CreateElement(
+  $type: String!
+  $data: JSONObject!
+  $index: Float!
+  $parent: Float
+) {
+  createElement(type: $type, data: $data, index: $index, parent: $parent) {
+    ...FullElement
+  }
+}
+
+mutation RemoveElement($elementId: Float!) {
+  removeElement(elementId: $elementId) {
+    ...ElementAfterRemove
+  }
+}
+
+mutation UpdatePermissions(
+  $elementId: Float!
+  $canInteractGroups: [Float!]
+  $canViewGroups: [Float!]
+  $canEditGroups: [Float!]
+  $canModifyPermsGroups: [Float!]
+) {
+  updatePermissions(
+    elementId: $elementId
+    canInteractGroups: $canInteractGroups
+    canViewGroups: $canViewGroups
+    canEditGroups: $canEditGroups
+    canModifyPermsGroups: $canModifyPermsGroups
+  ) {
+    ...FullElement
+  }
+}
+
+mutation InheritDatabaseAttributes($databaseId: Float!, $elementId: Float!) {
+  inheritDatabaseAttributes(databaseId: $databaseId, elementId: $elementId) {
+    ...FullElement
+  }
+}
+
+mutation AssignUserPage($uniId: Float!, $pageId: Float!) {
+  assignUserPage(uniId: $uniId, pageId: $pageId) {
+    id
+  }
+}

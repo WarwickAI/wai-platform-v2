@@ -36,11 +36,9 @@ const CreateMerch: React.FC<CreateMerchProps> = ({}) => {
           variants: [{ name: "regular", link: "https://google.com" }],
         }}
         onSubmit={async (values, { setErrors }) => {
-          console.log("HERE");
           const response = await createMerch({ itemInfo: values });
           if (response.data?.createMerch.errors) {
             setErrors(toErrorMap(response.data.createMerch.errors));
-            console.log(response.data);
           } else if (response.data?.createMerch.item) {
             // Course submitted
             router.push("/merch");

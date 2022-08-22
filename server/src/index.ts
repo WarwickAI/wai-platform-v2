@@ -34,6 +34,10 @@ import { ApplicationResolver } from "./resolvers/application";
 import { AdminResolver } from "./resolvers/admin";
 import { Vote } from "./entities/Vote";
 import { VoteResolver } from "./resolvers/vote";
+import { Element } from "./entities/Element";
+import { ElementResolver } from "./resolvers/elements";
+import { Group } from "./entities/Group";
+import { GroupResolver } from "./resolvers/group";
 
 const main = async () => {
   // Connect to DB
@@ -58,7 +62,7 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
-    logging: true,
+    logging: false,
     synchronize: true,
     migrations: [],
     entities: [
@@ -72,6 +76,8 @@ const main = async () => {
       ElectionRole,
       RoleApplication,
       Vote,
+      Element,
+      Group,
     ],
   });
   // await User.delete((await User.find()).map((user) => user.id));
@@ -98,9 +104,7 @@ const main = async () => {
 
   // Create refresh token route
   app.post("/refresh_token", async (req, res) => {
-    console.log("received refresh token request");
     const token = req.cookies.jid;
-    console.log(token);
     if (!token) {
       return res.send({ ok: false, accessToken: "" });
     }
@@ -149,6 +153,8 @@ const main = async () => {
         ApplicationResolver,
         AdminResolver,
         VoteResolver,
+        ElementResolver,
+        GroupResolver,
       ],
       validate: false,
     }),

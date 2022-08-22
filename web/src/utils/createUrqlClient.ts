@@ -1,4 +1,4 @@
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { cacheExchange, Scalar } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
@@ -42,6 +42,23 @@ import {
   RegularTalkFragment,
   RegularCourseFragment,
   RegularTutorialFragment,
+  GetElementQuery,
+  CreateElementMutation,
+  GetElementDocument,
+  RemoveElementMutation,
+  GetDatabasesWithoutChildrenQuery,
+  GetDatabasesWithoutChildrenDocument,
+  EditElementDataMutation,
+  GetTemplatesWithoutChildrenQuery,
+  GetTemplatesWithoutChildrenDocument,
+  UpdatePermissionsMutation,
+  InheritDatabaseAttributesMutation,
+  AddUserToGroupMutation,
+  GetGroupsWithUsersQuery,
+  GetGroupsWithUsersDocument,
+  RemoveUserFromGroupMutation,
+  CreateGroupMutation,
+  DeleteGroupMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -50,8 +67,9 @@ import {
   willAuthError,
   didAuthError,
 } from "./urqlAuthExchange";
+import { NextUrqlClientConfig } from "next-urql";
 
-export const createUrqlClient = (ssrExchange: any) => {
+export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
   return {
     url: `${process.env.NEXT_PUBLIC_API_URL as string}/graphql`,
     fetchOptions: { credentials: "include" as const },
@@ -345,7 +363,8 @@ export const createUrqlClient = (ssrExchange: any) => {
                     if (result.createTutorial.tutorial.display) {
                       // Display set to true, add
                       query.tutorials.push(
-                        result.createTutorial.tutorial as RegularTutorialFragment
+                        result.createTutorial
+                          .tutorial as RegularTutorialFragment
                       );
                     }
                     return query;
@@ -602,6 +621,450 @@ export const createUrqlClient = (ssrExchange: any) => {
                 { query: MeDocument },
                 _result,
                 () => ({ me: null })
+              );
+            },
+
+            removeElement: (_result, args, cache, info) => {
+              const elementId = args.elementId;
+              betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.removeElement) {
+                    return query;
+                  } else {
+                    if (result.removeElement.parent) {
+                      betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.removeElement.parent.id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          const indexOfRemovedElement =
+                            query2.getElement.children.findIndex(
+                              (val) => val.id === elementId
+                            );
+                          query2.getElement.children.splice(
+                            indexOfRemovedElement,
+                            1
+                          );
+                          return query2;
+                        }
+                      );
+                    }
+                    return query;
+                  }
+                }
+              );
+            },
+
+            // Need to add database updates as well
+            createElement: (_result, args, cache, info) => {
+              const res = _result as CreateElementMutation;
+              if (!res.createElement) {
+                return;
+              }
+              const newElement = res.createElement;
+              const elementId = newElement.id;
+              // Update element
+              betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.createElement) {
+                    return query;
+                  } else {
+                    // Update parent element
+                    if (result.createElement.parent?.id) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.createElement.parent.id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          const parentElement = query2.getElement;
+                          parentElement.children.push(result.createElement!);
+                          return query2;
+                        }
+                      );
+                    }
+                    return {
+                      __typename: "Query",
+                      getElement: result.createElement,
+                    };
+                  }
+                }
+              );
+
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases.push(newElement);
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  CreateElementMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates.push(newElement);
+                    return query;
+                  }
+                );
+              }
+            },
+
+            editElementData: (_result, args, cache, info) => {
+              const res = _result as EditElementDataMutation;
+              if (!res.editElementData) {
+                return;
+              }
+              const newElement = res.editElementData;
+              const elementId = newElement.id;
+              betterUpdateQuery<EditElementDataMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.editElementData) {
+                    return query;
+                  } else {
+                    if (result.editElementData.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.editElementData.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
+                              (val) => val.id === result.editElementData.id
+                            )
+                          ] = result.editElementData;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.editElementData;
+                    return query;
+                  }
+                }
+              );
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  EditElementDataMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  EditElementDataMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+            },
+            updatePermissions: (_result, args, cache, info) => {
+              const res = _result as UpdatePermissionsMutation;
+              if (!res.updatePermissions) {
+                return;
+              }
+              const newElement = res.updatePermissions;
+              const elementId = newElement.id;
+              betterUpdateQuery<UpdatePermissionsMutation, GetElementQuery>(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.updatePermissions) {
+                    return query;
+                  } else {
+                    if (result.updatePermissions.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.updatePermissions.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
+                              (val) => val.id === result.updatePermissions.id
+                            )
+                          ] = result.updatePermissions;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.updatePermissions;
+                    return query;
+                  }
+                }
+              );
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  UpdatePermissionsMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  UpdatePermissionsMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+            },
+            inheritDatabaseAttributes: (_result, args, cache, info) => {
+              const res = _result as InheritDatabaseAttributesMutation;
+              if (!res.inheritDatabaseAttributes) {
+                return;
+              }
+              const newElement = res.inheritDatabaseAttributes;
+              const elementId = newElement.id;
+              betterUpdateQuery<
+                InheritDatabaseAttributesMutation,
+                GetElementQuery
+              >(
+                cache,
+                { query: GetElementDocument, variables: { elementId } },
+                _result,
+                (result, query) => {
+                  if (!result.inheritDatabaseAttributes) {
+                    return query;
+                  } else {
+                    if (result.inheritDatabaseAttributes.parent) {
+                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
+                        cache,
+                        {
+                          query: GetElementDocument,
+                          variables: {
+                            elementId: result.inheritDatabaseAttributes.parent
+                              .id as Scalar,
+                          },
+                        },
+                        _result,
+                        (_, query2) => {
+                          query2.getElement.children[
+                            query2.getElement.children.findIndex(
+                              (val) =>
+                                val.id === result.inheritDatabaseAttributes.id
+                            )
+                          ] = result.inheritDatabaseAttributes;
+                          return query2;
+                        }
+                      );
+                    }
+                    query.getElement = result.inheritDatabaseAttributes;
+                    return query;
+                  }
+                }
+              );
+              if (newElement.type === "Database") {
+                betterUpdateQuery<
+                  InheritDatabaseAttributesMutation,
+                  GetDatabasesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetDatabasesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getDatabases[
+                      query.getDatabases.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+              if (newElement.type === "Template") {
+                betterUpdateQuery<
+                  InheritDatabaseAttributesMutation,
+                  GetTemplatesWithoutChildrenQuery
+                >(
+                  cache,
+                  {
+                    query: GetTemplatesWithoutChildrenDocument,
+                  },
+                  _result,
+                  (_, query) => {
+                    query.getTemplates[
+                      query.getTemplates.findIndex(
+                        (val) => val.id === newElement.id
+                      )
+                    ] = newElement;
+                    return query;
+                  }
+                );
+              }
+            },
+            addUserToGroup: (_result, args, cache, info) => {
+              const res = _result as AddUserToGroupMutation;
+              const groupId = res.addUserToGroup.id;
+              const users = res.addUserToGroup.users;
+              betterUpdateQuery<
+                AddUserToGroupMutation,
+                GetGroupsWithUsersQuery
+              >(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  const groupIndex = query.groupsWithUsers.findIndex(
+                    (val) => val.id === groupId
+                  );
+                  if (groupIndex === -1) {
+                    return query;
+                  }
+                  query.groupsWithUsers[groupIndex].users = users;
+                  return query;
+                }
+              );
+            },
+            removeUserFromGroup: (_result, args, cache, info) => {
+              const res = _result as RemoveUserFromGroupMutation;
+              const groupId = res.removeUserFromGroup.id;
+              const users = res.removeUserFromGroup.users;
+              betterUpdateQuery<
+                RemoveUserFromGroupMutation,
+                GetGroupsWithUsersQuery
+              >(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  const groupIndex = query.groupsWithUsers.findIndex(
+                    (val) => val.id === groupId
+                  );
+                  if (groupIndex === -1) {
+                    return query;
+                  }
+                  query.groupsWithUsers[groupIndex].users = users;
+                  return query;
+                }
+              );
+            },
+            createGroup: (_result, args, cache, info) => {
+              const res = _result as CreateGroupMutation;
+              const newGroup = res.createGroup;
+              betterUpdateQuery<CreateGroupMutation, GetGroupsWithUsersQuery>(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  query.groupsWithUsers.push(newGroup);
+                  return query;
+                }
+              );
+            },
+            deleteGroup: (_result, args, cache, info) => {
+              const res = _result as DeleteGroupMutation;
+              const deletedGroup = res.deleteGroup;
+              betterUpdateQuery<DeleteGroupMutation, GetGroupsWithUsersQuery>(
+                cache,
+                { query: GetGroupsWithUsersDocument },
+                _result,
+                (result, query) => {
+                  const groupIndex = query.groupsWithUsers.findIndex(
+                    (val) => val.name === deletedGroup.name
+                  );
+                  if (groupIndex !== -1) {
+                    query.groupsWithUsers.splice(groupIndex, 1);
+                  }
+                  return query;
+                }
               );
             },
           },

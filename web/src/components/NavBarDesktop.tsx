@@ -1,10 +1,21 @@
-import { Box, Tooltip, Flex, Link, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Tooltip,
+  Flex,
+  Link,
+  Image,
+  FormControl,
+  FormLabel,
+  Switch,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { capitalizeFirstLetter } from "../utils/stringUtils";
 import sidebarConfig from "./SidebarConfig";
 import AccountPopover from "./AccountPopover";
+import { useMeQuery } from "../generated/graphql";
+import { EditContext } from "../utils/EditContext";
 
 interface NavItemProps {
   title: string;
@@ -15,6 +26,7 @@ interface NavItemProps {
 
 const NavItem: React.FC<NavItemProps> = (props) => {
   const router = useRouter();
+
   return (
     <Link key={props.title} href={props.path} as={NextLink}>
       <Box>
@@ -52,6 +64,8 @@ interface NavBarDesktopProps {}
 
 const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
   const router = useRouter();
+  const { isEdit, setIsEdit } = useContext(EditContext);
+  const [{ data: userData }] = useMeQuery();
 
   return (
     <Box
@@ -80,8 +94,35 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
         </Flex>
       </Link>
       <AccountPopover />
+      {/* Edit Switch */}
+      {!!userData?.me && (
+        <Box>
+          <Tooltip hasArrow placement="right" label={"Edit Mode"}>
+            <Flex
+              h={14}
+              mx={-3}
+              justifyContent="center"
+              alignItems="center"
+              borderRightColor="rgb(0, 171, 85)"
+            >
+              <FormControl
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Switch
+                  id="edit-mode"
+                  isChecked={isEdit}
+                  onChange={(e) => {
+                    setIsEdit(e.target.checked);
+                  }}
+                />
+              </FormControl>
+            </Flex>
+          </Tooltip>
+        </Box>
+      )}
       {sidebarConfig.map(({ title, path, icon }) => {
-        // console.log(title);
         return (
           <NavItem
             key={title}
