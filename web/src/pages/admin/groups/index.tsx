@@ -157,7 +157,13 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
         />
         <Button
           variant={"admin"}
-          onClick={() => createGroup({ groupName: newGroupName })}
+          onClick={async () => {
+            const res = await createGroup({ groupName: newGroupName });
+            if (res.data?.createGroup) {
+              setSelectedGroup(res.data.createGroup as Group);
+              setNewGroupName("");
+            }
+          }}
           disabled={!newGroupName}
         >
           {getIcon(plusFill)}
