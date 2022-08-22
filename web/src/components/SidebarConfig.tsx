@@ -52,15 +52,10 @@ const sidebarConfig = [
     path: "/merch",
     icon: getIcon(shoppingCartFill),
   },
-  {
-    title: "elections",
-    path: "/elections",
-    icon: getIcon(awardFill),
-  },
   // {
-  //   title: "generic",
-  //   path: "/generic",
-  //   icon: getIcon(heartFill),
+  //   title: "elections",
+  //   path: "/elections",
+  //   icon: getIcon(awardFill),
   // },
 ];
 
