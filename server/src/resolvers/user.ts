@@ -11,7 +11,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { sendRefreshToken } from "../sendRefreshToken";
-import { isAuth, isExec } from "../isAuth";
+import { isAdmin, isAuth, isExec } from "../isAuth";
 import { RoleApplication } from "../entities/RoleApplication";
 import { ElectionRole } from "../entities/ElectionRole";
 
@@ -34,6 +34,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
+  @UseMiddleware(isAuth, isAdmin)
   async getUsers(): Promise<User[]> {
     return await User.find({ relations: ["groups"] });
   }
