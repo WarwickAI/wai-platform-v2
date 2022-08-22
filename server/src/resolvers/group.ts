@@ -124,4 +124,12 @@ export class GroupResolver {
       return null;
     }
   }
+
+  @Mutation(() => Group)
+  @UseMiddleware(isAuth, isAdmin)
+  async deleteGroup(@Arg("groupId") groupId: number): Promise<Group> {
+    const group = await Group.findOneOrFail(groupId);
+    await group.remove();
+    return group;
+  }
 }

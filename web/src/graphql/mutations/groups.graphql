@@ -15,3 +15,9 @@ mutation CreateGroup($groupName: String!) {
     ...GroupWithUsers
   }
 }
+
+mutation DeleteGroup($groupId: Float!) {
+  deleteGroup(groupId: $groupId) {
+    name
+  }
+}

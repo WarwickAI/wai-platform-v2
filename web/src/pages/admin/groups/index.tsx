@@ -4,6 +4,7 @@ import {
   Group,
   useAddUserToGroupMutation,
   useCreateGroupMutation,
+  useDeleteGroupMutation,
   useGetGroupsWithUsersQuery,
   useGetUsersQuery,
   useRemoveUserFromGroupMutation,
@@ -24,6 +25,8 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import deleteFill from "@iconify/icons-eva/person-remove-fill";
 import addFill from "@iconify/icons-eva/person-add-fill";
+import plusFill from "@iconify/icons-eva/plus-fill";
+import minusFill from "@iconify/icons-eva/minus-fill";
 import { getIcon } from "../../../components/SidebarConfig";
 
 interface GroupsAdminProps {}
@@ -34,6 +37,7 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
   const [, addUserToGroup] = useAddUserToGroupMutation();
   const [, removeUserFromGroup] = useRemoveUserFromGroupMutation();
   const [, createGroup] = useCreateGroupMutation();
+  const [, deleteGroup] = useDeleteGroupMutation();
 
   const groups = useMemo(() => {
     if (groupsQuery?.groupsWithUsers) {
@@ -56,23 +60,34 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
 
   return (
     <Dashboard title="Groups Admin">
-      <Select
-        placeholder="Select a group"
-        value={selectedGroup?.id}
-        onChange={(e) =>
-          setSelectedGroup(
-            groups[
-              groups.findIndex((g) => g.id === parseInt(e.target.value)) ?? -1
-            ] as Group
-          )
-        }
-      >
-        {groups.map((group) => (
-          <option key={group.id} value={group.id}>
-            {group.name}
-          </option>
-        ))}
-      </Select>
+      <HStack>
+        <Select
+          placeholder="Select a group"
+          value={selectedGroup?.id}
+          onChange={(e) =>
+            setSelectedGroup(
+              groups[
+                groups.findIndex((g) => g.id === parseInt(e.target.value)) ?? -1
+              ] as Group
+            )
+          }
+        >
+          {groups.map((group) => (
+            <option key={group.id} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </Select>
+        <Button
+          variant={"admin"}
+          onClick={() =>
+            deleteGroup({ groupId: selectedGroup ? selectedGroup.id : -1 })
+          }
+          disabled={!selectedGroup}
+        >
+          {getIcon(minusFill)}
+        </Button>
+      </HStack>
       {selectedGroup && (
         <Table variant={"simple"}>
           <Thead>
@@ -143,8 +158,9 @@ const GroupsAdmin: React.FC<GroupsAdminProps> = ({}) => {
         <Button
           variant={"admin"}
           onClick={() => createGroup({ groupName: newGroupName })}
+          disabled={!newGroupName}
         >
-          +
+          {getIcon(plusFill)}
         </Button>
       </HStack>
     </Dashboard>
