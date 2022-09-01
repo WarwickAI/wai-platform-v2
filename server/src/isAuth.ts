@@ -57,7 +57,9 @@ export const isExec: MiddlewareFn<MyContext> = async ({ context }, next) => {
   }
 
   try {
-    const user = await User.findOne(parseInt(userId));
+    const user = await User.findOne(parseInt(userId), {
+      relations: ["groups"],
+    });
     if (!user) {
       throw new ForbiddenError("not authenticated");
     }
@@ -80,7 +82,9 @@ export const isSuper: MiddlewareFn<MyContext> = async ({ context }, next) => {
   }
 
   try {
-    const user = await User.findOne(parseInt(userId));
+    const user = await User.findOne(parseInt(userId), {
+      relations: ["groups"],
+    });
     if (!user) {
       throw new ForbiddenError("not authenticated");
     }

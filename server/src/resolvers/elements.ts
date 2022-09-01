@@ -526,7 +526,7 @@ export class ElementResolver {
   }
 
   @Query(() => Element, { nullable: true })
-  @UseMiddleware(isAuth, getUser)
+  @UseMiddleware(getAuth, getUser)
   async getUserPage(
     @Ctx() { payload }: MyContext,
     @Arg("uniId") uniId: number

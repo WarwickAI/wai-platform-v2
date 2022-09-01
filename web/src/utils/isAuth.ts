@@ -12,11 +12,18 @@ export const isSuper = (user: RegularUserFragment) => {
 };
 
 export const checkPermissions = (groups: Group[], user: User | undefined) => {
-  if (groups.length === 0) {
-    return true;
+  for (const group of groups) {
+    if (group.name === "All") {
+      return true;
+    }
   }
   if (!user) {
     return false;
+  }
+  for (const userGroup of user.groups) {
+    if (userGroup.name === "Admin") {
+      return true;
+    }
   }
   for (const group of groups) {
     for (const userGroup of user.groups) {
