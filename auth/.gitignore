@@ -1,0 +1,17 @@
+/node_modules
+
+.env
+.env.production
+
+/dist
+
+logs.txt
+
+# misc
+.DS_Store
+
+*.dump
+*.sql
+
+metadata_idp.xml
+metadata_sp.xml
