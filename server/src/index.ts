@@ -172,6 +172,20 @@ const main = async () => {
   app.listen(parseInt(process.env.PORT!), () => {
     console.log("server sarted on localhost:4000");
   });
+
+  // Setup 'Admin' and 'All' roles if they do not exist
+
+  const adminGroup = await Group.findOne({ name: "Admin" });
+  if (!adminGroup) {
+    const newAdminGroup = Group.create({ name: "Admin", users: [] });
+    await newAdminGroup.save();
+  }
+
+  const allGroup = await Group.findOne({ name: "All" });
+  if (!allGroup) {
+    const newAllGroup = Group.create({ name: "All", users: [] });
+    await newAllGroup.save();
+  }
 };
 
 main();

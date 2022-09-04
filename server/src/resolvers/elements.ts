@@ -146,6 +146,10 @@ export class ElementResolver {
       where: { name: "Admin" },
     });
 
+    const allGroup = await Group.findOneOrFail({
+      where: { name: "All" },
+    });
+
     if (parentId && parentId !== null) {
       element.parent = await Element.findOneOrFail(parentId, {
         relations: [
@@ -168,9 +172,12 @@ export class ElementResolver {
       ];
     } else {
       element.canModifyPermsGroups = [adminGroup];
-      element.canEditGroups = [adminGroup];
-      element.canViewGroups = [adminGroup];
-      element.canInteractGroups = [adminGroup];
+      element.canEditGroups =
+        element.type === "Database" ? [allGroup] : [adminGroup];
+      element.canViewGroups =
+        element.type === "Database" ? [allGroup] : [adminGroup];
+      element.canInteractGroups =
+        element.type === "Database" ? [allGroup] : [adminGroup];
     }
 
     // Check user has permissions to edit parent (i.e. add an element to it)
