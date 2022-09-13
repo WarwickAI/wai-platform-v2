@@ -31,11 +31,12 @@ const Generic: React.FC<GenericProps> = ({}) => {
     );
   } else if (
     element.getElement.type !== "Page" &&
-    element.getElement.type !== "Template"
+    element.getElement.type !== "Template" &&
+    element.getElement.type !== "Survey"
   ) {
     return (
       <ElementPageWrapper>
-        <Text>This element is not a page or a template</Text>
+        <Text>This element is not a page, template or survey</Text>
       </ElementPageWrapper>
     );
   } else {

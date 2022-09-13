@@ -190,6 +190,14 @@ export class ElementResolver {
     element.children = [];
 
     if (element.parent && element.parent?.type === "Database") {
+      // Verify that the childrenBaseType of the database parent matches this new element's type
+      if ((element.parent.data as any).childrenBaseType.value !== type) {
+        throw new Error(
+          `Children base type of database (${
+            (element.parent.data as any).childBaseType
+          }) does not match new element's type (${type})`
+        );
+      }
       // Need to ensure element has all data of parent database
 
       Object.keys((element.parent.data as any).attributes.value).map(
@@ -242,6 +250,11 @@ export class ElementResolver {
           })
         );
       }
+    }
+
+    if (type === "Survey") {
+      // Add the user attribute
+      (element.data as any).user.value = payload.user.id;
     }
 
     await element.save();

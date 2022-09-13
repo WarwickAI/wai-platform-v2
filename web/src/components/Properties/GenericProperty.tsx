@@ -8,6 +8,7 @@ import TemplateProperty from "./Template";
 import FormattedText from "./FormattedText";
 import DatabaseViewAsProperty from "./DatabaseViewAs";
 import UserProperty from "./User";
+import ActionTypeProperty from "./ActionType";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -87,6 +88,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "User") {
     return (
       <UserProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "ActionType") {
+    return (
+      <ActionTypeProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

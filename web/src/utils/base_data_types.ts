@@ -39,7 +39,7 @@ export const DatabaseViewsAs = {
 
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
 
-const actionTypeKeys = getKeys(ActionTypesDef);
+export const actionTypeKeys = getKeys(ActionTypesDef);
 const databaseViewAsKeys = getKeys(DatabaseViewsAs);
 
 export type ActionTypeKeys = typeof actionTypeKeys[number];
