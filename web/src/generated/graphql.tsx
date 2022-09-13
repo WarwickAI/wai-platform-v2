@@ -519,6 +519,7 @@ export type Query = {
   getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
   getTemplates: Array<Element>;
+  getUser: User;
   getUserPage?: Maybe<Element>;
   getUserRoleApplications?: Maybe<Array<ElectionRole>>;
   getUsers: Array<User>;
@@ -595,6 +596,11 @@ export type QueryGetRoleApplicationForVoteArgs = {
 export type QueryGetRoleVoteCountArgs = {
   roleId?: InputMaybe<Scalars['Float']>;
   shortName?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetUserArgs = {
+  userId: Scalars['Float'];
 };
 
 
@@ -1454,6 +1460,13 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+
+export type GetUserQueryVariables = Exact<{
+  userId: Scalars['Float'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined } };
 
 export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2897,6 +2910,17 @@ export const GetUsersDocument = gql`
 
 export function useGetUsersQuery(options: Omit<Urql.UseQueryArgs<GetUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUsersQuery>({ query: GetUsersDocument, ...options });
+};
+export const GetUserDocument = gql`
+    query GetUser($userId: Float!) {
+  getUser(userId: $userId) {
+    ...UserNoGroupsElements
+  }
+}
+    ${UserNoGroupsElementsFragmentDoc}`;
+
+export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
 };
 export const GetUserRoleApplicationsDocument = gql`
     query GetUserRoleApplications {
