@@ -17,6 +17,9 @@ export const ActionTypesDef = {
   Delete: {
     label: "Delete",
   } as ActionTypeDef,
+  StartSurvey: {
+    label: "Start Survey",
+  } as ActionTypeDef,
 };
 
 export type DatabaseViewAsTypeDef = {

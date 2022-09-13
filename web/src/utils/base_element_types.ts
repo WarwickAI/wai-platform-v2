@@ -119,7 +119,7 @@ export const ElementTypesDef = {
         type: "DatabaseViewAs",
         label: "View",
         inSettings: true,
-      }
+      },
     },
   } as ElementTypeDef,
   Image: {
@@ -168,6 +168,31 @@ export const ElementTypesDef = {
       iconImg: {
         type: "Image",
         label: "Icon Image",
+        inSettings: true,
+      },
+    },
+  } as ElementTypeDef,
+  Survey: {
+    label: "Survey",
+    data: {
+      title: {
+        type: "Text",
+        label: "Title",
+        inSettings: true,
+      },
+      coverImg: {
+        type: "Image",
+        label: "Cover Image",
+        inSettings: true,
+      },
+      iconImg: {
+        type: "Image",
+        label: "Icon Image",
+        inSettings: true,
+      },
+      user: {
+        type: "User",
+        label: "User",
         inSettings: true,
       },
     },

@@ -37,7 +37,7 @@ export const ElementTypesToNotShowInAdd: ElementTypeKeys[] = [
   "User",
 ];
 
-export const DatabaseBaseTypes: ElementTypeKeys[] = ["Page", "User"];
+export const DatabaseBaseTypes: ElementTypeKeys[] = ["Page", "User", "Survey"];
 
 export const createDefaultElementData = (elementType: ElementTypeKeys) => {
   const data: ElementData = {};
