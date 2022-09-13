@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useGetElementQuery, useMeQuery } from "../../generated/graphql";
 import Page from "../../components/Elements/Page";
 import { Text } from "@chakra-ui/react";
-import ElementPageWrapper from "../../components/Utils/ElementPageWrapper";
+import ElementPageWrapper from "../../components/Utils/PageWrapper";
 import { Element } from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
 import { EditContext } from "../../utils/EditContext";
