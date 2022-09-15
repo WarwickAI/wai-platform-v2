@@ -195,6 +195,7 @@ export type Mutation = {
   editRoleApplication: RoleApplicationResponse;
   editTalk: TalkResponse;
   editTutorial: TutorialResponse;
+  handleAction: Element;
   inheritDatabaseAttributes: Element;
   joinCourse: Scalars['Boolean'];
   joinProject: Scalars['Boolean'];
@@ -364,6 +365,11 @@ export type MutationEditTalkArgs = {
 export type MutationEditTutorialArgs = {
   id: Scalars['Float'];
   tutorialInfo: EventInput;
+};
+
+
+export type MutationHandleActionArgs = {
+  buttonId: Scalars['Float'];
 };
 
 
@@ -1004,6 +1010,13 @@ export type AssignUserPageMutationVariables = Exact<{
 
 
 export type AssignUserPageMutation = { __typename?: 'Mutation', assignUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+
+export type HandleAcitonMutationVariables = Exact<{
+  buttonId: Scalars['Float'];
+}>;
+
+
+export type HandleAcitonMutation = { __typename?: 'Mutation', handleAction: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } };
 
 export type AddUserToGroupMutationVariables = Exact<{
   groupId: Scalars['Float'];
@@ -2031,6 +2044,17 @@ export const AssignUserPageDocument = gql`
 
 export function useAssignUserPageMutation() {
   return Urql.useMutation<AssignUserPageMutation, AssignUserPageMutationVariables>(AssignUserPageDocument);
+};
+export const HandleAcitonDocument = gql`
+    mutation HandleAciton($buttonId: Float!) {
+  handleAction(buttonId: $buttonId) {
+    ...FullElement
+  }
+}
+    ${FullElementFragmentDoc}`;
+
+export function useHandleAcitonMutation() {
+  return Urql.useMutation<HandleAcitonMutation, HandleAcitonMutationVariables>(HandleAcitonDocument);
 };
 export const AddUserToGroupDocument = gql`
     mutation AddUserToGroup($groupId: Float!, $userId: Float!) {

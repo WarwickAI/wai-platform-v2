@@ -70,3 +70,9 @@ mutation AssignUserPage($uniId: Float!, $pageId: Float!) {
     id
   }
 }
+
+mutation HandleAction($buttonId: Float!) {
+  handleAction(buttonId: $buttonId) {
+    ...FullElement
+  }
+}
