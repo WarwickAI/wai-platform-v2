@@ -168,6 +168,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                     />
                   );
                 })}
+                {database && <PermissionsEdit element={database} />}
               </VStack>
             )}
             {!props.hideAttributes &&
