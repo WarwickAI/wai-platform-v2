@@ -9,6 +9,7 @@ import FormattedText from "./FormattedText";
 import DatabaseViewAsProperty from "./DatabaseViewAs";
 import UserProperty from "./User";
 import ActionTypeProperty from "./ActionType";
+import BoolProperty from "./Bool";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -97,6 +98,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "ActionType") {
     return (
       <ActionTypeProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "Bool") {
+    return (
+      <BoolProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

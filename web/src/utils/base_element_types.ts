@@ -11,6 +11,7 @@ import {
   TextValue,
   TemplateValue,
   DatabaseViewAsValue,
+  BoolValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -140,6 +141,11 @@ export const ElementTypesDef = {
         label: "Data Link",
         inSettings: true,
       },
+      canEdit: {
+        type: "Bool",
+        label: "Can Edit",
+        inSettings: true,
+      },
     },
   } as ElementTypeDef,
   User: {
@@ -240,6 +246,7 @@ export type ImageElementData = {
 
 export type DataLinkElementData = {
   property: ElementDataPiece<DataLinkValue>;
+  canEdit: ElementDataPiece<BoolValue>;
 };
 
 export type TemplateElementData = {

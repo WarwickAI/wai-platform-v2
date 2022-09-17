@@ -11,8 +11,7 @@ import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
-import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
-import { group } from "console";
+import { getAuth, getUser, isAdmin, isAuth } from "../isAuth";
 import { getDefaultGroups, getUserGroup } from "../utils/defaultGroups";
 
 const GROUP_REALATIONS = [
@@ -161,9 +160,20 @@ export class ElementResolver {
     @Arg("elementId") elementId: number,
     @Arg("data", () => GraphQLJSONObject) data: object
   ): Promise<Element> {
+    const user = payload?.user;
+    if (!user) {
+      throw new Error("Not logged in");
+    }
+
     const element = await Element.getElementByIdWithChildren(elementId);
 
-    if (!checkPermissions(element.canEditGroups, payload?.user)) {
+    if (
+      !(
+        element.type === "Survey" &&
+        checkDataLinkEditPermissions(element, data, user)
+      ) &&
+      !checkPermissions(element.canEditGroups, user)
+    ) {
       throw new Error("Not authorized");
     }
 
@@ -681,6 +691,59 @@ const checkPermissions = (groups: Group[], user: User | undefined) => {
     }
   }
   return false;
+};
+
+// Check if the user should be able to edit the fields they are attempting to, by checking:
+// 1. The user can interact with the element
+// 2. The user is not trying to change the type of any fields
+// 3. All fields in the edit data have an editable data link that the user can interact with
+const checkDataLinkEditPermissions = async (
+  element: Element,
+  data: any,
+  user: User
+) => {
+  if (!checkPermissions(element.canInteractGroups, user)) {
+    return false;
+  }
+  const editFields: {
+    fieldName: string;
+    changingType: boolean;
+  }[] = Object.keys(data).map((key: string) => {
+    return {
+      fieldName: key,
+      changingType: (element.data as any)[key].type !== data[key].type,
+    };
+  });
+
+  for (const field of editFields) {
+    if (field.changingType) {
+      return false;
+    }
+  }
+
+  for (const field of editFields) {
+    var foundDataLink = false;
+    for (const child of element.children) {
+      if (
+        child.type === "DataLink" &&
+        (child.data as any).canEdit.value &&
+        (child.data as any).property.value === field.fieldName
+      ) {
+        const childElement = await Element.findOneOrFail(child.id, {
+          relations: ["canInteractGroups"],
+        });
+
+        if (checkPermissions(childElement.canInteractGroups, user)) {
+          foundDataLink = true;
+          break;
+        }
+      }
+    }
+    if (!foundDataLink) {
+      return false;
+    }
+  }
+  return true;
 };
 
 // Given the element type, parent and user, return the default groups for the element in order of
