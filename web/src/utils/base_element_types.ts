@@ -12,6 +12,7 @@ import {
   TemplateValue,
   DatabaseViewAsValue,
   BoolValue,
+  UserValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -253,4 +254,11 @@ export type TemplateElementData = {
   title: ElementDataPiece<TextValue>;
   coverImg: ElementDataPiece<ImageValue>;
   iconImg: ElementDataPiece<ImageValue>;
+};
+
+export type SurveyElementData = {
+  title: ElementDataPiece<TextValue>;
+  coverImg: ElementDataPiece<ImageValue>;
+  iconImg: ElementDataPiece<ImageValue>;
+  user: ElementDataPiece<UserValue>;
 };

@@ -560,7 +560,7 @@ const addElement = async (
 
   if (parentId) {
     element.parent = await Element.findOneOrFail(parentId, {
-      relations: GROUP_REALATIONS,
+      relations: ALL_RELATIONS,
     });
   }
 
@@ -580,6 +580,22 @@ const addElement = async (
   // Check user has permissions to create this element (i.e. edit itself)
   if (!checkPermissions(element.canEditGroups, user)) {
     throw new Error("Not authorized to create this element");
+  }
+
+  // Check that if the new element is a survey, that the database of surveys
+  // does not yet have a response for that user
+  if (type === "Survey") {
+    if (element.parent?.type !== "Database") {
+      throw new Error("Survey must be added to a database");
+    }
+
+    const database = element.parent;
+
+    database.children.forEach((surveyResponse) => {
+      if ((surveyResponse.data as any).user.value === user.id) {
+        throw new Error("User has already responded to this survey");
+      }
+    });
   }
 
   // If the element is being added to a database, ensure:
