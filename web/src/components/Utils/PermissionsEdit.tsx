@@ -1,6 +1,8 @@
 import {
   Group,
   useGetGroupsQuery,
+  useMeQuery,
+  User,
   useUpdatePermissionsMutation,
 } from "../../generated/graphql";
 import { Select, GroupBase } from "chakra-react-select";
@@ -13,13 +15,23 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Element } from "../../utils/config";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { checkPermissions } from "../../utils/isAuth";
 
 interface PermissionsEditProps {
   element: Element<any>;
 }
 const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
   const [, updatePermissions] = useUpdatePermissionsMutation();
+  const [{ data: meQuery }] = useMeQuery();
+
+  const canEditPerms = useMemo(() => {
+    return checkPermissions(
+      props.element.canModifyPermsGroups as Group[],
+      meQuery?.me as User
+    );
+  }, [props.element.canModifyPermsGroups, meQuery?.me]);
+
   return (
     <Popover autoFocus={true} returnFocusOnClose={false} placement={"right"}>
       <PopoverTrigger>
@@ -39,6 +51,7 @@ const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
                 });
               }}
               placeholder="Edit permissions groups..."
+              disabled={!canEditPerms}
             />
             <PermissionsSelect
               groupsSelected={props.element.canEditGroups}
@@ -49,6 +62,7 @@ const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
                 });
               }}
               placeholder="Edit groups..."
+              disabled={!canEditPerms}
             />
             <PermissionsSelect
               groupsSelected={props.element.canViewGroups}
@@ -59,6 +73,7 @@ const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
                 });
               }}
               placeholder="View groups..."
+              disabled={!canEditPerms}
             />
             <PermissionsSelect
               groupsSelected={props.element.canInteractGroups}
@@ -69,6 +84,7 @@ const PermissionsEdit: React.FC<PermissionsEditProps> = (props) => {
                 });
               }}
               placeholder="Interact groups..."
+              disabled={!canEditPerms}
             />
           </VStack>
         </PopoverBody>
@@ -81,6 +97,7 @@ interface PermissionsSelectProps {
   groupsSelected: Group[];
   placeholder?: string;
   onChange: (groups: Group[]) => void;
+  disabled?: boolean;
 }
 
 const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
@@ -123,6 +140,7 @@ const PermissionsSelect: React.FC<PermissionsSelectProps> = (props) => {
       }}
       placeholder={props.placeholder}
       size={"sm"}
+      isDisabled={props.disabled}
     />
   );
 };

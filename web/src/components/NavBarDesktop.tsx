@@ -60,9 +60,11 @@ const NavItem: React.FC<NavItemProps> = (props) => {
   );
 };
 
-interface NavBarDesktopProps {}
+interface NavBarDesktopProps {
+  showEditToggle?: boolean;
+}
 
-const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
+const NavBarDesktop: React.FC<NavBarDesktopProps> = (props) => {
   const router = useRouter();
   const { isEdit, setIsEdit } = useContext(EditContext);
   const [{ data: userData }] = useMeQuery();
@@ -95,7 +97,7 @@ const NavBarDesktop: React.FC<NavBarDesktopProps> = () => {
       </Link>
       <AccountPopover />
       {/* Edit Switch */}
-      {!!userData?.me && (
+      {!!userData?.me && props.showEditToggle && (
         <Box>
           <Tooltip hasArrow placement="right" label={"Edit Mode"}>
             <Flex
