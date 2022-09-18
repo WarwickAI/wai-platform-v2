@@ -624,42 +624,14 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
             },
 
             removeElement: (_result, args, cache, info) => {
-              const elementId = args.elementId;
-              betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
-                cache,
-                { query: GetElementDocument, variables: { elementId } },
-                _result,
-                (result, query) => {
-                  if (!result.removeElement) {
-                    return query;
-                  } else {
-                    if (result.removeElement.parent) {
-                      betterUpdateQuery<RemoveElementMutation, GetElementQuery>(
-                        cache,
-                        {
-                          query: GetElementDocument,
-                          variables: {
-                            elementId: result.removeElement.parent.id as Scalar,
-                          },
-                        },
-                        _result,
-                        (_, query2) => {
-                          const indexOfRemovedElement =
-                            query2.getElement.children.findIndex(
-                              (val) => val.id === elementId
-                            );
-                          query2.getElement.children.splice(
-                            indexOfRemovedElement,
-                            1
-                          );
-                          return query2;
-                        }
-                      );
-                    }
-                    return query;
-                  }
-                }
-              );
+              const res = _result as RemoveElementMutation;
+              if (!res.removeElement) {
+                return;
+              }
+              const removedElement = res.removeElement;
+              const elementId = args.elementId as number;
+
+              removeElement(cache, removedElement as Element<any>, elementId);
             },
 
             // Need to add database updates as well
@@ -958,6 +930,108 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
         // to the parent's children
         if (args?.elementId === result.parent?.id) {
           query.getElement.children.push(result);
+        }
+
+        return query;
+      }
+    );
+  });
+};
+
+const removeElement = (
+  cache: Cache,
+  elementData: Partial<Element<any>>,
+  elementId: number
+) => {
+  // Important to note here, that `elementData` will not contain the ID of the element
+  // since it has been removed, use the argument instead
+  // Get any queries that use `getElements`
+  const fields = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElements");
+
+  // If these queries contain the element we are updating, update them
+  fields.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Partial<Element<any>>, GetElementsQuery>(
+      cache,
+      { query: GetElementsDocument, variables: args },
+      elementData,
+      (result, query) => {
+        // If we aren't filtering by type, or the type filter matches the removed element
+        // continue...
+        if (!args?.type || args.type === result.type) {
+          // If we aren't filtering by parentId, or the parentId filter matches the removed element
+          // continue...
+          if (!args?.parentId || args.parentId === result.parent?.id) {
+            // Remove the element from the query
+            const index = query.getElements.findIndex(
+              (element) => element.id === elementId
+            );
+
+            if (index !== -1) {
+              query.getElements.splice(index, 1);
+            }
+          }
+        }
+
+        // If the removed element has a parent, and the parent is in the query, remove the new element
+        // from the parent's children, and the query is getting children
+        if (result.parent && args?.children) {
+          const parentIndex = query.getElements.findIndex(
+            (val) => val.id === result.parent?.id
+          );
+          if (parentIndex !== -1) {
+            // If we aren't filtering by type, or the type filter matches the new element
+            // continue...
+            if (!args?.type) {
+              // To-Do: should also check that the type filter match here, but is too complex
+              // Remove the element from the parent's children
+              if (!args.parent || args.parent === result.parent?.id) {
+                const index = query.getElements[parentIndex].children.findIndex(
+                  (child) => child.id === elementId
+                );
+
+                if (index !== -1) {
+                  query.getElements[parentIndex].children.splice(index, 1);
+                }
+              }
+            }
+          }
+        }
+
+        return query;
+      }
+    );
+  });
+
+  // Do the same for any queries that use `getElement`
+  const fields2 = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElement");
+
+  fields2.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Element<any>, GetElementQuery>(
+      cache,
+      { query: GetElementDocument, variables: args },
+      elementData,
+      (result, query) => {
+        // If the query element ID argument matches the new element, invalidate the cache for the element
+        if (args?.elementId === elementId) {
+          cache.invalidate("Query", "getElement", args);
+        }
+
+        // If the query element ID argument matches the removed element's parent, remove the element
+        // from the parent's children
+        if (args?.elementId === result.parent?.id) {
+          const index = query.getElement.children.findIndex(
+            (child) => child.id === elementId
+          );
+
+          if (index !== -1) {
+            query.getElement.children.splice(index, 1);
+          }
         }
 
         return query;
