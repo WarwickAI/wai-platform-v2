@@ -211,6 +211,42 @@ export class ElementResolver {
       checkPermissions(child.canViewGroups, payload?.user)
     );
 
+    // If we updated the template for a database, make sure it has
+    // all the attributes of the database
+    if (element.type === "Database" && (data as any).template?.value) {
+      const templateElement = await Element.findOneOrFail(
+        { id: (data as any).template.value, type: "Template" },
+        { relations: GROUP_REALATIONS }
+      );
+
+      if (!templateElement) {
+        throw new Error("Template not found");
+      }
+
+      // Check we can actually edit the template (should in most cases)
+      if (!checkPermissions(templateElement.canEditGroups, payload?.user)) {
+        throw new Error("Not authorized to edit template");
+      }
+
+      // Check template is not missing attributes
+      Object.keys((element.data as any).attributes.value).forEach(
+        (attributeName: string) => {
+          const attribute = (element.data as any).attributes.value[
+            attributeName
+          ];
+          if (!(templateElement.data as any)[attributeName]) {
+            (templateElement.data as any)[attributeName] = attribute;
+          }
+        }
+      );
+
+      // To-Do: Check template doesn't have extra attributes,
+      // not sure how to resolve this since other uses of the template
+      // may use the extra attributes
+
+      templateElement.save();
+    }
+
     await element.save();
     return element;
   }
