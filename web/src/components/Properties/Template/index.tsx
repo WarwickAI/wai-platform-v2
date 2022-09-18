@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { useGetTemplatesWithoutChildrenQuery } from "../../../generated/graphql";
+import { useGetElementsQuery } from "../../../generated/graphql";
 import RadioItem from "../../Utils/RadioItem";
 import CreateTemplateWindow from "./CreateTemplateWindow";
 import editOutline from "@iconify/icons-eva/edit-outline";
@@ -30,10 +30,15 @@ const TemplateProperty: React.FC<TemplatePropertyProps> = (props) => {
 
   const router = useRouter();
 
-  const [{ data: templatesQuery }] = useGetTemplatesWithoutChildrenQuery();
+  const [{ data: templatesQuery }] = useGetElementsQuery({
+    variables: {
+      type: "Template",
+      children: true,
+    },
+  });
 
   const templates = useMemo(() => {
-    return templatesQuery?.getTemplates || [];
+    return templatesQuery?.getElements || [];
   }, [templatesQuery]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({

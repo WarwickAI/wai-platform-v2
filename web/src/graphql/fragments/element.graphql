@@ -4,6 +4,10 @@ fragment ElementNoChildrenCreatedByGroups on Element {
   updatedAt
   parent {
     id
+    type
+    parent {
+      id
+    }
   }
   type
   index
