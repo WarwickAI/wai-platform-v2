@@ -55,7 +55,9 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
   const [{ data: databaseQuery }] = useGetElementQuery({
     variables: {
       elementId:
-        (props.element.data as DatabaseViewElementData).database?.value || -1,
+        (props.element.type === "DatabaseView" &&
+          (props.element.data as DatabaseViewElementData).database?.value) ||
+        -1,
     },
   });
 
@@ -166,6 +168,7 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                     />
                   );
                 })}
+                {database && <PermissionsEdit element={database} />}
               </VStack>
             )}
             {!props.hideAttributes &&

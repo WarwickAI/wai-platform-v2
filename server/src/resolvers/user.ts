@@ -39,6 +39,13 @@ export class UserResolver {
     return await User.find({ relations: ["groups"] });
   }
 
+  // Only signed-in users can access this
+  @Query(() => User)
+  @UseMiddleware(isAuth)
+  async getUser(@Arg("userId") userId: number): Promise<User> {
+    return await User.findOneOrFail(userId);
+  }
+
   @Mutation(() => User, { nullable: true })
   @UseMiddleware(isAuth)
   async verifyLogin(@Ctx() { payload }: MyContext) {

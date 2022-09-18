@@ -1,19 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Flex, Text, Button, Input } from "@chakra-ui/react";
+import React, { useMemo } from "react";
+import { Box, Text } from "@chakra-ui/react";
 import {
+  useEditElementDataMutation,
   useGetElementQuery,
 } from "../../generated/graphql";
-import {
-  convertFromRaw,
-  convertToRaw,
-  Editor,
-  EditorState,
-  RichUtils,
-} from "draft-js";
 import "draft-js/dist/Draft.css";
 import { useRouter } from "next/router";
 import { DataLinkElementData } from "../../utils/base_element_types";
 import { Element } from "../../utils/config";
+import GenericProperty from "../Properties/GenericProperty";
 
 interface DataLinkProps {
   element: Element<DataLinkElementData>;
@@ -28,18 +23,48 @@ const DataLink: React.FC<DataLinkProps> = (props) => {
       elementId: props.element.parent ? props.element.parent.id : 0,
     },
   });
+  const [, editElement] = useEditElementDataMutation();
+
+  const property = useMemo(() => {
+    return parentElement?.getElement.data[elementProps.property.value];
+  }, [parentElement, elementProps.property.value]);
+
+  const handleEditProperty = async (
+    parentElement: Element<any>,
+    property: any,
+    newValue: any
+  ) => {
+    editElement({
+      elementId: parentElement.id,
+      data: {
+        [elementProps.property.value]: { type: property.type, value: newValue },
+      },
+    });
+  };
 
   return (
     <Box>
-      {parentElement?.getElement.data[elementProps.property.value]
-        ?.value !== undefined ? (
+      {property && parentElement?.getElement ? (
         <Text>
-          {
-            parentElement?.getElement.data[elementProps.property.value]
-              .value
-          }
+          {elementProps.canEdit.value || true ? (
+            <GenericProperty
+              element={props.element}
+              value={property.value}
+              type={property.type}
+              onChange={(v: any) =>
+                handleEditProperty(
+                  parentElement.getElement as Element<any>,
+                  property,
+                  v
+                )
+              }
+              isEdit={true}
+            />
+          ) : (
+            parentElement?.getElement.data[elementProps.property.value].value
+          )}
         </Text>
-      ) :  (
+      ) : (
         <Text>Select Property</Text>
       )}
     </Box>

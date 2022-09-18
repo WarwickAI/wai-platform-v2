@@ -11,6 +11,8 @@ import {
   TextValue,
   TemplateValue,
   DatabaseViewAsValue,
+  BoolValue,
+  UserValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -119,7 +121,7 @@ export const ElementTypesDef = {
         type: "DatabaseViewAs",
         label: "View",
         inSettings: true,
-      }
+      },
     },
   } as ElementTypeDef,
   Image: {
@@ -138,6 +140,11 @@ export const ElementTypesDef = {
       property: {
         type: "DataLink",
         label: "Data Link",
+        inSettings: true,
+      },
+      canEdit: {
+        type: "Bool",
+        label: "Can Edit",
         inSettings: true,
       },
     },
@@ -168,6 +175,31 @@ export const ElementTypesDef = {
       iconImg: {
         type: "Image",
         label: "Icon Image",
+        inSettings: true,
+      },
+    },
+  } as ElementTypeDef,
+  Survey: {
+    label: "Survey",
+    data: {
+      title: {
+        type: "Text",
+        label: "Title",
+        inSettings: true,
+      },
+      coverImg: {
+        type: "Image",
+        label: "Cover Image",
+        inSettings: true,
+      },
+      iconImg: {
+        type: "Image",
+        label: "Icon Image",
+        inSettings: true,
+      },
+      user: {
+        type: "User",
+        label: "User",
         inSettings: true,
       },
     },
@@ -215,10 +247,18 @@ export type ImageElementData = {
 
 export type DataLinkElementData = {
   property: ElementDataPiece<DataLinkValue>;
+  canEdit: ElementDataPiece<BoolValue>;
 };
 
 export type TemplateElementData = {
   title: ElementDataPiece<TextValue>;
   coverImg: ElementDataPiece<ImageValue>;
   iconImg: ElementDataPiece<ImageValue>;
+};
+
+export type SurveyElementData = {
+  title: ElementDataPiece<TextValue>;
+  coverImg: ElementDataPiece<ImageValue>;
+  iconImg: ElementDataPiece<ImageValue>;
+  user: ElementDataPiece<UserValue>;
 };

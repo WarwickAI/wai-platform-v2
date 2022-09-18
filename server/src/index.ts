@@ -38,6 +38,7 @@ import { Element } from "./entities/Element";
 import { ElementResolver } from "./resolvers/elements";
 import { Group } from "./entities/Group";
 import { GroupResolver } from "./resolvers/group";
+import { getDefaultGroups } from "./utils/defaultGroups";
 
 const main = async () => {
   // Connect to DB
@@ -174,18 +175,7 @@ const main = async () => {
   });
 
   // Setup 'Admin' and 'All' roles if they do not exist
-
-  const adminGroup = await Group.findOne({ name: "Admin" });
-  if (!adminGroup) {
-    const newAdminGroup = Group.create({ name: "Admin", users: [] });
-    await newAdminGroup.save();
-  }
-
-  const allGroup = await Group.findOne({ name: "All" });
-  if (!allGroup) {
-    const newAllGroup = Group.create({ name: "All", users: [] });
-    await newAllGroup.save();
-  }
+  await getDefaultGroups();
 };
 
 main();

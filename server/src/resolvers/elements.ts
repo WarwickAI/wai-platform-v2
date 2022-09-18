@@ -11,8 +11,19 @@ import { User } from "../entities/User";
 import { MyContext } from "../../src/types";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
-import { getAuth, getUser, isAdmin, isAuth, isExec, isSuper } from "../isAuth";
-import { group } from "console";
+import { getAuth, getUser, isAdmin, isAuth } from "../isAuth";
+import { getDefaultGroups, getUserGroup } from "../utils/defaultGroups";
+
+const GROUP_REALATIONS = [
+  "canModifyPermsGroups",
+  "canEditGroups",
+  "canViewGroups",
+  "canInteractGroups",
+];
+
+const ALL_RELATIONS_BUT_CHILDREN = [...GROUP_REALATIONS, "createdBy", "parent"];
+
+const ALL_RELATIONS = [...ALL_RELATIONS_BUT_CHILDREN, "children"];
 
 @Resolver()
 export class ElementResolver {
@@ -138,114 +149,8 @@ export class ElementResolver {
     if (!payload || !payload.user) {
       throw new Error("Not logged in");
     }
-    const element = new Element();
-    element.data = data;
-    element.type = type;
 
-    const adminGroup = await Group.findOneOrFail({
-      where: { name: "Admin" },
-    });
-
-    const allGroup = await Group.findOneOrFail({
-      where: { name: "All" },
-    });
-
-    if (parentId && parentId !== null) {
-      element.parent = await Element.findOneOrFail(parentId, {
-        relations: [
-          "createdBy",
-          "parent",
-          "children",
-          "canModifyPermsGroups",
-          "canEditGroups",
-          "canViewGroups",
-          "canInteractGroups",
-        ],
-      });
-      element.canModifyPermsGroups = element.canModifyPermsGroups || [
-        adminGroup,
-      ];
-      element.canEditGroups = element.parent.canEditGroups || [adminGroup];
-      element.canViewGroups = element.parent.canViewGroups || [adminGroup];
-      element.canInteractGroups = element.parent.canInteractGroups || [
-        adminGroup,
-      ];
-    } else {
-      element.canModifyPermsGroups = [adminGroup];
-      element.canEditGroups =
-        element.type === "Database" ? [allGroup] : [adminGroup];
-      element.canViewGroups =
-        element.type === "Database" ? [allGroup] : [adminGroup];
-      element.canInteractGroups =
-        element.type === "Database" ? [allGroup] : [adminGroup];
-    }
-
-    // Check user has permissions to edit parent (i.e. add an element to it)
-    if (!checkPermissions(element.canEditGroups, payload?.user)) {
-      throw new Error("Not authorized");
-    }
-
-    element.index = index;
-    element.createdBy = payload.user;
-    element.children = [];
-
-    if (element.parent && element.parent?.type === "Database") {
-      // Need to ensure element has all data of parent database
-
-      Object.keys((element.parent.data as any).attributes.value).map(
-        (attributeName: string) => {
-          const attribute = (element.parent!.data as any).attributes.value[
-            attributeName
-          ];
-          if (!(element.data as any)[attributeName]) {
-            (element.data as any)[attributeName] = attribute;
-          }
-        }
-      );
-
-      // Need to add the template if it exists
-      if (
-        (element.parent.data as any).template?.value &&
-        (element.parent.data as any).template?.value !== -1
-      ) {
-        const templateElement = await Element.getElementByIdWithChildren(
-          (element.parent.data as any).template.value
-        );
-        // Copy the templates children
-        element.children = await Promise.all(
-          templateElement.children.map(async (child) => {
-            const {
-              id,
-              children,
-              parent,
-              createdAt,
-              updatedAt,
-              createdBy,
-              ...childInfo
-            } = child;
-            const newChild = Element.create({ ...childInfo });
-            newChild.canModifyPermsGroups = element.parent
-              ?.canModifyPermsGroups || [adminGroup];
-            newChild.canEditGroups = element.parent?.canEditGroups || [
-              adminGroup,
-            ];
-            newChild.canViewGroups = element.parent?.canViewGroups || [
-              adminGroup,
-            ];
-            newChild.canInteractGroups = element.parent?.canInteractGroups || [
-              adminGroup,
-            ];
-            newChild.createdBy = payload.user!; // Will exists, we did the check earlier
-
-            await newChild.save();
-            return newChild;
-          })
-        );
-      }
-    }
-
-    await element.save();
-    return element ? element : null;
+    return await addElement(data, type, parentId, index, payload.user);
   }
 
   @Mutation(() => Element)
@@ -255,9 +160,20 @@ export class ElementResolver {
     @Arg("elementId") elementId: number,
     @Arg("data", () => GraphQLJSONObject) data: object
   ): Promise<Element> {
+    const user = payload?.user;
+    if (!user) {
+      throw new Error("Not logged in");
+    }
+
     const element = await Element.getElementByIdWithChildren(elementId);
 
-    if (!checkPermissions(element.canEditGroups, payload?.user)) {
+    if (
+      !(
+        element.type === "Survey" &&
+        checkDataLinkEditPermissions(element, data, user)
+      ) &&
+      !checkPermissions(element.canEditGroups, user)
+    ) {
       throw new Error("Not authorized");
     }
 
@@ -436,15 +352,13 @@ export class ElementResolver {
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number
   ): Promise<Element> {
+    const user = payload?.user;
+    if (!user) {
+      throw new Error("Not authorized");
+    }
+
     const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
+      relations: ALL_RELATIONS,
     });
     // Check have permission to remove, if no parent then check user is admin
     if (
@@ -454,7 +368,7 @@ export class ElementResolver {
     ) {
       throw new Error("Not authorized");
     }
-    await element.remove();
+    await removeElement(element, user);
     return element;
   }
 
@@ -574,7 +488,202 @@ export class ElementResolver {
     await user.save();
     return page;
   }
+
+  @Mutation(() => Element)
+  @UseMiddleware(isAuth, getUser)
+  async handleAction(
+    @Ctx() { payload }: MyContext,
+    @Arg("buttonId") buttonId: number
+  ): Promise<Element> {
+    const user = payload?.user;
+    if (!user) {
+      throw new Error("Not authorized");
+    }
+
+    const button = await Element.findOneOrFail(
+      { id: buttonId, type: "Button" },
+      {
+        relations: ["parent", "children", "canInteractGroups"],
+      }
+    );
+
+    if (!checkPermissions(button.canInteractGroups, user)) {
+      throw new Error("Not authorized");
+    }
+
+    const actionType = (button.data as any).action.value;
+
+    if (!actionType) {
+      throw new Error("Button has no action type");
+    }
+
+    if (actionType === "Add" || actionType === "StartSurvey") {
+      if (!(button.data as any).database) {
+        throw new Error("Button does not have a database attribute");
+      }
+
+      const database = await Element.findOneOrFail(
+        {
+          id: (button.data as any).database.value,
+          type: "Database",
+        },
+        { relations: ALL_RELATIONS }
+      );
+
+      return await addElement(
+        {},
+        (database.data as any).childrenBaseType.value,
+        database.id,
+        0,
+        user
+      );
+    }
+
+    throw new Error("Action not supported");
+  }
 }
+
+const addElement = async (
+  data: any,
+  type: string,
+  parentId: number | undefined,
+  index: number,
+  user: User
+) => {
+  // First create the new element
+  const element = new Element();
+  element.data = data;
+  element.type = type;
+  element.index = index;
+  element.children = [];
+  element.createdBy = user;
+
+  if (parentId) {
+    element.parent = await Element.findOneOrFail(parentId, {
+      relations: ALL_RELATIONS,
+    });
+  }
+
+  // Get and set the element's default permissions
+  const {
+    canModifyPermsGroups,
+    canEditGroups,
+    canViewGroups,
+    canInteractGroups,
+  } = await createElementInitialGroups(type, element.parent, user);
+
+  element.canModifyPermsGroups = canModifyPermsGroups;
+  element.canEditGroups = canEditGroups;
+  element.canViewGroups = canViewGroups;
+  element.canInteractGroups = canInteractGroups;
+
+  // Check user has permissions to create this element (i.e. edit itself)
+  if (!checkPermissions(element.canEditGroups, user)) {
+    throw new Error("Not authorized to create this element");
+  }
+
+  // Check that if the new element is a survey, that the database of surveys
+  // does not yet have a response for that user
+  if (type === "Survey") {
+    if (element.parent?.type !== "Database") {
+      throw new Error("Survey must be added to a database");
+    }
+
+    const database = element.parent;
+
+    database.children.forEach((surveyResponse) => {
+      if ((surveyResponse.data as any).user.value === user.id) {
+        throw new Error("User has already responded to this survey");
+      }
+    });
+  }
+
+  // If the element is being added to a database, ensure:
+  // 1. The new element type matches the database type
+  // 2. The new element has the same attributes as the database
+  // 3. The element is intialised with the template (if exists)
+  if (element.parent?.type === "Database") {
+    const database = element.parent;
+    if ((database.data as any).childrenBaseType.value !== type) {
+      throw new Error("Element type does not match database type");
+    }
+
+    // Loop through database attributes and add them to the data of the new element
+    Object.keys((database.data as any).attributes.value).map(
+      (attributeName: string) => {
+        const attribute = (database.data as any).attributes.value[
+          attributeName
+        ];
+        if (!(element.data as any)[attributeName]) {
+          (element.data as any)[attributeName] = attribute;
+        }
+      }
+    );
+
+    // Initialise the element with the template (if exists)
+    if ((database.data as any).template?.value !== -1) {
+      const template = await Element.getElementByIdWithChildren(
+        (database.data as any).template.value
+      );
+
+      if (!template) {
+        throw new Error("Template not found");
+      }
+
+      // Add copies of template children to the new element
+      const children = await Promise.all(
+        template.children.map(async (templateChild) => {
+          // Copy everything from the template child other than:
+          // id, further children, parent, createdBy, createdAt, updatedAt
+          const {
+            id,
+            children,
+            parent,
+            createdBy,
+            createdAt,
+            updatedAt,
+            ...templateChildData
+          } = templateChild;
+
+          const copyChild = Element.create({ ...templateChildData });
+
+          // Overwrite permissions with the new element's permissions (i.e. child matches parents permissions)
+          copyChild.canModifyPermsGroups = element.canModifyPermsGroups;
+          copyChild.canEditGroups = element.canEditGroups;
+          copyChild.canInteractGroups = element.canInteractGroups;
+          copyChild.canViewGroups = element.canViewGroups;
+
+          copyChild.createdBy = user;
+
+          await copyChild.save();
+          return copyChild;
+        })
+      );
+
+      element.children = children;
+    }
+  }
+
+  // If the element is a survey, we should add the user ID
+  if (type === "Survey") {
+    // Add the user attribute
+    (element.data as any).user.value = user.id;
+  }
+
+  await element.save();
+  return element;
+};
+
+// Recursively delete elements
+const removeElement = async (element: Element, user: User) => {
+  element.children.forEach(async (child) => {
+    const childElement = await Element.findOneOrFail(child.id, {
+      relations: ALL_RELATIONS,
+    });
+    await removeElement(childElement, user);
+  });
+  await element.remove();
+};
 
 const checkPermissions = (groups: Group[], user: User | undefined) => {
   for (const group of groups) {
@@ -598,4 +707,126 @@ const checkPermissions = (groups: Group[], user: User | undefined) => {
     }
   }
   return false;
+};
+
+// Check if the user should be able to edit the fields they are attempting to, by checking:
+// 1. The user can interact with the element
+// 2. The user is not trying to change the type of any fields
+// 3. All fields in the edit data have an editable data link that the user can interact with
+const checkDataLinkEditPermissions = async (
+  element: Element,
+  data: any,
+  user: User
+) => {
+  if (!checkPermissions(element.canInteractGroups, user)) {
+    return false;
+  }
+  const editFields: {
+    fieldName: string;
+    changingType: boolean;
+  }[] = Object.keys(data).map((key: string) => {
+    return {
+      fieldName: key,
+      changingType: (element.data as any)[key].type !== data[key].type,
+    };
+  });
+
+  for (const field of editFields) {
+    if (field.changingType) {
+      return false;
+    }
+  }
+
+  for (const field of editFields) {
+    var foundDataLink = false;
+    for (const child of element.children) {
+      if (
+        child.type === "DataLink" &&
+        (child.data as any).canEdit.value &&
+        (child.data as any).property.value === field.fieldName
+      ) {
+        const childElement = await Element.findOneOrFail(child.id, {
+          relations: ["canInteractGroups"],
+        });
+
+        if (checkPermissions(childElement.canInteractGroups, user)) {
+          foundDataLink = true;
+          break;
+        }
+      }
+    }
+    if (!foundDataLink) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Given the element type, parent and user, return the default groups for the element in order of
+// canModifyPermsGroups, canEditGroups, canInteractGroups, canViewGroups
+const createElementInitialGroups = async (
+  type: string,
+  parent: Element | undefined,
+  user: User
+) => {
+  // Get relevant groups
+  const { adminGroup } = await getDefaultGroups();
+
+  var canModifyPermsGroups: Group[] = [],
+    canEditGroups: Group[] = [],
+    canInteractGroups: Group[] = [],
+    canViewGroups: Group[] = [];
+
+  // By default, always set the permissions to the same as the parent
+  // if no parent, set to admin
+  if (parent) {
+    canModifyPermsGroups.push(...parent.canModifyPermsGroups);
+    canEditGroups.push(...parent.canEditGroups);
+    canInteractGroups.push(...parent.canInteractGroups);
+    canViewGroups.push(...parent.canViewGroups);
+  } else {
+    canModifyPermsGroups.push(adminGroup);
+    canEditGroups.push(adminGroup);
+    canInteractGroups.push(adminGroup);
+    canViewGroups.push(adminGroup);
+  }
+
+  // If the type is a database add the element author with edit, interact and view permissions
+  if (type === "Database") {
+    const userGroup = await getUserGroup(user);
+
+    canEditGroups.push(userGroup);
+    canInteractGroups.push(userGroup);
+    canViewGroups.push(userGroup);
+  }
+
+  // If the type is a survey, set view and interact permissions to the user
+  // Also add the database's groups to all permissions
+  if (type === "Survey") {
+    const userGroup = await getUserGroup(user);
+
+    canInteractGroups.push(userGroup);
+    canViewGroups.push(userGroup);
+  }
+
+  // Dedupe groups
+  canModifyPermsGroups = uniqBy(canModifyPermsGroups, (i) => i.id);
+  canEditGroups = uniqBy(canEditGroups, (i) => i.id);
+  canInteractGroups = uniqBy(canInteractGroups, (i) => i.id);
+  canViewGroups = uniqBy(canViewGroups, (i) => i.id);
+
+  return {
+    canModifyPermsGroups,
+    canEditGroups,
+    canInteractGroups,
+    canViewGroups,
+  };
+};
+
+const uniqBy = (a: any[], key: (item: any) => string) => {
+  var seen: any = {};
+  return a.filter(function (item) {
+    var k = key(item);
+    return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+  });
 };

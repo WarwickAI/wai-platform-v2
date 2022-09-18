@@ -3,9 +3,9 @@ import React from "react";
 import NavBarDesktop from "../NavBarDesktop";
 import NavBarMobile from "../NavBarMobile";
 
-interface ElementPageWrapperProps {}
+interface PageWrapperProps {}
 
-const ElementPageWrapper: React.FC<ElementPageWrapperProps> = (props) => {
+const PageWrapper: React.FC<PageWrapperProps> = (props) => {
   const isMobile = useBreakpointValue<boolean>({ base: true, md: false });
   return (
     <>
@@ -16,4 +16,4 @@ const ElementPageWrapper: React.FC<ElementPageWrapperProps> = (props) => {
     </>
   );
 };
-export default ElementPageWrapper;
+export default PageWrapper;

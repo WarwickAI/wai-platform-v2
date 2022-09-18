@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import {
-  useCreateElementMutation,
   useGetElementQuery,
+  useHandleAcitonMutation,
+  useMeQuery,
 } from "../../generated/graphql";
 import "draft-js/dist/Draft.css";
-import { ActionTypeKeys } from "../../utils/base_data_types";
-import { createDefaultElementData, Element } from "../../utils/config";
-import { ButtonElementData } from "../../utils/base_element_types";
+import { Element } from "../../utils/config";
+import {
+  ButtonElementData,
+  DatabaseElementData,
+  SurveyElementData,
+} from "../../utils/base_element_types";
+import { useRouter } from "next/router";
 
 interface ButtonProps {
   element: Element<ButtonElementData>;
@@ -15,35 +20,98 @@ interface ButtonProps {
 }
 
 const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
+  const router = useRouter();
+
   const elementData = element.data as ButtonElementData;
-  const [action, setAction] = useState<ActionTypeKeys>(
-    elementData.action.value
-  );
-  const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseElement }] = useGetElementQuery({
-    variables: { elementId: elementData.database.value },
+  const [, handleAction] = useHandleAcitonMutation();
+
+  const [{ data: userData }] = useMeQuery();
+
+  const [{ data: databaseData }] = useGetElementQuery({
+    variables: {
+      elementId: elementData.database.value,
+    },
   });
+
+  const buttonState = useMemo(() => {
+    const database = databaseData?.getElement as
+      | Element<DatabaseElementData>
+      | undefined;
+    if (!database) {
+      return {
+        text: "Loading...",
+        disabled: true,
+      };
+    }
+
+    const user = userData?.me;
+    if (!user) {
+      return {
+        text: "Need to login",
+        disabled: true,
+      };
+    }
+
+    if (elementData.action.value === "Add") {
+      return {
+        text: elementData.text.value,
+        disabled: false,
+      };
+    }
+
+    if (elementData.action.value === "StartSurvey") {
+      // See if the user already has a response
+      const response = database.children.find(
+        (child) =>
+          (child as Element<SurveyElementData>).data.user.value === user.id
+      );
+
+      if (response) {
+        return {
+          text: "Continue Survey",
+          disabled: false,
+          link: `/generic/${response.id}`,
+        };
+      } else {
+        return {
+          text: elementData.text.value,
+          disabled: false,
+        };
+      }
+    }
+
+    return {
+      text: "Unknown Action",
+      disabled: true,
+    };
+  }, [databaseData, elementData, userData]);
 
   return (
     <Box>
       <Button
         variant={"primary"}
         onClick={async () => {
-          const database = databaseElement?.getElement;
-          if (!database) {
+          if (
+            elementData.action.value === "Add" ||
+            elementData.action.value === "StartSurvey"
+          ) {
+            if (buttonState.link) {
+              router.push(buttonState.link);
+              return;
+            }
+
+            const newElement = await handleAction({
+              buttonId: element.id,
+            });
+            if (newElement.data?.handleAction) {
+              router.push(`/generic/${newElement.data?.handleAction.id}`);
+            }
             return;
           }
-          await createElement({
-            index: 0,
-            type: database.data.childrenBaseType.value,
-            data: {
-              ...createDefaultElementData(database.data.childrenBaseType.value),
-            },
-            parent: database.id,
-          });
         }}
+        disabled={buttonState.disabled}
       >
-        {elementData.text.value}
+        {buttonState.text}
       </Button>
     </Box>
   );
