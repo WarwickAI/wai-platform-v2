@@ -50,6 +50,11 @@ export const ElementTypesDef = {
         label: "Title",
         inSettings: true,
       },
+      cardImage: {
+        type: "Image",
+        label: "Card Image",
+        inSettings: true,
+      },
       coverImg: {
         type: "Image",
         label: "Cover Image",
@@ -187,16 +192,6 @@ export const ElementTypesDef = {
         label: "Title",
         inSettings: true,
       },
-      coverImg: {
-        type: "Image",
-        label: "Cover Image",
-        inSettings: true,
-      },
-      iconImg: {
-        type: "Image",
-        label: "Icon Image",
-        inSettings: true,
-      },
       user: {
         type: "User",
         label: "User",
@@ -218,6 +213,7 @@ export type TextElementData = {
 
 export type PageElementData = {
   title: ElementDataPiece<TextValue>;
+  cardImg: ElementDataPiece<ImageValue>;
   coverImg: ElementDataPiece<ImageValue>;
   iconImg: ElementDataPiece<ImageValue>;
 };
@@ -258,7 +254,5 @@ export type TemplateElementData = {
 
 export type SurveyElementData = {
   title: ElementDataPiece<TextValue>;
-  coverImg: ElementDataPiece<ImageValue>;
-  iconImg: ElementDataPiece<ImageValue>;
   user: ElementDataPiece<UserValue>;
 };
