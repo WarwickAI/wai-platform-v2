@@ -1,7 +1,14 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
+import {
+  Group,
+  useGetElementQuery,
+  useMeQuery,
+  User,
+} from "../../generated/graphql";
 import { Element, ElementTypeKeys } from "../../utils/config";
+import { checkPermissions } from "../../utils/isAuth";
 import Main from "../Elements/GenericElement";
 import AddElementPopover from "./AddElementPopover";
 import ElementSettingsPopover from "./ElementSettingsPopover";
@@ -21,6 +28,11 @@ const PageItem: React.FC<PageItemProps> = (props) => {
   const [addElementPopoverOpen, setAddElementPopoverOpen] =
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [{ data: parentQuery }] = useGetElementQuery({
+    variables: { elementId: props.element.parent?.id || -1, children: true },
+    pause: !props.element.parent?.id,
+  });
+  const [{ data: meQuery }] = useMeQuery();
 
   return (
     <Reorder.Item
@@ -52,19 +64,30 @@ const PageItem: React.FC<PageItemProps> = (props) => {
             alignItems={"center"}
             opacity={showControls || addElementPopoverOpen ? 1 : 0.2}
           >
-            <AddElementPopover
-              onOpen={() => setAddElementPopoverOpen(true)}
-              onClose={() => setAddElementPopoverOpen(false)}
-              addElement={props.addElement}
-              atIndex={props.element.index + 1}
-            />
-            <ElementSettingsPopover
-              onOpen={() => setAddElementPopoverOpen(true)}
-              onClose={() => setAddElementPopoverOpen(false)}
-              element={props.element}
-              removeElement={props.removeElement}
-              disabled={isDragging}
-            />
+            {parentQuery?.getElement &&
+              checkPermissions(
+                parentQuery?.getElement.canEditGroups as Group[],
+                meQuery?.me as User | undefined
+              ) && (
+                <AddElementPopover
+                  onOpen={() => setAddElementPopoverOpen(true)}
+                  onClose={() => setAddElementPopoverOpen(false)}
+                  addElement={props.addElement}
+                  atIndex={props.element.index + 1}
+                />
+              )}
+            {checkPermissions(
+              props.element.canEditGroups as Group[],
+              meQuery?.me as User | undefined
+            ) && (
+              <ElementSettingsPopover
+                onOpen={() => setAddElementPopoverOpen(true)}
+                onClose={() => setAddElementPopoverOpen(false)}
+                element={props.element}
+                removeElement={props.removeElement}
+                disabled={isDragging}
+              />
+            )}
           </Flex>
         )}
         {/* Element Content */}
