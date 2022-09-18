@@ -37,7 +37,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const [, editAttributeName] = useEditDatabaseAttributeNameMutation();
   const [, createElement] = useCreateElementMutation();
   const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
-    variables: { elementId: elementData.database.value },
+    variables: { elementId: elementData.database.value, children: true },
   });
   const [, removeElement] = useRemoveElementMutation();
   const [{ data: meData }] = useMeQuery();

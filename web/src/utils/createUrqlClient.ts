@@ -1,4 +1,4 @@
-import { cacheExchange, Scalar } from "@urql/exchange-graphcache";
+import { Cache, cacheExchange, Scalar } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
@@ -46,11 +46,7 @@ import {
   CreateElementMutation,
   GetElementDocument,
   RemoveElementMutation,
-  GetDatabasesWithoutChildrenQuery,
-  GetDatabasesWithoutChildrenDocument,
   EditElementDataMutation,
-  GetTemplatesWithoutChildrenQuery,
-  GetTemplatesWithoutChildrenDocument,
   UpdatePermissionsMutation,
   InheritDatabaseAttributesMutation,
   AddUserToGroupMutation,
@@ -59,6 +55,8 @@ import {
   RemoveUserFromGroupMutation,
   CreateGroupMutation,
   DeleteGroupMutation,
+  GetElementsQuery,
+  GetElementsDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -68,6 +66,7 @@ import {
   didAuthError,
 } from "./urqlAuthExchange";
 import { NextUrqlClientConfig } from "next-urql";
+import { Element } from "./config";
 
 export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
   return {
@@ -670,74 +669,8 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
                 return;
               }
               const newElement = res.createElement;
-              const elementId = newElement.id;
-              // Update element
-              betterUpdateQuery<CreateElementMutation, GetElementQuery>(
-                cache,
-                { query: GetElementDocument, variables: { elementId } },
-                _result,
-                (result, query) => {
-                  if (!result.createElement) {
-                    return query;
-                  } else {
-                    // Update parent element
-                    if (result.createElement.parent?.id) {
-                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
-                        cache,
-                        {
-                          query: GetElementDocument,
-                          variables: {
-                            elementId: result.createElement.parent.id as Scalar,
-                          },
-                        },
-                        _result,
-                        (_, query2) => {
-                          const parentElement = query2.getElement;
-                          parentElement.children.push(result.createElement!);
-                          return query2;
-                        }
-                      );
-                    }
-                    return {
-                      __typename: "Query",
-                      getElement: result.createElement,
-                    };
-                  }
-                }
-              );
 
-              if (newElement.type === "Database") {
-                betterUpdateQuery<
-                  CreateElementMutation,
-                  GetDatabasesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetDatabasesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getDatabases.push(newElement);
-                    return query;
-                  }
-                );
-              }
-              if (newElement.type === "Template") {
-                betterUpdateQuery<
-                  CreateElementMutation,
-                  GetTemplatesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetTemplatesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getTemplates.push(newElement);
-                    return query;
-                  }
-                );
-              }
+              addElement(cache, newElement as Element<any>);
             },
 
             editElementData: (_result, args, cache, info) => {
@@ -747,80 +680,9 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
               }
               const newElement = res.editElementData;
               const elementId = newElement.id;
-              betterUpdateQuery<EditElementDataMutation, GetElementQuery>(
-                cache,
-                { query: GetElementDocument, variables: { elementId } },
-                _result,
-                (result, query) => {
-                  if (!result.editElementData) {
-                    return query;
-                  } else {
-                    if (result.editElementData.parent) {
-                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
-                        cache,
-                        {
-                          query: GetElementDocument,
-                          variables: {
-                            elementId: result.editElementData.parent
-                              .id as Scalar,
-                          },
-                        },
-                        _result,
-                        (_, query2) => {
-                          query2.getElement.children[
-                            query2.getElement.children.findIndex(
-                              (val) => val.id === result.editElementData.id
-                            )
-                          ] = result.editElementData;
-                          return query2;
-                        }
-                      );
-                    }
-                    query.getElement = result.editElementData;
-                    return query;
-                  }
-                }
-              );
-              if (newElement.type === "Database") {
-                betterUpdateQuery<
-                  EditElementDataMutation,
-                  GetDatabasesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetDatabasesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getDatabases[
-                      query.getDatabases.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
-              if (newElement.type === "Template") {
-                betterUpdateQuery<
-                  EditElementDataMutation,
-                  GetTemplatesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetTemplatesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getTemplates[
-                      query.getTemplates.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
+
+              // Update element
+              updateElement(cache, elementId, newElement as Element<any>);
             },
             updatePermissions: (_result, args, cache, info) => {
               const res = _result as UpdatePermissionsMutation;
@@ -829,80 +691,9 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
               }
               const newElement = res.updatePermissions;
               const elementId = newElement.id;
-              betterUpdateQuery<UpdatePermissionsMutation, GetElementQuery>(
-                cache,
-                { query: GetElementDocument, variables: { elementId } },
-                _result,
-                (result, query) => {
-                  if (!result.updatePermissions) {
-                    return query;
-                  } else {
-                    if (result.updatePermissions.parent) {
-                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
-                        cache,
-                        {
-                          query: GetElementDocument,
-                          variables: {
-                            elementId: result.updatePermissions.parent
-                              .id as Scalar,
-                          },
-                        },
-                        _result,
-                        (_, query2) => {
-                          query2.getElement.children[
-                            query2.getElement.children.findIndex(
-                              (val) => val.id === result.updatePermissions.id
-                            )
-                          ] = result.updatePermissions;
-                          return query2;
-                        }
-                      );
-                    }
-                    query.getElement = result.updatePermissions;
-                    return query;
-                  }
-                }
-              );
-              if (newElement.type === "Database") {
-                betterUpdateQuery<
-                  UpdatePermissionsMutation,
-                  GetDatabasesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetDatabasesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getDatabases[
-                      query.getDatabases.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
-              if (newElement.type === "Template") {
-                betterUpdateQuery<
-                  UpdatePermissionsMutation,
-                  GetTemplatesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetTemplatesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getTemplates[
-                      query.getTemplates.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
+
+              // Update element
+              updateElement(cache, elementId, newElement as Element<any>);
             },
             inheritDatabaseAttributes: (_result, args, cache, info) => {
               const res = _result as InheritDatabaseAttributesMutation;
@@ -911,84 +702,9 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
               }
               const newElement = res.inheritDatabaseAttributes;
               const elementId = newElement.id;
-              betterUpdateQuery<
-                InheritDatabaseAttributesMutation,
-                GetElementQuery
-              >(
-                cache,
-                { query: GetElementDocument, variables: { elementId } },
-                _result,
-                (result, query) => {
-                  if (!result.inheritDatabaseAttributes) {
-                    return query;
-                  } else {
-                    if (result.inheritDatabaseAttributes.parent) {
-                      betterUpdateQuery<CreateElementMutation, GetElementQuery>(
-                        cache,
-                        {
-                          query: GetElementDocument,
-                          variables: {
-                            elementId: result.inheritDatabaseAttributes.parent
-                              .id as Scalar,
-                          },
-                        },
-                        _result,
-                        (_, query2) => {
-                          query2.getElement.children[
-                            query2.getElement.children.findIndex(
-                              (val) =>
-                                val.id === result.inheritDatabaseAttributes.id
-                            )
-                          ] = result.inheritDatabaseAttributes;
-                          return query2;
-                        }
-                      );
-                    }
-                    query.getElement = result.inheritDatabaseAttributes;
-                    return query;
-                  }
-                }
-              );
-              if (newElement.type === "Database") {
-                betterUpdateQuery<
-                  InheritDatabaseAttributesMutation,
-                  GetDatabasesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetDatabasesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getDatabases[
-                      query.getDatabases.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
-              if (newElement.type === "Template") {
-                betterUpdateQuery<
-                  InheritDatabaseAttributesMutation,
-                  GetTemplatesWithoutChildrenQuery
-                >(
-                  cache,
-                  {
-                    query: GetTemplatesWithoutChildrenDocument,
-                  },
-                  _result,
-                  (_, query) => {
-                    query.getTemplates[
-                      query.getTemplates.findIndex(
-                        (val) => val.id === newElement.id
-                      )
-                    ] = newElement;
-                    return query;
-                  }
-                );
-              }
+
+              // Update element
+              updateElement(cache, elementId, newElement as Element<any>);
             },
             addUserToGroup: (_result, args, cache, info) => {
               const res = _result as AddUserToGroupMutation;
@@ -1074,4 +790,178 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
       fetchExchange,
     ],
   };
+};
+
+const updateElement = (
+  cache: Cache,
+  elementId: number,
+  elementData: Partial<Element<any>>
+) => {
+  // Ensure we don't update the children, createdBy, createdAt, parent
+  const fieldsToRemove = ["children", "createdBy", "createdAt", "parent"];
+  const filteredElementData = Object.keys(elementData).reduce((acc, key) => {
+    if (!fieldsToRemove.includes(key)) {
+      acc[key as keyof Element<any>] = elementData[key as keyof Element<any>];
+    }
+    return acc;
+  }, {} as Partial<Element<any>>);
+
+  // Get any queries that use `getElements`
+  const fields = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElements");
+
+  // If these queries contain the element we are updating, update them
+  fields.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Partial<Element<any>>, GetElementsQuery>(
+      cache,
+      { query: GetElementsDocument, variables: args },
+      filteredElementData,
+      (result, query) => {
+        // Find the element in the query, and update it
+        const elementIndex = query.getElements.findIndex(
+          (val) => val.id === elementId
+        );
+
+        if (elementIndex !== -1) {
+          // Don't update children, or the ID
+          query.getElements[elementIndex] = {
+            ...query.getElements[elementIndex],
+            ...result,
+          };
+        }
+
+        // Find any children in any of the elements, and update them
+        // if they match the element we are updating
+        query.getElements.forEach((element, index) => {
+          const childIndex = element.children.findIndex(
+            (val) => val.id === elementId
+          );
+
+          if (childIndex !== -1) {
+            query.getElements[index].children[childIndex] = {
+              ...query.getElements[index].children[childIndex],
+              ...result,
+            };
+          }
+        });
+
+        return query;
+      }
+    );
+  });
+
+  // Do the same for any queries that use `getElement`
+  const fields2 = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElement");
+
+  fields2.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Partial<Element<any>>, GetElementQuery>(
+      cache,
+      { query: GetElementDocument, variables: args },
+      filteredElementData,
+      (result, query) => {
+        // If this `getElement` query is for the one we are updating, update it
+        if (query.getElement.id === elementId) {
+          // Don't update children, or the ID
+          query.getElement = { ...query.getElement, ...result };
+        }
+
+        // Find any children and update them if they match the element we are updating
+        const childIndex = query.getElement.children.findIndex(
+          (val) => val.id === elementId
+        );
+
+        if (childIndex !== -1) {
+          query.getElement.children[childIndex] = {
+            ...query.getElement.children[childIndex],
+            ...result,
+          };
+        }
+
+        return query;
+      }
+    );
+  });
+};
+
+const addElement = (cache: Cache, newElement: Element<any>) => {
+  // Get any queries that use `getElements`
+  const fields = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElements");
+
+  // If these queries contain the element we are updating, update them
+  fields.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Element<any>, GetElementsQuery>(
+      cache,
+      { query: GetElementsDocument, variables: args },
+      newElement,
+      (result, query) => {
+        // If we aren't filtering by type, or the type filter matches the new element
+        // continue...
+        if (!args?.type || args.type === result.type) {
+          // If we aren't filtering by parentId, or the parentId filter matches the new element
+          // continue...
+          if (!args?.parentId || args.parentId === result.parent?.id) {
+            // Add the new element to the query
+            query.getElements.push(result);
+          }
+        }
+
+        // If the new element has a parent, and the parent is in the query, add the new element
+        // to the parent's children, and the query is getting children
+        if (result.parent && args?.children) {
+          const parentIndex = query.getElements.findIndex(
+            (val) => val.id === result.parent?.id
+          );
+          if (parentIndex !== -1) {
+            // If we aren't filtering by type, or the type filter matches the new element
+            // continue...
+            if (!args?.type) {
+              // To-Do: should also check that the type filter match here, but is too complex
+              // Add the new element to the parent
+              if (!args.parent || args.parent === result.parent?.id) {
+                query.getElements[parentIndex].children.push(result);
+              }
+            }
+          }
+        }
+
+        return query;
+      }
+    );
+  });
+
+  // Do the same for any queries that use `getElement`
+  const fields2 = cache
+    .inspectFields("Query")
+    .filter((field) => field.fieldName === "getElement");
+
+  fields2.forEach((field) => {
+    const args = field.arguments ? field.arguments : undefined;
+    betterUpdateQuery<Element<any>, GetElementQuery>(
+      cache,
+      { query: GetElementDocument, variables: args },
+      newElement,
+      (result, query) => {
+        // If the query element ID argument matches the new element, add the new element
+        if (args?.elementId === result.id) {
+          query.getElement = result;
+        }
+
+        // If the query element ID argument matches the new element's parent, add the new element
+        // to the parent's children
+        if (args?.elementId === result.parent?.id) {
+          query.getElement.children.push(result);
+        }
+
+        return query;
+      }
+    );
+  });
 };

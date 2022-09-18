@@ -11,7 +11,6 @@ import {
   StackDivider,
   Text,
 } from "@chakra-ui/react";
-import { el } from "date-fns/locale";
 import { useMemo, useState } from "react";
 import {
   useEditElementDataMutation,
@@ -59,6 +58,9 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
           (props.element.data as DatabaseViewElementData).database?.value) ||
         -1,
     },
+    pause:
+      props.element.type !== "DatabaseView" ||
+      !(props.element.data as DatabaseViewElementData).database?.value,
   });
 
   const database = useMemo(() => {

@@ -1,11 +1,9 @@
 import { Button, useDisclosure, useRadioGroup, VStack } from "@chakra-ui/react";
-import { useGetDatabasesWithoutChildrenQuery } from "../../../generated/graphql";
 import {
   actionTypeKeys,
   ActionTypeKeys,
   ActionTypesDef,
 } from "../../../utils/base_data_types";
-import { DatabaseElementData } from "../../../utils/base_element_types";
 import RadioItem from "../../Utils/RadioItem";
 
 interface ActionTypePropertyProps {

@@ -13,6 +13,7 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
 import { getAuth, getUser, isAdmin, isAuth } from "../isAuth";
 import { getDefaultGroups, getUserGroup } from "../utils/defaultGroups";
+import { FindConditions, FindManyOptions, FindOneOptions } from "typeorm";
 
 const GROUP_REALATIONS = [
   "canModifyPermsGroups",
@@ -25,8 +26,68 @@ const ALL_RELATIONS_BUT_CHILDREN = [...GROUP_REALATIONS, "createdBy", "parent"];
 
 const ALL_RELATIONS = [...ALL_RELATIONS_BUT_CHILDREN, "children"];
 
+const ALL_CHILD_RELATIONS = ALL_RELATIONS_BUT_CHILDREN.map(
+  (relation) => "children." + relation
+);
+
+const ALL_RELATIONS_AND_CHILD_RELATIONS = [
+  ...ALL_RELATIONS,
+  ...ALL_CHILD_RELATIONS,
+];
+
 @Resolver()
 export class ElementResolver {
+  // Query and return elements
+  // Requires logged in user -> No
+  @Query(() => [Element])
+  @UseMiddleware(getAuth, getUser)
+  async getElements(
+    @Ctx() { payload }: MyContext,
+    @Arg("type", { nullable: true }) type?: string,
+    @Arg("parentId", { nullable: true }) parentId?: number,
+    @Arg("children", { defaultValue: true }) children?: boolean
+  ): Promise<Element[]> {
+    const user = payload?.user;
+
+    var filter: FindConditions<Element> | undefined;
+    if (type) {
+      filter = { ...filter, type };
+    }
+
+    // parentId could be null (i.e. no parent), so check for undefined
+    if (parentId !== undefined) {
+      filter = { ...filter, parent: { id: parentId } };
+    }
+
+    var elements = await Element.find({
+      where: filter,
+      relations: children
+        ? ALL_RELATIONS_AND_CHILD_RELATIONS
+        : ALL_RELATIONS_BUT_CHILDREN,
+    });
+
+    // Filter out elements that the user can't see
+    elements = elements.filter((element) =>
+      checkPermissions(element.canViewGroups, user)
+    );
+
+    // If we have children, filter out the children that the user can't see
+    if (children) {
+      elements.forEach((element) => {
+        element.children = element.children.filter((child) =>
+          checkPermissions(child.canViewGroups, user)
+        );
+      });
+    } else {
+      // Must add empty array to children to avoid error
+      elements.forEach((element) => {
+        element.children = [];
+      });
+    }
+
+    return elements;
+  }
+
   @Query(() => [Element])
   @UseMiddleware(getAuth, getUser)
   async getElementsNoChildren(
@@ -55,85 +116,34 @@ export class ElementResolver {
   @UseMiddleware(getAuth, getUser)
   async getElement(
     @Ctx() { payload }: MyContext,
-    @Arg("elementId") elementId: number
+    @Arg("elementId") elementId: number,
+    @Arg("children", { defaultValue: true }) children?: boolean
   ): Promise<Element> {
-    const element = await Element.getElementByIdWithChildren(elementId);
+    const user = payload?.user;
 
-    if (!checkPermissions(element.canViewGroups, payload?.user)) {
+    var element = await Element.findOneOrFail({
+      where: { id: elementId },
+      relations: children
+        ? ALL_RELATIONS_AND_CHILD_RELATIONS
+        : ALL_RELATIONS_BUT_CHILDREN,
+    });
+
+    // Check that the user can see this element
+    if (!checkPermissions(element.canViewGroups, user)) {
       throw new Error("Not authorized");
     }
 
-    // Now filter out the elements that the user can't see
-    element.children = element.children.filter((child) =>
-      checkPermissions(child.canViewGroups, payload?.user)
-    );
+    // If we have children, filter out the children that the user can't see
+    if (children) {
+      element.children = element.children.filter((child) =>
+        checkPermissions(child.canViewGroups, user)
+      );
+    } else {
+      // Must add empty array to children to avoid error
+      element.children = [];
+    }
+
     return element;
-  }
-
-  @Query(() => [Element])
-  @UseMiddleware(getAuth, getUser)
-  async getParentPages(@Ctx() { payload }: MyContext): Promise<Element[]> {
-    const elements = await Element.getElementsWithChildren({
-      where: {
-        type: "Page",
-        parent: null,
-      },
-    });
-
-    // Now filter out the elements and children that the user can't see
-    const filteredElements = elements.filter((element) =>
-      checkPermissions(element.canViewGroups, payload?.user)
-    );
-
-    filteredElements.forEach((element) => {
-      element.children = element.children.filter((child) =>
-        checkPermissions(child.canViewGroups, payload?.user)
-      );
-    });
-
-    return filteredElements;
-  }
-
-  @Query(() => [Element])
-  @UseMiddleware(getAuth, getUser)
-  async getDatabases(@Ctx() { payload }: MyContext): Promise<Element[]> {
-    const elements = await Element.getElementsWithChildren({
-      where: { type: "Database" },
-    });
-
-    // Now filter out the elements and children that the user can't see
-    const filteredElements = elements.filter((element) =>
-      checkPermissions(element.canViewGroups, payload?.user)
-    );
-
-    filteredElements.forEach((element) => {
-      element.children = element.children.filter((child) =>
-        checkPermissions(child.canViewGroups, payload?.user)
-      );
-    });
-
-    return filteredElements;
-  }
-
-  @Query(() => [Element])
-  @UseMiddleware(getAuth, getUser)
-  async getTemplates(@Ctx() { payload }: MyContext): Promise<Element[]> {
-    const elements = await Element.getElementsWithChildren({
-      where: { type: "Template" },
-    });
-
-    // Now filter out the elements and children that the user can't see
-    const filteredElements = elements.filter((element) =>
-      checkPermissions(element.canViewGroups, payload?.user)
-    );
-
-    filteredElements.forEach((element) => {
-      element.children = element.children.filter((child) =>
-        checkPermissions(child.canViewGroups, payload?.user)
-      );
-    });
-
-    return filteredElements;
   }
 
   @Mutation(() => Element, { nullable: true })
@@ -165,7 +175,9 @@ export class ElementResolver {
       throw new Error("Not logged in");
     }
 
-    const element = await Element.getElementByIdWithChildren(elementId);
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
 
     if (
       !(
@@ -259,7 +271,9 @@ export class ElementResolver {
     @Arg("attributeName") attributeName: string,
     @Arg("newAttributeName") newAttributeName: string
   ): Promise<Element> {
-    const element = await Element.getElementByIdWithChildren(elementId);
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
 
     if (element.type !== "Database") {
       throw new Error("Not a database");
@@ -314,14 +328,7 @@ export class ElementResolver {
     @Arg("index") index: number
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
-      relations: [
-        "createdBy",
-        "parent",
-        "children",
-        "canEditGroups",
-        "canViewGroups",
-        "canInteractGroups",
-      ],
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
     });
 
     if (!checkPermissions(element.canEditGroups, payload?.user)) {
@@ -346,41 +353,14 @@ export class ElementResolver {
     element.index = index;
 
     await element.save();
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
+
     return element;
   }
-
-  // @Mutation(() => Element)
-  // @UseMiddleware(getAuth, getUser)
-  // async editElementParent(
-  //   @Ctx() { payload }: MyContext,
-  //   @Arg("elementId") elementId: number,
-  //   @Arg("parentId") parentId: number
-  // ): Promise<Element> {
-  //   const element = await Element.findOneOrFail(elementId, {
-  //     relations: [
-  //       "createdBy",
-  //       "parent",
-  //       "children",
-  //       "canEditGroups",
-  //       "canViewGroups",
-  //       "canInteractGroups",
-  //     ],
-  //   });
-  //   const parent = await Element.findOneOrFail(parentId, {
-  //     relations: [
-  //       "createdBy",
-  //       "parent",
-  //       "children",
-  //       "canEditGroups",
-  //       "canViewGroups",
-  //       "canInteractGroups",
-  //     ],
-  //   });
-  //   element.parent = parent;
-
-  //   await element.save();
-  //   return element;
-  // }
 
   @Mutation(() => Element)
   @UseMiddleware(isAuth, getUser)
@@ -422,7 +402,9 @@ export class ElementResolver {
     @Arg("canInteractGroups", () => [Number], { nullable: true })
     canInteractGroups?: number[]
   ): Promise<Element> {
-    const element = await Element.getElementByIdWithChildren(elementId);
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
 
     if (!checkPermissions(element.canModifyPermsGroups, payload?.user)) {
       throw new Error("Not authorized");
@@ -445,6 +427,12 @@ export class ElementResolver {
       element.canInteractGroups = groups;
     }
     await element.save();
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
+
     return element;
   }
 
@@ -455,7 +443,9 @@ export class ElementResolver {
     @Arg("databaseId") databaseId: number,
     @Arg("elementId") elementId: number
   ): Promise<Element> {
-    const database = await Element.getElementByIdWithChildren(databaseId);
+    const database = await Element.findOneOrFail(databaseId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
     if (database.type !== "Database") {
       throw new Error("Database not found");
     }
@@ -479,6 +469,12 @@ export class ElementResolver {
     });
 
     await element.save();
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, payload?.user)
+    );
+
     return element;
   }
 
@@ -596,7 +592,7 @@ const addElement = async (
 
   if (parentId) {
     element.parent = await Element.findOneOrFail(parentId, {
-      relations: ALL_RELATIONS,
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
     });
   }
 

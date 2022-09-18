@@ -1,5 +1,5 @@
 import { Button, useDisclosure, useRadioGroup, VStack } from "@chakra-ui/react";
-import { useGetDatabasesWithoutChildrenQuery } from "../../../generated/graphql";
+import { useGetElementsQuery } from "../../../generated/graphql";
 import { DatabaseElementData } from "../../../utils/base_element_types";
 import RadioItem from "../../Utils/RadioItem";
 import CreateDatabaseWindow from "./CreateDatabaseWindow";
@@ -16,7 +16,9 @@ const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
     onOpen: onAddOpen,
     onClose: onAddClose,
   } = useDisclosure();
-  const [{ data: databasesQuery }] = useGetDatabasesWithoutChildrenQuery();
+  const [{ data: databasesQuery }] = useGetElementsQuery({
+    variables: { type: "Database", children: true },
+  });
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "database",
@@ -30,15 +32,15 @@ const DatabaseProperty: React.FC<DatabasePropertyProps> = (props) => {
     return (
       <>
         {databasesQuery &&
-          databasesQuery?.getDatabases[
-            databasesQuery.getDatabases.findIndex((db) => db.id === props.value)
+          databasesQuery?.getElements[
+            databasesQuery.getElements.findIndex((db) => db.id === props.value)
           ].data.title.value}
       </>
     );
   }
   return (
     <VStack {...group} spacing={1} w={"full"} h={80} overflowY={"scroll"}>
-      {databasesQuery?.getDatabases.map((database) => {
+      {databasesQuery?.getElements.map((database) => {
         const databaseProps = database.data as DatabaseElementData;
         const radio = getRadioProps({ value: database.id });
 

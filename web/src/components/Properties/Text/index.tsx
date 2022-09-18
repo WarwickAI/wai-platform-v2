@@ -11,12 +11,9 @@ interface TextPropertyProps {
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
   const [value, setValue] = useState<string>(props.value);
-  const debounced = useDebouncedCallback(
-    (value) => {
-      props.onChange(value);
-    },
-    1500
-  );
+  const debounced = useDebouncedCallback((value) => {
+    props.onChange(value);
+  }, 1500);
 
   useEffect(() => {
     setValue(props.value);

@@ -20,8 +20,9 @@ const DataLink: React.FC<DataLinkProps> = (props) => {
   const elementProps = props.element.data as DataLinkElementData;
   const [{ data: parentElement }] = useGetElementQuery({
     variables: {
-      elementId: props.element.parent ? props.element.parent.id : 0,
+      elementId: props.element.parent ? props.element.parent.id : -1,
     },
+    pause: !props.element.parent,
   });
   const [, editElement] = useEditElementDataMutation();
 

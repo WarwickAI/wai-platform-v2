@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import {
   useGetElementQuery,
-  useHandleAcitonMutation,
+  useHandleActionMutation,
   useMeQuery,
 } from "../../generated/graphql";
 import "draft-js/dist/Draft.css";
@@ -23,7 +23,7 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
   const router = useRouter();
 
   const elementData = element.data as ButtonElementData;
-  const [, handleAction] = useHandleAcitonMutation();
+  const [, handleAction] = useHandleActionMutation();
 
   const [{ data: userData }] = useMeQuery();
 
