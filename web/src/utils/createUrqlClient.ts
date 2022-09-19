@@ -880,8 +880,15 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
           // If we aren't filtering by parentId, or the parentId filter matches the new element
           // continue...
           if (!args?.parentId || args.parentId === result.parent?.id) {
-            // Add the new element to the query
-            query.getElements.push(result);
+            // Check that its not already there
+            const elementIndex = query.getElements.findIndex(
+              (val) => val.id === result.id
+            );
+
+            if (elementIndex === -1) {
+              // Add the new element to the query
+              query.getElements.push(result);
+            }
           }
         }
 
@@ -898,7 +905,14 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
               // To-Do: should also check that the type filter match here, but is too complex
               // Add the new element to the parent
               if (!args.parent || args.parent === result.parent?.id) {
-                query.getElements[parentIndex].children.push(result);
+                // Check that its not already there
+                const elementIndex = query.getElements[
+                  parentIndex
+                ].children.findIndex((val) => val.id === result.id);
+
+                if (elementIndex === -1) {
+                  query.getElements[parentIndex].children.push(result);
+                }
               }
             }
           }
@@ -929,7 +943,13 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
         // If the query element ID argument matches the new element's parent, add the new element
         // to the parent's children
         if (args?.elementId === result.parent?.id) {
-          query.getElement.children.push(result);
+          // Check that it isn't already in the children
+          const childIndex = query.getElement.children.findIndex(
+            (val) => val.id === result.id
+          );
+          if (childIndex === -1) {
+            query.getElement.children.push(result);
+          }
         }
 
         return query;
