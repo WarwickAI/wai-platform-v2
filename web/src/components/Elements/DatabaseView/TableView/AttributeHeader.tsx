@@ -21,6 +21,7 @@ import {
 import {
   DataTypeKeysT,
   Element,
+  ElementDataPiece,
   ElementTypesDef,
 } from "../../../../utils/config";
 import textOutline from "@iconify/icons-eva/text-outline";
@@ -31,18 +32,21 @@ import { getIcon } from "../../../SidebarConfig";
 import { DataTypeKeys } from "../../../../utils/base_data_types";
 import { useMemo, useState } from "react";
 import RadioItem from "../../../Utils/RadioItem";
+import TextProperty from "../../../Properties/Text";
+import GenericProperty from "../../../Properties/GenericProperty";
 
 interface AttributeHeaderProps {
   database: Element<DatabaseElementData>;
   isEdit: boolean;
   name: string;
+  attribute: ElementDataPiece<any>;
   removeAttribute: (name: string) => void;
   modifyAttributeName: (oldName: string, newName: string) => void;
+  modifyAttributeDefaultValue: (attribute: string, defaultValue: any) => void;
 }
 
 const AttributeHeader: React.FC<AttributeHeaderProps> = (props) => {
-  const attributeType = props.database.data.attributes.value[props.name].type;
-  const [newName, setNewName] = useState<string>(props.name);
+  const attributeType = props.attribute.type;
 
   const canEdit = useMemo(() => {
     return !ElementTypesDef[
@@ -78,17 +82,31 @@ const AttributeHeader: React.FC<AttributeHeaderProps> = (props) => {
                     placement={"top"}
                   >
                     <HStack w={"full"}>
-                      <Input
-                        size={"sm"}
-                        onChange={(e) => {
-                          setNewName(e.target.value);
-                          props.modifyAttributeName(props.name, e.target.value);
+                      <TextProperty
+                        onChange={(v) => {
+                          props.modifyAttributeName(props.name, v);
                         }}
-                        value={newName}
+                        value={props.name}
                         placeholder="Name..."
-                        disabled={!canEdit}
+                        isEdit={props.isEdit && canEdit}
                       />
                       {!canEdit && getIcon(lockOutline)}
+                    </HStack>
+                  </Tooltip>
+                  <Tooltip
+                    label={"Edit attribute's default value"}
+                    placement={"top"}
+                  >
+                    <HStack w={"full"}>
+                      <GenericProperty
+                        element={props.database}
+                        isEdit={props.isEdit}
+                        onChange={(v) =>
+                          props.modifyAttributeDefaultValue(props.name, v)
+                        }
+                        type={attributeType}
+                        value={props.attribute.value}
+                      />
                     </HStack>
                   </Tooltip>
                   <Tooltip

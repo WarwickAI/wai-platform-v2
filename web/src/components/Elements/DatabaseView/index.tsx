@@ -147,14 +147,54 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
     });
   };
 
+  const modifyAttributeDefaultValue = async (
+    attributeName: string,
+    newDefaultValue: any
+  ) => {
+    if (!database) {
+      return;
+    }
+
+    const attribute = database.data.attributes.value[attributeName];
+
+    if (!attribute) {
+      return;
+    }
+
+    attribute.value = newDefaultValue;
+
+    await editElement({
+      elementId: elementData.database.value,
+      data: {
+        attributes: {
+          type: "DatabaseAttributeTypes",
+          value: {
+            ...database.data.attributes.value,
+            [attributeName]: attribute,
+          },
+        },
+      },
+    });
+  };
+
   const addRow = async (atIndex: number) => {
+    const data = createDefaultElementData(
+      databaseQuery?.getElement.data.childrenBaseType.value
+    );
+
+    // Add the database's default attribute values
+    Object.keys(databaseQuery?.getElement.data.attributes.value).forEach(
+      (attributeName) => {
+        data[attributeName] =
+          databaseQuery?.getElement.data.attributes.value[attributeName];
+      }
+    );
+
     await createElement({
       index: atIndex,
       type: databaseQuery?.getElement.data.childrenBaseType
         .value as ElementTypeKeys,
-      data: createDefaultElementData(
-        databaseQuery?.getElement.data.childrenBaseType.value
-      ),
+      data: data,
       parent: elementData.database.value,
     });
   };
@@ -187,6 +227,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
               addAttribute={addAttribute}
               removeAttribute={removeAttribute}
               modifyAttributeName={modifyAttributeName}
+              modifyAttributeDefaultValue={modifyAttributeDefaultValue}
               addRow={addRow}
               editDatabaseName={editDbName}
               removeRow={(id: number) => removeElement({ elementId: id })}

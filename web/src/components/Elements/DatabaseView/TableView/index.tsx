@@ -15,6 +15,7 @@ interface TableViewProps {
   removeAttribute: (attribute: string) => void;
   addAttribute: (attribute: string, type: DataTypeKeysT) => void;
   modifyAttributeName: (attribute: string, newName: string) => void;
+  modifyAttributeDefaultValue: (attribute: string, defaultValue: any) => void;
   addRow: (index: number) => void;
   removeRow: (elementId: number) => void;
 }
@@ -51,8 +52,10 @@ const TableView: React.FC<TableViewProps> = (props) => {
                   database={props.database}
                   isEdit={props.isEdit}
                   name={name}
+                  attribute={props.database.data.attributes.value[name]}
                   removeAttribute={props.removeAttribute}
                   modifyAttributeName={props.modifyAttributeName}
+                  modifyAttributeDefaultValue={props.modifyAttributeDefaultValue}
                 />
               ))}
               {props.isEdit && (
