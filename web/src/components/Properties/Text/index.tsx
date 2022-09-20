@@ -7,6 +7,7 @@ interface TextPropertyProps {
   onChange: (v: string) => void;
   isEdit: boolean;
   isTitle?: boolean;
+  placeholder?: string;
 }
 
 const TextProperty: React.FC<TextPropertyProps> = (props) => {
@@ -54,6 +55,8 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         fontSize={props.isTitle ? "2xl" : "md"}
         fontWeight={props.isTitle ? "bold" : "normal"}
         borderColor={"gray.200"}
+        placeholder={props.placeholder}
+        disabled={props.disabled}
       />
     );
   }
