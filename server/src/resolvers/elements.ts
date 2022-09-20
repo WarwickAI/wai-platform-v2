@@ -380,7 +380,7 @@ export class ElementResolver {
     if (
       !checkPermissions(element.canEditGroups, payload?.user) ||
       (!element.parent &&
-        payload?.user?.groups.findIndex((g) => g.name === "Admin") !== -1)
+        user.groups.findIndex((g) => g.name === "Admin") === -1)
     ) {
       throw new Error("Not authorized");
     }
@@ -710,10 +710,11 @@ const addElement = async (
 const removeElement = async (element: Element, user: User) => {
   element.children.forEach(async (child) => {
     const childElement = await Element.findOneOrFail(child.id, {
-      relations: ALL_RELATIONS,
+      relations: ["children", ...GROUP_REALATIONS],
     });
     await removeElement(childElement, user);
   });
+  console.log("Removing element", element);
   await element.remove();
 };
 
