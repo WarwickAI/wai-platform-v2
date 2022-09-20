@@ -56,7 +56,6 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         fontWeight={props.isTitle ? "bold" : "normal"}
         borderColor={"gray.200"}
         placeholder={props.placeholder}
-        disabled={props.disabled}
       />
     );
   }
