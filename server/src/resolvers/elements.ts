@@ -714,7 +714,6 @@ const removeElement = async (element: Element, user: User) => {
     });
     await removeElement(childElement, user);
   });
-  console.log("Removing element", element);
   await element.remove();
 };
 
