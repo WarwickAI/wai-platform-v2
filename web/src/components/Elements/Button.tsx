@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import {
-  useGetElementQuery,
+  useGetElementsQuery,
   useHandleActionMutation,
   useMeQuery,
 } from "../../generated/graphql";
@@ -27,22 +27,16 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
 
   const [{ data: userData }] = useMeQuery();
 
-  const [{ data: databaseData }] = useGetElementQuery({
+  const [{ data: databaseElementsQuery }] = useGetElementsQuery({
     variables: {
-      elementId: elementData.database.value,
+      parentId: elementData.database.value,
     },
+    pause: elementData.database.value == -1,
   });
 
   const buttonState = useMemo(() => {
-    const database = databaseData?.getElement as
-      | Element<DatabaseElementData>
-      | undefined;
-    if (!database) {
-      return {
-        text: "Loading...",
-        disabled: true,
-      };
-    }
+    const databaseElements =
+      databaseElementsQuery?.getElements as Element<any>[];
 
     const user = userData?.me;
     if (!user) {
@@ -59,9 +53,9 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
       };
     }
 
-    if (elementData.action.value === "StartSurvey") {
+    if (elementData.action.value === "StartSurvey" && databaseElements) {
       // See if the user already has a response
-      const response = database.children.find(
+      const response = databaseElements.find(
         (child) =>
           (child as Element<SurveyElementData>).data.user.value === user.id
       );
@@ -84,7 +78,7 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
       text: "Unknown Action",
       disabled: true,
     };
-  }, [databaseData, elementData, userData]);
+  }, [databaseElementsQuery, elementData, userData]);
 
   return (
     <Box>
