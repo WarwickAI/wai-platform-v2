@@ -610,7 +610,8 @@ const addElement = async (
   element.canInteractGroups = canInteractGroups;
 
   // Check user has permissions to create this element (i.e. edit itself)
-  if (!checkPermissions(element.canEditGroups, user)) {
+  // Always allow creation if its a survey (To-Do: should make this better)
+  if (!checkPermissions(element.canEditGroups, user) && !(type === "Survey")) {
     throw new Error("Not authorized to create this element");
   }
 
