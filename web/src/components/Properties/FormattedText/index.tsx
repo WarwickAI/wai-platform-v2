@@ -19,7 +19,8 @@ const StyleButtons: React.FC<StyleButtonsProps> = (props) => {
   return (
     <Box
       position={"absolute"}
-      bottom={8}
+      top={-12}
+      left={-1}
       display={props.isEditorFocused ? "flex" : "none"}
       p={1}
       borderColor={"gray.200"}
@@ -147,14 +148,12 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
       borderWidth={1}
       borderRadius="md"
       borderColor={props.isEdit ? "gray.200" : "white"}
-      onClick={() => focusEditor()}
+      onClick={() => props.isEdit && focusEditor()}
       _hover={{ cursor: "text" }}
       position={"relative"}
     >
       <Box
-        onMouseDown={() => {
-          props.isEdit && focusEditor();
-        }}
+        onMouseDown={() => props.isEdit && focusEditor()}
         onBlur={() => setIsEditorFocused(false)}
       >
         <Editor
