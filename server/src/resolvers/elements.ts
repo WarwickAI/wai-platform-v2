@@ -835,7 +835,7 @@ const createElementInitialGroups = async (
 
   // If the type is a survey, set view and interact permissions to the user
   // Also add the database's groups to all permissions
-  if (type === "Survey") {
+  if (type === "Survey" && parent) {
     const userGroup = await getUserGroup(user);
 
     canInteractGroups.push(userGroup);
