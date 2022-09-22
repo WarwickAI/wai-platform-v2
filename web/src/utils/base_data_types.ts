@@ -71,7 +71,7 @@ export const DataTypesDef = {
     label: "Formatted Text",
     hint: "Formatted Text",
     constraints: {},
-    defaultValue: `{"blocks":[{"key":"e0n4m","text":"Enter text...","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`,
+    defaultValue: `*enter some Markdown here*`,
   } as DateTypesDef,
   Number: {
     label: "Number",
