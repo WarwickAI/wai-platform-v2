@@ -23,6 +23,7 @@
     "@urql/exchange-graphcache": "^4.3.5",
     "chakra-react-select": "^4.1.2",
     "chakra-ui-markdown-renderer": "^4.0.0",
+    "crypto-es": "^1.2.7",
     "date-fns": "^2.28.0",
     "draft-js": "^0.11.7",
     "formik": "^2.2.9",

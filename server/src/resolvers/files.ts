@@ -61,8 +61,8 @@ const S3 = new aws.S3({
 
 @ObjectType()
 export class GetSignedUrlResponse {
-  @Field()
-  signedUrl: string;
+  @Field({ nullable: true })
+  signedUrl?: string;
 
   @Field()
   key: string;
@@ -83,9 +83,10 @@ export class FileResolver {
     @Arg("fileName", () => String) fileName: string,
     @Arg("fileType", () => String) fileType: string,
     @Arg("fileSize", () => Number) fileSize: number,
+    @Arg("fileHash", () => String) fileHash: string,
     @Arg("imgWidth", () => Number, { nullable: true }) imgWidth: number,
     @Arg("imgHeight", () => Number, { nullable: true }) imgHeight: number
-  ): Promise<{ signedUrl: string; key: string }> {
+  ): Promise<{ signedUrl?: string; key: string }> {
     const user = payload?.user;
     if (!user) {
       throw new Error("User not found");
@@ -117,6 +118,14 @@ export class FileResolver {
       );
     }
 
+    // Check if the file already exists, using the hash
+    const existingFile = await File.findOne({ fileHash });
+    if (existingFile) {
+      return {
+        key: existingFile.key,
+      };
+    }
+
     const key = randomUUID();
 
     const fileEntity = File.create({
@@ -124,6 +133,7 @@ export class FileResolver {
       fileName: fileName,
       fileType: fileType,
       fileSize: fileSize,
+      fileHash: fileHash,
       isImage: fileTypeInfo.isImage,
       imgWidth: imgWidth,
       imgHeight: imgHeight,

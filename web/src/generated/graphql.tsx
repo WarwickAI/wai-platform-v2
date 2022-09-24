@@ -122,6 +122,7 @@ export type FieldError = {
 
 export type File = {
   __typename?: 'File';
+  fileHash: Scalars['String'];
   fileName: Scalars['String'];
   fileSize: Scalars['Float'];
   fileType: Scalars['String'];
@@ -398,6 +399,7 @@ export type MutationEditTutorialArgs = {
 
 
 export type MutationGetSignedUrlArgs = {
+  fileHash: Scalars['String'];
   fileName: Scalars['String'];
   fileSize: Scalars['Float'];
   fileType: Scalars['String'];
@@ -1087,6 +1089,7 @@ export type GetSignedUrlMutationVariables = Exact<{
   fileType: Scalars['String'];
   fileName: Scalars['String'];
   fileSize: Scalars['Float'];
+  fileHash: Scalars['String'];
   imgWidth?: InputMaybe<Scalars['Float']>;
   imgHeight?: InputMaybe<Scalars['Float']>;
 }>;
@@ -2175,11 +2178,12 @@ export function useEditElementRouteMutation() {
   return Urql.useMutation<EditElementRouteMutation, EditElementRouteMutationVariables>(EditElementRouteDocument);
 };
 export const GetSignedUrlDocument = gql`
-    mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!, $imgWidth: Float, $imgHeight: Float) {
+    mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!, $fileHash: String!, $imgWidth: Float, $imgHeight: Float) {
   getSignedUrl(
     fileType: $fileType
     fileName: $fileName
     fileSize: $fileSize
+    fileHash: $fileHash
     imgWidth: $imgWidth
     imgHeight: $imgHeight
   ) {

@@ -38,6 +38,10 @@ export class File extends BaseEntity {
   fileSize: number;
 
   @Field()
+  @Column({ unique: true })
+  fileHash: string;
+
+  @Field()
   @Column()
   isImage: boolean;
 

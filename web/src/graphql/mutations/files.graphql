@@ -2,6 +2,7 @@ mutation GetSignedUrl(
   $fileType: String!
   $fileName: String!
   $fileSize: Float!
+  $fileHash: String!
   $imgWidth: Float
   $imgHeight: Float
 ) {
@@ -9,6 +10,7 @@ mutation GetSignedUrl(
     fileType: $fileType
     fileName: $fileName
     fileSize: $fileSize
+    fileHash: $fileHash
     imgWidth: $imgWidth
     imgHeight: $imgHeight
   ) {
