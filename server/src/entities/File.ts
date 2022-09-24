@@ -36,4 +36,18 @@ export class File extends BaseEntity {
   @Field()
   @Column()
   fileSize: number;
+
+  @Field()
+  @Column()
+  isImage: boolean;
+
+  // In pixels
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  imgWidth: number;
+
+  // In pixels
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  imgHeight: number;
 }

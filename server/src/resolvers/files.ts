@@ -5,6 +5,7 @@ import {
   Field,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
@@ -69,13 +70,21 @@ export class GetSignedUrlResponse {
 
 @Resolver()
 export class FileResolver {
+  @Query(() => File)
+  async getFile(@Arg("key", () => String) key: string): Promise<File> {
+    const file = await File.findOneOrFail({ key });
+    return file;
+  }
+
   @Mutation(() => GetSignedUrlResponse)
   @UseMiddleware(isAuth, getUser)
   async getSignedUrl(
     @Ctx() { payload }: MyContext,
     @Arg("fileName", () => String) fileName: string,
     @Arg("fileType", () => String) fileType: string,
-    @Arg("fileSize", () => Number) fileSize: number
+    @Arg("fileSize", () => Number) fileSize: number,
+    @Arg("imgWidth", () => Number, { nullable: true }) imgWidth: number,
+    @Arg("imgHeight", () => Number, { nullable: true }) imgHeight: number
   ): Promise<{ signedUrl: string; key: string }> {
     const user = payload?.user;
     if (!user) {
@@ -87,6 +96,17 @@ export class FileResolver {
 
     if (!fileTypeInfo) {
       throw new Error("Invalid file type");
+    }
+
+    // Make sure if the file is an image, the width and height are provided
+    // and are greater than 0
+    if (
+      fileTypeInfo.isImage &&
+      (!imgWidth || !imgHeight || imgWidth < 1 || imgHeight < 1)
+    ) {
+      throw new Error(
+        "Invalid image dimensions (not provided, or not greater than 0"
+      );
     }
 
     if (fileSize > fileTypeInfo.maxFileSize) {
@@ -104,6 +124,9 @@ export class FileResolver {
       fileName: fileName,
       fileType: fileType,
       fileSize: fileSize,
+      isImage: fileTypeInfo.isImage,
+      imgWidth: imgWidth,
+      imgHeight: imgHeight,
       uploadedBy: user,
     });
 
