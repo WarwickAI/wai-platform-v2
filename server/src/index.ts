@@ -16,7 +16,6 @@ import cors from "cors";
 import setupCognitoAuthentication from "./utils/cognitoAuthentication";
 import { ProjectResolver } from "./resolvers/project";
 import { createConnection } from "typeorm";
-import path from "path";
 import { Talk } from "./entities/Talk";
 import { TalkResolver } from "./resolvers/talk";
 import { Course } from "./entities/Course";
@@ -39,6 +38,8 @@ import { ElementResolver } from "./resolvers/elements";
 import { Group } from "./entities/Group";
 import { GroupResolver } from "./resolvers/group";
 import { getDefaultGroups } from "./utils/defaultGroups";
+import { FileResolver } from "./resolvers/files";
+import { File } from "./entities/File";
 
 const main = async () => {
   // Connect to DB
@@ -79,6 +80,7 @@ const main = async () => {
       Vote,
       Element,
       Group,
+      File,
     ],
   });
   // await User.delete((await User.find()).map((user) => user.id));
@@ -156,6 +158,7 @@ const main = async () => {
         VoteResolver,
         ElementResolver,
         GroupResolver,
+        FileResolver,
       ],
       validate: false,
     }),

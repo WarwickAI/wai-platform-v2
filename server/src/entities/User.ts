@@ -20,6 +20,7 @@ import { Tutorial } from "./Tutorial";
 import { Vote } from "./Vote";
 import { Element } from "./Element";
 import { Group } from "./Group";
+import { File } from "./File";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -108,4 +109,8 @@ export class User extends BaseEntity {
   @OneToOne(() => Element, (page) => page.user, { nullable: true })
   @JoinColumn()
   page: Element;
+
+  @Field(() => Element, { nullable: true })
+  @OneToMany(() => Element, (page) => page.user, { nullable: true })
+  files: File;
 }
