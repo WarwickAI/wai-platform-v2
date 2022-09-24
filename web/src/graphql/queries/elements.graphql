@@ -4,8 +4,8 @@ query GetElements($type: String, $parentId: Float, $children: Boolean) {
   }
 }
 
-query GetElement($elementId: Float!, $children: Boolean) {
-  getElement(elementId: $elementId, children: $children) {
+query GetElement($elementId: Float, $route: String, $children: Boolean) {
+  getElement(elementId: $elementId, route: $route, children: $children) {
     ...FullElement
   }
 }

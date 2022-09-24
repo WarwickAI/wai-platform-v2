@@ -50,6 +50,10 @@ export class Element extends BaseEntity {
   @Column()
   type: string;
 
+  @Field({ nullable: true, defaultValue: null })
+  @Column({ nullable: true, default: null, unique: true })
+  route?: string;
+
   @Field(() => GraphQLJSONObject)
   @Column("simple-json")
   data: object;

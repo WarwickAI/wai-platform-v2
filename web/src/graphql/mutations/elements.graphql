@@ -29,8 +29,15 @@ mutation CreateElement(
   $data: JSONObject!
   $index: Float!
   $parent: Float
+  $route: String
 ) {
-  createElement(type: $type, data: $data, index: $index, parent: $parent) {
+  createElement(
+    type: $type
+    data: $data
+    index: $index
+    parent: $parent
+    route: $route
+  ) {
     ...FullElement
   }
 }

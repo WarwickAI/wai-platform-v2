@@ -24,6 +24,7 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
   }, [usersQuery]);
 
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
+  const [newRoute, setNewRoute] = useState<string>("");
 
   const [, createElement] = useCreateElementMutation();
   const [, assignUserPage] = useAssignUserPageMutation();
@@ -55,6 +56,24 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
       });
     }
   };
+
+  // Create a page with permissions as ADMIN and with no parent,
+  // but with a URL that is the route of the page
+  const createRootPage = () => {
+    if (!newRoute) {
+      return;
+    }
+
+    createElement({
+      index: 0,
+      type: "Page",
+      route: newRoute,
+      data: {
+        ...createDefaultElementData("Page"),
+      },
+    });
+  };
+
   return (
     <Dashboard title="Pages">
       <Box>
@@ -84,6 +103,19 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
             onClick={() => createAndAssignUserPage()}
             disabled={!selectedUser}
           >
+            Create
+          </Button>
+        </HStack>
+      </Box>
+      <Box>
+        <Heading size="md">Add Page With Route</Heading>
+        <HStack>
+          <Input
+            placeholder="Route"
+            value={newRoute}
+            onChange={(e) => setNewRoute(e.target.value)}
+          />
+          <Button variant={"admin"} onClick={() => createRootPage()}>
             Create
           </Button>
         </HStack>

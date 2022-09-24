@@ -116,13 +116,27 @@ export class ElementResolver {
   @UseMiddleware(getAuth, getUser)
   async getElement(
     @Ctx() { payload }: MyContext,
-    @Arg("elementId") elementId: number,
+    @Arg("elementId", { nullable: true }) elementId?: number,
+    @Arg("route", { nullable: true }) route?: string,
     @Arg("children", { defaultValue: true }) children?: boolean
   ): Promise<Element> {
     const user = payload?.user;
 
+    // Make sure one of elementId or route is defined
+    if (!elementId && !route) {
+      throw new Error("Must provide elementId or route");
+    }
+
+    const where: FindConditions<Element> = elementId
+      ? {
+          id: elementId,
+        }
+      : {
+          route,
+        };
+
     var element = await Element.findOneOrFail({
-      where: { id: elementId },
+      where,
       relations: children
         ? ALL_RELATIONS_AND_CHILD_RELATIONS
         : ALL_RELATIONS_BUT_CHILDREN,
@@ -153,14 +167,15 @@ export class ElementResolver {
     @Arg("data", () => GraphQLJSONObject) data: object,
     @Arg("type") type: string,
     @Arg("index") index: number,
-    @Arg("parent", { nullable: true }) parentId?: number
+    @Arg("parent", { nullable: true }) parentId?: number,
+    @Arg("route", { nullable: true }) route?: string
   ): Promise<Element | null> {
     // Check logged in (must be logged in to create an element)
     if (!payload || !payload.user) {
       throw new Error("Not logged in");
     }
 
-    return await addElement(data, type, parentId, index, payload.user);
+    return await addElement(data, type, parentId, index, route, payload.user);
   }
 
   @Mutation(() => Element)
@@ -357,6 +372,39 @@ export class ElementResolver {
     // Now filter out the elements that the user can't see
     element.children = element.children.filter((child) =>
       checkPermissions(child.canViewGroups, payload?.user)
+    );
+
+    return element;
+  }
+
+  @Mutation(() => Element)
+  @UseMiddleware(isAuth, isAdmin)
+  async editElementRoute(
+    @Ctx() { payload }: MyContext,
+    @Arg("elementId") elementId: number,
+    @Arg("route") route: string
+  ): Promise<Element> {
+    const user = payload?.user;
+    if (!user) {
+      throw new Error("Not authorized");
+    }
+
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
+
+    // Check if the user is permitted (i.e. is an admin)
+    if (user.groups.findIndex((group) => group.name === "Admin") === -1) {
+      throw new Error("Not authorized");
+    }
+
+    element.route = route;
+
+    await element.save();
+
+    // Now filter out the elements that the user can't see
+    element.children = element.children.filter((child) =>
+      checkPermissions(child.canViewGroups, user)
     );
 
     return element;
@@ -567,6 +615,7 @@ export class ElementResolver {
         (database.data as any).childrenBaseType.value,
         database.id,
         0,
+        undefined,
         user
       );
     }
@@ -580,6 +629,7 @@ const addElement = async (
   type: string,
   parentId: number | undefined,
   index: number,
+  route: string | undefined,
   user: User
 ) => {
   // First create the new element
@@ -589,6 +639,11 @@ const addElement = async (
   element.index = index;
   element.children = [];
   element.createdBy = user;
+
+  // Only set the route if the user is admin
+  if (user.groups.findIndex((group) => group.name === "Admin") !== -1) {
+    element.route = route;
+  }
 
   if (parentId) {
     element.parent = await Element.findOneOrFail(parentId, {

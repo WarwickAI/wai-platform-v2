@@ -95,6 +95,7 @@ export type Element = {
   id: Scalars['Float'];
   index: Scalars['Float'];
   parent?: Maybe<Element>;
+  route?: Maybe<Scalars['String']>;
   type: Scalars['String'];
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
@@ -190,6 +191,7 @@ export type Mutation = {
   editElectionRole: ElectionRoleResponse;
   editElementData: Element;
   editElementIndex: Element;
+  editElementRoute: Element;
   editMerch: MerchResponse;
   editProject: ProjectResponse;
   editRoleApplication: RoleApplicationResponse;
@@ -261,6 +263,7 @@ export type MutationCreateElementArgs = {
   data: Scalars['JSONObject'];
   index: Scalars['Float'];
   parent?: InputMaybe<Scalars['Float']>;
+  route?: InputMaybe<Scalars['String']>;
   type: Scalars['String'];
 };
 
@@ -335,6 +338,12 @@ export type MutationEditElementDataArgs = {
 export type MutationEditElementIndexArgs = {
   elementId: Scalars['Float'];
   index: Scalars['Float'];
+};
+
+
+export type MutationEditElementRouteArgs = {
+  elementId: Scalars['Float'];
+  route: Scalars['String'];
 };
 
 
@@ -583,7 +592,8 @@ export type QueryGetElectionRoleArgs = {
 
 export type QueryGetElementArgs = {
   children?: InputMaybe<Scalars['Boolean']>;
-  elementId: Scalars['Float'];
+  elementId?: InputMaybe<Scalars['Float']>;
+  route?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -978,6 +988,7 @@ export type CreateElementMutationVariables = Exact<{
   data: Scalars['JSONObject'];
   index: Scalars['Float'];
   parent?: InputMaybe<Scalars['Float']>;
+  route?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -1308,7 +1319,8 @@ export type GetElementsQueryVariables = Exact<{
 export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }> };
 
 export type GetElementQueryVariables = Exact<{
-  elementId: Scalars['Float'];
+  elementId?: InputMaybe<Scalars['Float']>;
+  route?: InputMaybe<Scalars['String']>;
   children?: InputMaybe<Scalars['Boolean']>;
 }>;
 
@@ -1985,8 +1997,14 @@ export function useEditElementIndexMutation() {
   return Urql.useMutation<EditElementIndexMutation, EditElementIndexMutationVariables>(EditElementIndexDocument);
 };
 export const CreateElementDocument = gql`
-    mutation CreateElement($type: String!, $data: JSONObject!, $index: Float!, $parent: Float) {
-  createElement(type: $type, data: $data, index: $index, parent: $parent) {
+    mutation CreateElement($type: String!, $data: JSONObject!, $index: Float!, $parent: Float, $route: String) {
+  createElement(
+    type: $type
+    data: $data
+    index: $index
+    parent: $parent
+    route: $route
+  ) {
     ...FullElement
   }
 }
@@ -2586,8 +2604,8 @@ export function useGetElementsQuery(options: Omit<Urql.UseQueryArgs<GetElementsQ
   return Urql.useQuery<GetElementsQuery>({ query: GetElementsDocument, ...options });
 };
 export const GetElementDocument = gql`
-    query GetElement($elementId: Float!, $children: Boolean) {
-  getElement(elementId: $elementId, children: $children) {
+    query GetElement($elementId: Float, $route: String, $children: Boolean) {
+  getElement(elementId: $elementId, route: $route, children: $children) {
     ...FullElement
   }
 }
