@@ -1,5 +1,5 @@
 import { Button, HStack, Input, Text } from "@chakra-ui/react";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useMemo, useState } from "react";
 import { useGetSignedUrlMutation } from "../../../generated/graphql";
 
@@ -11,6 +11,9 @@ interface ImagePropertyProps {
 
 const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
   const [file, setFile] = useState<any>();
+  const [imageDims, setImageDims] = useState<{ width: number; height: number }>(
+    { width: 0, height: 0 }
+  );
 
   const [, getSignedUrl] = useGetSignedUrlMutation();
 
@@ -27,53 +30,58 @@ const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
     return props.value;
   }, [props.value]);
 
+  const handleFileChange = async (e: any) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      // Load the image into a canvas to get the dimensions
+      const img = new Image();
+      img.onload = () => {
+        setImageDims({ width: img.width, height: img.height });
+      };
+      img.src = URL.createObjectURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (file) {
+      const signedUrlRes = await getSignedUrl({
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+        imgWidth: imageDims.width,
+        imgHeight: imageDims.height,
+      });
+      if (signedUrlRes.data?.getSignedUrl) {
+        const { signedUrl, key } = signedUrlRes.data.getSignedUrl;
+        const res = await fetch(signedUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+            "x-amz-acl": "public-read",
+          },
+        });
+
+        if (res.status === 200) {
+          props.onChange(key);
+          setFile(undefined);
+        }
+      }
+    }
+  };
+
   if (!props.isEdit) {
-    return imgSrc ? (
-      <Image src={imgSrc} alt={"some image"} width={"100"} height={"100"} />
-    ) : (
-      <Text>No Image</Text>
-    );
+    return imgSrc ? <Text>{imgSrc}</Text> : <Text>No Image</Text>;
   } else {
     return (
       <HStack>
         <Input
           type={"file"}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              setFile(file);
-            }
-          }}
+          accept={"image/png, image/jpeg, image/jpg, image/gif"}
+          onChange={handleFileChange}
         />
-        <Button
-          onClick={async () => {
-            if (file) {
-              const signedUrlRes = await getSignedUrl({
-                fileName: file.name,
-                fileType: file.type,
-                fileSize: file.size,
-              });
-              if (signedUrlRes.data?.getSignedUrl) {
-                const { signedUrl, key } = signedUrlRes.data.getSignedUrl;
-                const res = await fetch(signedUrl, {
-                  method: "PUT",
-                  body: file,
-                  headers: {
-                    "Content-Type": file.type,
-                    "x-amz-acl": "public-read",
-                  },
-                });
-
-                if (res.status === 200) {
-                  props.onChange(key);
-                  setFile(undefined);
-                }
-              }
-            }
-          }}
-        >
-          Upload
-        </Button>
+        <Button onClick={handleImageUpload}>Upload</Button>
       </HStack>
     );
   }

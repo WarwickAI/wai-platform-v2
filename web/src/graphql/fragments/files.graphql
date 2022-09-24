@@ -1,0 +1,16 @@
+fragment FileWithoutUploadedBy on File {
+  key
+  fileName
+  fileType
+  fileSize
+  isImage
+  imgWidth
+  imgHeight
+}
+
+fragment FullFile on File {
+  ...FileWithoutUploadedBy
+  uploadedBy {
+    ...UserNoGroupsElements
+  }
+}

@@ -120,6 +120,19 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type File = {
+  __typename?: 'File';
+  fileName: Scalars['String'];
+  fileSize: Scalars['Float'];
+  fileType: Scalars['String'];
+  imgHeight?: Maybe<Scalars['Float']>;
+  imgWidth?: Maybe<Scalars['Float']>;
+  isImage: Scalars['Boolean'];
+  key: Scalars['String'];
+  uploadedAt: Scalars['String'];
+  uploadedBy: User;
+};
+
 export type GetSignedUrlResponse = {
   __typename?: 'GetSignedUrlResponse';
   key: Scalars['String'];
@@ -388,6 +401,8 @@ export type MutationGetSignedUrlArgs = {
   fileName: Scalars['String'];
   fileSize: Scalars['Float'];
   fileType: Scalars['String'];
+  imgHeight?: InputMaybe<Scalars['Float']>;
+  imgWidth?: InputMaybe<Scalars['Float']>;
 };
 
 
@@ -543,6 +558,7 @@ export type Query = {
   getElement: Element;
   getElements: Array<Element>;
   getElementsNoChildren: Array<Element>;
+  getFile: File;
   getRoleApplication?: Maybe<RoleApplication>;
   getRoleApplicationForVote: RoleApplicationResponseForVote;
   getRoleVoteCount: Array<RoleApplicationVoteCount>;
@@ -615,6 +631,11 @@ export type QueryGetElementsArgs = {
   children?: InputMaybe<Scalars['Boolean']>;
   parentId?: InputMaybe<Scalars['Float']>;
   type?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetFileArgs = {
+  key: Scalars['String'];
 };
 
 
@@ -878,6 +899,10 @@ export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: b
 
 export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
 
+export type FileWithoutUploadedByFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined };
+
+export type FullFileFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined, uploadedBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined } };
+
 export type GroupWithoutUsersFragment = { __typename?: 'Group', id: number, name: string };
 
 export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
@@ -1062,6 +1087,8 @@ export type GetSignedUrlMutationVariables = Exact<{
   fileType: Scalars['String'];
   fileName: Scalars['String'];
   fileSize: Scalars['Float'];
+  imgWidth?: InputMaybe<Scalars['Float']>;
+  imgHeight?: InputMaybe<Scalars['Float']>;
 }>;
 
 
@@ -1365,6 +1392,13 @@ export type GetUserPageQueryVariables = Exact<{
 
 
 export type GetUserPageQuery = { __typename?: 'Query', getUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+
+export type GetFileQueryVariables = Exact<{
+  key: Scalars['String'];
+}>;
+
+
+export type GetFileQuery = { __typename?: 'Query', getFile: { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined } };
 
 export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1779,6 +1813,38 @@ export const RegularTutorialFragmentDoc = gql`
   }
 }
     `;
+export const FileWithoutUploadedByFragmentDoc = gql`
+    fragment FileWithoutUploadedBy on File {
+  key
+  fileName
+  fileType
+  fileSize
+  isImage
+  imgWidth
+  imgHeight
+}
+    `;
+export const UserNoGroupsElementsFragmentDoc = gql`
+    fragment UserNoGroupsElements on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+}
+    `;
+export const FullFileFragmentDoc = gql`
+    fragment FullFile on File {
+  ...FileWithoutUploadedBy
+  uploadedBy {
+    ...UserNoGroupsElements
+  }
+}
+    ${FileWithoutUploadedByFragmentDoc}
+${UserNoGroupsElementsFragmentDoc}`;
 export const GroupWithUsersFragmentDoc = gql`
     fragment GroupWithUsers on Group {
   id
@@ -1793,18 +1859,6 @@ export const RegularTagFragmentDoc = gql`
   id
   title
   color
-}
-    `;
-export const UserNoGroupsElementsFragmentDoc = gql`
-    fragment UserNoGroupsElements on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
 }
     `;
 export const UserNoElementsFragmentDoc = gql`
@@ -2121,8 +2175,14 @@ export function useEditElementRouteMutation() {
   return Urql.useMutation<EditElementRouteMutation, EditElementRouteMutationVariables>(EditElementRouteDocument);
 };
 export const GetSignedUrlDocument = gql`
-    mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!) {
-  getSignedUrl(fileType: $fileType, fileName: $fileName, fileSize: $fileSize) {
+    mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!, $imgWidth: Float, $imgHeight: Float) {
+  getSignedUrl(
+    fileType: $fileType
+    fileName: $fileName
+    fileSize: $fileSize
+    imgWidth: $imgWidth
+    imgHeight: $imgHeight
+  ) {
     signedUrl
     key
   }
@@ -2682,6 +2742,17 @@ export const GetUserPageDocument = gql`
 
 export function useGetUserPageQuery(options: Omit<Urql.UseQueryArgs<GetUserPageQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserPageQuery>({ query: GetUserPageDocument, ...options });
+};
+export const GetFileDocument = gql`
+    query GetFile($key: String!) {
+  getFile(key: $key) {
+    ...FileWithoutUploadedBy
+  }
+}
+    ${FileWithoutUploadedByFragmentDoc}`;
+
+export function useGetFileQuery(options: Omit<Urql.UseQueryArgs<GetFileQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetFileQuery>({ query: GetFileDocument, ...options });
 };
 export const GetGroupsDocument = gql`
     query GetGroups {

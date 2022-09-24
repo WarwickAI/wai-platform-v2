@@ -49,9 +49,11 @@ const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
         onChange={async (e) => {
           // Check if last character is one of [. , 0]
           if (
-            [".", ",", "0"].includes(
+            [".", ","].includes(
               e.target.value.charAt(e.target.value.length - 1)
-            )
+            ) ||
+            ((e.target.value.includes(".") || e.target.value.includes(",")) &&
+              e.target.value.charAt(e.target.value.length - 1) === "0")
           ) {
             setValue(e.target.value);
           } else {
@@ -59,7 +61,7 @@ const NumberProperty: React.FC<NumberPropertyProps> = (props) => {
             e.target.value = e.target.value.replace(/,/g, "");
             setValue(parseFloat(e.target.value) + "");
             debounced.cancel();
-            debounced(parseFloat(e.target.value));
+            debounced(parseFloat(e.target.value) + "");
           }
         }}
         height={props.isTitle ? 14 : 10}

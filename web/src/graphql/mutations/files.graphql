@@ -1,5 +1,17 @@
-mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!) {
-  getSignedUrl(fileType: $fileType, fileName: $fileName, fileSize: $fileSize) {
+mutation GetSignedUrl(
+  $fileType: String!
+  $fileName: String!
+  $fileSize: Float!
+  $imgWidth: Float
+  $imgHeight: Float
+) {
+  getSignedUrl(
+    fileType: $fileType
+    fileName: $fileName
+    fileSize: $fileSize
+    imgWidth: $imgWidth
+    imgHeight: $imgHeight
+  ) {
     signedUrl
     key
   }

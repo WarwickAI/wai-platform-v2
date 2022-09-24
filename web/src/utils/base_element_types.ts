@@ -13,6 +13,7 @@ import {
   DatabaseViewAsValue,
   BoolValue,
   UserValue,
+  NumberValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -137,6 +138,11 @@ export const ElementTypesDef = {
         label: "Image",
         inSettings: true,
       },
+      scale: {
+        type: "Number",
+        label: "Scale",
+        inSettings: true,
+      },
     },
   } as ElementTypeDef,
   DataLink: {
@@ -249,6 +255,7 @@ export type DatabaseViewElementData = {
 
 export type ImageElementData = {
   image: ElementDataPiece<ImageValue>;
+  scale: ElementDataPiece<NumberValue>;
 };
 
 export type DataLinkElementData = {

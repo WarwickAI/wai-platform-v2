@@ -1,0 +1,5 @@
+query GetFile($key: String!) {
+  getFile(key: $key) {
+    ...FileWithoutUploadedBy
+  }
+}
