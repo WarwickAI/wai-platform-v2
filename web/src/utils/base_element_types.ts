@@ -268,3 +268,7 @@ export type SurveyElementData = {
   iconImg: ElementDataPiece<ImageValue>;
   user: ElementDataPiece<UserValue>;
 };
+
+export type UserData = {
+  user: ElementDataPiece<UserValue>;
+};

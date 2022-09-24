@@ -615,7 +615,7 @@ export class ElementResolver {
       throw new Error("Button has no action type");
     }
 
-    if (actionType === "Add" || actionType === "StartSurvey") {
+    if (actionType === "StartSurvey" || actionType === "AddUser") {
       if (!(button.data as any).database) {
         throw new Error("Button does not have a database attribute");
       }
@@ -771,7 +771,10 @@ const addElement = async (
   }
 
   // If the element is a survey, we should add the user ID
-  if (type === "Survey") {
+  if (
+    type === "Survey" ||
+    (type === "User" && element.parent?.type === "Database")
+  ) {
     // Add the user attribute
     (element.data as any).user.value = user.id;
   }
@@ -908,7 +911,10 @@ const createElementInitialGroups = async (
 
   // If the type is a survey, set view and interact permissions to the user
   // Also add the database's groups to all permissions
-  if (type === "Survey" && parent) {
+  if (
+    (type === "Survey" && parent) ||
+    (type === "User" && parent?.type === "Database")
+  ) {
     const userGroup = await getUserGroup(user);
 
     canInteractGroups.push(userGroup);

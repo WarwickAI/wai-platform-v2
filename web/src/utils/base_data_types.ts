@@ -8,14 +8,8 @@ type ActionTypeDef = {
 };
 
 export const ActionTypesDef = {
-  Add: {
-    label: "Add",
-  } as ActionTypeDef,
-  Update: {
-    label: "Update",
-  } as ActionTypeDef,
-  Delete: {
-    label: "Delete",
+  AddUser: {
+    label: "Add User",
   } as ActionTypeDef,
   StartSurvey: {
     label: "Start Survey",

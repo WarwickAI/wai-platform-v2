@@ -46,13 +46,6 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
       };
     }
 
-    if (elementData.action.value === "Add") {
-      return {
-        text: elementData.text.value,
-        disabled: false,
-      };
-    }
-
     if (elementData.action.value === "StartSurvey" && databaseElements) {
       // See if the user already has a response
       const response = databaseElements.find(
@@ -74,6 +67,26 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
       }
     }
 
+    if (elementData.action.value === "AddUser" && databaseElements) {
+      // See if the user already has a response
+      const response = databaseElements.find(
+        (child) =>
+          (child as Element<SurveyElementData>).data.user.value === user.id
+      );
+
+      if (response) {
+        return {
+          text: "Already added",
+          disabled: true,
+        };
+      } else {
+        return {
+          text: elementData.text.value,
+          disabled: false,
+        };
+      }
+    }
+
     return {
       text: "Unknown Action",
       disabled: true,
@@ -86,8 +99,8 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
         variant={"primary"}
         onClick={async () => {
           if (
-            elementData.action.value === "Add" ||
-            elementData.action.value === "StartSurvey"
+            elementData.action.value === "StartSurvey" ||
+            elementData.action.value === "AddUser"
           ) {
             if (buttonState.link) {
               router.push(buttonState.link);
@@ -97,7 +110,10 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
             const newElement = await handleAction({
               buttonId: element.id,
             });
-            if (newElement.data?.handleAction) {
+            if (
+              newElement.data?.handleAction &&
+              elementData.action.value === "StartSurvey"
+            ) {
               router.push(`/generic/${newElement.data?.handleAction.id}`);
             }
             return;

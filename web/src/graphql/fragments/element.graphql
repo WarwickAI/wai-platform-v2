@@ -8,6 +8,7 @@ fragment ElementNoChildrenCreatedByGroups on Element {
     parent {
       id
     }
+    route
   }
   type
   index

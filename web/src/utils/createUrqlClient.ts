@@ -58,6 +58,7 @@ import {
   GetElementsQuery,
   GetElementsDocument,
   EditElementRouteMutation,
+  HandleActionMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -678,6 +679,17 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
 
               // Update element
               updateElement(cache, elementId, newElement as Element<any>);
+            },
+            handleAction: (_result, args, cache, info) => {
+              const res = _result as HandleActionMutation;
+              if (!res.handleAction) {
+                return;
+              }
+              const newElement = res.handleAction;
+              const elementId = newElement.id;
+
+              // Update element
+              addElement(cache, newElement as Element<any>);
             },
             inheritDatabaseAttributes: (_result, args, cache, info) => {
               const res = _result as InheritDatabaseAttributesMutation;
