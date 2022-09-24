@@ -967,8 +967,8 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
         // If the query element ID argument matches the new element's parent, add the new element
         // to the parent's children
         if (
-          args?.elementId === result.parent?.id ||
-          args?.route === result.parent?.route
+          (args?.elementId === result.parent?.id && result.parent) ||
+          (args?.route === result.parent?.route && result.parent?.route)
         ) {
           // Check that it isn't already in the children
           const childIndex = query.getElement.children.findIndex(
