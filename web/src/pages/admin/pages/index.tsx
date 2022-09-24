@@ -7,6 +7,7 @@ import {
   useGetElementsQuery,
   useGetUsersQuery,
   User,
+  useRemoveElementMutation,
 } from "../../../generated/graphql";
 import {
   Button,
@@ -47,6 +48,7 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
   const [, createElement] = useCreateElementMutation();
   const [, assignUserPage] = useAssignUserPageMutation();
   const [, editElementRoute] = useEditElementRouteMutation();
+  const [, removeElement] = useRemoveElementMutation();
 
   const [{ data: pagesQuery }] = useGetElementsQuery({
     variables: { type: "Page" },
@@ -80,10 +82,15 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
     });
     if (res.data?.createElement) {
       const pageId = res.data.createElement.id;
-      await assignUserPage({
+      const assignUserPageRes = await assignUserPage({
         uniId: selectedUser.uniId ? selectedUser.uniId : -1,
         pageId: pageId,
       });
+
+      if (assignUserPageRes.error) {
+        console.log("Error assigning user page, removing new element");
+        await removeElement({ elementId: pageId });
+      }
     }
   };
 

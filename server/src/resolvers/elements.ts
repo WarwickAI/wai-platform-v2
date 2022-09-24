@@ -539,6 +539,10 @@ export class ElementResolver {
       }
     );
 
+    if (!user.page) {
+      throw new Error("User has no page");
+    }
+
     const page = await Element.findOneOrFail(user.page.id, {
       relations: ["canViewGroups"],
     });
@@ -561,10 +565,24 @@ export class ElementResolver {
         relations: ["page"],
       }
     );
+
+    if (user.page) {
+      throw new Error("User already has a page");
+    }
+
+    const userGroup = await getUserGroup(user);
+
     const page = await Element.findOneOrFail(pageId, {
-      relations: ["user"],
+      relations: [...GROUP_REALATIONS, "user"],
     });
+
+    page.canEditGroups = [...page.canEditGroups, userGroup];
+    page.canInteractGroups = [...page.canInteractGroups, userGroup];
+    page.canViewGroups = [...page.canViewGroups, userGroup];
+    await page.save();
+
     user.page = page;
+
     await user.save();
     return page;
   }
