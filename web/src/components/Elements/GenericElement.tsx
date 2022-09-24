@@ -12,7 +12,9 @@ import {
   TextElementData,
   DataLinkElementData,
   ButtonElementData,
+  ImageElementData,
 } from "../../utils/base_element_types";
+import Image from "./Image";
 
 interface MainProps {
   elementId: number;
@@ -63,6 +65,14 @@ const Main: React.FC<MainProps> = (props) => {
     return (
       <DataLink
         element={element.getElement as Element<DataLinkElementData>}
+        isEdit={props.isEdit}
+      />
+    );
+  }
+  if (element.getElement.type === "Image") {
+    return (
+      <Image
+        element={element.getElement as Element<ImageElementData>}
         isEdit={props.isEdit}
       />
     );

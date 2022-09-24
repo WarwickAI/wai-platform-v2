@@ -22,7 +22,7 @@ interface GenericPropertyProps {
 const GenericProperty: React.FC<GenericPropertyProps> = (
   props: GenericPropertyProps
 ) => {
-  if (props.type === "Text" || props.type === "Url" || props.type === "Image") {
+  if (props.type === "Text" || props.type === "Url") {
     return (
       <TextProperty
         value={props.value}
@@ -107,6 +107,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "Bool") {
     return (
       <BoolProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "Image") {
+    return (
+      <ImageProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

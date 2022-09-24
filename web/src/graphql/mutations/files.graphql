@@ -1,0 +1,6 @@
+mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!) {
+  getSignedUrl(fileType: $fileType, fileName: $fileName, fileSize: $fileSize) {
+    signedUrl
+    key
+  }
+}

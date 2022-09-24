@@ -120,6 +120,12 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type GetSignedUrlResponse = {
+  __typename?: 'GetSignedUrlResponse';
+  key: Scalars['String'];
+  signedUrl: Scalars['String'];
+};
+
 export type Group = {
   __typename?: 'Group';
   canEditElements: Array<Element>;
@@ -197,6 +203,7 @@ export type Mutation = {
   editRoleApplication: RoleApplicationResponse;
   editTalk: TalkResponse;
   editTutorial: TutorialResponse;
+  getSignedUrl: GetSignedUrlResponse;
   handleAction: Element;
   inheritDatabaseAttributes: Element;
   joinCourse: Scalars['Boolean'];
@@ -374,6 +381,13 @@ export type MutationEditTalkArgs = {
 export type MutationEditTutorialArgs = {
   id: Scalars['Float'];
   tutorialInfo: EventInput;
+};
+
+
+export type MutationGetSignedUrlArgs = {
+  fileName: Scalars['String'];
+  fileSize: Scalars['Float'];
+  fileType: Scalars['String'];
 };
 
 
@@ -797,6 +811,7 @@ export type User = {
   createdAt: Scalars['String'];
   elements: Array<Element>;
   email: Scalars['String'];
+  files?: Maybe<Element>;
   firstName: Scalars['String'];
   groups: Array<Group>;
   id: Scalars['Float'];
@@ -1042,6 +1057,15 @@ export type EditElementRouteMutationVariables = Exact<{
 
 
 export type EditElementRouteMutation = { __typename?: 'Mutation', editElementRoute: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+
+export type GetSignedUrlMutationVariables = Exact<{
+  fileType: Scalars['String'];
+  fileName: Scalars['String'];
+  fileSize: Scalars['Float'];
+}>;
+
+
+export type GetSignedUrlMutation = { __typename?: 'Mutation', getSignedUrl: { __typename?: 'GetSignedUrlResponse', signedUrl: string, key: string } };
 
 export type AddUserToGroupMutationVariables = Exact<{
   groupId: Scalars['Float'];
@@ -2095,6 +2119,18 @@ export const EditElementRouteDocument = gql`
 
 export function useEditElementRouteMutation() {
   return Urql.useMutation<EditElementRouteMutation, EditElementRouteMutationVariables>(EditElementRouteDocument);
+};
+export const GetSignedUrlDocument = gql`
+    mutation GetSignedUrl($fileType: String!, $fileName: String!, $fileSize: Float!) {
+  getSignedUrl(fileType: $fileType, fileName: $fileName, fileSize: $fileSize) {
+    signedUrl
+    key
+  }
+}
+    `;
+
+export function useGetSignedUrlMutation() {
+  return Urql.useMutation<GetSignedUrlMutation, GetSignedUrlMutationVariables>(GetSignedUrlDocument);
 };
 export const AddUserToGroupDocument = gql`
     mutation AddUserToGroup($groupId: Float!, $userId: Float!) {
