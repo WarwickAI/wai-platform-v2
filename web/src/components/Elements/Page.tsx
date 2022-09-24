@@ -171,7 +171,7 @@ const Page: React.FC<PageProps> = (props) => {
               />
             );
           })}
-          {items.length === 0 && (
+          {items.length === 0 && isEdit && (
             <Box position="relative" p={2} my={2}>
               <Flex
                 position={"absolute"}

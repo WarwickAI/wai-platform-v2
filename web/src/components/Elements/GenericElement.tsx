@@ -67,7 +67,7 @@ const Main: React.FC<MainProps> = (props) => {
       />
     );
   }
-  return <>No Element</>;
+  return <>No Element - {element.getElement.type}</>;
 };
 
 export default Main;
