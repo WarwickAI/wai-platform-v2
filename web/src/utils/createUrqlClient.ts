@@ -1,4 +1,4 @@
-import { Cache, cacheExchange, Scalar } from "@urql/exchange-graphcache";
+import { Cache, cacheExchange } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import {
@@ -57,6 +57,7 @@ import {
   DeleteGroupMutation,
   GetElementsQuery,
   GetElementsDocument,
+  EditElementRouteMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -667,6 +668,17 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
               // Update element
               updateElement(cache, elementId, newElement as Element<any>);
             },
+            editElementRoute: (_result, args, cache, info) => {
+              const res = _result as EditElementRouteMutation;
+              if (!res.editElementRoute) {
+                return;
+              }
+              const newElement = res.editElementRoute;
+              const elementId = newElement.id;
+
+              // Update element
+              updateElement(cache, elementId, newElement as Element<any>);
+            },
             inheritDatabaseAttributes: (_result, args, cache, info) => {
               const res = _result as InheritDatabaseAttributesMutation;
               if (!res.inheritDatabaseAttributes) {
@@ -936,13 +948,16 @@ const addElement = (cache: Cache, newElement: Element<any>) => {
       newElement,
       (result, query) => {
         // If the query element ID argument matches the new element, add the new element
-        if (args?.elementId === result.id) {
+        if (args?.elementId === result.id || args?.route === result.route) {
           query.getElement = result;
         }
 
         // If the query element ID argument matches the new element's parent, add the new element
         // to the parent's children
-        if (args?.elementId === result.parent?.id) {
+        if (
+          args?.elementId === result.parent?.id ||
+          args?.route === result.parent?.route
+        ) {
           // Check that it isn't already in the children
           const childIndex = query.getElement.children.findIndex(
             (val) => val.id === result.id

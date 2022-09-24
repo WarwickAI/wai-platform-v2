@@ -83,3 +83,9 @@ mutation HandleAction($buttonId: Float!) {
     ...FullElement
   }
 }
+
+mutation EditElementRoute($elementId: Float!, $route: String!) {
+  editElementRoute(elementId: $elementId, route: $route) {
+    ...FullElement
+  }
+}

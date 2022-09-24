@@ -3,17 +3,35 @@ import Dashboard from "../../../components/Dashboard";
 import {
   useAssignUserPageMutation,
   useCreateElementMutation,
+  useEditElementRouteMutation,
+  useGetElementsQuery,
   useGetUsersQuery,
   User,
 } from "../../../generated/graphql";
-import { Button, Box, Heading, Input, Select, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  Box,
+  Heading,
+  Input,
+  Select,
+  HStack,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { createDefaultElementData } from "../../../utils/config";
+import { useRouter } from "next/router";
+import TextProperty from "../../../components/Properties/Text";
 
 interface PagesAdminProps {}
 
 const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
+  const router = useRouter();
   const [{ data: usersQuery }] = useGetUsersQuery();
 
   const users = useMemo(() => {
@@ -28,6 +46,18 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
 
   const [, createElement] = useCreateElementMutation();
   const [, assignUserPage] = useAssignUserPageMutation();
+  const [, editElementRoute] = useEditElementRouteMutation();
+
+  const [{ data: pagesQuery }] = useGetElementsQuery({
+    variables: { type: "Page" },
+  });
+
+  const routePages = useMemo(() => {
+    if (!pagesQuery) {
+      return [];
+    }
+    return pagesQuery.getElements.filter((e) => e.route);
+  }, [pagesQuery]);
 
   const createAndAssignUserPage = async () => {
     if (!selectedUser) {
@@ -107,7 +137,7 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
           </Button>
         </HStack>
       </Box>
-      <Box>
+      <Box pt={6}>
         <Heading size="md">Add Page With Route</Heading>
         <HStack>
           <Input
@@ -119,6 +149,39 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
             Create
           </Button>
         </HStack>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th></Th>
+              <Th>Title</Th>
+              <Th>Route</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {routePages.map((p) => (
+              <Tr key={p.id}>
+                <Td>
+                  <Box
+                    onClick={() => router.push(p.route as string)}
+                    _hover={{ cursor: "pointer" }}
+                  >
+                    ↗️
+                  </Box>
+                </Td>
+                <Td>{p.data.title.value}</Td>
+                <Td>
+                  <TextProperty
+                    isEdit={true}
+                    onChange={(v) =>
+                      editElementRoute({ elementId: p.id, route: v })
+                    }
+                    value={p.route + ""}
+                  ></TextProperty>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       </Box>
     </Dashboard>
   );
