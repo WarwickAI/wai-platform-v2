@@ -26,6 +26,7 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
   } else {
     return (
       <Textarea
+        minHeight={0}
         value={value}
         type={"text"}
         resize={"none"}
@@ -44,7 +45,7 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
 
   return (
     <Flex
-      minHeight={10}
+      minHeight={0}
       paddingInlineStart={4}
       paddingInlineEnd={4}
       paddingY={"0.4rem"}
