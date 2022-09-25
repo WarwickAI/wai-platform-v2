@@ -1,6 +1,5 @@
 import { Button, HStack, Input, Text } from "@chakra-ui/react";
-import NextImage from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useGetSignedUrlMutation } from "../../../generated/graphql";
 import CryptoJS from "crypto-es";
 
@@ -11,6 +10,7 @@ interface ImagePropertyProps {
 }
 
 const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
+  const fileUploadRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<any>();
   const [imageDims, setImageDims] = useState<{ width: number; height: number }>(
     { width: 0, height: 0 }
@@ -23,13 +23,7 @@ const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
     if (!props.value) {
       return undefined;
     }
-
-    // If the value is a key, prepend the S3 URL
-    if (!props.value.startsWith("http")) {
-      return `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${props.value}`;
-    }
-
-    return props.value;
+    return `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${props.value}`;
   }, [props.value]);
 
   const handleFileChange = async (e: any) => {
@@ -106,11 +100,26 @@ const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
     return (
       <HStack>
         <Input
+          ref={fileUploadRef}
           type={"file"}
           accept={"image/png, image/jpeg, image/jpg, image/gif"}
           onChange={handleFileChange}
+          display={"none"}
         />
-        <Button onClick={handleImageUpload}>Upload</Button>
+        <Button
+          onClick={() => fileUploadRef.current?.click()}
+          variant={"primary"}
+        >
+          Select Image
+        </Button>
+        {file && <Text>{file.name}</Text>}
+        <Button
+          onClick={handleImageUpload}
+          variant={"primary"}
+          disabled={!file}
+        >
+          Upload
+        </Button>
       </HStack>
     );
   }

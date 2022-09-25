@@ -12,19 +12,17 @@ interface ImageProps {
 
 const Image: React.FC<ImageProps> = (props) => {
   const elementProps = props.element.data as ImageElementData;
-  const isWAIStored = !elementProps.image.value.startsWith("http");
 
   const [{ data: fileQuery }] = useGetFileQuery({
     variables: {
       key: elementProps.image.value,
     },
-    pause: !isWAIStored,
+    pause: !elementProps.image.value,
   });
 
   const imgDims = useMemo(() => {
     const scale = elementProps.scale?.value > 0 ? elementProps.scale.value : 1;
     if (
-      isWAIStored &&
       fileQuery?.getFile &&
       fileQuery.getFile.imgWidth &&
       fileQuery.getFile.imgHeight
@@ -39,20 +37,14 @@ const Image: React.FC<ImageProps> = (props) => {
       width: 300 * scale,
       height: 300 * scale,
     };
-  }, [fileQuery, isWAIStored, elementProps.scale]);
+  }, [fileQuery, elementProps.scale]);
 
   const imgSrc = useMemo(() => {
     if (!elementProps.image) {
       return undefined;
     }
-
-    // If the value is a key, prepend the S3 URL
-    if (isWAIStored) {
-      return `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${elementProps.image.value}`;
-    }
-
-    return elementProps.image.value;
-  }, [elementProps.image, isWAIStored]);
+    return `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${elementProps.image.value}`;
+  }, [elementProps.image]);
 
   return imgSrc ? (
     <NextImage
