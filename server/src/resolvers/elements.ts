@@ -684,7 +684,13 @@ const addElement = async (
 
   // Check user has permissions to create this element (i.e. edit itself)
   // Always allow creation if its a survey (To-Do: should make this better)
-  if (!checkPermissions(element.canEditGroups, user) && !(type === "Survey")) {
+  if (
+    !checkPermissions(element.canEditGroups, user) &&
+    !(
+      type === "Survey" ||
+      (type === "User" && element.parent?.type === "Database")
+    )
+  ) {
     throw new Error("Not authorized to create this element");
   }
 
