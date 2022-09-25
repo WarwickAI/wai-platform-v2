@@ -44,6 +44,7 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
 
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
   const [newRoute, setNewRoute] = useState<string>("");
+  const [removeElementId, setRemoveElementId] = useState<number | undefined>();
 
   const [, createElement] = useCreateElementMutation();
   const [, assignUserPage] = useAssignUserPageMutation();
@@ -144,7 +145,7 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
           </Button>
         </HStack>
       </Box>
-      <Box pt={6}>
+      <Box mt={6}>
         <Heading size="md">Add Page With Route</Heading>
         <HStack>
           <Input
@@ -189,6 +190,25 @@ const PagesAdmin: React.FC<PagesAdminProps> = ({}) => {
             ))}
           </Tbody>
         </Table>
+      </Box>
+      <Box mt={6}>
+        <Heading size="md">Remove Element</Heading>
+        <HStack>
+          <Input
+            placeholder="Element ID"
+            value={removeElementId}
+            onChange={(e) => setRemoveElementId(parseInt(e.target.value))}
+          />
+          <Button
+            variant={"admin"}
+            onClick={() =>
+              removeElementId && removeElement({ elementId: removeElementId })
+            }
+            disabled={!removeElementId}
+          >
+            Remove
+          </Button>
+        </HStack>
       </Box>
     </Dashboard>
   );
