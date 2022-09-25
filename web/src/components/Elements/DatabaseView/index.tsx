@@ -216,7 +216,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   };
 
   return (
-    <Box>
+    <>
       {database ? (
         <>
           {elementData.view.value === "List" && (
@@ -246,7 +246,7 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
       ) : (
         <Text>No Database Selected (select in settings)</Text>
       )}
-    </Box>
+    </>
   );
 };
 

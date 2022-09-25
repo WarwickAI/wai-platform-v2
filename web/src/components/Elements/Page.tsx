@@ -97,12 +97,17 @@ const Page: React.FC<PageProps> = (props) => {
 
   const coverImg = useMemo(
     () =>
-      elementProps.coverImg.value ? elementProps.coverImg.value : undefined,
+      elementProps.coverImg.value
+        ? `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${elementProps.coverImg.value}`
+        : undefined,
     [elementProps.coverImg.value]
   );
 
   const iconImg = useMemo(
-    () => (elementProps.iconImg.value ? elementProps.iconImg.value : undefined),
+    () =>
+      elementProps.iconImg.value
+        ? `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${elementProps.iconImg.value}`
+        : undefined,
     [elementProps.iconImg.value]
   );
 

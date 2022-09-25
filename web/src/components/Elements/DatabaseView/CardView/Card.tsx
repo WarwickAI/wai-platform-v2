@@ -1,33 +1,41 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface CardProps {
   title: string | JSX.Element;
   elementId: number;
   description?: string | JSX.Element;
   extraInfo?: string | JSX.Element;
-  backgroundImg?: string | JSX.Element;
+  cardImg?: string | JSX.Element;
 }
 
 const Card: React.FC<CardProps> = (props) => {
   const router = useRouter();
 
+  const cardImg = useMemo(
+    () =>
+      props.cardImg
+        ? `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${props.cardImg}`
+        : undefined,
+    [props.cardImg]
+  );
+
   return (
     <Box
       // maxW="sm"
       h={96}
-      borderWidth={props.backgroundImg ? 0 : 1}
+      borderWidth={cardImg ? 0 : 1}
       borderRadius="2xl"
       overflow="hidden"
       backgroundImage={
-        props.backgroundImg
-          ? `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('${props.backgroundImg}')`
+        cardImg
+          ? `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('${cardImg}')`
           : ""
       }
-      backgroundPosition={props.backgroundImg ? "center" : ""}
-      backgroundRepeat={props.backgroundImg ? "no-repeat" : ""}
-      backgroundSize={props.backgroundImg ? "cover" : ""}
+      backgroundPosition={cardImg ? "center" : ""}
+      backgroundRepeat={cardImg ? "no-repeat" : ""}
+      backgroundSize={cardImg ? "cover" : ""}
       _hover={{ cursor: "pointer" }}
       onClick={() => router.push(`/generic/${props.elementId}`)}
     >
@@ -37,11 +45,7 @@ const Card: React.FC<CardProps> = (props) => {
             {props.extraInfo}
           </Text>
         )}
-        <Heading
-          size="md"
-          color={props.backgroundImg ? "white" : "black"}
-          pb={4}
-        >
+        <Heading size="md" color={cardImg ? "white" : "black"} pb={4}>
           {props.title}
         </Heading>
         {props.description && <Text>{props.description}</Text>}

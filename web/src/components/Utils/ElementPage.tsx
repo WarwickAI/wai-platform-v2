@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Box, Flex, Image, useBreakpointValue } from "@chakra-ui/react";
+import React from "react";
+import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import TextProperty from "../Properties/Text";
+import NextImage from "next/image";
 
 interface ElementPageProps {
   title: string;
@@ -37,15 +38,15 @@ const ElementPage: React.FC<ElementPageProps> = (props) => {
           pb={props.coverImg ? 5 : 4}
         >
           {props.iconImg && (
-            <Image
-              src={props.iconImg}
-              alt="Page Icon"
-              width={24}
-              height={24}
-              objectFit="cover"
-              mb={4}
-              mt={props.coverImg ? -20 : 0}
-            />
+            <Box mb={4} mt={props.coverImg ? -20 : 0}>
+              <NextImage
+                src={props.iconImg}
+                alt="Page Icon"
+                width={96}
+                height={96}
+                objectFit="cover"
+              />
+            </Box>
           )}
           <Flex
             flexDirection={isMobile ? "column" : "row"}

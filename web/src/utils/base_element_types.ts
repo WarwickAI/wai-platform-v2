@@ -51,7 +51,7 @@ export const ElementTypesDef = {
         label: "Title",
         inSettings: true,
       },
-      cardImage: {
+      cardImg: {
         type: "Image",
         label: "Card Image",
         inSettings: true,
