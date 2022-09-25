@@ -139,8 +139,8 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
           <DragHandleIcon />
         </Box>
       </PopoverTrigger>
-      <PopoverContent w={40} p={0}>
-        <PopoverBody m={2} p={0}>
+      <PopoverContent w={40}>
+        <PopoverBody>
           <VStack divider={<StackDivider borderColor="gray.200" />} spacing={1}>
             {!props.hideAttributes && attributes.length > 0 && (
               <VStack w={"full"} spacing={1}>
@@ -223,7 +223,12 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
   const [, editElement] = useEditElementDataMutation();
 
   return (
-    <Popover autoFocus={true} returnFocusOnClose={false} placement={"right"}>
+    <Popover
+      autoFocus={true}
+      returnFocusOnClose={false}
+      placement={"right"}
+      gutter={16}
+    >
       <PopoverTrigger>
         <Button size={"sm"} variant="setting">
           {ElementTypesDef[props.element.type].data[props.dataPieceName]
