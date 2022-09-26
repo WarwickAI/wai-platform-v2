@@ -41,6 +41,7 @@
     "react-markdown": "^7.1.1",
     "react-tsparticles": "^1.37.5",
     "remark-gfm": "^3.0.1",
+    "sharp": "^0.31.0",
     "urql": "^2.0.5",
     "use-debounce": "^8.0.3"
   },
