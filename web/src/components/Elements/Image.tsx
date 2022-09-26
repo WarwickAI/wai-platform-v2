@@ -43,7 +43,7 @@ const Image: React.FC<ImageProps> = (props) => {
     if (!elementProps.image) {
       return undefined;
     }
-    return `https://${process.env.NEXT_PUBLIC_DO_SPACES_BUCKET}.${process.env.NEXT_PUBLIC_DO_SPACES_REGION}.digitaloceanspaces.com/${elementProps.image.value}`;
+    return `${process.env.NEXT_PUBLIC_CDN}/${elementProps.image.value}`;
   }, [elementProps.image]);
 
   return imgSrc ? (
