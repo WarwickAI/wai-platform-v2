@@ -23,7 +23,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
   if (!props.isEdit) {
     return (
       <Flex
-        height={props.isTitle ? 14 : 10}
+        // height={props.isTitle ? 14 : 10}
         paddingInlineStart={4}
         paddingInlineEnd={4}
         alignItems="center"
@@ -34,7 +34,7 @@ const TextProperty: React.FC<TextPropertyProps> = (props) => {
         <Text
           fontWeight={props.isTitle ? "bold" : "normal"}
           fontSize={props.isTitle ? "2xl" : "md"}
-          noOfLines={1}
+          // noOfLines={1}
           wordBreak={"break-word"}
         >
           {value}
