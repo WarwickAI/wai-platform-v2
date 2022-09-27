@@ -55,7 +55,7 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
 
       if (response) {
         return {
-          text: "Continue Survey",
+          text: "Continue Response",
           disabled: false,
           link: `/generic/${response.id}`,
         };
@@ -76,7 +76,7 @@ const ButtonLink: React.FC<ButtonProps> = ({ element, isEdit }) => {
 
       if (response) {
         return {
-          text: "Already added",
+          text: "Registered",
           disabled: true,
         };
       } else {
