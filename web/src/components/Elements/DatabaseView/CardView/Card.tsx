@@ -16,7 +16,7 @@ const Card: React.FC<CardProps> = (props) => {
   const cardImg = useMemo(
     () =>
       props.cardImg
-        ? `${process.env.NEXT_PUBLIC_CDN}/${props.cardImg}`
+        ? `https://${process.env.NEXT_PUBLIC_CDN}/${props.cardImg}`
         : undefined,
     [props.cardImg]
   );

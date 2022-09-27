@@ -98,7 +98,7 @@ const Page: React.FC<PageProps> = (props) => {
   const coverImg = useMemo(
     () =>
       elementProps.coverImg.value
-        ? `${process.env.NEXT_PUBLIC_CDN}/${elementProps.coverImg.value}`
+        ? `https://${process.env.NEXT_PUBLIC_CDN}/${elementProps.coverImg.value}`
         : undefined,
     [elementProps.coverImg.value]
   );
@@ -106,7 +106,7 @@ const Page: React.FC<PageProps> = (props) => {
   const iconImg = useMemo(
     () =>
       elementProps.iconImg.value
-        ? `${process.env.NEXT_PUBLIC_CDN}/${elementProps.iconImg.value}`
+        ? `https://${process.env.NEXT_PUBLIC_CDN}/${elementProps.iconImg.value}`
         : undefined,
     [elementProps.iconImg.value]
   );

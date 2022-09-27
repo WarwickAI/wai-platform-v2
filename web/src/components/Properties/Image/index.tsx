@@ -23,7 +23,7 @@ const ImageProperty: React.FC<ImagePropertyProps> = (props) => {
     if (!props.value) {
       return undefined;
     }
-    return `${process.env.NEXT_PUBLIC_CDN}//${props.value}`;
+    return `https://${process.env.NEXT_PUBLIC_CDN}//${props.value}`;
   }, [props.value]);
 
   const handleFileChange = async (e: any) => {
