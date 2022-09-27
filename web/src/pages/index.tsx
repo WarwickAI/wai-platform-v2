@@ -42,6 +42,23 @@ const Index = () => {
           <WrapItem>
             <Box minWidth={300}>
               <Heading as="h4" size="md">
+                Courses
+              </Heading>
+              <Text size="sm" color="gray.600">
+                Discover what we offer
+              </Text>
+              <Button
+                mt={1}
+                size="lg"
+                variant="primary"
+                onClick={() => {
+                  router.push("/courses");
+                }}
+              >
+                <ArrowForwardIcon width={22} height={22} />
+              </Button>
+
+              <Heading pt={12} as="h4" size="md">
                 Projects
               </Heading>
               <Text size="sm" color="gray.600">
@@ -73,24 +90,6 @@ const Index = () => {
                   router.push(
                     "https://www.warwicksu.com/societies-sports/societies/57846/"
                   );
-                }}
-              >
-                <ArrowForwardIcon width={22} height={22} />
-              </Button>
-
-              <Heading pt={12} as="h4" size="md">
-                Everything else
-              </Heading>
-              <Text size="sm" color="gray.600">
-                Find more information here
-              </Text>
-              <Button
-                target="_blank"
-                sx={{ marginTop: "1em" }}
-                size="lg"
-                variant="primary"
-                onClick={() => {
-                  router.push("https://linktr.ee/warwickai");
                 }}
               >
                 <ArrowForwardIcon width={22} height={22} />
