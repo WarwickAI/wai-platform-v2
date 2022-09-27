@@ -152,6 +152,12 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: "List",
   } as DateTypesDef,
+  File: {
+    label: "File",
+    hint: "File",
+    constraints: {},
+    defaultValue: "",
+  } as DateTypesDef,
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -177,3 +183,4 @@ export type DatabaseAttributesValue = ElementData;
 export type UserValue = number;
 export type TemplateValue = number;
 export type DatabaseViewAsValue = DatabaseViewAsKeys;
+export type FileValue = string;

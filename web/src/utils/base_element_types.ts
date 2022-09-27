@@ -14,6 +14,7 @@ import {
   BoolValue,
   UserValue,
   NumberValue,
+  FileValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -215,6 +216,16 @@ export const ElementTypesDef = {
       },
     },
   } as ElementTypeDef,
+  File: {
+    label: "File",
+    data: {
+      file: {
+        type: "File",
+        label: "File",
+        inSettings: true,
+      },
+    },
+  } as ElementTypeDef,
 };
 
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
@@ -278,4 +289,8 @@ export type SurveyElementData = {
 
 export type UserData = {
   user: ElementDataPiece<UserValue>;
+};
+
+export type FileElementData = {
+  file: ElementDataPiece<FileValue>;
 };

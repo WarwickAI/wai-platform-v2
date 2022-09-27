@@ -10,6 +10,7 @@ import DatabaseViewAsProperty from "./DatabaseViewAs";
 import UserProperty from "./User";
 import ActionTypeProperty from "./ActionType";
 import BoolProperty from "./Bool";
+import FileProperty from "./File";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -116,6 +117,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "Image") {
     return (
       <ImageProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "File") {
+    return (
+      <FileProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

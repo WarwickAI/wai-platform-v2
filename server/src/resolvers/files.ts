@@ -46,6 +46,10 @@ const FILE_TYPES_INFO = {
     isImage: true,
     maxFileSize: MBtoBytes(10),
   },
+  "application/pdf": {
+    isImage: false,
+    maxFileSize: MBtoBytes(10),
+  },
 };
 
 const SPACES_ENDPOINT = new aws.Endpoint(
