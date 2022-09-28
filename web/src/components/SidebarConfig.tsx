@@ -6,6 +6,7 @@ import messageSquareFill from "@iconify/icons-eva/message-square-fill";
 import bookOpenFill from "@iconify/icons-eva/book-open-fill";
 import calendarFill from "@iconify/icons-eva/calendar-fill";
 import shoppingCartFill from "@iconify/icons-eva/shopping-cart-fill";
+import globe2Fill from "@iconify/icons-eva/globe-2-fill";
 import awardFill from "@iconify/icons-eva/award-fill";
 import heartFill from "@iconify/icons-eva/heart-fill";
 
@@ -41,6 +42,11 @@ const sidebarConfig = [
     title: "tutorials",
     path: "/tutorials",
     icon: getIcon(bookmarkFill),
+  },
+  {
+    title: "safety",
+    path: "/safety",
+    icon: getIcon(globe2Fill),
   },
   {
     title: "talks",
