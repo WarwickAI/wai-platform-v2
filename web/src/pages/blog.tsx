@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import Dashboard from "../components/Dashboard";
-import { Badge } from "@chakra-ui/react";
+import { Badge, Button, Flex, Text } from "@chakra-ui/react";
 import ItemGrid from "../components/ItemGrid";
 import Card from "../components/Card";
 import { fDate, parseDashDateTime } from "../utils/formatTime";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { useRouter } from "next/router";
 
 const Blog = () => {
   const [posts, setPosts] = useState<any[]>([]);
+  const router = useRouter();
 
   //  post schema: { cover, title, view, comment, share, author, createdAt }
   useEffect(() => {
@@ -43,6 +45,26 @@ const Blog = () => {
 
   return (
     <Dashboard title="Blog">
+      <Flex
+        my={4}
+        p={2}
+        borderWidth={2}
+        borderRadius={"lg"}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text fontWeight={700} mr={4}>
+          Interested in working on research?
+        </Text>
+        <Button
+          onClick={() => router.push("/research-apply-22")}
+          variant={"primary"}
+          px={8}
+        >
+          Apply Here
+        </Button>
+      </Flex>
+
       <ItemGrid>
         {posts.map(
           ({ title, cover, categories, id, link, createdAt, author }) => {
@@ -76,4 +98,4 @@ const Blog = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Blog);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Blog);
