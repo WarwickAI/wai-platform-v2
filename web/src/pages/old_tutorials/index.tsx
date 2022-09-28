@@ -39,4 +39,4 @@ const Tutorials = () => {
   }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Tutorials);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Tutorials);

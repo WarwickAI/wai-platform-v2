@@ -52,4 +52,4 @@ const Events: React.FC<eventsProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Events);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Events);

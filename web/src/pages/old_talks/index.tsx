@@ -39,4 +39,4 @@ const Talks = () => {
   }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Talks);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Talks);

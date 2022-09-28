@@ -131,4 +131,4 @@ const Projects = () => {
   }
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Projects);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Projects);

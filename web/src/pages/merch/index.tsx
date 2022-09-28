@@ -82,4 +82,4 @@ const Merch = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Merch);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Merch);

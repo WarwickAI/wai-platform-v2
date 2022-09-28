@@ -23,4 +23,4 @@ const Generic: React.FC<GenericProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Generic);
+export default withUrqlClient(createUrqlClient, { ssr: false })(Generic);
