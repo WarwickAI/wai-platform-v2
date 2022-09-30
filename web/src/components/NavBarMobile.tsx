@@ -24,13 +24,21 @@ interface NavItemProps {
   path: string;
   icon: any;
   isHighlighted: boolean;
+  onClick: () => void;
 }
 
 const NavItem: React.FC<NavItemProps> = (props) => {
   const router = useRouter();
 
   return (
-    <Link key={props.title} href={props.path} as={NextLink}>
+    <Box
+      key={props.title}
+      cursor="pointer"
+      onClick={() => {
+        props.onClick();
+        router.push(props.path);
+      }}
+    >
       <Flex
         h={14}
         mx={-3}
@@ -48,7 +56,7 @@ const NavItem: React.FC<NavItemProps> = (props) => {
         {props.icon && props.icon}
         <Text pl={5}>{capitalizeFirstLetter(props.title)}</Text>
       </Flex>
-    </Link>
+    </Box>
   );
 };
 
@@ -94,6 +102,7 @@ const NavDrawer: React.FC<NavDrawerProps> = (props) => {
                 path={path}
                 icon={icon}
                 isHighlighted={router.pathname === path}
+                onClick={() => props.setOpen(false)}
               />
             );
           })}
