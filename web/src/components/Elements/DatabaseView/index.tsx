@@ -36,9 +36,10 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
   const [, editElement] = useEditElementDataMutation();
   const [, editAttributeName] = useEditDatabaseAttributeNameMutation();
   const [, createElement] = useCreateElementMutation();
-  const [{ data: databaseQuery }, fetchDatabase] = useGetElementQuery({
-    variables: { elementId: elementData.database.value, children: true },
-  });
+  const [{ data: databaseQuery, fetching: loadingDB }, fetchDatabase] =
+    useGetElementQuery({
+      variables: { elementId: elementData.database.value, children: true },
+    });
   const [, removeElement] = useRemoveElementMutation();
   const [{ data: meData }] = useMeQuery();
 
@@ -243,6 +244,8 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
             />
           )}
         </>
+      ) : loadingDB ? (
+        <Text>Loading Database</Text>
       ) : (
         <Text>No Database Selected (select in settings)</Text>
       )}
