@@ -13,6 +13,7 @@ interface FormattedTextProps {
 }
 
 const FormattedText: React.FC<FormattedTextProps> = (props) => {
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = useState<string>(props.value);
   const debounced = useDebouncedCallback((value) => {
     props.onChange(value);
@@ -22,10 +23,19 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
     setValue(props.value);
   }, [props.value]);
 
+  useEffect(() => {
+    if (props.isEdit && textAreaRef.current) {
+      textAreaRef.current.style.height = "1rem";
+      textAreaRef.current.style.height =
+        textAreaRef.current.scrollHeight + "px";
+    }
+  }, [props.isEdit]);
+
   if (!props.isEdit) {
   } else {
     return (
       <Textarea
+        ref={textAreaRef}
         minHeight={0}
         value={value}
         type={"text"}
