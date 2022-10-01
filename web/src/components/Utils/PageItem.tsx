@@ -9,7 +9,7 @@ import {
 } from "../../generated/graphql";
 import { Element, ElementTypeKeys } from "../../utils/config";
 import { checkPermissions } from "../../utils/isAuth";
-import Main from "../Elements/GenericElement";
+import GenericElement from "../Elements/GenericElement";
 import AddElementPopover from "./AddElementPopover";
 import ElementSettingsPopover from "./ElementSettingsPopover";
 
@@ -94,7 +94,7 @@ const PageItem: React.FC<PageItemProps> = (props) => {
         )}
         {/* Element Content */}
         <Flex alignItems="center" width={"full"}>
-          <Main elementId={props.element.id} isEdit={props.isEdit} />
+          <GenericElement element={props.element} isEdit={props.isEdit} />
         </Flex>
       </Box>
     </Reorder.Item>

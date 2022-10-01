@@ -29,6 +29,7 @@ const Generic: React.FC<GenericProps> = ({}) => {
   const [{ data: elementQuery }] = useGetElementQuery({
     variables: {
       elementId: userPage?.getUserPage ? userPage.getUserPage.id : -1,
+      children: true,
     },
     pause: !userPage?.getUserPage,
   });

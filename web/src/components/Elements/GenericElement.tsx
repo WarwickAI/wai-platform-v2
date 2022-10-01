@@ -18,76 +18,74 @@ import {
 import Image from "./Image";
 import File from "./File";
 
-interface MainProps {
-  elementId: number;
+interface GenericElementProps {
+  element: Element<any>;
   isEdit: boolean;
 }
 
-const Main: React.FC<MainProps> = (props) => {
-  const [{ data: element }] = useGetElementQuery({
-    variables: { elementId: props.elementId },
-  });
+const GenericElement: React.FC<GenericElementProps> = (props) => {
+  const element = props.element;
   if (!element) {
     return <>Loading...</>;
   }
-  if (element.getElement.type === "Text") {
+  if (element.type === "Text") {
     return (
       <Text
-        element={element.getElement as Element<TextElementData>}
+        element={element as Element<TextElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  if (element.getElement.type === "Page") {
+  if (element.type === "Page") {
     return (
       <Page
-        element={element.getElement as Element<PageElementData>}
+        element={element as Element<PageElementData>}
         isEdit={props.isEdit}
         isFullPage={false}
       />
     );
   }
-  if (element.getElement.type === "DatabaseView") {
+  if (element.type === "DatabaseView") {
     return (
       <DatabaseView
-        element={element.getElement as Element<DatabaseViewElementData>}
+        element={element as Element<DatabaseViewElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  if (element.getElement.type === "Button") {
+  if (element.type === "Button") {
     return (
       <Button
-        element={element.getElement as Element<ButtonElementData>}
+        element={element as Element<ButtonElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  if (element.getElement.type === "DataLink") {
+  if (element.type === "DataLink") {
     return (
       <DataLink
-        element={element.getElement as Element<DataLinkElementData>}
+        element={element as Element<DataLinkElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  if (element.getElement.type === "Image") {
+  if (element.type === "Image") {
     return (
       <Image
-        element={element.getElement as Element<ImageElementData>}
+        element={element as Element<ImageElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  if (element.getElement.type === "File") {
+  if (element.type === "File") {
     return (
       <File
-        element={element.getElement as Element<FileElementData>}
+        element={element as Element<FileElementData>}
         isEdit={props.isEdit}
       />
     );
   }
-  return <>No Element - {element.getElement.type}</>;
+  return <>No Element - {element.type}</>;
 };
 
-export default Main;
+export default GenericElement;

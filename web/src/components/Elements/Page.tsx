@@ -49,6 +49,9 @@ const Page: React.FC<PageProps> = (props) => {
 
   // Initialise and update page content here
   useEffect(() => {
+    if (!props.isFullPage) {
+      return;
+    }
     const contentSorted = (props.element.children as Element<any>[]).sort(
       (a, b) => a.index! - b.index!
     );
@@ -59,7 +62,7 @@ const Page: React.FC<PageProps> = (props) => {
 
     setItems(contentFiltered);
     setOldItems(contentFiltered);
-  }, [props.element.children, meData?.me]);
+  }, [props.element.children, meData?.me, props.isFullPage]);
 
   const [, createElement] = useCreateElementMutation();
   const [, editElement] = useEditElementDataMutation();

@@ -4,8 +4,10 @@ import Dashboard from "../../components/Dashboard";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetElementsQuery } from "../../generated/graphql";
-import Main from "../../components/Elements/GenericElement";
+import GenericElement from "../../components/Elements/GenericElement";
 import { EditContext } from "../../utils/EditContext";
+import { PageElementData } from "../../utils/base_element_types";
+import { Element } from "../../utils/config";
 
 interface GenericProps {}
 
@@ -23,7 +25,13 @@ const Generic: React.FC<GenericProps> = ({}) => {
     <Dashboard title="Generic">
       {parentPages &&
         parentPages.getElements.map((page) => {
-          return <Main key={page.id} elementId={page.id} isEdit={isEdit} />;
+          return (
+            <GenericElement
+              key={page.id}
+              element={page as Element<PageElementData>}
+              isEdit={isEdit}
+            />
+          );
         })}
     </Dashboard>
   );
