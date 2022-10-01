@@ -70,6 +70,8 @@ const PageItem: React.FC<PageItemProps> = (props) => {
                 meQuery?.me as User | undefined
               ) && (
                 <AddElementPopover
+                  isOpen={addElementPopoverOpen}
+                  setOpen={(v) => setAddElementPopoverOpen(v)}
                   onOpen={() => setAddElementPopoverOpen(true)}
                   onClose={() => setAddElementPopoverOpen(false)}
                   addElement={props.addElement}

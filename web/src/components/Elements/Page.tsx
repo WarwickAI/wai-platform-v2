@@ -34,6 +34,9 @@ const Page: React.FC<PageProps> = (props) => {
   const router = useRouter();
   const elementProps = props.element.data as PageElementData;
 
+  const [emptyPageAddElementPopoverOpen, setEmptyPageAddElementPopoverOpen] =
+    useState<boolean>(false);
+
   const [{ data: meData }, meQuery] = useMeQuery();
 
   const [items, setItems] = useState<Element<any>[]>([]);
@@ -185,6 +188,8 @@ const Page: React.FC<PageProps> = (props) => {
                 zIndex={1}
               >
                 <AddElementPopover
+                  isOpen={emptyPageAddElementPopoverOpen}
+                  setOpen={(v) => setEmptyPageAddElementPopoverOpen(v)}
                   onOpen={() => {}}
                   onClose={() => {}}
                   addElement={addElement}

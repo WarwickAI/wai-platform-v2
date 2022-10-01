@@ -16,6 +16,8 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 
 interface AddElementPopoverProps {
+  isOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
   onOpen: () => void;
   onClose: () => void;
   addElement: (type: ElementTypeKeys, index: number) => void;
@@ -25,6 +27,7 @@ interface AddElementPopoverProps {
 const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
   return (
     <Popover
+      isOpen={props.isOpen}
       onOpen={() => props.onOpen()}
       returnFocusOnClose={false}
       onClose={() => props.onClose()}
@@ -40,6 +43,7 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
           display={"flex"}
           alignItems={"center"}
           _hover={{ cursor: "pointer", backgroundColor: "gray.200" }}
+          onClick={() => props.setOpen(true)}
         >
           <AddIcon />
         </Box>
@@ -59,6 +63,7 @@ const AddElementPopover: React.FC<AddElementPopoverProps> = (props) => {
                   variant="outline"
                   onClick={() => {
                     props.addElement(type as ElementTypeKeys, props.atIndex);
+                    props.setOpen(false);
                   }}
                 >
                   {type}
