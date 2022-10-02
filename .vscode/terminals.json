@@ -16,11 +16,6 @@
       "name": "Web",
       "cwd": "web",
       "commands": ["yarn dev"]
-    },
-    {
-      "name": "Storybook",
-      "cwd": "web",
-      "commands": ["yarn storybook"]
     }
   ]
 }
