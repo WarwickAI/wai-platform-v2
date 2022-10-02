@@ -13,7 +13,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -137,7 +136,7 @@ export type File = {
 export type GetSignedUrlResponse = {
   __typename?: 'GetSignedUrlResponse';
   key: Scalars['String'];
-  signedUrl: Scalars['String'];
+  signedUrl?: Maybe<Scalars['String']>;
 };
 
 export type Group = {
@@ -873,55 +872,35 @@ export type Vote = {
   user: User;
 };
 
-export type RegularRoleApplicationFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined };
+export type ElementNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
 
-export type RegularRoleApplicationWithElectionRoleFragment = { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined, role: { __typename?: 'ElectionRole', id: number, shortName: string, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, description: string, previewImg?: string | null | undefined } };
+export type ElementNoChildrenCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
 
-export type RegularElectionRoleFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined };
+export type ElementNoChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
 
-export type RegularElectionRoleWithApplicationsFragment = { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, display?: boolean | null | undefined, createdAt: string, updatedAt: string, title: string, description: string, shortName: string }> };
+export type FullElementFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
 
-export type ElementNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
+export type FullElementChildrenNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
 
-export type ElementNoChildrenCreatedByFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
+export type ElementAfterRemoveFragment = { __typename?: 'Element', type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number } | null, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null };
 
-export type ElementNoChildrenFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
+export type FileWithoutUploadedByFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null, imgHeight?: number | null };
 
-export type FullElementFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
-
-export type FullElementChildrenNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined };
-
-export type ElementAfterRemoveFragment = { __typename?: 'Element', type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined };
-
-export type RegularCourseFragment = { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
-
-export type RegularProjectFragment = { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
-
-export type RegularTalkFragment = { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
-
-export type RegularTutorialFragment = { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
-
-export type FileWithoutUploadedByFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined };
-
-export type FullFileFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined, uploadedBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined } };
+export type FullFileFragment = { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null, imgHeight?: number | null, uploadedBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null } };
 
 export type GroupWithoutUsersFragment = { __typename?: 'Group', id: number, name: string };
 
-export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
+export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
 
-export type RegularTagFragment = { __typename?: 'Tag', id: number, title: string, color: string };
+export type UserNoGroupsElementsFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null };
 
-export type UserNoGroupsElementsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
+export type UserNoElementsFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
-export type UserNoElementsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
+export type UserNoGroupsFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }> };
 
-export type UserNoGroupsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }> };
+export type UserFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }>, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }> };
 
-export type UserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }>, elements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }> };
-
-export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }>, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
-
-export type RegularUserWithoutEventsFragment = { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined };
+export type RegularUserFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> };
 
 export type AddMemberInfoMutationVariables = Exact<{
   memberInfo: Array<MemberInfoInput> | MemberInfoInput;
@@ -935,78 +914,13 @@ export type UpdateMembershipMutationVariables = Exact<{ [key: string]: never; }>
 
 export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: boolean };
 
-export type CreateCourseMutationVariables = Exact<{
-  courseInfo: EventInput;
-}>;
-
-
-export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type EditCourseMutationVariables = Exact<{
-  courseInfo: EventInput;
-  id: Scalars['Float'];
-}>;
-
-
-export type EditCourseMutation = { __typename?: 'Mutation', editCourse: { __typename?: 'CourseResponse', course: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type JoinCourseMutationVariables = Exact<{
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type JoinCourseMutation = { __typename?: 'Mutation', joinCourse: boolean };
-
-export type RemoveUserFromCourseMutationVariables = Exact<{
-  userId: Scalars['Float'];
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type RemoveUserFromCourseMutation = { __typename?: 'Mutation', removeUserFromCourse: boolean };
-
-export type CreateElectionRoleMutationVariables = Exact<{
-  roleInfo: ElectionRoleInput;
-}>;
-
-
-export type CreateElectionRoleMutation = { __typename?: 'Mutation', createElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } } };
-
-export type EditElectionRoleMutationVariables = Exact<{
-  roleInfo: ElectionRoleInput;
-  editElectionRoleId: Scalars['Float'];
-}>;
-
-
-export type EditElectionRoleMutation = { __typename?: 'Mutation', editElectionRole: { __typename?: 'ElectionRoleResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, role: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } } };
-
-export type VoteMutationVariables = Exact<{
-  applicationShortName?: InputMaybe<Scalars['String']>;
-  applicationId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type VoteMutation = { __typename?: 'Mutation', vote: boolean };
-
-export type AddRonApplicationMutationVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type AddRonApplicationMutation = { __typename?: 'Mutation', addRONApplication: boolean };
-
 export type EditElementDataMutationVariables = Exact<{
   data: Scalars['JSONObject'];
   elementId: Scalars['Float'];
 }>;
 
 
-export type EditElementDataMutation = { __typename?: 'Mutation', editElementData: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type EditElementDataMutation = { __typename?: 'Mutation', editElementData: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type EditDatabaseAttributeNameMutationVariables = Exact<{
   elementId: Scalars['Float'];
@@ -1015,7 +929,7 @@ export type EditDatabaseAttributeNameMutationVariables = Exact<{
 }>;
 
 
-export type EditDatabaseAttributeNameMutation = { __typename?: 'Mutation', editDatabaseAttributeName: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type EditDatabaseAttributeNameMutation = { __typename?: 'Mutation', editDatabaseAttributeName: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type EditElementIndexMutationVariables = Exact<{
   index: Scalars['Float'];
@@ -1023,7 +937,7 @@ export type EditElementIndexMutationVariables = Exact<{
 }>;
 
 
-export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type EditElementIndexMutation = { __typename?: 'Mutation', editElementIndex: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type CreateElementMutationVariables = Exact<{
   type: Scalars['String'];
@@ -1034,14 +948,14 @@ export type CreateElementMutationVariables = Exact<{
 }>;
 
 
-export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } | null | undefined };
+export type CreateElementMutation = { __typename?: 'Mutation', createElement?: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } | null };
 
 export type RemoveElementMutationVariables = Exact<{
   elementId: Scalars['Float'];
 }>;
 
 
-export type RemoveElementMutation = { __typename?: 'Mutation', removeElement: { __typename?: 'Element', type: string, index: number, data: any, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined } };
+export type RemoveElementMutation = { __typename?: 'Mutation', removeElement: { __typename?: 'Element', type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number } | null, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null } };
 
 export type UpdatePermissionsMutationVariables = Exact<{
   elementId: Scalars['Float'];
@@ -1052,7 +966,7 @@ export type UpdatePermissionsMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePermissionsMutation = { __typename?: 'Mutation', updatePermissions: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type UpdatePermissionsMutation = { __typename?: 'Mutation', updatePermissions: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type InheritDatabaseAttributesMutationVariables = Exact<{
   databaseId: Scalars['Float'];
@@ -1060,7 +974,7 @@ export type InheritDatabaseAttributesMutationVariables = Exact<{
 }>;
 
 
-export type InheritDatabaseAttributesMutation = { __typename?: 'Mutation', inheritDatabaseAttributes: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type InheritDatabaseAttributesMutation = { __typename?: 'Mutation', inheritDatabaseAttributes: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type AssignUserPageMutationVariables = Exact<{
   uniId: Scalars['Float'];
@@ -1068,14 +982,14 @@ export type AssignUserPageMutationVariables = Exact<{
 }>;
 
 
-export type AssignUserPageMutation = { __typename?: 'Mutation', assignUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+export type AssignUserPageMutation = { __typename?: 'Mutation', assignUserPage?: { __typename?: 'Element', id: number } | null };
 
 export type HandleActionMutationVariables = Exact<{
   buttonId: Scalars['Float'];
 }>;
 
 
-export type HandleActionMutation = { __typename?: 'Mutation', handleAction: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type HandleActionMutation = { __typename?: 'Mutation', handleAction: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type EditElementRouteMutationVariables = Exact<{
   elementId: Scalars['Float'];
@@ -1083,7 +997,7 @@ export type EditElementRouteMutationVariables = Exact<{
 }>;
 
 
-export type EditElementRouteMutation = { __typename?: 'Mutation', editElementRoute: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type EditElementRouteMutation = { __typename?: 'Mutation', editElementRoute: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type GetSignedUrlMutationVariables = Exact<{
   fileType: Scalars['String'];
@@ -1095,7 +1009,7 @@ export type GetSignedUrlMutationVariables = Exact<{
 }>;
 
 
-export type GetSignedUrlMutation = { __typename?: 'Mutation', getSignedUrl: { __typename?: 'GetSignedUrlResponse', signedUrl: string, key: string } };
+export type GetSignedUrlMutation = { __typename?: 'Mutation', getSignedUrl: { __typename?: 'GetSignedUrlResponse', signedUrl?: string | null, key: string } };
 
 export type AddUserToGroupMutationVariables = Exact<{
   groupId: Scalars['Float'];
@@ -1103,7 +1017,7 @@ export type AddUserToGroupMutationVariables = Exact<{
 }>;
 
 
-export type AddUserToGroupMutation = { __typename?: 'Mutation', addUserToGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
+export type AddUserToGroupMutation = { __typename?: 'Mutation', addUserToGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> } };
 
 export type RemoveUserFromGroupMutationVariables = Exact<{
   groupId: Scalars['Float'];
@@ -1111,14 +1025,14 @@ export type RemoveUserFromGroupMutationVariables = Exact<{
 }>;
 
 
-export type RemoveUserFromGroupMutation = { __typename?: 'Mutation', removeUserFromGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
+export type RemoveUserFromGroupMutation = { __typename?: 'Mutation', removeUserFromGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> } };
 
 export type CreateGroupMutationVariables = Exact<{
   groupName: Scalars['String'];
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> } };
 
 export type DeleteGroupMutationVariables = Exact<{
   groupId: Scalars['Float'];
@@ -1127,154 +1041,10 @@ export type DeleteGroupMutationVariables = Exact<{
 
 export type DeleteGroupMutation = { __typename?: 'Mutation', deleteGroup: { __typename?: 'Group', name: string } };
 
-export type RoleApplyMutationVariables = Exact<{
-  roleShortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-  applicationInfo: ApplyRoleInput;
-}>;
-
-
-export type RoleApplyMutation = { __typename?: 'Mutation', roleApply: { __typename?: 'RoleApplicationResponse', errors?: Array<{ __typename?: 'FieldError', message: string, field: string }> | null | undefined, application?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
-
-export type CreateRoleApplicationMutationVariables = Exact<{
-  applicationInfo: RoleApplicationInput;
-  roleId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type CreateRoleApplicationMutation = { __typename?: 'Mutation', createRoleApplication: { __typename?: 'RoleApplicationResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, application?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
-
-export type EditRoleApplicationMutationVariables = Exact<{
-  applicationInfo: RoleApplicationInput;
-  editRoleApplicationId: Scalars['Float'];
-}>;
-
-
-export type EditRoleApplicationMutation = { __typename?: 'Mutation', editRoleApplication: { __typename?: 'RoleApplicationResponse', errors?: Array<{ __typename?: 'FieldError', message: string, field: string }> | null | undefined, application?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
-
-export type CreateMerchMutationVariables = Exact<{
-  itemInfo: MerchInput;
-}>;
-
-
-export type CreateMerchMutation = { __typename?: 'Mutation', createMerch: { __typename?: 'MerchResponse', item?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type EditMerchMutationVariables = Exact<{
-  itemInfo: MerchInput;
-  id: Scalars['Float'];
-}>;
-
-
-export type EditMerchMutation = { __typename?: 'Mutation', editMerch: { __typename?: 'MerchResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, item?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined } };
-
-export type CreateProjectMutationVariables = Exact<{
-  projectInfo: EventInput;
-}>;
-
-
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type EditProjectMutationVariables = Exact<{
-  projectInfo: EventInput;
-  id: Scalars['Float'];
-}>;
-
-
-export type EditProjectMutation = { __typename?: 'Mutation', editProject: { __typename?: 'ProjectResponse', project: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type JoinProjectMutationVariables = Exact<{
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type JoinProjectMutation = { __typename?: 'Mutation', joinProject: boolean };
-
-export type RemoveUserFromProjectMutationVariables = Exact<{
-  userId: Scalars['Float'];
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type RemoveUserFromProjectMutation = { __typename?: 'Mutation', removeUserFromProject: boolean };
-
-export type CreateTagMutationVariables = Exact<{
-  tagInfo: TagInput;
-}>;
-
-
-export type CreateTagMutation = { __typename?: 'Mutation', createTag: { __typename?: 'TagResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, tag: { __typename?: 'Tag', id: number, title: string, color: string } } };
-
-export type CreateTalkMutationVariables = Exact<{
-  talkInfo: EventInput;
-}>;
-
-
-export type CreateTalkMutation = { __typename?: 'Mutation', createTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type EditTalkMutationVariables = Exact<{
-  talkInfo: EventInput;
-  id: Scalars['Float'];
-}>;
-
-
-export type EditTalkMutation = { __typename?: 'Mutation', editTalk: { __typename?: 'TalkResponse', talk: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type JoinTalkMutationVariables = Exact<{
-  talkId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type JoinTalkMutation = { __typename?: 'Mutation', joinTalk: boolean };
-
-export type RemoveUserFromTalkMutationVariables = Exact<{
-  userId: Scalars['Float'];
-  talkId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type RemoveUserFromTalkMutation = { __typename?: 'Mutation', removeUserFromTalk: boolean };
-
-export type CreateTutorialMutationVariables = Exact<{
-  tutorialInfo: EventInput;
-}>;
-
-
-export type CreateTutorialMutation = { __typename?: 'Mutation', createTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type EditTutorialMutationVariables = Exact<{
-  tutorialInfo: EventInput;
-  id: Scalars['Float'];
-}>;
-
-
-export type EditTutorialMutation = { __typename?: 'Mutation', editTutorial: { __typename?: 'TutorialResponse', tutorial: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
-
-export type JoinTutorialMutationVariables = Exact<{
-  tutorialId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type JoinTutorialMutation = { __typename?: 'Mutation', joinTutorial: boolean };
-
-export type RemoveUserFromTutorialMutationVariables = Exact<{
-  userId: Scalars['Float'];
-  tutorialId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type RemoveUserFromTutorialMutation = { __typename?: 'Mutation', removeUserFromTutorial: boolean };
-
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }>, groups: Array<{ __typename?: 'Group', id: number, name: string }> } | null | undefined };
+export type VerifyLoginMutation = { __typename?: 'Mutation', verifyLogin?: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> } | null };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1287,89 +1057,7 @@ export type UpdateUserRoleMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?: { __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string } | null | undefined };
-
-export type CoursesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type AllCoursesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllCoursesQuery = { __typename?: 'Query', allCourses: Array<{ __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type CourseByShortNameQueryVariables = Exact<{
-  shortName: Scalars['String'];
-}>;
-
-
-export type CourseByShortNameQuery = { __typename?: 'Query', courseByShortName?: { __typename?: 'Course', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> } | null | undefined };
-
-export type CourseUsersQueryVariables = Exact<{
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type CourseUsersQuery = { __typename?: 'Query', courseUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
-
-export type ElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ElectionRolesQuery = { __typename?: 'Query', electionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> };
-
-export type AllElectionRolesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllElectionRolesQuery = { __typename?: 'Query', allElectionRoles: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> };
-
-export type ElectionRoleApplicationsQueryVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type ElectionRoleApplicationsQuery = { __typename?: 'Query', electionRoleApplications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> };
-
-export type ElectionRoleAllApplicationsQueryVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type ElectionRoleAllApplicationsQuery = { __typename?: 'Query', electionRoleAllApplications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> };
-
-export type GetElectionRoleQueryVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type GetElectionRoleQuery = { __typename?: 'Query', getElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined, applications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> } | null | undefined };
-
-export type GetRoleVoteCountQueryVariables = Exact<{
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type GetRoleVoteCountQuery = { __typename?: 'Query', getRoleVoteCount: Array<{ __typename?: 'RoleApplicationVoteCount', count: number, application: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } }> };
-
-export type GetRoleApplicationForVoteQueryVariables = Exact<{
-  voteId: Scalars['Float'];
-}>;
-
-
-export type GetRoleApplicationForVoteQuery = { __typename?: 'Query', getRoleApplicationForVote: { __typename?: 'RoleApplicationResponseForVote', message?: string | null | undefined, role?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined } };
-
-export type HasUserVotedForRoleQueryVariables = Exact<{
-  roleShortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type HasUserVotedForRoleQuery = { __typename?: 'Query', hasUserVotedForRole: boolean };
+export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole?: { __typename?: 'User', id: number, createdAt: string, updatedAt: string, firstName: string, lastName: string, email: string, cognitoUsername: string, tokenVersion: number, role: string } | null };
 
 export type GetElementsQueryVariables = Exact<{
   type?: InputMaybe<Scalars['String']>;
@@ -1378,7 +1066,7 @@ export type GetElementsQueryVariables = Exact<{
 }>;
 
 
-export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }> };
+export type GetElementsQuery = { __typename?: 'Query', getElements: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }> };
 
 export type GetElementQueryVariables = Exact<{
   elementId?: InputMaybe<Scalars['Float']>;
@@ -1387,21 +1075,21 @@ export type GetElementQueryVariables = Exact<{
 }>;
 
 
-export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null | undefined, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null | undefined, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null | undefined, parent?: { __typename?: 'Element', id: number } | null | undefined } | null | undefined } };
+export type GetElementQuery = { __typename?: 'Query', getElement: { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, children: Array<{ __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null }>, createdBy: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null }, canViewGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canInteractGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canEditGroups: Array<{ __typename?: 'Group', id: number, name: string }>, canModifyPermsGroups?: Array<{ __typename?: 'Group', id: number, name: string }> | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null } };
 
 export type GetUserPageQueryVariables = Exact<{
   uniId: Scalars['Float'];
 }>;
 
 
-export type GetUserPageQuery = { __typename?: 'Query', getUserPage?: { __typename?: 'Element', id: number } | null | undefined };
+export type GetUserPageQuery = { __typename?: 'Query', getUserPage?: { __typename?: 'Element', id: number } | null };
 
 export type GetFileQueryVariables = Exact<{
   key: Scalars['String'];
 }>;
 
 
-export type GetFileQuery = { __typename?: 'Query', getFile: { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null | undefined, imgHeight?: number | null | undefined } };
+export type GetFileQuery = { __typename?: 'Query', getFile: { __typename?: 'File', key: string, fileName: string, fileType: string, fileSize: number, isImage: boolean, imgWidth?: number | null, imgHeight?: number | null } };
 
 export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1411,231 +1099,30 @@ export type GetGroupsQuery = { __typename?: 'Query', groups: Array<{ __typename?
 export type GetGroupsWithUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGroupsWithUsersQuery = { __typename?: 'Query', groupsWithUsers: Array<{ __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> }> };
-
-export type RoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RoleApplicationsQuery = { __typename?: 'Query', roleApplications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> };
-
-export type AllRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllRoleApplicationsQuery = { __typename?: 'Query', allRoleApplications: Array<{ __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined }> };
-
-export type GetRoleApplicationQueryVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  applicationId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type GetRoleApplicationQuery = { __typename?: 'Query', getRoleApplication?: { __typename?: 'RoleApplication', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, img?: string | null | undefined } | null | undefined };
-
-export type RoleApplicationElectionRoleQueryVariables = Exact<{
-  shortName?: InputMaybe<Scalars['String']>;
-  applicationId?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type RoleApplicationElectionRoleQuery = { __typename?: 'Query', roleApplicationElectionRole?: { __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined } | null | undefined };
+export type GetGroupsWithUsersQuery = { __typename?: 'Query', groupsWithUsers: Array<{ __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, projects: Array<{ __typename?: 'Project', id: number, shortName: string }>, talks: Array<{ __typename?: 'Talk', id: number, shortName: string }>, courses: Array<{ __typename?: 'Course', id: number, shortName: string }>, tutorials: Array<{ __typename?: 'Tutorial', id: number, shortName: string }>, groups: Array<{ __typename?: 'Group', id: number, name: string }> } | null | undefined };
-
-export type MerchQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MerchQuery = { __typename?: 'Query', merch: Array<{ __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, image: string }> };
-
-export type AllMerchQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllMerchQuery = { __typename?: 'Query', allMerch: Array<{ __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, image: string }> };
-
-export type MerchByShortNameQueryVariables = Exact<{
-  shortName: Scalars['String'];
-}>;
-
-
-export type MerchByShortNameQuery = { __typename?: 'Query', merchByShortName?: { __typename?: 'Merch', id: number, display?: boolean | null | undefined, title: string, shortName: string, description: string, image: string, variants: Array<{ __typename?: 'Variant', name: string, link: string }> } | null | undefined };
-
-export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type AllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllProjectsQuery = { __typename?: 'Query', allProjects: Array<{ __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type ProjectByShortNameQueryVariables = Exact<{
-  shortName: Scalars['String'];
-}>;
-
-
-export type ProjectByShortNameQuery = { __typename?: 'Query', projectByShortName?: { __typename?: 'Project', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> } | null | undefined };
-
-export type ProjectUsersQueryVariables = Exact<{
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type ProjectUsersQuery = { __typename?: 'Query', projectUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
-
-export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TagsQuery = { __typename?: 'Query', tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> };
-
-export type TalksQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TalksQuery = { __typename?: 'Query', talks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type AllTalksQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllTalksQuery = { __typename?: 'Query', allTalks: Array<{ __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type TalkByShortNameQueryVariables = Exact<{
-  shortName: Scalars['String'];
-}>;
-
-
-export type TalkByShortNameQuery = { __typename?: 'Query', talkByShortName?: { __typename?: 'Talk', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> } | null | undefined };
-
-export type TalkUsersQueryVariables = Exact<{
-  talkId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type TalkUsersQuery = { __typename?: 'Query', talkUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
-
-export type TutorialsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TutorialsQuery = { __typename?: 'Query', tutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type AllTutorialsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllTutorialsQuery = { __typename?: 'Query', allTutorials: Array<{ __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> }> };
-
-export type TutorialByShortNameQueryVariables = Exact<{
-  shortName: Scalars['String'];
-}>;
-
-
-export type TutorialByShortNameQuery = { __typename?: 'Query', tutorialByShortName?: { __typename?: 'Tutorial', id: number, display?: boolean | null | undefined, title: string, shortName: string, description?: string | null | undefined, previewImg?: string | null | undefined, iconImg?: string | null | undefined, coverImg?: string | null | undefined, redirectUrl?: string | null | undefined, joinable?: boolean | null | undefined, tags: Array<{ __typename?: 'Tag', id: number, title: string, color: string }> } | null | undefined };
-
-export type TutorialUsersQueryVariables = Exact<{
-  tutorialId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type TutorialUsersQuery = { __typename?: 'Query', tutorialUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
 
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['Float'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: number, uniId?: number | null | undefined, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null | undefined, isMember?: boolean | null | undefined } };
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null } };
 
-export type GetUserRoleApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUserRoleApplicationsQuery = { __typename?: 'Query', getUserRoleApplications?: Array<{ __typename?: 'ElectionRole', id: number, createdAt: string, updatedAt: string, display?: boolean | null | undefined, title: string, shortName: string, description: string, applicationTemplate?: string | null | undefined, previewImg?: string | null | undefined, canApply?: boolean | null | undefined, canVote?: boolean | null | undefined }> | null | undefined };
-
-export const RegularRoleApplicationFragmentDoc = gql`
-    fragment RegularRoleApplication on RoleApplication {
-  id
-  createdAt
-  updatedAt
-  display
-  title
-  shortName
-  description
-  img
-}
-    `;
-export const RegularRoleApplicationWithElectionRoleFragmentDoc = gql`
-    fragment RegularRoleApplicationWithElectionRole on RoleApplication {
-  id
-  createdAt
-  updatedAt
-  display
-  title
-  shortName
-  description
-  img
-  role {
-    id
-    shortName
-    createdAt
-    updatedAt
-    display
-    title
-    description
-    previewImg
-  }
-}
-    `;
-export const RegularElectionRoleFragmentDoc = gql`
-    fragment RegularElectionRole on ElectionRole {
-  id
-  createdAt
-  updatedAt
-  display
-  title
-  shortName
-  description
-  applicationTemplate
-  previewImg
-  canApply
-  canVote
-}
-    `;
-export const RegularElectionRoleWithApplicationsFragmentDoc = gql`
-    fragment RegularElectionRoleWithApplications on ElectionRole {
-  id
-  createdAt
-  updatedAt
-  display
-  title
-  shortName
-  description
-  applicationTemplate
-  previewImg
-  canApply
-  canVote
-  applications {
-    id
-    display
-    createdAt
-    updatedAt
-    title
-    description
-    shortName
-  }
-}
-    `;
 export const ElementNoChildrenCreatedByGroupsFragmentDoc = gql`
     fragment ElementNoChildrenCreatedByGroups on Element {
   id
@@ -1679,8 +1166,8 @@ export const ElementNoChildrenCreatedByFragmentDoc = gql`
 }
     ${ElementNoChildrenCreatedByGroupsFragmentDoc}
 ${GroupWithoutUsersFragmentDoc}`;
-export const RegularUserWithoutEventsFragmentDoc = gql`
-    fragment RegularUserWithoutEvents on User {
+export const UserNoGroupsElementsFragmentDoc = gql`
+    fragment UserNoGroupsElements on User {
   id
   uniId
   firstName
@@ -1695,11 +1182,11 @@ export const ElementNoChildrenFragmentDoc = gql`
     fragment ElementNoChildren on Element {
   ...ElementNoChildrenCreatedBy
   createdBy {
-    ...RegularUserWithoutEvents
+    ...UserNoGroupsElements
   }
 }
     ${ElementNoChildrenCreatedByFragmentDoc}
-${RegularUserWithoutEventsFragmentDoc}`;
+${UserNoGroupsElementsFragmentDoc}`;
 export const FullElementFragmentDoc = gql`
     fragment FullElement on Element {
   ...ElementNoChildren
@@ -1740,82 +1227,6 @@ export const ElementAfterRemoveFragmentDoc = gql`
   }
 }
     ${GroupWithoutUsersFragmentDoc}`;
-export const RegularCourseFragmentDoc = gql`
-    fragment RegularCourse on Course {
-  id
-  display
-  title
-  shortName
-  description
-  previewImg
-  iconImg
-  coverImg
-  redirectUrl
-  joinable
-  tags {
-    id
-    title
-    color
-  }
-}
-    `;
-export const RegularProjectFragmentDoc = gql`
-    fragment RegularProject on Project {
-  id
-  display
-  title
-  shortName
-  description
-  previewImg
-  iconImg
-  coverImg
-  redirectUrl
-  joinable
-  tags {
-    id
-    title
-    color
-  }
-}
-    `;
-export const RegularTalkFragmentDoc = gql`
-    fragment RegularTalk on Talk {
-  id
-  display
-  title
-  shortName
-  description
-  previewImg
-  iconImg
-  coverImg
-  redirectUrl
-  joinable
-  tags {
-    id
-    title
-    color
-  }
-}
-    `;
-export const RegularTutorialFragmentDoc = gql`
-    fragment RegularTutorial on Tutorial {
-  id
-  display
-  title
-  shortName
-  description
-  previewImg
-  iconImg
-  coverImg
-  redirectUrl
-  joinable
-  tags {
-    id
-    title
-    color
-  }
-}
-    `;
 export const FileWithoutUploadedByFragmentDoc = gql`
     fragment FileWithoutUploadedBy on File {
   key
@@ -1827,18 +1238,6 @@ export const FileWithoutUploadedByFragmentDoc = gql`
   imgHeight
 }
     `;
-export const UserNoGroupsElementsFragmentDoc = gql`
-    fragment UserNoGroupsElements on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
-}
-    `;
 export const FullFileFragmentDoc = gql`
     fragment FullFile on File {
   ...FileWithoutUploadedBy
@@ -1848,22 +1247,30 @@ export const FullFileFragmentDoc = gql`
 }
     ${FileWithoutUploadedByFragmentDoc}
 ${UserNoGroupsElementsFragmentDoc}`;
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  uniId
+  firstName
+  lastName
+  email
+  role
+  memberFromDate
+  isMember
+  groups {
+    ...GroupWithoutUsers
+  }
+}
+    ${GroupWithoutUsersFragmentDoc}`;
 export const GroupWithUsersFragmentDoc = gql`
     fragment GroupWithUsers on Group {
   id
   name
   users {
-    ...RegularUserWithoutEvents
+    ...RegularUser
   }
 }
-    ${RegularUserWithoutEventsFragmentDoc}`;
-export const RegularTagFragmentDoc = gql`
-    fragment RegularTag on Tag {
-  id
-  title
-  color
-}
-    `;
+    ${RegularUserFragmentDoc}`;
 export const UserNoElementsFragmentDoc = gql`
     fragment UserNoElements on User {
   ...UserNoGroupsElements
@@ -1889,37 +1296,6 @@ export const UserFragmentDoc = gql`
 }
     ${UserNoElementsFragmentDoc}
 ${UserNoGroupsFragmentDoc}`;
-export const RegularUserFragmentDoc = gql`
-    fragment RegularUser on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
-  projects {
-    id
-    shortName
-  }
-  talks {
-    id
-    shortName
-  }
-  courses {
-    id
-    shortName
-  }
-  tutorials {
-    id
-    shortName
-  }
-  groups {
-    ...GroupWithoutUsers
-  }
-}
-    ${GroupWithoutUsersFragmentDoc}`;
 export const AddMemberInfoDocument = gql`
     mutation AddMemberInfo($memberInfo: [MemberInfoInput!]!) {
   addMemberInfo(memberInfo: $memberInfo)
@@ -1937,119 +1313,6 @@ export const UpdateMembershipDocument = gql`
 
 export function useUpdateMembershipMutation() {
   return Urql.useMutation<UpdateMembershipMutation, UpdateMembershipMutationVariables>(UpdateMembershipDocument);
-};
-export const CreateCourseDocument = gql`
-    mutation CreateCourse($courseInfo: EventInput!) {
-  createCourse(courseInfo: $courseInfo) {
-    course {
-      ...RegularCourse
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularCourseFragmentDoc}`;
-
-export function useCreateCourseMutation() {
-  return Urql.useMutation<CreateCourseMutation, CreateCourseMutationVariables>(CreateCourseDocument);
-};
-export const EditCourseDocument = gql`
-    mutation EditCourse($courseInfo: EventInput!, $id: Float!) {
-  editCourse(courseInfo: $courseInfo, id: $id) {
-    course {
-      ...RegularCourse
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularCourseFragmentDoc}`;
-
-export function useEditCourseMutation() {
-  return Urql.useMutation<EditCourseMutation, EditCourseMutationVariables>(EditCourseDocument);
-};
-export const JoinCourseDocument = gql`
-    mutation JoinCourse($courseId: Float, $shortName: String) {
-  joinCourse(courseId: $courseId, shortName: $shortName)
-}
-    `;
-
-export function useJoinCourseMutation() {
-  return Urql.useMutation<JoinCourseMutation, JoinCourseMutationVariables>(JoinCourseDocument);
-};
-export const RemoveUserFromCourseDocument = gql`
-    mutation RemoveUserFromCourse($userId: Float!, $courseId: Float, $shortName: String) {
-  removeUserFromCourse(
-    userId: $userId
-    courseId: $courseId
-    shortName: $shortName
-  )
-}
-    `;
-
-export function useRemoveUserFromCourseMutation() {
-  return Urql.useMutation<RemoveUserFromCourseMutation, RemoveUserFromCourseMutationVariables>(RemoveUserFromCourseDocument);
-};
-export const CreateElectionRoleDocument = gql`
-    mutation CreateElectionRole($roleInfo: ElectionRoleInput!) {
-  createElectionRole(roleInfo: $roleInfo) {
-    errors {
-      field
-      message
-    }
-    role {
-      ...RegularElectionRole
-    }
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useCreateElectionRoleMutation() {
-  return Urql.useMutation<CreateElectionRoleMutation, CreateElectionRoleMutationVariables>(CreateElectionRoleDocument);
-};
-export const EditElectionRoleDocument = gql`
-    mutation EditElectionRole($roleInfo: ElectionRoleInput!, $editElectionRoleId: Float!) {
-  editElectionRole(roleInfo: $roleInfo, id: $editElectionRoleId) {
-    errors {
-      field
-      message
-    }
-    role {
-      ...RegularElectionRole
-    }
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useEditElectionRoleMutation() {
-  return Urql.useMutation<EditElectionRoleMutation, EditElectionRoleMutationVariables>(EditElectionRoleDocument);
-};
-export const VoteDocument = gql`
-    mutation Vote($applicationShortName: String, $applicationId: Float, $roleShortName: String, $roleId: Float) {
-  vote(
-    applicationShortName: $applicationShortName
-    applicationId: $applicationId
-    roleShortName: $roleShortName
-    roleId: $roleId
-  )
-}
-    `;
-
-export function useVoteMutation() {
-  return Urql.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument);
-};
-export const AddRonApplicationDocument = gql`
-    mutation AddRONApplication($shortName: String, $roleId: Float) {
-  addRONApplication(shortName: $shortName, roleId: $roleId)
-}
-    `;
-
-export function useAddRonApplicationMutation() {
-  return Urql.useMutation<AddRonApplicationMutation, AddRonApplicationMutationVariables>(AddRonApplicationDocument);
 };
 export const EditElementDataDocument = gql`
     mutation EditElementData($data: JSONObject!, $elementId: Float!) {
@@ -2240,301 +1503,6 @@ export const DeleteGroupDocument = gql`
 export function useDeleteGroupMutation() {
   return Urql.useMutation<DeleteGroupMutation, DeleteGroupMutationVariables>(DeleteGroupDocument);
 };
-export const RoleApplyDocument = gql`
-    mutation RoleApply($roleShortName: String, $roleId: Float, $applicationInfo: ApplyRoleInput!) {
-  roleApply(
-    roleShortName: $roleShortName
-    roleId: $roleId
-    applicationInfo: $applicationInfo
-  ) {
-    errors {
-      message
-      field
-    }
-    application {
-      ...RegularRoleApplication
-    }
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useRoleApplyMutation() {
-  return Urql.useMutation<RoleApplyMutation, RoleApplyMutationVariables>(RoleApplyDocument);
-};
-export const CreateRoleApplicationDocument = gql`
-    mutation CreateRoleApplication($applicationInfo: RoleApplicationInput!, $roleId: Float, $roleShortName: String) {
-  createRoleApplication(
-    applicationInfo: $applicationInfo
-    roleId: $roleId
-    roleShortName: $roleShortName
-  ) {
-    errors {
-      field
-      message
-    }
-    application {
-      ...RegularRoleApplication
-    }
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useCreateRoleApplicationMutation() {
-  return Urql.useMutation<CreateRoleApplicationMutation, CreateRoleApplicationMutationVariables>(CreateRoleApplicationDocument);
-};
-export const EditRoleApplicationDocument = gql`
-    mutation EditRoleApplication($applicationInfo: RoleApplicationInput!, $editRoleApplicationId: Float!) {
-  editRoleApplication(
-    applicationInfo: $applicationInfo
-    id: $editRoleApplicationId
-  ) {
-    errors {
-      message
-      field
-    }
-    application {
-      ...RegularRoleApplication
-    }
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useEditRoleApplicationMutation() {
-  return Urql.useMutation<EditRoleApplicationMutation, EditRoleApplicationMutationVariables>(EditRoleApplicationDocument);
-};
-export const CreateMerchDocument = gql`
-    mutation CreateMerch($itemInfo: MerchInput!) {
-  createMerch(itemInfo: $itemInfo) {
-    item {
-      id
-      display
-      title
-      shortName
-      description
-      image
-      variants {
-        name
-        link
-      }
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    `;
-
-export function useCreateMerchMutation() {
-  return Urql.useMutation<CreateMerchMutation, CreateMerchMutationVariables>(CreateMerchDocument);
-};
-export const EditMerchDocument = gql`
-    mutation EditMerch($itemInfo: MerchInput!, $id: Float!) {
-  editMerch(itemInfo: $itemInfo, id: $id) {
-    errors {
-      field
-      message
-    }
-    item {
-      id
-      display
-      title
-      shortName
-      description
-      image
-      variants {
-        name
-        link
-      }
-    }
-  }
-}
-    `;
-
-export function useEditMerchMutation() {
-  return Urql.useMutation<EditMerchMutation, EditMerchMutationVariables>(EditMerchDocument);
-};
-export const CreateProjectDocument = gql`
-    mutation CreateProject($projectInfo: EventInput!) {
-  createProject(projectInfo: $projectInfo) {
-    project {
-      ...RegularProject
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularProjectFragmentDoc}`;
-
-export function useCreateProjectMutation() {
-  return Urql.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument);
-};
-export const EditProjectDocument = gql`
-    mutation EditProject($projectInfo: EventInput!, $id: Float!) {
-  editProject(projectInfo: $projectInfo, id: $id) {
-    project {
-      ...RegularProject
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularProjectFragmentDoc}`;
-
-export function useEditProjectMutation() {
-  return Urql.useMutation<EditProjectMutation, EditProjectMutationVariables>(EditProjectDocument);
-};
-export const JoinProjectDocument = gql`
-    mutation JoinProject($projectId: Float, $shortName: String) {
-  joinProject(projectId: $projectId, shortName: $shortName)
-}
-    `;
-
-export function useJoinProjectMutation() {
-  return Urql.useMutation<JoinProjectMutation, JoinProjectMutationVariables>(JoinProjectDocument);
-};
-export const RemoveUserFromProjectDocument = gql`
-    mutation RemoveUserFromProject($userId: Float!, $projectId: Float, $shortName: String) {
-  removeUserFromProject(
-    userId: $userId
-    projectId: $projectId
-    shortName: $shortName
-  )
-}
-    `;
-
-export function useRemoveUserFromProjectMutation() {
-  return Urql.useMutation<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>(RemoveUserFromProjectDocument);
-};
-export const CreateTagDocument = gql`
-    mutation CreateTag($tagInfo: TagInput!) {
-  createTag(tagInfo: $tagInfo) {
-    errors {
-      field
-      message
-    }
-    tag {
-      ...RegularTag
-    }
-  }
-}
-    ${RegularTagFragmentDoc}`;
-
-export function useCreateTagMutation() {
-  return Urql.useMutation<CreateTagMutation, CreateTagMutationVariables>(CreateTagDocument);
-};
-export const CreateTalkDocument = gql`
-    mutation CreateTalk($talkInfo: EventInput!) {
-  createTalk(talkInfo: $talkInfo) {
-    talk {
-      ...RegularTalk
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularTalkFragmentDoc}`;
-
-export function useCreateTalkMutation() {
-  return Urql.useMutation<CreateTalkMutation, CreateTalkMutationVariables>(CreateTalkDocument);
-};
-export const EditTalkDocument = gql`
-    mutation EditTalk($talkInfo: EventInput!, $id: Float!) {
-  editTalk(talkInfo: $talkInfo, id: $id) {
-    talk {
-      ...RegularTalk
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularTalkFragmentDoc}`;
-
-export function useEditTalkMutation() {
-  return Urql.useMutation<EditTalkMutation, EditTalkMutationVariables>(EditTalkDocument);
-};
-export const JoinTalkDocument = gql`
-    mutation JoinTalk($talkId: Float, $shortName: String) {
-  joinTalk(talkId: $talkId, shortName: $shortName)
-}
-    `;
-
-export function useJoinTalkMutation() {
-  return Urql.useMutation<JoinTalkMutation, JoinTalkMutationVariables>(JoinTalkDocument);
-};
-export const RemoveUserFromTalkDocument = gql`
-    mutation RemoveUserFromTalk($userId: Float!, $talkId: Float, $shortName: String) {
-  removeUserFromTalk(userId: $userId, talkId: $talkId, shortName: $shortName)
-}
-    `;
-
-export function useRemoveUserFromTalkMutation() {
-  return Urql.useMutation<RemoveUserFromTalkMutation, RemoveUserFromTalkMutationVariables>(RemoveUserFromTalkDocument);
-};
-export const CreateTutorialDocument = gql`
-    mutation CreateTutorial($tutorialInfo: EventInput!) {
-  createTutorial(tutorialInfo: $tutorialInfo) {
-    tutorial {
-      ...RegularTutorial
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularTutorialFragmentDoc}`;
-
-export function useCreateTutorialMutation() {
-  return Urql.useMutation<CreateTutorialMutation, CreateTutorialMutationVariables>(CreateTutorialDocument);
-};
-export const EditTutorialDocument = gql`
-    mutation EditTutorial($tutorialInfo: EventInput!, $id: Float!) {
-  editTutorial(tutorialInfo: $tutorialInfo, id: $id) {
-    tutorial {
-      ...RegularTutorial
-    }
-    errors {
-      field
-      message
-    }
-  }
-}
-    ${RegularTutorialFragmentDoc}`;
-
-export function useEditTutorialMutation() {
-  return Urql.useMutation<EditTutorialMutation, EditTutorialMutationVariables>(EditTutorialDocument);
-};
-export const JoinTutorialDocument = gql`
-    mutation JoinTutorial($tutorialId: Float, $shortName: String) {
-  joinTutorial(tutorialId: $tutorialId, shortName: $shortName)
-}
-    `;
-
-export function useJoinTutorialMutation() {
-  return Urql.useMutation<JoinTutorialMutation, JoinTutorialMutationVariables>(JoinTutorialDocument);
-};
-export const RemoveUserFromTutorialDocument = gql`
-    mutation RemoveUserFromTutorial($userId: Float!, $tutorialId: Float, $shortName: String) {
-  removeUserFromTutorial(
-    userId: $userId
-    tutorialId: $tutorialId
-    shortName: $shortName
-  )
-}
-    `;
-
-export function useRemoveUserFromTutorialMutation() {
-  return Urql.useMutation<RemoveUserFromTutorialMutation, RemoveUserFromTutorialMutationVariables>(RemoveUserFromTutorialDocument);
-};
 export const VerifyLoginDocument = gql`
     mutation VerifyLogin {
   verifyLogin {
@@ -2574,146 +1542,6 @@ export const UpdateUserRoleDocument = gql`
 export function useUpdateUserRoleMutation() {
   return Urql.useMutation<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>(UpdateUserRoleDocument);
 };
-export const CoursesDocument = gql`
-    query Courses {
-  courses {
-    ...RegularCourse
-  }
-}
-    ${RegularCourseFragmentDoc}`;
-
-export function useCoursesQuery(options: Omit<Urql.UseQueryArgs<CoursesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<CoursesQuery>({ query: CoursesDocument, ...options });
-};
-export const AllCoursesDocument = gql`
-    query AllCourses {
-  allCourses {
-    ...RegularCourse
-  }
-}
-    ${RegularCourseFragmentDoc}`;
-
-export function useAllCoursesQuery(options: Omit<Urql.UseQueryArgs<AllCoursesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllCoursesQuery>({ query: AllCoursesDocument, ...options });
-};
-export const CourseByShortNameDocument = gql`
-    query CourseByShortName($shortName: String!) {
-  courseByShortName(shortName: $shortName) {
-    ...RegularCourse
-  }
-}
-    ${RegularCourseFragmentDoc}`;
-
-export function useCourseByShortNameQuery(options: Omit<Urql.UseQueryArgs<CourseByShortNameQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<CourseByShortNameQuery>({ query: CourseByShortNameDocument, ...options });
-};
-export const CourseUsersDocument = gql`
-    query CourseUsers($courseId: Float, $shortName: String) {
-  courseUsers(courseId: $courseId, shortName: $shortName) {
-    ...RegularUserWithoutEvents
-  }
-}
-    ${RegularUserWithoutEventsFragmentDoc}`;
-
-export function useCourseUsersQuery(options: Omit<Urql.UseQueryArgs<CourseUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<CourseUsersQuery>({ query: CourseUsersDocument, ...options });
-};
-export const ElectionRolesDocument = gql`
-    query ElectionRoles {
-  electionRoles {
-    ...RegularElectionRole
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useElectionRolesQuery(options: Omit<Urql.UseQueryArgs<ElectionRolesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ElectionRolesQuery>({ query: ElectionRolesDocument, ...options });
-};
-export const AllElectionRolesDocument = gql`
-    query AllElectionRoles {
-  allElectionRoles {
-    ...RegularElectionRole
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useAllElectionRolesQuery(options: Omit<Urql.UseQueryArgs<AllElectionRolesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllElectionRolesQuery>({ query: AllElectionRolesDocument, ...options });
-};
-export const ElectionRoleApplicationsDocument = gql`
-    query ElectionRoleApplications($shortName: String, $roleId: Float) {
-  electionRoleApplications(shortName: $shortName, roleId: $roleId) {
-    ...RegularRoleApplication
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useElectionRoleApplicationsQuery(options: Omit<Urql.UseQueryArgs<ElectionRoleApplicationsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ElectionRoleApplicationsQuery>({ query: ElectionRoleApplicationsDocument, ...options });
-};
-export const ElectionRoleAllApplicationsDocument = gql`
-    query ElectionRoleAllApplications($shortName: String, $roleId: Float) {
-  electionRoleAllApplications(shortName: $shortName, roleId: $roleId) {
-    ...RegularRoleApplication
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useElectionRoleAllApplicationsQuery(options: Omit<Urql.UseQueryArgs<ElectionRoleAllApplicationsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ElectionRoleAllApplicationsQuery>({ query: ElectionRoleAllApplicationsDocument, ...options });
-};
-export const GetElectionRoleDocument = gql`
-    query GetElectionRole($shortName: String, $roleId: Float) {
-  getElectionRole(shortName: $shortName, roleId: $roleId) {
-    ...RegularElectionRole
-    applications {
-      ...RegularRoleApplication
-    }
-  }
-}
-    ${RegularElectionRoleFragmentDoc}
-${RegularRoleApplicationFragmentDoc}`;
-
-export function useGetElectionRoleQuery(options: Omit<Urql.UseQueryArgs<GetElectionRoleQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetElectionRoleQuery>({ query: GetElectionRoleDocument, ...options });
-};
-export const GetRoleVoteCountDocument = gql`
-    query GetRoleVoteCount($roleId: Float, $shortName: String) {
-  getRoleVoteCount(roleId: $roleId, shortName: $shortName) {
-    application {
-      ...RegularRoleApplication
-    }
-    count
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useGetRoleVoteCountQuery(options: Omit<Urql.UseQueryArgs<GetRoleVoteCountQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetRoleVoteCountQuery>({ query: GetRoleVoteCountDocument, ...options });
-};
-export const GetRoleApplicationForVoteDocument = gql`
-    query GetRoleApplicationForVote($voteId: Float!) {
-  getRoleApplicationForVote(voteId: $voteId) {
-    role {
-      ...RegularRoleApplication
-    }
-    message
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useGetRoleApplicationForVoteQuery(options: Omit<Urql.UseQueryArgs<GetRoleApplicationForVoteQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetRoleApplicationForVoteQuery>({ query: GetRoleApplicationForVoteDocument, ...options });
-};
-export const HasUserVotedForRoleDocument = gql`
-    query HasUserVotedForRole($roleShortName: String, $roleId: Float) {
-  hasUserVotedForRole(roleShortName: $roleShortName, roleId: $roleId)
-}
-    `;
-
-export function useHasUserVotedForRoleQuery(options: Omit<Urql.UseQueryArgs<HasUserVotedForRoleQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<HasUserVotedForRoleQuery>({ query: HasUserVotedForRoleDocument, ...options });
-};
 export const GetElementsDocument = gql`
     query GetElements($type: String, $parentId: Float, $children: Boolean) {
   getElements(type: $type, parentId: $parentId, children: $children) {
@@ -2722,8 +1550,8 @@ export const GetElementsDocument = gql`
 }
     ${FullElementFragmentDoc}`;
 
-export function useGetElementsQuery(options: Omit<Urql.UseQueryArgs<GetElementsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetElementsQuery>({ query: GetElementsDocument, ...options });
+export function useGetElementsQuery(options?: Omit<Urql.UseQueryArgs<GetElementsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetElementsQuery, GetElementsQueryVariables>({ query: GetElementsDocument, ...options });
 };
 export const GetElementDocument = gql`
     query GetElement($elementId: Float, $route: String, $children: Boolean) {
@@ -2733,8 +1561,8 @@ export const GetElementDocument = gql`
 }
     ${FullElementFragmentDoc}`;
 
-export function useGetElementQuery(options: Omit<Urql.UseQueryArgs<GetElementQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetElementQuery>({ query: GetElementDocument, ...options });
+export function useGetElementQuery(options?: Omit<Urql.UseQueryArgs<GetElementQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetElementQuery, GetElementQueryVariables>({ query: GetElementDocument, ...options });
 };
 export const GetUserPageDocument = gql`
     query GetUserPage($uniId: Float!) {
@@ -2744,8 +1572,8 @@ export const GetUserPageDocument = gql`
 }
     `;
 
-export function useGetUserPageQuery(options: Omit<Urql.UseQueryArgs<GetUserPageQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUserPageQuery>({ query: GetUserPageDocument, ...options });
+export function useGetUserPageQuery(options: Omit<Urql.UseQueryArgs<GetUserPageQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetUserPageQuery, GetUserPageQueryVariables>({ query: GetUserPageDocument, ...options });
 };
 export const GetFileDocument = gql`
     query GetFile($key: String!) {
@@ -2755,8 +1583,8 @@ export const GetFileDocument = gql`
 }
     ${FileWithoutUploadedByFragmentDoc}`;
 
-export function useGetFileQuery(options: Omit<Urql.UseQueryArgs<GetFileQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetFileQuery>({ query: GetFileDocument, ...options });
+export function useGetFileQuery(options: Omit<Urql.UseQueryArgs<GetFileQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetFileQuery, GetFileQueryVariables>({ query: GetFileDocument, ...options });
 };
 export const GetGroupsDocument = gql`
     query GetGroups {
@@ -2766,8 +1594,8 @@ export const GetGroupsDocument = gql`
 }
     ${GroupWithoutUsersFragmentDoc}`;
 
-export function useGetGroupsQuery(options: Omit<Urql.UseQueryArgs<GetGroupsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetGroupsQuery>({ query: GetGroupsDocument, ...options });
+export function useGetGroupsQuery(options?: Omit<Urql.UseQueryArgs<GetGroupsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetGroupsQuery, GetGroupsQueryVariables>({ query: GetGroupsDocument, ...options });
 };
 export const GetGroupsWithUsersDocument = gql`
     query GetGroupsWithUsers {
@@ -2777,55 +1605,8 @@ export const GetGroupsWithUsersDocument = gql`
 }
     ${GroupWithUsersFragmentDoc}`;
 
-export function useGetGroupsWithUsersQuery(options: Omit<Urql.UseQueryArgs<GetGroupsWithUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetGroupsWithUsersQuery>({ query: GetGroupsWithUsersDocument, ...options });
-};
-export const RoleApplicationsDocument = gql`
-    query RoleApplications {
-  roleApplications {
-    ...RegularRoleApplication
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useRoleApplicationsQuery(options: Omit<Urql.UseQueryArgs<RoleApplicationsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<RoleApplicationsQuery>({ query: RoleApplicationsDocument, ...options });
-};
-export const AllRoleApplicationsDocument = gql`
-    query AllRoleApplications {
-  allRoleApplications {
-    ...RegularRoleApplication
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useAllRoleApplicationsQuery(options: Omit<Urql.UseQueryArgs<AllRoleApplicationsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllRoleApplicationsQuery>({ query: AllRoleApplicationsDocument, ...options });
-};
-export const GetRoleApplicationDocument = gql`
-    query GetRoleApplication($shortName: String, $applicationId: Float) {
-  getRoleApplication(shortName: $shortName, applicationId: $applicationId) {
-    ...RegularRoleApplication
-  }
-}
-    ${RegularRoleApplicationFragmentDoc}`;
-
-export function useGetRoleApplicationQuery(options: Omit<Urql.UseQueryArgs<GetRoleApplicationQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetRoleApplicationQuery>({ query: GetRoleApplicationDocument, ...options });
-};
-export const RoleApplicationElectionRoleDocument = gql`
-    query RoleApplicationElectionRole($shortName: String, $applicationId: Float) {
-  roleApplicationElectionRole(
-    shortName: $shortName
-    applicationId: $applicationId
-  ) {
-    ...RegularElectionRole
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useRoleApplicationElectionRoleQuery(options: Omit<Urql.UseQueryArgs<RoleApplicationElectionRoleQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<RoleApplicationElectionRoleQuery>({ query: RoleApplicationElectionRoleDocument, ...options });
+export function useGetGroupsWithUsersQuery(options?: Omit<Urql.UseQueryArgs<GetGroupsWithUsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetGroupsWithUsersQuery, GetGroupsWithUsersQueryVariables>({ query: GetGroupsWithUsersDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
@@ -2835,212 +1616,19 @@ export const MeDocument = gql`
 }
     ${RegularUserFragmentDoc}`;
 
-export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
-};
-export const MerchDocument = gql`
-    query Merch {
-  merch {
-    id
-    display
-    title
-    shortName
-    image
-  }
-}
-    `;
-
-export function useMerchQuery(options: Omit<Urql.UseQueryArgs<MerchQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MerchQuery>({ query: MerchDocument, ...options });
-};
-export const AllMerchDocument = gql`
-    query AllMerch {
-  allMerch {
-    id
-    display
-    title
-    shortName
-    image
-  }
-}
-    `;
-
-export function useAllMerchQuery(options: Omit<Urql.UseQueryArgs<AllMerchQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllMerchQuery>({ query: AllMerchDocument, ...options });
-};
-export const MerchByShortNameDocument = gql`
-    query MerchByShortName($shortName: String!) {
-  merchByShortName(shortName: $shortName) {
-    id
-    display
-    title
-    shortName
-    description
-    image
-    variants {
-      name
-      link
-    }
-  }
-}
-    `;
-
-export function useMerchByShortNameQuery(options: Omit<Urql.UseQueryArgs<MerchByShortNameQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MerchByShortNameQuery>({ query: MerchByShortNameDocument, ...options });
-};
-export const ProjectsDocument = gql`
-    query Projects {
-  projects {
-    ...RegularProject
-  }
-}
-    ${RegularProjectFragmentDoc}`;
-
-export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ProjectsQuery>({ query: ProjectsDocument, ...options });
-};
-export const AllProjectsDocument = gql`
-    query AllProjects {
-  allProjects {
-    ...RegularProject
-  }
-}
-    ${RegularProjectFragmentDoc}`;
-
-export function useAllProjectsQuery(options: Omit<Urql.UseQueryArgs<AllProjectsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllProjectsQuery>({ query: AllProjectsDocument, ...options });
-};
-export const ProjectByShortNameDocument = gql`
-    query ProjectByShortName($shortName: String!) {
-  projectByShortName(shortName: $shortName) {
-    ...RegularProject
-  }
-}
-    ${RegularProjectFragmentDoc}`;
-
-export function useProjectByShortNameQuery(options: Omit<Urql.UseQueryArgs<ProjectByShortNameQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ProjectByShortNameQuery>({ query: ProjectByShortNameDocument, ...options });
-};
-export const ProjectUsersDocument = gql`
-    query ProjectUsers($projectId: Float, $shortName: String) {
-  projectUsers(projectId: $projectId, shortName: $shortName) {
-    ...RegularUserWithoutEvents
-  }
-}
-    ${RegularUserWithoutEventsFragmentDoc}`;
-
-export function useProjectUsersQuery(options: Omit<Urql.UseQueryArgs<ProjectUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ProjectUsersQuery>({ query: ProjectUsersDocument, ...options });
-};
-export const TagsDocument = gql`
-    query Tags {
-  tags {
-    ...RegularTag
-  }
-}
-    ${RegularTagFragmentDoc}`;
-
-export function useTagsQuery(options: Omit<Urql.UseQueryArgs<TagsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TagsQuery>({ query: TagsDocument, ...options });
-};
-export const TalksDocument = gql`
-    query Talks {
-  talks {
-    ...RegularTalk
-  }
-}
-    ${RegularTalkFragmentDoc}`;
-
-export function useTalksQuery(options: Omit<Urql.UseQueryArgs<TalksQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TalksQuery>({ query: TalksDocument, ...options });
-};
-export const AllTalksDocument = gql`
-    query AllTalks {
-  allTalks {
-    ...RegularTalk
-  }
-}
-    ${RegularTalkFragmentDoc}`;
-
-export function useAllTalksQuery(options: Omit<Urql.UseQueryArgs<AllTalksQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllTalksQuery>({ query: AllTalksDocument, ...options });
-};
-export const TalkByShortNameDocument = gql`
-    query TalkByShortName($shortName: String!) {
-  talkByShortName(shortName: $shortName) {
-    ...RegularTalk
-  }
-}
-    ${RegularTalkFragmentDoc}`;
-
-export function useTalkByShortNameQuery(options: Omit<Urql.UseQueryArgs<TalkByShortNameQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TalkByShortNameQuery>({ query: TalkByShortNameDocument, ...options });
-};
-export const TalkUsersDocument = gql`
-    query TalkUsers($talkId: Float, $shortName: String) {
-  talkUsers(talkId: $talkId, shortName: $shortName) {
-    ...RegularUserWithoutEvents
-  }
-}
-    ${RegularUserWithoutEventsFragmentDoc}`;
-
-export function useTalkUsersQuery(options: Omit<Urql.UseQueryArgs<TalkUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TalkUsersQuery>({ query: TalkUsersDocument, ...options });
-};
-export const TutorialsDocument = gql`
-    query Tutorials {
-  tutorials {
-    ...RegularTutorial
-  }
-}
-    ${RegularTutorialFragmentDoc}`;
-
-export function useTutorialsQuery(options: Omit<Urql.UseQueryArgs<TutorialsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TutorialsQuery>({ query: TutorialsDocument, ...options });
-};
-export const AllTutorialsDocument = gql`
-    query AllTutorials {
-  allTutorials {
-    ...RegularTutorial
-  }
-}
-    ${RegularTutorialFragmentDoc}`;
-
-export function useAllTutorialsQuery(options: Omit<Urql.UseQueryArgs<AllTutorialsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllTutorialsQuery>({ query: AllTutorialsDocument, ...options });
-};
-export const TutorialByShortNameDocument = gql`
-    query TutorialByShortName($shortName: String!) {
-  tutorialByShortName(shortName: $shortName) {
-    ...RegularTutorial
-  }
-}
-    ${RegularTutorialFragmentDoc}`;
-
-export function useTutorialByShortNameQuery(options: Omit<Urql.UseQueryArgs<TutorialByShortNameQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TutorialByShortNameQuery>({ query: TutorialByShortNameDocument, ...options });
-};
-export const TutorialUsersDocument = gql`
-    query TutorialUsers($tutorialId: Float, $shortName: String) {
-  tutorialUsers(tutorialId: $tutorialId, shortName: $shortName) {
-    ...RegularUserWithoutEvents
-  }
-}
-    ${RegularUserWithoutEventsFragmentDoc}`;
-
-export function useTutorialUsersQuery(options: Omit<Urql.UseQueryArgs<TutorialUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TutorialUsersQuery>({ query: TutorialUsersDocument, ...options });
+export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
+  return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
 };
 export const UsersDocument = gql`
     query Users {
   users {
-    ...RegularUserWithoutEvents
+    ...RegularUser
   }
 }
-    ${RegularUserWithoutEventsFragmentDoc}`;
+    ${RegularUserFragmentDoc}`;
 
-export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });
+export function useUsersQuery(options?: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<UsersQuery, UsersQueryVariables>({ query: UsersDocument, ...options });
 };
 export const GetUsersDocument = gql`
     query GetUsers {
@@ -3050,8 +1638,8 @@ export const GetUsersDocument = gql`
 }
     ${UserNoElementsFragmentDoc}`;
 
-export function useGetUsersQuery(options: Omit<Urql.UseQueryArgs<GetUsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUsersQuery>({ query: GetUsersDocument, ...options });
+export function useGetUsersQuery(options?: Omit<Urql.UseQueryArgs<GetUsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetUsersQuery, GetUsersQueryVariables>({ query: GetUsersDocument, ...options });
 };
 export const GetUserDocument = gql`
     query GetUser($userId: Float!) {
@@ -3061,17 +1649,6 @@ export const GetUserDocument = gql`
 }
     ${UserNoGroupsElementsFragmentDoc}`;
 
-export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
-};
-export const GetUserRoleApplicationsDocument = gql`
-    query GetUserRoleApplications {
-  getUserRoleApplications {
-    ...RegularElectionRole
-  }
-}
-    ${RegularElectionRoleFragmentDoc}`;
-
-export function useGetUserRoleApplicationsQuery(options: Omit<Urql.UseQueryArgs<GetUserRoleApplicationsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUserRoleApplicationsQuery>({ query: GetUserRoleApplicationsDocument, ...options });
+export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetUserQuery, GetUserQueryVariables>({ query: GetUserDocument, ...options });
 };

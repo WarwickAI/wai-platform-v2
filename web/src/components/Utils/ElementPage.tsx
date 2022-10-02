@@ -10,6 +10,7 @@ interface ElementPageProps {
   isEdit: boolean;
   settingsPopover?: JSX.Element;
   editTitle?: (newTitle: string) => void;
+  children: React.ReactNode;
 }
 
 const ElementPage: React.FC<ElementPageProps> = (props) => {

@@ -7,6 +7,6 @@ fragment GroupWithUsers on Group {
   id
   name
   users {
-    ...RegularUserWithoutEvents
+    ...RegularUser
   }
 }

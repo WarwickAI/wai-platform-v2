@@ -52,7 +52,7 @@ const Users: React.FC<UsersProps> = ({}) => {
               <Button
                 variant="admin"
                 onClick={async () => {
-                  const result = await updateMembership();
+                  const result = await updateMembership({});
                   if (result.data?.updateMembership) {
                     router.reload();
                   }

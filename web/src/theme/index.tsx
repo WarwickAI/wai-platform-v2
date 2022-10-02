@@ -3,6 +3,7 @@ import { extendTheme } from "@chakra-ui/react";
 
 import "@fontsource/public-sans/700.css";
 import "@fontsource/public-sans/400.css";
+import React from "react";
 
 const PRIMARY = {
   lighter: "#C8FACD",
@@ -92,7 +93,7 @@ export const theme: any = extendTheme({
   },
 });
 
-const ThemeConfig: React.FC = (props) => {
+const ThemeConfig: React.FC<{ children: React.ReactNode }> = (props) => {
   return <ChakraProvider theme={theme}>{props.children}</ChakraProvider>;
 };
 

@@ -38,7 +38,6 @@ const FormattedText: React.FC<FormattedTextProps> = (props) => {
         ref={textAreaRef}
         minHeight={0}
         value={value}
-        type={"text"}
         resize={"none"}
         overflow={"hidden"}
         onChange={async (e) => {

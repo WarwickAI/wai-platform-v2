@@ -1,7 +1,6 @@
 import { makeOperation } from "urql";
 import { getAccessToken, setAccessToken } from "../utils/accesToken";
 import { decode } from "jsonwebtoken";
-import { Data, Variables } from "@urql/exchange-graphcache";
 
 // @ts-ignore
 export const getAuth = async ({ authState }) => {

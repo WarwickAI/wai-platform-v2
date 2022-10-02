@@ -5,6 +5,7 @@ import { Wrapper } from "./Wrapper";
 
 interface LogoOnlyPageProps {
   variant?: "small" | "regular";
+  children: React.ReactNode;
 }
 
 const LogoOnlyPage: React.FC<LogoOnlyPageProps> = ({

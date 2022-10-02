@@ -5,6 +5,7 @@ import NavBarMobile from "../NavBarMobile";
 
 interface PageWrapperProps {
   showEditToggle: boolean;
+  children: React.ReactNode;
 }
 
 const PageWrapper: React.FC<PageWrapperProps> = (props) => {

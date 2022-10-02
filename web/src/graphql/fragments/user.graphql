@@ -37,34 +37,7 @@ fragment RegularUser on User {
   role
   memberFromDate
   isMember
-  projects {
-    id
-    shortName
-  }
-  talks {
-    id
-    shortName
-  }
-  courses {
-    id
-    shortName
-  }
-  tutorials {
-    id
-    shortName
-  }
   groups {
     ...GroupWithoutUsers
   }
-}
-
-fragment RegularUserWithoutEvents on User {
-  id
-  uniId
-  firstName
-  lastName
-  email
-  role
-  memberFromDate
-  isMember
 }

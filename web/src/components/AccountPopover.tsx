@@ -89,7 +89,7 @@ const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
                   variant="primary"
                   onClick={async () => {
                     setAccessToken("");
-                    await logout();
+                    await logout({});
                     router.push("/");
                   }}
                 >

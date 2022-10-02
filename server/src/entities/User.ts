@@ -5,19 +5,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Course } from "./Course";
-import { Project } from "./Project";
-import { RoleApplication } from "./RoleApplication";
-import { Talk } from "./Talk";
-import { Tutorial } from "./Tutorial";
-import { Vote } from "./Vote";
 import { Element } from "./Element";
 import { Group } from "./Group";
 import { File } from "./File";
@@ -65,14 +58,6 @@ export class User extends BaseEntity {
   @Column()
   role: string = "none";
 
-  @Field(() => [Project])
-  @ManyToMany(() => Project, (project) => project.users)
-  projects: Project[];
-
-  @Field(() => [Talk])
-  @ManyToMany(() => Talk, (project) => project.users)
-  talks: Talk[];
-
   @Field({ defaultValue: false })
   @Column({ default: false })
   isMember: boolean;
@@ -80,22 +65,6 @@ export class User extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   memberFromDate?: Date;
-
-  @Field(() => [Course])
-  @ManyToMany(() => Course, (course) => course.users)
-  courses: Course[];
-
-  @Field(() => [Tutorial])
-  @ManyToMany(() => Tutorial, (tutorial) => tutorial.users)
-  tutorials: Tutorial[];
-
-  @Field(() => [RoleApplication])
-  @OneToMany(() => RoleApplication, (application) => application.user)
-  applications: RoleApplication[];
-
-  @Field(() => [Vote])
-  @OneToMany(() => Vote, (vote) => vote.user)
-  votes: Vote[];
 
   @Field(() => [Element])
   @OneToMany(() => Element, (element) => element.createdBy)

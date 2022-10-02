@@ -35,7 +35,7 @@ fragment ElementNoChildrenCreatedBy on Element {
 fragment ElementNoChildren on Element {
   ...ElementNoChildrenCreatedBy
   createdBy {
-    ...RegularUserWithoutEvents
+    ...UserNoGroupsElements
   }
 }
 

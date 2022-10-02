@@ -14,6 +14,7 @@ import {
   HStack,
   Tooltip,
   Flex,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { useField } from "formik";
 import React from "react";
@@ -44,7 +45,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   const [field, { error }] = useField(props);
 
   return (
-    <FormControl error={error ? error.toString() : undefined}>
+    <FormControl isInvalid={!!error}>
       <Flex>
         <FormLabel htmlFor={field.name}>{label}</FormLabel>
         {hint && <Tooltip label={hint}>{getIcon(infoOutline)}</Tooltip>}
@@ -114,7 +115,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         </NumberInput>
       )}
 
-      {error ? <div>{error}</div> : null}
+      {error && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
   );
 };

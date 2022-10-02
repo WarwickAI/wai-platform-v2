@@ -1,7 +1,9 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 
-interface ItemGridProps {}
+interface ItemGridProps {
+  children: React.ReactNode;
+}
 
 const ItemGrid: React.FC<ItemGridProps> = (props) => {
   return (
