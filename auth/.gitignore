@@ -13,5 +13,4 @@ logs.txt
 *.dump
 *.sql
 
-metadata_idp.xml
-metadata_sp.xml
+metadata_*.xml
