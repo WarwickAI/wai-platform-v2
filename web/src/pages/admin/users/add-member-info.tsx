@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Dashboard from "../../../components/Dashboard";
 import { Box, Button } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
@@ -9,7 +9,6 @@ import {
 } from "../../../generated/graphql";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { toErrorMap } from "../../../utils/toErrorMap";
 import { InputField } from "../../../components/InputField";
 
 interface AddMemberInfoProps {}

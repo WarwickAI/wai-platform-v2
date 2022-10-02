@@ -1,8 +1,0 @@
-# query Posts {
-#   posts {
-#     _id
-#     createdAt
-#     updatedAt
-#     title
-#   }
-# }

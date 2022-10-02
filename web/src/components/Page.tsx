@@ -17,6 +17,7 @@ interface PageProps {
   iconImg?: string;
   options?: JSX.Element;
   tags?: JSX.Element;
+  children: React.ReactNode;
 }
 
 const Page: React.FC<PageProps> = (props) => {

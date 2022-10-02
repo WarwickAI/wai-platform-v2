@@ -1,10 +1,5 @@
-import { withUrqlClient } from "next-urql";
-import { Wrapper } from "../components/Wrapper";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import {
-  Container,
   Box,
-  Flex,
   Button,
   Text,
   Heading,
@@ -15,7 +10,6 @@ import ParticleBackground from "../utils/particles/particleBackground";
 import LogoOnlyPage from "../components/LogoOnlyPage";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Index = () => {
   const router = useRouter();
@@ -82,7 +76,6 @@ const Index = () => {
                 Join us in the SU website
               </Text>
               <Button
-                target="_blank"
                 sx={{ marginTop: "1em" }}
                 size="lg"
                 variant="primary"

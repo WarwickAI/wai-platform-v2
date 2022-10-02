@@ -7,6 +7,7 @@ interface DashboardProps {
   coverImg?: string;
   iconImg?: string;
   tags?: JSX.Element;
+  children: React.ReactNode;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {

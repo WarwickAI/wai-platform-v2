@@ -4,35 +4,16 @@ import { __prod__ } from "./constants";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
 import { verify } from "jsonwebtoken";
 import { User } from "./entities/User";
-import { Project } from "./entities/Project";
 import { sendRefreshToken } from "./sendRefreshToken";
 import { createAccessToken, createRefreshToken } from "./auth";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import setupCognitoAuthentication from "./utils/cognitoAuthentication";
-import { ProjectResolver } from "./resolvers/project";
 import { createConnection } from "typeorm";
-import { Talk } from "./entities/Talk";
-import { TalkResolver } from "./resolvers/talk";
-import { Course } from "./entities/Course";
-import { Tutorial } from "./entities/Tutorial";
-import { CourseResolver } from "./resolvers/course";
-import { TutorialResolver } from "./resolvers/tutorial";
-import { Tag } from "./entities/Tag";
-import { Merch } from "./entities/Merch";
-import { MerchResolver } from "./resolvers/merch";
-import { TagResolver } from "./resolvers/tag";
-import { ElectionRole } from "./entities/ElectionRole";
-import { RoleApplication } from "./entities/RoleApplication";
-import { ElectionResolver } from "./resolvers/election";
-import { ApplicationResolver } from "./resolvers/application";
 import { AdminResolver } from "./resolvers/admin";
-import { Vote } from "./entities/Vote";
-import { VoteResolver } from "./resolvers/vote";
 import { Element } from "./entities/Element";
 import { ElementResolver } from "./resolvers/elements";
 import { Group } from "./entities/Group";
@@ -69,15 +50,6 @@ const main = async () => {
     migrations: [],
     entities: [
       User,
-      Project,
-      Talk,
-      Course,
-      Tutorial,
-      Merch,
-      Tag,
-      ElectionRole,
-      RoleApplication,
-      Vote,
       Element,
       Group,
       File,
@@ -144,18 +116,8 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [
-        HelloResolver,
         UserResolver,
-        ProjectResolver,
-        TalkResolver,
-        CourseResolver,
-        TutorialResolver,
-        MerchResolver,
-        TagResolver,
-        ElectionResolver,
-        ApplicationResolver,
         AdminResolver,
-        VoteResolver,
         ElementResolver,
         GroupResolver,
         FileResolver,
