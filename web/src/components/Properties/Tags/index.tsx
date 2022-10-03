@@ -57,11 +57,11 @@ const TagsProperty: React.FC<TagsPropertyProps> = (props) => {
 
   if (!props.isEdit) {
     return (
-      <HStack>
+      <Flex flexWrap="wrap">
         {selectedTags.map((tag) => (
           <TagCard key={tag.id} tag={tag} />
         ))}
-      </HStack>
+      </Flex>
     );
   } else {
     return (
@@ -121,7 +121,13 @@ interface TagCardProps {
 
 export const TagCard: React.FC<TagCardProps> = (props) => {
   return (
-    <Badge bg={props.tag.color} textColor="white" borderRadius={"lg"}>
+    <Badge
+      bg={props.tag.color}
+      textColor="white"
+      borderRadius={"lg"}
+      mr={2}
+      mb={2}
+    >
       <Tooltip label={props.tag.description} hasArrow>
         {props.tag.name}
       </Tooltip>

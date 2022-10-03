@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
+import { useGetTagsQuery } from "../../../../generated/graphql";
 import { DatabaseElementData } from "../../../../utils/base_element_types";
 import { Element } from "../../../../utils/config";
 import ItemGrid from "../../../ItemGrid";
@@ -14,11 +15,18 @@ interface CardViewProps {
 }
 
 const CardView: React.FC<CardViewProps> = (props) => {
-  console.log(props.rows);
+  const [{ data: allTagsQuery }] = useGetTagsQuery();
+
+  const allTags = allTagsQuery?.getTags;
+
   return (
     <Box w={"full"}>
       <ItemGrid>
         {props.rows.map((row) => {
+          const selectedTags =
+            row.data.tags?.value &&
+            allTags?.filter((tag) => row.data.tags.value.includes(tag.id));
+
           return (
             <Card
               key={row.id}
@@ -27,6 +35,7 @@ const CardView: React.FC<CardViewProps> = (props) => {
               cardImg={
                 row.data.cardImg.value ? row.data.cardImg.value : undefined
               }
+              tags={selectedTags}
               //   description={
               //     <Flex flexWrap="wrap">
               //       {tags.map((tag) => (

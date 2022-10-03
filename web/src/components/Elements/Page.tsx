@@ -4,6 +4,7 @@ import {
   useCreateElementMutation,
   useEditElementDataMutation,
   useEditElementIndexMutation,
+  useGetTagsQuery,
   useInheritDatabaseAttributesMutation,
   useMeQuery,
   User,
@@ -32,7 +33,11 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = (props) => {
   const router = useRouter();
-  const elementProps = props.element.data as PageElementData;
+  const elementProps = props.element.data;
+
+  const [{ data: allTagsQuery }] = useGetTagsQuery();
+
+  const allTags = allTagsQuery?.getTags;
 
   const [emptyPageAddElementPopoverOpen, setEmptyPageAddElementPopoverOpen] =
     useState<boolean>(false);
@@ -46,6 +51,13 @@ const Page: React.FC<PageProps> = (props) => {
   const isTemplate = useMemo(() => {
     return props.element.type === "Template";
   }, [props.element.type]);
+
+  const selectedTags = useMemo(() => {
+    return (
+      elementProps.tags?.value &&
+      allTags?.filter((tag) => elementProps.tags.value.includes(tag.id))
+    );
+  }, [elementProps.tags, allTags]);
 
   // Initialise and update page content here
   useEffect(() => {
@@ -141,6 +153,7 @@ const Page: React.FC<PageProps> = (props) => {
             data: { title: { type: "Text", value: v } },
           })
         }
+        tags={selectedTags}
         settingsPopover={
           <ElementSettingsPopover
             onOpen={() => {}}

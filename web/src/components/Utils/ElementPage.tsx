@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import TextProperty from "../Properties/Text";
 import NextImage from "next/image";
+import { Tag } from "../../generated/graphql";
+import { TagCard } from "../Properties/Tags";
 
 interface ElementPageProps {
   title: string;
@@ -11,6 +13,7 @@ interface ElementPageProps {
   settingsPopover?: JSX.Element;
   editTitle?: (newTitle: string) => void;
   children: React.ReactNode;
+  tags?: Tag[];
 }
 
 const ElementPage: React.FC<ElementPageProps> = (props) => {
@@ -49,6 +52,11 @@ const ElementPage: React.FC<ElementPageProps> = (props) => {
               />
             </Box>
           )}
+          <Flex flexWrap="wrap">
+            {props.tags?.map((tag) => (
+              <TagCard key={tag.id} tag={tag} />
+            ))}
+          </Flex>
           <Flex
             flexDirection={isMobile ? "column" : "row"}
             justifyContent="space-between"
