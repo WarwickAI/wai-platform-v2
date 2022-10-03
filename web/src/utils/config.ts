@@ -39,6 +39,29 @@ export const ElementTypesToNotShowInAdd: ElementTypeKeys[] = [
 
 export const DatabaseBaseTypes: ElementTypeKeys[] = ["Page", "User", "Survey"];
 
+export const TagTypes = {
+  General: {
+    name: "General",
+    description: "General tags",
+  },
+  Length: {
+    name: "Length",
+    description: "Duration of the entity",
+  },
+  Difficulty: {
+    name: "Difficulty",
+    description: "Difficulty of the entity",
+  },
+  Term: {
+    name: "Term",
+    description: "Uni term that the entity appears in",
+  },
+};
+
+const tagTypesKeys = getKeys(TagTypes);
+
+export type TagTypesKeys = typeof tagTypesKeys[number];
+
 export const createDefaultElementData = (elementType: ElementTypeKeys) => {
   const data: ElementData = {};
 
