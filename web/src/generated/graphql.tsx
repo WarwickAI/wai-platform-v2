@@ -16,71 +16,6 @@ export type Scalars = {
   JSONObject: any;
 };
 
-export type ApplyRoleInput = {
-  description: Scalars['String'];
-  img: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type Course = {
-  __typename?: 'Course';
-  coverImg?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  display?: Maybe<Scalars['Boolean']>;
-  iconImg?: Maybe<Scalars['String']>;
-  id: Scalars['Float'];
-  joinable?: Maybe<Scalars['Boolean']>;
-  previewImg?: Maybe<Scalars['String']>;
-  redirectUrl?: Maybe<Scalars['String']>;
-  shortName: Scalars['String'];
-  tags: Array<Tag>;
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  users: Array<User>;
-};
-
-export type CourseResponse = {
-  __typename?: 'CourseResponse';
-  course: Course;
-  errors?: Maybe<Array<FieldError>>;
-};
-
-export type ElectionRole = {
-  __typename?: 'ElectionRole';
-  applicationTemplate?: Maybe<Scalars['String']>;
-  applications: Array<RoleApplication>;
-  canApply?: Maybe<Scalars['Boolean']>;
-  canVote?: Maybe<Scalars['Boolean']>;
-  createdAt: Scalars['String'];
-  description: Scalars['String'];
-  display?: Maybe<Scalars['Boolean']>;
-  id: Scalars['Float'];
-  previewImg?: Maybe<Scalars['String']>;
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  votes: Array<Vote>;
-};
-
-export type ElectionRoleInput = {
-  applicationTemplate: Scalars['String'];
-  canApply: Scalars['Boolean'];
-  canVote: Scalars['Boolean'];
-  description: Scalars['String'];
-  display: Scalars['Boolean'];
-  previewImg: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type ElectionRoleResponse = {
-  __typename?: 'ElectionRoleResponse';
-  errors?: Maybe<Array<FieldError>>;
-  role: ElectionRole;
-};
-
 export type Element = {
   __typename?: 'Element';
   canEditGroups: Array<Group>;
@@ -98,25 +33,6 @@ export type Element = {
   type: Scalars['String'];
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
-};
-
-export type EventInput = {
-  coverImg: Scalars['String'];
-  description: Scalars['String'];
-  display: Scalars['Boolean'];
-  iconImg: Scalars['String'];
-  joinable: Scalars['Boolean'];
-  previewImg: Scalars['String'];
-  redirectUrl: Scalars['String'];
-  shortName: Scalars['String'];
-  tags: Array<Scalars['Float']>;
-  title: Scalars['String'];
-};
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
 };
 
 export type File = {
@@ -158,96 +74,37 @@ export type MemberInfoInput = {
   uniId: Scalars['Float'];
 };
 
-export type Merch = {
-  __typename?: 'Merch';
-  createdAt: Scalars['String'];
-  description: Scalars['String'];
-  display?: Maybe<Scalars['Boolean']>;
-  id: Scalars['Float'];
-  image: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  variants: Array<Variant>;
-};
-
-export type MerchInput = {
-  description: Scalars['String'];
-  display: Scalars['Boolean'];
-  image: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-  variants: Array<VariantInput>;
-};
-
-export type MerchResponse = {
-  __typename?: 'MerchResponse';
-  errors?: Maybe<Array<FieldError>>;
-  item?: Maybe<Merch>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   addMemberInfo: Scalars['Boolean'];
-  addRONApplication: Scalars['Boolean'];
   addUserToGroup: Group;
   addUsersToGroup: Group;
   assignUserPage?: Maybe<Element>;
-  createCourse: CourseResponse;
-  createElectionRole: ElectionRoleResponse;
   createElement?: Maybe<Element>;
   createGroup: Group;
-  createMerch: MerchResponse;
-  createProject: ProjectResponse;
-  createRoleApplication: RoleApplicationResponse;
-  createTag: TagResponse;
-  createTalk: TalkResponse;
-  createTutorial: TutorialResponse;
+  createTag: Tag;
   deleteAllUsers: Scalars['Boolean'];
   deleteGroup: Group;
-  editCourse: CourseResponse;
   editDatabaseAttributeName: Element;
-  editElectionRole: ElectionRoleResponse;
   editElementData: Element;
   editElementIndex: Element;
   editElementRoute: Element;
-  editMerch: MerchResponse;
-  editProject: ProjectResponse;
-  editRoleApplication: RoleApplicationResponse;
-  editTalk: TalkResponse;
-  editTutorial: TutorialResponse;
   getSignedUrl: GetSignedUrlResponse;
   handleAction: Element;
   inheritDatabaseAttributes: Element;
-  joinCourse: Scalars['Boolean'];
-  joinProject: Scalars['Boolean'];
-  joinTalk: Scalars['Boolean'];
-  joinTutorial: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   removeElement: Element;
-  removeUserFromCourse: Scalars['Boolean'];
   removeUserFromGroup: Group;
-  removeUserFromProject: Scalars['Boolean'];
-  removeUserFromTalk: Scalars['Boolean'];
-  removeUserFromTutorial: Scalars['Boolean'];
   revokeRefreshTokensForUser: Scalars['Boolean'];
-  roleApply: RoleApplicationResponse;
   updateMembership: Scalars['Boolean'];
   updatePermissions: Element;
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
-  vote: Scalars['Boolean'];
 };
 
 
 export type MutationAddMemberInfoArgs = {
   memberInfo: Array<MemberInfoInput>;
-};
-
-
-export type MutationAddRonApplicationArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -269,16 +126,6 @@ export type MutationAssignUserPageArgs = {
 };
 
 
-export type MutationCreateCourseArgs = {
-  courseInfo: EventInput;
-};
-
-
-export type MutationCreateElectionRoleArgs = {
-  roleInfo: ElectionRoleInput;
-};
-
-
 export type MutationCreateElementArgs = {
   data: Scalars['JSONObject'];
   index: Scalars['Float'];
@@ -293,35 +140,11 @@ export type MutationCreateGroupArgs = {
 };
 
 
-export type MutationCreateMerchArgs = {
-  itemInfo: MerchInput;
-};
-
-
-export type MutationCreateProjectArgs = {
-  projectInfo: EventInput;
-};
-
-
-export type MutationCreateRoleApplicationArgs = {
-  applicationInfo: RoleApplicationInput;
-  roleId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
-};
-
-
 export type MutationCreateTagArgs = {
-  tagInfo: TagInput;
-};
-
-
-export type MutationCreateTalkArgs = {
-  talkInfo: EventInput;
-};
-
-
-export type MutationCreateTutorialArgs = {
-  tutorialInfo: EventInput;
+  color: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  type: Scalars['String'];
 };
 
 
@@ -330,22 +153,10 @@ export type MutationDeleteGroupArgs = {
 };
 
 
-export type MutationEditCourseArgs = {
-  courseInfo: EventInput;
-  id: Scalars['Float'];
-};
-
-
 export type MutationEditDatabaseAttributeNameArgs = {
   attributeName: Scalars['String'];
   elementId: Scalars['Float'];
   newAttributeName: Scalars['String'];
-};
-
-
-export type MutationEditElectionRoleArgs = {
-  id: Scalars['Float'];
-  roleInfo: ElectionRoleInput;
 };
 
 
@@ -364,36 +175,6 @@ export type MutationEditElementIndexArgs = {
 export type MutationEditElementRouteArgs = {
   elementId: Scalars['Float'];
   route: Scalars['String'];
-};
-
-
-export type MutationEditMerchArgs = {
-  id: Scalars['Float'];
-  itemInfo: MerchInput;
-};
-
-
-export type MutationEditProjectArgs = {
-  id: Scalars['Float'];
-  projectInfo: EventInput;
-};
-
-
-export type MutationEditRoleApplicationArgs = {
-  applicationInfo: RoleApplicationInput;
-  id: Scalars['Float'];
-};
-
-
-export type MutationEditTalkArgs = {
-  id: Scalars['Float'];
-  talkInfo: EventInput;
-};
-
-
-export type MutationEditTutorialArgs = {
-  id: Scalars['Float'];
-  tutorialInfo: EventInput;
 };
 
 
@@ -418,39 +199,8 @@ export type MutationInheritDatabaseAttributesArgs = {
 };
 
 
-export type MutationJoinCourseArgs = {
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationJoinProjectArgs = {
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationJoinTalkArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  talkId?: InputMaybe<Scalars['Float']>;
-};
-
-
-export type MutationJoinTutorialArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  tutorialId?: InputMaybe<Scalars['Float']>;
-};
-
-
 export type MutationRemoveElementArgs = {
   elementId: Scalars['Float'];
-};
-
-
-export type MutationRemoveUserFromCourseArgs = {
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-  userId: Scalars['Float'];
 };
 
 
@@ -460,36 +210,8 @@ export type MutationRemoveUserFromGroupArgs = {
 };
 
 
-export type MutationRemoveUserFromProjectArgs = {
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-  userId: Scalars['Float'];
-};
-
-
-export type MutationRemoveUserFromTalkArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  talkId?: InputMaybe<Scalars['Float']>;
-  userId: Scalars['Float'];
-};
-
-
-export type MutationRemoveUserFromTutorialArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  tutorialId?: InputMaybe<Scalars['Float']>;
-  userId: Scalars['Float'];
-};
-
-
 export type MutationRevokeRefreshTokensForUserArgs = {
   id: Scalars['Float'];
-};
-
-
-export type MutationRoleApplyArgs = {
-  applicationInfo: ApplyRoleInput;
-  roleId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -507,117 +229,23 @@ export type MutationUpdateUserRoleArgs = {
   role: Scalars['String'];
 };
 
-
-export type MutationVoteArgs = {
-  applicationId?: InputMaybe<Scalars['Float']>;
-  applicationShortName?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
-};
-
-export type Project = {
-  __typename?: 'Project';
-  coverImg?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  display?: Maybe<Scalars['Boolean']>;
-  iconImg?: Maybe<Scalars['String']>;
-  id: Scalars['Float'];
-  joinable?: Maybe<Scalars['Boolean']>;
-  previewImg?: Maybe<Scalars['String']>;
-  redirectUrl?: Maybe<Scalars['String']>;
-  shortName: Scalars['String'];
-  tags: Array<Tag>;
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  users: Array<User>;
-};
-
-export type ProjectResponse = {
-  __typename?: 'ProjectResponse';
-  errors?: Maybe<Array<FieldError>>;
-  project: Project;
-};
-
 export type Query = {
   __typename?: 'Query';
-  allCourses: Array<Course>;
-  allElectionRoles: Array<ElectionRole>;
-  allMerch: Array<Merch>;
-  allProjects: Array<Project>;
-  allRoleApplications: Array<RoleApplication>;
-  allTalks: Array<Talk>;
-  allTutorials: Array<Tutorial>;
-  courseByShortName?: Maybe<Course>;
-  courseUsers: Array<User>;
-  courses: Array<Course>;
-  electionRoleAllApplications: Array<RoleApplication>;
-  electionRoleApplications: Array<RoleApplication>;
-  electionRoles: Array<ElectionRole>;
-  getAllVotes: Array<Vote>;
-  getElectionRole?: Maybe<ElectionRole>;
   getElement: Element;
   getElements: Array<Element>;
   getElementsNoChildren: Array<Element>;
   getFile: File;
-  getRoleApplication?: Maybe<RoleApplication>;
-  getRoleApplicationForVote: RoleApplicationResponseForVote;
-  getRoleVoteCount: Array<RoleApplicationVoteCount>;
+  getTag: Tag;
+  getTags: Array<Tag>;
   getUser: User;
   getUserPage?: Maybe<Element>;
-  getUserRoleApplications?: Maybe<Array<ElectionRole>>;
   getUsers: Array<User>;
   getUsersGroups?: Maybe<Array<Group>>;
   groups: Array<Group>;
   groupsWithUsers: Array<Group>;
-  hasUserVotedForRole: Scalars['Boolean'];
-  hello: Scalars['String'];
   me?: Maybe<User>;
-  merch: Array<Merch>;
-  merchByShortName?: Maybe<Merch>;
-  projectByShortName?: Maybe<Project>;
-  projectUsers: Array<User>;
-  projects: Array<Project>;
-  roleApplicationElectionRole?: Maybe<ElectionRole>;
-  roleApplications: Array<RoleApplication>;
-  tags: Array<Tag>;
-  talkByShortName?: Maybe<Talk>;
-  talkUsers: Array<User>;
-  talks: Array<Talk>;
   testJWT: Scalars['String'];
-  tutorialByShortName?: Maybe<Tutorial>;
-  tutorialUsers: Array<User>;
-  tutorials: Array<Tutorial>;
   users: Array<User>;
-};
-
-
-export type QueryCourseByShortNameArgs = {
-  shortName: Scalars['String'];
-};
-
-
-export type QueryCourseUsersArgs = {
-  courseId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryElectionRoleAllApplicationsArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryElectionRoleApplicationsArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetElectionRoleArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -640,20 +268,8 @@ export type QueryGetFileArgs = {
 };
 
 
-export type QueryGetRoleApplicationArgs = {
-  applicationId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetRoleApplicationForVoteArgs = {
-  voteId: Scalars['Float'];
-};
-
-
-export type QueryGetRoleVoteCountArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
+export type QueryGetTagArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -666,170 +282,20 @@ export type QueryGetUserPageArgs = {
   uniId: Scalars['Float'];
 };
 
-
-export type QueryHasUserVotedForRoleArgs = {
-  roleId?: InputMaybe<Scalars['Float']>;
-  roleShortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryMerchByShortNameArgs = {
-  shortName: Scalars['String'];
-};
-
-
-export type QueryProjectByShortNameArgs = {
-  shortName: Scalars['String'];
-};
-
-
-export type QueryProjectUsersArgs = {
-  projectId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryRoleApplicationElectionRoleArgs = {
-  applicationId?: InputMaybe<Scalars['Float']>;
-  shortName?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryTalkByShortNameArgs = {
-  shortName: Scalars['String'];
-};
-
-
-export type QueryTalkUsersArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  talkId?: InputMaybe<Scalars['Float']>;
-};
-
-
-export type QueryTutorialByShortNameArgs = {
-  shortName: Scalars['String'];
-};
-
-
-export type QueryTutorialUsersArgs = {
-  shortName?: InputMaybe<Scalars['String']>;
-  tutorialId?: InputMaybe<Scalars['Float']>;
-};
-
-export type RoleApplication = {
-  __typename?: 'RoleApplication';
-  createdAt: Scalars['String'];
-  description: Scalars['String'];
-  display?: Maybe<Scalars['Boolean']>;
-  id: Scalars['Float'];
-  img?: Maybe<Scalars['String']>;
-  role: ElectionRole;
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  user: User;
-  votes: Array<Vote>;
-};
-
-export type RoleApplicationInput = {
-  description: Scalars['String'];
-  display: Scalars['Boolean'];
-  img: Scalars['String'];
-  shortName: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type RoleApplicationResponse = {
-  __typename?: 'RoleApplicationResponse';
-  application?: Maybe<RoleApplication>;
-  errors?: Maybe<Array<FieldError>>;
-};
-
-export type RoleApplicationResponseForVote = {
-  __typename?: 'RoleApplicationResponseForVote';
-  message?: Maybe<Scalars['String']>;
-  role?: Maybe<RoleApplication>;
-};
-
-export type RoleApplicationVoteCount = {
-  __typename?: 'RoleApplicationVoteCount';
-  application: RoleApplication;
-  count: Scalars['Float'];
-};
-
 export type Tag = {
   __typename?: 'Tag';
   color: Scalars['String'];
   createdAt: Scalars['String'];
-  id: Scalars['Float'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
-export type TagInput = {
-  color: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type TagResponse = {
-  __typename?: 'TagResponse';
-  errors?: Maybe<Array<FieldError>>;
-  tag: Tag;
-};
-
-export type Talk = {
-  __typename?: 'Talk';
-  coverImg?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  display?: Maybe<Scalars['Boolean']>;
-  iconImg?: Maybe<Scalars['String']>;
-  id: Scalars['Float'];
-  joinable?: Maybe<Scalars['Boolean']>;
-  previewImg?: Maybe<Scalars['String']>;
-  redirectUrl?: Maybe<Scalars['String']>;
-  shortName: Scalars['String'];
-  tags: Array<Tag>;
-  title: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['String'];
   updatedAt: Scalars['String'];
-  users: Array<User>;
-};
-
-export type TalkResponse = {
-  __typename?: 'TalkResponse';
-  errors?: Maybe<Array<FieldError>>;
-  talk: Talk;
-};
-
-export type Tutorial = {
-  __typename?: 'Tutorial';
-  coverImg?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  display?: Maybe<Scalars['Boolean']>;
-  iconImg?: Maybe<Scalars['String']>;
-  id: Scalars['Float'];
-  joinable?: Maybe<Scalars['Boolean']>;
-  previewImg?: Maybe<Scalars['String']>;
-  redirectUrl?: Maybe<Scalars['String']>;
-  shortName: Scalars['String'];
-  tags: Array<Tag>;
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  users: Array<User>;
-};
-
-export type TutorialResponse = {
-  __typename?: 'TutorialResponse';
-  errors?: Maybe<Array<FieldError>>;
-  tutorial: Tutorial;
 };
 
 export type User = {
   __typename?: 'User';
-  applications: Array<RoleApplication>;
   cognitoUsername: Scalars['String'];
-  courses: Array<Course>;
   createdAt: Scalars['String'];
   elements: Array<Element>;
   email: Scalars['String'];
@@ -841,35 +307,10 @@ export type User = {
   lastName: Scalars['String'];
   memberFromDate?: Maybe<Scalars['String']>;
   page?: Maybe<Element>;
-  projects: Array<Project>;
   role: Scalars['String'];
-  talks: Array<Talk>;
   tokenVersion: Scalars['Float'];
-  tutorials: Array<Tutorial>;
   uniId?: Maybe<Scalars['Float']>;
   updatedAt: Scalars['String'];
-  votes: Array<Vote>;
-};
-
-export type Variant = {
-  __typename?: 'Variant';
-  link: Scalars['String'];
-  name: Scalars['String'];
-};
-
-export type VariantInput = {
-  link: Scalars['String'];
-  name: Scalars['String'];
-};
-
-export type Vote = {
-  __typename?: 'Vote';
-  application: RoleApplication;
-  createdAt: Scalars['String'];
-  id: Scalars['Float'];
-  role: ElectionRole;
-  updatedAt: Scalars['String'];
-  user: User;
 };
 
 export type ElementNoChildrenCreatedByGroupsFragment = { __typename?: 'Element', id: number, createdAt: string, updatedAt: string, type: string, index: number, data: any, route?: string | null, parent?: { __typename?: 'Element', id: number, type: string, route?: string | null, parent?: { __typename?: 'Element', id: number } | null } | null };
@@ -891,6 +332,8 @@ export type FullFileFragment = { __typename?: 'File', key: string, fileName: str
 export type GroupWithoutUsersFragment = { __typename?: 'Group', id: number, name: string };
 
 export type GroupWithUsersFragment = { __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+
+export type FullTagFragment = { __typename?: 'Tag', id: string, name: string, description?: string | null, color: string, type: string, createdAt: string, updatedAt: string };
 
 export type UserNoGroupsElementsFragment = { __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null };
 
@@ -1041,6 +484,16 @@ export type DeleteGroupMutationVariables = Exact<{
 
 export type DeleteGroupMutation = { __typename?: 'Mutation', deleteGroup: { __typename?: 'Group', name: string } };
 
+export type CreateTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  color: Scalars['String'];
+  type: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateTagMutation = { __typename?: 'Mutation', createTag: { __typename?: 'Tag', id: string, name: string, description?: string | null, color: string, type: string, createdAt: string, updatedAt: string } };
+
 export type VerifyLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1100,6 +553,18 @@ export type GetGroupsWithUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetGroupsWithUsersQuery = { __typename?: 'Query', groupsWithUsers: Array<{ __typename?: 'Group', id: number, name: string, users: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> }> };
+
+export type GetTagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTagsQuery = { __typename?: 'Query', getTags: Array<{ __typename?: 'Tag', id: string, name: string, description?: string | null, color: string, type: string, createdAt: string, updatedAt: string }> };
+
+export type GetTagQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetTagQuery = { __typename?: 'Query', getTag: { __typename?: 'Tag', id: string, name: string, description?: string | null, color: string, type: string, createdAt: string, updatedAt: string } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1271,6 +736,17 @@ export const GroupWithUsersFragmentDoc = gql`
   }
 }
     ${RegularUserFragmentDoc}`;
+export const FullTagFragmentDoc = gql`
+    fragment FullTag on Tag {
+  id
+  name
+  description
+  color
+  type
+  createdAt
+  updatedAt
+}
+    `;
 export const UserNoElementsFragmentDoc = gql`
     fragment UserNoElements on User {
   ...UserNoGroupsElements
@@ -1503,6 +979,17 @@ export const DeleteGroupDocument = gql`
 export function useDeleteGroupMutation() {
   return Urql.useMutation<DeleteGroupMutation, DeleteGroupMutationVariables>(DeleteGroupDocument);
 };
+export const CreateTagDocument = gql`
+    mutation CreateTag($name: String!, $color: String!, $type: String!, $description: String) {
+  createTag(name: $name, color: $color, type: $type, description: $description) {
+    ...FullTag
+  }
+}
+    ${FullTagFragmentDoc}`;
+
+export function useCreateTagMutation() {
+  return Urql.useMutation<CreateTagMutation, CreateTagMutationVariables>(CreateTagDocument);
+};
 export const VerifyLoginDocument = gql`
     mutation VerifyLogin {
   verifyLogin {
@@ -1607,6 +1094,28 @@ export const GetGroupsWithUsersDocument = gql`
 
 export function useGetGroupsWithUsersQuery(options?: Omit<Urql.UseQueryArgs<GetGroupsWithUsersQueryVariables>, 'query'>) {
   return Urql.useQuery<GetGroupsWithUsersQuery, GetGroupsWithUsersQueryVariables>({ query: GetGroupsWithUsersDocument, ...options });
+};
+export const GetTagsDocument = gql`
+    query GetTags {
+  getTags {
+    ...FullTag
+  }
+}
+    ${FullTagFragmentDoc}`;
+
+export function useGetTagsQuery(options?: Omit<Urql.UseQueryArgs<GetTagsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetTagsQuery, GetTagsQueryVariables>({ query: GetTagsDocument, ...options });
+};
+export const GetTagDocument = gql`
+    query GetTag($id: String!) {
+  getTag(id: $id) {
+    ...FullTag
+  }
+}
+    ${FullTagFragmentDoc}`;
+
+export function useGetTagQuery(options: Omit<Urql.UseQueryArgs<GetTagQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetTagQuery, GetTagQueryVariables>({ query: GetTagDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

@@ -1,0 +1,15 @@
+mutation CreateTag(
+  $name: String!
+  $color: String!
+  $type: String!
+  $description: String
+) {
+  createTag(
+    name: $name
+    color: $color
+    type: $type
+    description: $description
+  ) {
+    ...FullTag
+  }
+}

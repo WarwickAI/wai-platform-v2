@@ -1,0 +1,11 @@
+query GetTags {
+  getTags {
+    ...FullTag
+  }
+}
+
+query GetTag($id: String!) {
+  getTag(id: $id) {
+    ...FullTag
+  }
+}

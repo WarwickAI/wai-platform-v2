@@ -21,6 +21,8 @@ import { GroupResolver } from "./resolvers/group";
 import { getDefaultGroups } from "./utils/defaultGroups";
 import { FileResolver } from "./resolvers/files";
 import { File } from "./entities/File";
+import { Tag } from "./entities/Tag";
+import { TagResolver } from "./resolvers/tags";
 
 const main = async () => {
   // Connect to DB
@@ -48,12 +50,7 @@ const main = async () => {
     logging: false,
     synchronize: true,
     migrations: [],
-    entities: [
-      User,
-      Element,
-      Group,
-      File,
-    ],
+    entities: [User, Element, Group, File, Tag],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -121,6 +118,7 @@ const main = async () => {
         ElementResolver,
         GroupResolver,
         FileResolver,
+        TagResolver,
       ],
       validate: false,
     }),

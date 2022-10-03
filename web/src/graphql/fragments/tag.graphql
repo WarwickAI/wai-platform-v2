@@ -1,0 +1,9 @@
+fragment FullTag on Tag {
+  id
+  name
+  description
+  color
+  type
+  createdAt
+  updatedAt
+}
