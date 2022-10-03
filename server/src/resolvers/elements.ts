@@ -13,7 +13,7 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { Group } from "../entities/Group";
 import { getAuth, getUser, isAdmin, isAuth } from "../isAuth";
 import { getDefaultGroups, getUserGroup } from "../utils/defaultGroups";
-import { FindConditions, FindManyOptions, FindOneOptions } from "typeorm";
+import { FindConditions } from "typeorm";
 
 const GROUP_REALATIONS = [
   "canModifyPermsGroups",
@@ -502,7 +502,9 @@ export class ElementResolver {
       throw new Error("Not authorized");
     }
 
-    const element = await Element.getElementByIdWithChildren(elementId);
+    const element = await Element.findOneOrFail(elementId, {
+      relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+    });
 
     if (!checkPermissions(element.canEditGroups, payload?.user)) {
       throw new Error("Not authorized");
@@ -734,8 +736,11 @@ const addElement = async (
 
     // Initialise the element with the template (if exists)
     if ((database.data as any).template?.value !== -1) {
-      const template = await Element.getElementByIdWithChildren(
-        (database.data as any).template.value
+      const template: Element = await Element.findOneOrFail(
+        (database.data as any).template.value,
+        {
+          relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
+        }
       );
 
       if (!template) {
