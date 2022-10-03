@@ -378,7 +378,7 @@ export class ElementResolver {
   }
 
   @Mutation(() => Element)
-  @UseMiddleware(isAuth, isAdmin)
+  @UseMiddleware(getAuth, getUser)
   async editElementRoute(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
@@ -393,8 +393,7 @@ export class ElementResolver {
       relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
     });
 
-    // Check if the user is permitted (i.e. is an admin)
-    if (user.groups.findIndex((group) => group.name === "Admin") === -1) {
+    if (!checkPermissions(element.canEditGroups, user)) {
       throw new Error("Not authorized");
     }
 

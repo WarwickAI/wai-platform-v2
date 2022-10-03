@@ -14,11 +14,13 @@ import {
 import { useMemo, useState } from "react";
 import {
   useEditElementDataMutation,
+  useEditElementRouteMutation,
   useGetElementQuery,
 } from "../../generated/graphql";
 import {
   DatabaseElementData,
   DatabaseViewElementData,
+  PageElementData,
 } from "../../utils/base_element_types";
 import {
   DataTypeKeysT,
@@ -155,6 +157,11 @@ const ElementSettingsPopover: React.FC<ElementSettingsPopoverProps> = (
                     />
                   );
                 })}
+                {props.element.type === "Page" && (
+                  <EditRoute
+                    element={props.element as Element<PageElementData>}
+                  />
+                )}
               </VStack>
             )}
             {!props.hideAttributes && dbAttributes.length > 0 && (
@@ -256,6 +263,47 @@ const ElementSetting: React.FC<ElementSettingProps> = (props) => {
               } else {
                 props.editValue(v);
               }
+            }}
+            isEdit={true}
+          />
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+interface EditRouteProps {
+  element: Element<PageElementData>;
+}
+
+const EditRoute: React.FC<EditRouteProps> = (props) => {
+  const route = props.element.route;
+
+  const [, editElement] = useEditElementRouteMutation();
+
+  return (
+    <Popover
+      autoFocus={true}
+      returnFocusOnClose={false}
+      placement={"right"}
+      gutter={16}
+    >
+      <PopoverTrigger>
+        <Button size={"sm"} variant="setting">
+          Route
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent w={80}>
+        <PopoverBody>
+          <GenericProperty
+            element={props.element}
+            value={route}
+            type={"Text"}
+            onChange={async (v) => {
+              await editElement({
+                elementId: props.element.id,
+                route: v as string,
+              });
             }}
             isEdit={true}
           />
