@@ -29,6 +29,7 @@ const EventView: React.FC<EventViewProps> = (props) => {
               description={row.data.description.value}
               startDate={row.data.start.value}
               endDate={row.data.end.value}
+              location={row.data.location.value}
             />
           );
         })}

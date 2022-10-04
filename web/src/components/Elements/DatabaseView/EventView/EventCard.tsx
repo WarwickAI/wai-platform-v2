@@ -9,10 +9,6 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
-  Popover,
-  PopoverBody,
-  PopoverContent,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -28,6 +24,7 @@ interface EventCardProps {
   startDate?: string;
   endDate?: string;
   cardImg?: string | JSX.Element;
+  location?: string;
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
@@ -75,35 +72,37 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       cursor="pointer"
       onClick={onOpen}
     >
-      <Flex p={5} h="100%" justifyContent="flex-end" direction="column">
+      <Flex p={4} h="100%" justifyContent="flex-start" direction="column">
         <Heading
           size="md"
           color={cardImg ? "white" : "black"}
-          pb={4}
+          pb={2}
           whiteSpace="nowrap"
           overflow="hidden"
           textOverflow="ellipsis"
         >
           {props.title}
         </Heading>
-        <HStack>
-          {props.startDate && (
-            <Text color={cardImg ? "white" : "black"}>
-              {startDate && format(startDate, "iii MMM d kk:mm")}{" "}
-              {endDate &&
-                "- " +
-                  (startDate?.toDateString() === endDate.toDateString()
-                    ? format(endDate, "kk:mm")
-                    : format(endDate, "iii MMM d kk:mm"))}
-            </Text>
-          )}
-        </HStack>
+        {props.startDate && (
+          <Text color={cardImg ? "white" : "black"}>
+            {startDate && format(startDate, "iii MMM d kk:mm")}{" "}
+            {endDate &&
+              "- " +
+                (startDate?.toDateString() === endDate.toDateString()
+                  ? format(endDate, "kk:mm")
+                  : format(endDate, "iii MMM d kk:mm"))}
+          </Text>
+        )}
+        {props.location && (
+          <Text color={cardImg ? "white" : "black"}>📍 {props.location}</Text>
+        )}
         <EventPopup
           title={props.title}
           description={props.description}
-          startDate={props.startDate}
-          endDate={props.endDate}
+          startDate={startDate}
+          endDate={endDate}
           cardImg={props.cardImg}
+          location={props.location}
           isOpen={isOpen}
           onClose={onClose}
         />
@@ -117,9 +116,10 @@ export default EventCard;
 interface EventPopupProps {
   title: string;
   description?: string;
-  startDate?: string;
-  endDate?: string;
+  startDate?: Date;
+  endDate?: Date;
   cardImg?: string | JSX.Element;
+  location?: string;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -145,16 +145,23 @@ const EventPopup: React.FC<EventPopupProps> = (props) => {
               value={props.description || ""}
               onChange={() => {}}
             />
-            <HStack>
-              {props.startDate && (
-                <Text>
-                  from {format(new Date(props.startDate), "iii MMM d")}
-                </Text>
-              )}
-              {props.endDate && (
-                <Text>to {format(new Date(props.endDate), "iii MMM d")}</Text>
-              )}
-            </HStack>
+            {props.startDate && (
+              <Text color={props.cardImg ? "white" : "black"}>
+                {props.startDate && format(props.startDate, "iii MMM d kk:mm")}{" "}
+                {props.endDate &&
+                  "- " +
+                    (props.startDate?.toDateString() ===
+                    props.endDate.toDateString()
+                      ? format(props.endDate, "kk:mm")
+                      : format(props.endDate, "iii MMM d kk:mm"))}
+              </Text>
+            )}
+
+            {props.location && (
+              <Text color={props.cardImg ? "white" : "black"}>
+                📍 {props.location}
+              </Text>
+            )}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button

@@ -25,7 +25,11 @@ interface GenericPropertyProps {
 const GenericProperty: React.FC<GenericPropertyProps> = (
   props: GenericPropertyProps
 ) => {
-  if (props.type === "Text" || props.type === "Url") {
+  if (
+    props.type === "Text" ||
+    props.type === "Url" ||
+    props.type === "Location"
+  ) {
     return (
       <TextProperty
         value={props.value}
