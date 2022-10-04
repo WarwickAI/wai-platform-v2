@@ -23,6 +23,9 @@ import {
   GetElementsDocument,
   EditElementRouteMutation,
   HandleActionMutation,
+  CreateTagMutation,
+  GetTagsQuery,
+  GetTagsDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -227,6 +230,19 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
                   if (groupIndex !== -1) {
                     query.groupsWithUsers.splice(groupIndex, 1);
                   }
+                  return query;
+                }
+              );
+            },
+            createTag: (_result, args, cache, info) => {
+              const res = _result as CreateTagMutation;
+
+              betterUpdateQuery<CreateTagMutation, GetTagsQuery>(
+                cache,
+                { query: GetTagsDocument },
+                _result,
+                (result, query) => {
+                  query.getTags.push(result.createTag);
                   return query;
                 }
               );

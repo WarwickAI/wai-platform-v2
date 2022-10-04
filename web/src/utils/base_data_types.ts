@@ -158,6 +158,12 @@ export const DataTypesDef = {
     constraints: {},
     defaultValue: "",
   } as DateTypesDef,
+  Tags: {
+    label: "Tags",
+    hint: "Tags",
+    constraints: {},
+    defaultValue: [],
+  },
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -184,3 +190,4 @@ export type UserValue = number;
 export type TemplateValue = number;
 export type DatabaseViewAsValue = DatabaseViewAsKeys;
 export type FileValue = string;
+export type TagsValue = string[];

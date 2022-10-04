@@ -1,6 +1,8 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
+import { Tag } from "../../../../generated/graphql";
+import { TagCard } from "../../../Properties/Tags";
 
 interface CardProps {
   title: string | JSX.Element;
@@ -8,6 +10,7 @@ interface CardProps {
   description?: string | JSX.Element;
   extraInfo?: string | JSX.Element;
   cardImg?: string | JSX.Element;
+  tags?: Tag[];
 }
 
 const Card: React.FC<CardProps> = (props) => {
@@ -49,6 +52,13 @@ const Card: React.FC<CardProps> = (props) => {
           {props.title}
         </Heading>
         {props.description && <Text>{props.description}</Text>}
+        {props.tags && (
+          <Flex flexWrap="wrap">
+            {props.tags.map((tag) => (
+              <TagCard key={tag.id} tag={tag} />
+            ))}
+          </Flex>
+        )}
       </Flex>
     </Box>
   );
