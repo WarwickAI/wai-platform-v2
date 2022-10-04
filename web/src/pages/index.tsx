@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Text,
-  Heading,
-  Wrap,
-  WrapItem,
-} from "@chakra-ui/react";
+import { Box, Button, Text, Heading, Wrap, WrapItem } from "@chakra-ui/react";
 import ParticleBackground from "../utils/particles/particleBackground";
 import LogoOnlyPage from "../components/LogoOnlyPage";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
@@ -36,6 +29,23 @@ const Index = () => {
           <WrapItem>
             <Box minWidth={300}>
               <Heading as="h4" size="md">
+                About WAI
+              </Heading>
+              <Text size="sm" color="gray.600">
+                What is Warwick AI?
+              </Text>
+              <Button
+                mt={1}
+                size="lg"
+                variant="primary"
+                onClick={() => {
+                  router.push("/about");
+                }}
+              >
+                <ArrowForwardIcon width={22} height={22} />
+              </Button>
+
+              <Heading pt={12} as="h4" size="md">
                 Courses
               </Heading>
               <Text size="sm" color="gray.600">
@@ -47,23 +57,6 @@ const Index = () => {
                 variant="primary"
                 onClick={() => {
                   router.push("/courses");
-                }}
-              >
-                <ArrowForwardIcon width={22} height={22} />
-              </Button>
-
-              <Heading pt={12} as="h4" size="md">
-                Projects
-              </Heading>
-              <Text size="sm" color="gray.600">
-                Find more information here
-              </Text>
-              <Button
-                mt={1}
-                size="lg"
-                variant="primary"
-                onClick={() => {
-                  router.push("/projects");
                 }}
               >
                 <ArrowForwardIcon width={22} height={22} />
