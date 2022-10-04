@@ -56,7 +56,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
 
   return (
     <Box
-      h={24}
+      h={"6.5rem"}
       w={"full"}
       borderWidth={cardImg ? 0 : 1}
       borderRadius="2xl"
