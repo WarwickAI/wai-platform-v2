@@ -18,7 +18,7 @@ export const ActionTypesDef = {
 
 export type DatabaseViewAsTypeDef = {
   label: string;
-  limitToBaseTypes?: typeof DatabaseBaseTypes;
+  limitToChildTypes?: typeof DatabaseBaseTypes;
 };
 
 export const DatabaseViewsAs = {
@@ -28,6 +28,10 @@ export const DatabaseViewsAs = {
   Card: {
     label: "Card",
     limitToChildTypes: ["Page"],
+  } as DatabaseViewAsTypeDef,
+  Event: {
+    label: "Event",
+    limitToChildTypes: ["Event"],
   } as DatabaseViewAsTypeDef,
 };
 
@@ -46,7 +50,7 @@ type DateTypesDef = {
   label: string;
   hint: string;
   constraints: any;
-  defaultValue: {};
+  defaultValue: {} | null;
   component?: FC<any>;
 };
 
@@ -163,7 +167,19 @@ export const DataTypesDef = {
     hint: "Tags",
     constraints: {},
     defaultValue: [],
-  },
+  } as DateTypesDef,
+  Date: {
+    label: "Date",
+    hint: "Date",
+    constraints: {},
+    defaultValue: "",
+  } as DateTypesDef,
+  Location: {
+    label: "Location",
+    hint: "Location",
+    constraints: {},
+    defaultValue: "",
+  } as DateTypesDef,
 };
 
 export const DataTypeKeys = getKeys(DataTypesDef);
@@ -191,3 +207,5 @@ export type TemplateValue = number;
 export type DatabaseViewAsValue = DatabaseViewAsKeys;
 export type FileValue = string;
 export type TagsValue = string[];
+export type DateValue = string;
+export type LocationValue = string;

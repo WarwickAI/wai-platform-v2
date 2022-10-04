@@ -23,6 +23,7 @@ import {
 } from "../../../utils/config";
 import { checkPermissions } from "../../../utils/isAuth";
 import CardView from "./CardView";
+import EventView from "./EventView";
 import TableView from "./TableView";
 
 interface DatabaseViewProps {
@@ -236,6 +237,15 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
           )}
           {elementData.view.value === "Card" && (
             <CardView
+              database={database}
+              rows={rows}
+              isEdit={isEdit}
+              addRow={addRow}
+              removeRow={(id: number) => removeElement({ elementId: id })}
+            />
+          )}
+          {elementData.view.value === "Event" && (
+            <EventView
               database={database}
               rows={rows}
               isEdit={isEdit}

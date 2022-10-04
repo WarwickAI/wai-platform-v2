@@ -15,6 +15,8 @@ import {
   UserValue,
   NumberValue,
   FileValue,
+  DateValue,
+  LocationValue,
 } from "./base_data_types";
 import { ElementDataPiece } from "./config";
 
@@ -226,6 +228,46 @@ export const ElementTypesDef = {
       },
     },
   } as ElementTypeDef,
+  Event: {
+    label: "Event",
+    data: {
+      title: {
+        type: "Text",
+        label: "Title",
+        inSettings: true,
+      },
+      description: {
+        type: "FormattedText",
+        label: "Description",
+        inSettings: true,
+      },
+      cardImg: {
+        type: "Image",
+        label: "Cover Image",
+        inSettings: true,
+      },
+      iconImg: {
+        type: "Image",
+        label: "Icon Image",
+        inSettings: true,
+      },
+      start: {
+        type: "Date",
+        label: "Start",
+        inSettings: true,
+      },
+      end: {
+        type: "Date",
+        label: "End",
+        inSettings: true,
+      },
+      location: {
+        type: "Location",
+        label: "Location",
+        inSettings: true,
+      },
+    },
+  } as ElementTypeDef,
 };
 
 const getKeys = <A extends object>(obj: A) => Object.keys(obj) as (keyof A)[];
@@ -293,4 +335,14 @@ export type UserData = {
 
 export type FileElementData = {
   file: ElementDataPiece<FileValue>;
+};
+
+export type EventElementData = {
+  title: ElementDataPiece<TextValue>;
+  description: ElementDataPiece<FormattedTextValue>;
+  cardImg: ElementDataPiece<ImageValue>;
+  iconImg: ElementDataPiece<ImageValue>;
+  start: ElementDataPiece<DateValue>;
+  end: ElementDataPiece<DateValue>;
+  location: ElementDataPiece<LocationValue>;
 };
