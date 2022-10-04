@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import {
   useCreateElementMutation,
@@ -246,7 +246,6 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
           )}
           {elementData.view.value === "Event" && (
             <EventView
-              database={database}
               rows={rows}
               isEdit={isEdit}
               addRow={addRow}

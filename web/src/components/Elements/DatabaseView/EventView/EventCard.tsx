@@ -57,7 +57,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
   return (
     <Box
       // maxW="sm"
-      h={28}
+      h={24}
       borderWidth={cardImg ? 0 : 1}
       borderRadius="2xl"
       overflow="hidden"
@@ -71,12 +71,13 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       backgroundSize={cardImg ? "cover" : ""}
       cursor="pointer"
       onClick={onOpen}
+      textAlign="left"
     >
-      <Flex p={4} h="100%" justifyContent="flex-start" direction="column">
+      <Flex p={3} h="100%" justifyContent="flex-start" direction="column">
         <Heading
           size="md"
           color={cardImg ? "white" : "black"}
-          pb={2}
+          pb={1}
           whiteSpace="nowrap"
           overflow="hidden"
           textOverflow="ellipsis"
@@ -146,7 +147,7 @@ const EventPopup: React.FC<EventPopupProps> = (props) => {
               onChange={() => {}}
             />
             {props.startDate && (
-              <Text color={props.cardImg ? "white" : "black"}>
+              <Text>
                 {props.startDate && format(props.startDate, "iii MMM d kk:mm")}{" "}
                 {props.endDate &&
                   "- " +
@@ -157,11 +158,7 @@ const EventPopup: React.FC<EventPopupProps> = (props) => {
               </Text>
             )}
 
-            {props.location && (
-              <Text color={props.cardImg ? "white" : "black"}>
-                📍 {props.location}
-              </Text>
-            )}
+            {props.location && <Text>📍 {props.location}</Text>}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button

@@ -6,12 +6,22 @@ import {
   Wrap,
   WrapItem,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
 import ParticleBackground from "../utils/particles/particleBackground";
 import LogoOnlyPage from "../components/LogoOnlyPage";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import { useGetElementsQuery } from "../generated/graphql";
+import { EventElementData } from "../utils/base_element_types";
+import { Element } from "../utils/config";
+import EventView from "../components/Elements/DatabaseView/EventView";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
+
+const EVENTS_LOOKAHEAD_DAYS = 14;
 
 const Index = () => {
   const router = useRouter();
@@ -19,6 +29,34 @@ const Index = () => {
   const [discordInviteLink, setDiscordInviteLink] = useState("");
   const [discordPresence, setDiscordPresence] = useState<number | undefined>();
   const [discordLoading, setDiscordLoading] = useState(true);
+
+  const [{ data: eventsQuery }] = useGetElementsQuery({
+    variables: { type: "Event" },
+  });
+
+  console.log("Events Query:", eventsQuery?.getElements);
+
+  const events = useMemo(() => {
+    if (!eventsQuery?.getElements) {
+      return [];
+    }
+    const events = eventsQuery?.getElements.filter((event) => {
+      if (!event.data.start.value) return false;
+      const eventDate = new Date(event.data.start.value);
+      const now = new Date();
+      return (
+        eventDate.getTime() > now.getTime() &&
+        eventDate.getTime() <
+          now.getTime() + EVENTS_LOOKAHEAD_DAYS * 24 * 60 * 60 * 1000
+      );
+    });
+
+    return events.sort((a, b) => {
+      const aDate = new Date(a.data.start.value);
+      const bDate = new Date(b.data.start.value);
+      return aDate.getTime() - bDate.getTime();
+    });
+  }, [eventsQuery?.getElements]);
 
   useEffect(() => {
     const res = fetch(
@@ -40,75 +78,81 @@ const Index = () => {
         </Heading>
         <Wrap justify="center" align="center" pt={10}>
           <WrapItem>
-            {/* <iframe
-              title="discord"
-              src="https://discord.com/widget?id=671438057408561182&theme=dark"
-              width="350"
-              height="500"
-              allowTransparency={true}
-              frameBorder="0"
-              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-            /> */}
-            <Box
-              borderRadius="5px"
-              bg="#202225"
-              fontFamily="ABC Ginto Normal,Helvetica Neue,Helvetica,Arial,sans-serif"
-              fontSize="14px"
-            >
-              <Flex
-                bg="hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%)"
-                p="15px"
-                direction="row"
-                color="white"
-                alignItems="center"
-                borderTopRadius="5px"
+            <VStack>
+              <Heading as="h4" size="md" mb={2}>
+                What&apos;s On?
+              </Heading>
+              <Box maxWidth={96} maxHeight={72} overflowY="scroll" mb={4}>
+                <EventView
+                  rows={events as Element<EventElementData>[]}
+                  isEdit={false}
+                  addRow={() => {}}
+                  removeRow={() => {}}
+                  oneColumn={true}
+                />
+              </Box>
+              <Box
+                borderRadius="5px"
+                bg="#202225"
+                fontFamily="ABC Ginto Normal,Helvetica Neue,Helvetica,Arial,sans-serif"
+                fontSize="14px"
               >
-                <a
-                  href="https://discord.com?utm_source=Discord%20Widget&amp;utm_medium=Logo"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Flex
+                  bg="hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%)"
+                  p="15px"
+                  direction="row"
+                  color="white"
+                  alignItems="center"
+                  borderTopRadius="5px"
                 >
-                  <img
-                    src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/62594fdd2eb6504fca0545cb_364fc8a0ee7fcebf47ca6ebd16ec12f1%20(1).svg"
-                    width="124px"
-                    height="34px"
-                  />
-                </a>
-                <span
-                  style={{
-                    textAlign: "right",
-                    flex: 1,
-                    marginLeft: "20px",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  <strong
+                  <a
+                    href="https://discord.com?utm_source=Discord%20Widget&amp;utm_medium=Logo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/62594fdd2eb6504fca0545cb_364fc8a0ee7fcebf47ca6ebd16ec12f1%20(1).svg"
+                      width="124px"
+                      height="34px"
+                      alt="Discord Logo"
+                    />
+                  </a>
+                  <span
                     style={{
-                      fontWeight: 700,
+                      textAlign: "right",
+                      flex: 1,
+                      marginLeft: "20px",
+                      fontFamily: "inherit",
                     }}
                   >
-                    {discordPresence}
-                  </strong>{" "}
-                  Members Online
-                </span>
-              </Flex>
-              <Box m="5px" marginLeft="auto" marginRight="0">
-                <a
-                  href={discordInviteLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    color: "white",
-                    borderRadius: "5px",
-                    backgroundColor: "hsla(0,0%,100%,.1)",
-                    padding: "2px 10px",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  Join Discord
-                </a>
+                    <strong
+                      style={{
+                        fontWeight: 700,
+                      }}
+                    >
+                      {discordPresence}
+                    </strong>{" "}
+                    Members Online
+                  </span>
+                </Flex>
+                <Box m="5px" marginLeft="auto" marginRight="0">
+                  <a
+                    href={discordInviteLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "white",
+                      borderRadius: "5px",
+                      backgroundColor: "hsla(0,0%,100%,.1)",
+                      padding: "2px 10px",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    Join Discord
+                  </a>
+                </Box>
               </Box>
-            </Box>
+            </VStack>
           </WrapItem>
 
           <WrapItem>
@@ -174,4 +218,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default withUrqlClient(createUrqlClient, { ssr: false })(Index);
