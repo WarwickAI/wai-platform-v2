@@ -82,7 +82,14 @@ const Index = () => {
               <Heading as="h4" size="md" mb={2}>
                 What&apos;s On?
               </Heading>
-              <Box width={96} maxHeight={72} overflowY="scroll" mb={4}>
+              <Box
+                width="full"
+                maxWidth={96}
+                maxHeight={72}
+                overflowY="scroll"
+                mb={4}
+                className={"navbar"}
+              >
                 <EventView
                   rows={events as Element<EventElementData>[]}
                   isEdit={false}
