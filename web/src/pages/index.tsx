@@ -29,10 +29,10 @@ const Index = () => {
           <WrapItem>
             <Box minWidth={300}>
               <Heading as="h4" size="md">
-                About WAI
+                What is Warwick AI?
               </Heading>
               <Text size="sm" color="gray.600">
-                What is Warwick AI?
+                Discover what we offer
               </Text>
               <Button
                 mt={1}
@@ -49,7 +49,7 @@ const Index = () => {
                 Courses
               </Heading>
               <Text size="sm" color="gray.600">
-                Discover what we offer
+                Find more information here
               </Text>
               <Button
                 mt={1}
