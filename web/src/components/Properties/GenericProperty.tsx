@@ -12,6 +12,7 @@ import ActionTypeProperty from "./ActionType";
 import BoolProperty from "./Bool";
 import FileProperty from "./File";
 import TagsProperty from "./Tags";
+import DateProperty from "./Date";
 
 interface GenericPropertyProps {
   element: Element<any>;
@@ -24,7 +25,11 @@ interface GenericPropertyProps {
 const GenericProperty: React.FC<GenericPropertyProps> = (
   props: GenericPropertyProps
 ) => {
-  if (props.type === "Text" || props.type === "Url") {
+  if (
+    props.type === "Text" ||
+    props.type === "Url" ||
+    props.type === "Location"
+  ) {
     return (
       <TextProperty
         value={props.value}
@@ -82,6 +87,7 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "DatabaseViewAs") {
     return (
       <DatabaseViewAsProperty
+        element={props.element}
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}
@@ -136,6 +142,15 @@ const GenericProperty: React.FC<GenericPropertyProps> = (
   if (props.type === "Tags") {
     return (
       <TagsProperty
+        value={props.value}
+        isEdit={props.isEdit}
+        onChange={props.onChange}
+      />
+    );
+  }
+  if (props.type === "Date") {
+    return (
+      <DateProperty
         value={props.value}
         isEdit={props.isEdit}
         onChange={props.onChange}

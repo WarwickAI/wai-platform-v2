@@ -23,7 +23,7 @@ export type ElementDataPiece<T> = {
 };
 
 export type ElementData = {
-  [key: string]: ElementDataPiece<{}>;
+  [key: string]: ElementDataPiece<{} | null>;
 };
 
 export type Element<T> = DBElement & {
@@ -35,9 +35,15 @@ export const ElementTypesToNotShowInAdd: ElementTypeKeys[] = [
   "Database",
   "Template",
   "User",
+  "Event",
 ];
 
-export const DatabaseBaseTypes: ElementTypeKeys[] = ["Page", "User", "Survey"];
+export const DatabaseBaseTypes: ElementTypeKeys[] = [
+  "Page",
+  "User",
+  "Survey",
+  "Event",
+];
 
 export const TagTypes = {
   General: {
