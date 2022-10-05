@@ -4,8 +4,12 @@ import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+// ts-ignore
 
-const saml = require("samlify");
+const samlify = require("samlify");
+const validator = require("@authenio/samlify-node-xmllint");
+
+samlify.setSchemaValidator(validator);
 
 const main = async () => {
   const app = express();
@@ -26,13 +30,15 @@ const main = async () => {
   );
 
   app.use(cookieParser());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   // configure a service provider
-  const sp = saml.ServiceProvider({
+  const sp = samlify.ServiceProvider({
     metadata: readFileSync("metadata_sp.xml"),
   });
   // configure the corresponding identity provider
-  const idp = saml.IdentityProvider({
+  const idp = samlify.IdentityProvider({
     metadata: readFileSync("metadata_idp.xml"),
   });
 
@@ -41,7 +47,7 @@ const main = async () => {
     sp.parseLoginResponse(idp, "post", req)
       .then((parseResult: any) => {
         // Write your own validation and render function here
-        console.log(parseResult);
+        console.log("Result", parseResult);
       })
       .catch(console.error);
   });
@@ -51,7 +57,7 @@ const main = async () => {
     sp.parseLogoutResponse(idp, "post", req)
       .then((parseResult: any) => {
         // Write your own validation and render function here
-        console.log(parseResult);
+        console.log("Result", parseResult);
       })
       .catch(console.error);
   });
@@ -63,12 +69,12 @@ const main = async () => {
     return res.redirect(context);
   });
 
-//   app.get("/logout", (req, res) => {
-//     sp.entitySetting.relayState = "THIS IS SOME RELAY STATE FOR LOGOUT";
-//     const { id, context } = sp.createLogoutRequest(idp, "redirect");
-//     console.log(context);
-//     return res.redirect(context);
-//   });
+  //   app.get("/logout", (req, res) => {
+  //     sp.entitySetting.relayState = "THIS IS SOME RELAY STATE FOR LOGOUT";
+  //     const { id, context } = sp.createLogoutRequest(idp, "redirect");
+  //     console.log(context);
+  //     return res.redirect(context);
+  //   });
 
   app.listen(parseInt(process.env.PORT!), () => {
     console.log(`server sarted on localhost:${process.env.PORT!}`);

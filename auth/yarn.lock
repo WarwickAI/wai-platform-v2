@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@authenio/samlify-node-xmllint@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@authenio/samlify-node-xmllint/-/samlify-node-xmllint-2.0.0.tgz#74bf7dc540506a25e842ae72d492afec627b3a6d"
+  integrity sha512-V9cQ0CHqu3JwOmbSecGPUnzIES5kHxD00FEZKnWh90ksQUJG5/TscV2r9XLbKp7MlRMOSUfWxecM35xPSLFdSg==
+  dependencies:
+    node-xmllint "^1.0.0"
+
 "@authenio/xml-encryption@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@authenio/xml-encryption/-/xml-encryption-2.0.0.tgz#20c4bbdd14398bbac0b731c7551020af1dc6f92a"
@@ -707,6 +714,11 @@ node-rsa@^1.1.1:
   integrity sha512-Jd4cvbJMryN21r5HgxQOpMEqv+ooke/korixNNK3mGqfGJmy0M77WDDzo/05969+OkMy3XW1UuZsSmW9KQm7Fw==
   dependencies:
     asn1 "^0.2.4"
+
+node-xmllint@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/node-xmllint/-/node-xmllint-1.0.0.tgz#f680457eb0166a3d06996f1242d34d47000fe55b"
+  integrity sha512-71UV2HRUP+djvHpdyatiuv+Y1o8hI4ZI7bMfuuoACMLR1JJCErM4WXAclNeHd6BgHXkqeqnnAk3wpDkSQWmFXw==
 
 nodemon@^2.0.15:
   version "2.0.20"
