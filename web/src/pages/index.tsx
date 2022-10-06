@@ -35,8 +35,6 @@ const Index = () => {
     variables: { type: "Event" },
   });
 
-  console.log("Events Query:", eventsQuery?.getElements);
-
   const events = useMemo(() => {
     if (!eventsQuery?.getElements) {
       return [];
