@@ -5,10 +5,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Badge,
   Box,
   Button,
   Flex,
   Heading,
+  HStack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -54,6 +56,24 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     return;
   }, [props.endDate]);
 
+  const eventLive = useMemo(() => {
+    const now = new Date();
+
+    if (startDate && endDate) {
+      return (
+        now.getTime() > startDate.getTime() && now.getTime() < endDate.getTime()
+      );
+    }
+    if (startDate) {
+      return now.getTime() > startDate.getTime();
+    }
+    if (endDate) {
+      return now.getTime() < endDate.getTime();
+    }
+
+    return false;
+  }, [startDate, endDate]);
+
   return (
     <Box
       h={"6.5rem"}
@@ -74,26 +94,35 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       textAlign="left"
     >
       <Flex p={3} h="100%" justifyContent="flex-start" direction="column">
-        <Heading
-          size="md"
-          color={cardImg ? "white" : "black"}
-          pb={1}
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipsis"
+        <Flex
+          flexDirection={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
         >
-          {props.title}
-        </Heading>
-        {props.startDate && (
-          <Text color={cardImg ? "white" : "black"}>
-            {startDate && format(startDate, "iii MMM d kk:mm")}{" "}
-            {endDate &&
-              "- " +
-                (startDate?.toDateString() === endDate.toDateString()
-                  ? format(endDate, "kk:mm")
-                  : format(endDate, "iii MMM d kk:mm"))}
-          </Text>
-        )}
+          <Heading
+            size="md"
+            color={cardImg ? "white" : "black"}
+            pb={1}
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
+            {props.title}
+          </Heading>
+          {eventLive && (
+            <Badge colorScheme="red" fontSize="0.6rem">
+              LIVE
+            </Badge>
+          )}
+        </Flex>
+        <Text color={cardImg ? "white" : "black"}>
+          {startDate && format(startDate, "iii MMM d kk:mm")}{" "}
+          {endDate &&
+            (startDate ? "- " : "until ") +
+              (startDate && startDate.toDateString() === endDate.toDateString()
+                ? format(endDate, "kk:mm")
+                : format(endDate, "iii MMM d kk:mm"))}
+        </Text>
         {props.location && (
           <Text color={cardImg ? "white" : "black"}>📍 {props.location}</Text>
         )}

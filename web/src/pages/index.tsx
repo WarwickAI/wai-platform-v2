@@ -22,6 +22,7 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const EVENTS_LOOKAHEAD_DAYS = 14;
+const EVENTS_LOOKAHEAD_MS = EVENTS_LOOKAHEAD_DAYS * 24 * 60 * 60 * 1000;
 
 const Index = () => {
   const router = useRouter();
@@ -41,19 +42,28 @@ const Index = () => {
       return [];
     }
     const events = eventsQuery?.getElements.filter((event) => {
-      if (!event.data.start.value) return false;
-      const eventDate = new Date(event.data.start.value);
+      if (!event.data.start?.value && !event.data.end?.value) return false;
+
+      let withinRange = false;
+
       const now = new Date();
-      return (
-        eventDate.getTime() > now.getTime() &&
-        eventDate.getTime() <
-          now.getTime() + EVENTS_LOOKAHEAD_DAYS * 24 * 60 * 60 * 1000
-      );
+
+      if (event.data.start?.value && !withinRange) {
+        const start = new Date(event.data.start.value);
+        withinRange = start.getTime() < now.getTime() + EVENTS_LOOKAHEAD_MS;
+      }
+
+      if (event.data.end?.value && !withinRange) {
+        const end = new Date(event.data.end.value);
+        withinRange = end.getTime() > now.getTime();
+      }
+
+      return withinRange;
     });
 
     return events.sort((a, b) => {
-      const aDate = new Date(a.data.start.value);
-      const bDate = new Date(b.data.start.value);
+      const aDate = new Date(a.data.start?.value || a.data.end?.value);
+      const bDate = new Date(b.data.start?.value || b.data.end?.value);
       return aDate.getTime() - bDate.getTime();
     });
   }, [eventsQuery?.getElements]);
