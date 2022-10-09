@@ -48,12 +48,12 @@ const Blog = () => {
       <Flex
         my={4}
         p={2}
-        borderWidth={2}
+        bg="gray.100"
         borderRadius={"lg"}
         justifyContent="center"
         alignItems="center"
       >
-        <Text fontWeight={700} mr={4}>
+        <Text fontWeight={700} mr={4} fontSize={"1.2rem"}>
           Interested in working on research?
         </Text>
         <Button
