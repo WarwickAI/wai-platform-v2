@@ -68,7 +68,6 @@ const Blog = () => {
       <ItemGrid>
         {posts.map(
           ({ title, cover, categories, id, link, createdAt, author }) => {
-            console.log(link);
             return (
               <Card
                 key={id}

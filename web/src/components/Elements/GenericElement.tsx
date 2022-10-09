@@ -14,9 +14,11 @@ import {
   ButtonElementData,
   ImageElementData,
   FileElementData,
+  EventElementData,
 } from "../../utils/base_element_types";
 import Image from "./Image";
 import File from "./File";
+import Event from "./Event";
 
 interface GenericElementProps {
   element: Element<any>;
@@ -81,6 +83,14 @@ const GenericElement: React.FC<GenericElementProps> = (props) => {
     return (
       <File
         element={element as Element<FileElementData>}
+        isEdit={props.isEdit}
+      />
+    );
+  }
+  if (element.type === "Event") {
+    return (
+      <Event
+        element={element as Element<EventElementData>}
         isEdit={props.isEdit}
       />
     );

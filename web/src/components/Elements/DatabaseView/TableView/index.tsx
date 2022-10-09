@@ -1,11 +1,23 @@
-import { Box, Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  HStack,
+  Button,
+  Tooltip,
+} from "@chakra-ui/react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DatabaseElementData } from "../../../../utils/base_element_types";
 import { DataTypeKeysT, Element } from "../../../../utils/config";
 import TextProperty from "../../../Properties/Text";
 import AttributeHeader, { AddAttributeHeader } from "./AttributeHeader";
 import Row from "./Row";
 import { AddIcon } from "@chakra-ui/icons";
+import { useGetUsersQuery } from "../../../../generated/graphql";
 
 interface TableViewProps {
   database: Element<DatabaseElementData>;
@@ -25,6 +37,44 @@ const TableView: React.FC<TableViewProps> = (props) => {
     props.database.data.title.value
   );
 
+  const isUserDatabase = props.database.data.childrenBaseType.value === "User";
+
+  const [{ data: usersData }] = useGetUsersQuery({
+    pause: !isUserDatabase || !props.isEdit,
+  });
+
+  const users = useMemo(() => {
+    if (!isUserDatabase) {
+      return [];
+    }
+    if (!usersData?.getUsers) {
+      return [];
+    }
+
+    return usersData.getUsers.filter(
+      (u) => props.rows.findIndex((r) => r.data.user.value === u.id) !== -1
+    );
+  }, [usersData, isUserDatabase, props.rows]);
+
+  const copyEmails = () => {
+    const emails: string[] = [];
+    users.forEach((user) => {
+      emails.push(user.email);
+    });
+
+    var csvString: string = "";
+
+    emails.forEach((email) => {
+      csvString += `${email},`;
+    });
+
+    if (csvString.length > 0) {
+      csvString = csvString.slice(0, -1);
+    }
+
+    navigator.clipboard.writeText(csvString);
+  };
+
   useEffect(() => {
     setDatabaseName(props.database.data.title.value);
   }, [props.database.data.title.value]);
@@ -32,14 +82,21 @@ const TableView: React.FC<TableViewProps> = (props) => {
   return (
     <Box>
       {/* Database Title */}
-      <TextProperty
-        value={databaseName}
-        onChange={async (v) => {
-          setDatabaseName(v);
-          props.editDatabaseName(v);
-        }}
-        isEdit={props.isEdit}
-      />
+      <HStack>
+        <TextProperty
+          value={databaseName}
+          onChange={async (v) => {
+            setDatabaseName(v);
+            props.editDatabaseName(v);
+          }}
+          isEdit={props.isEdit}
+        />
+        {isUserDatabase && props.isEdit && (
+          <Button variant={"admin"} size={"sm"} onClick={copyEmails}>
+            <Tooltip label="Copy User Emails (CSV)">📋</Tooltip>
+          </Button>
+        )}
+      </HStack>
       <Box>
         <Table variant={"simple"}>
           {/* Database Headers */}
@@ -55,7 +112,9 @@ const TableView: React.FC<TableViewProps> = (props) => {
                   attribute={props.database.data.attributes.value[name]}
                   removeAttribute={props.removeAttribute}
                   modifyAttributeName={props.modifyAttributeName}
-                  modifyAttributeDefaultValue={props.modifyAttributeDefaultValue}
+                  modifyAttributeDefaultValue={
+                    props.modifyAttributeDefaultValue
+                  }
                 />
               ))}
               {props.isEdit && (

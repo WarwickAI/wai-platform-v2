@@ -2,6 +2,7 @@ import "dotenv/config";
 import "reflect-metadata";
 import { __prod__ } from "./constants";
 import express from "express";
+import session from "express-session";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/user";
@@ -23,6 +24,8 @@ import { FileResolver } from "./resolvers/files";
 import { File } from "./entities/File";
 import { Tag } from "./entities/Tag";
 import { TagResolver } from "./resolvers/tags";
+
+import * as auth from "./auth";
 
 const main = async () => {
   // Connect to DB
@@ -73,6 +76,15 @@ const main = async () => {
   );
 
   app.use(cookieParser());
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use(session({ secret: process.env.SESSION_SECRET! }));
+  app.use(auth.passport.initialize());
+  app.use(auth.passport.session());
+
+  app.use("/auth", auth.authRouter);
 
   // Create refresh token route
   app.post("/refresh_token", async (req, res) => {

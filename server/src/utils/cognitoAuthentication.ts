@@ -9,7 +9,6 @@ import { Group } from "../entities/Group";
 
 const setupCognitoAuthentication = (app: Express) => {
   app.get("/cognito-response", async (req, res) => {
-    console.log("Received cognito response");
     const code: string = req.query.code as any;
     const data = {
       grant_type: "authorization_code",
@@ -32,7 +31,6 @@ const setupCognitoAuthentication = (app: Express) => {
     const awsResponse = await axios(p);
     if (awsResponse.data.id_token) {
       const userInfo = decode(awsResponse.data.id_token) as any;
-      console.log("user data:", userInfo);
 
       // Either login user, or register
       // Find existing user
@@ -56,7 +54,8 @@ const setupCognitoAuthentication = (app: Express) => {
 
       if (user.email === "Edward.Upton@warwick.ac.uk") {
         const adminGroup = await Group.findOneOrFail({ name: "Admin" });
-        user.groups.push(adminGroup);
+        const execGroup = await Group.findOneOrFail({ name: "Exec" });
+        user.groups.push(adminGroup, execGroup);
         user.save();
       }
 

@@ -30,7 +30,6 @@ export class AdminResolver {
       );
       return { ...userInfo, dataJoined: userJoinedDate };
     });
-    console.log(dateAddedMemberInfo);
     dateAddedMemberInfo.forEach(async (info) => {
       const user = await User.findOne({ where: { uniId: info.uniId } });
       if (user !== undefined) {
@@ -50,7 +49,6 @@ export class AdminResolver {
     );
 
     try {
-      console.log(response.data);
       const data = JSON.parse(
         convert.xml2json(response.data, { compact: true, spaces: 2 })
       );
@@ -62,7 +60,6 @@ export class AdminResolver {
       }[];
       // users = users.slice(0, 10);
       users.forEach(async (user) => {
-        console.log(user.EmailAddress._text);
 
         const dbUser = await User.createQueryBuilder("user")
           .where("LOWER(user.email) = LOWER(:email)", {
@@ -70,7 +67,6 @@ export class AdminResolver {
           })
           .getOne();
 
-        console.log(dbUser);
         if (dbUser !== undefined) {
           dbUser.uniId = parseInt(user.UniqueID._text);
           dbUser.isMember = true;

@@ -105,7 +105,6 @@ const TagsProperty: React.FC<TagsPropertyProps> = (props) => {
           onOpen={onAddOpen}
           onClose={onAddClose}
           onAddTag={(tag) => {
-            console.log(tag);
             setSelectedTags([...selectedTags, tag]);
             props.onChange([...props.value, tag.id]);
           }}

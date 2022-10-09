@@ -24,6 +24,9 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 const EVENTS_LOOKAHEAD_DAYS = 14;
 const EVENTS_LOOKAHEAD_MS = EVENTS_LOOKAHEAD_DAYS * 24 * 60 * 60 * 1000;
 
+const MAX_DATE = new Date(8640000000000000);
+const MIN_DATE = new Date(-8640000000000000);
+
 const Index = () => {
   const router = useRouter();
 
@@ -40,28 +43,36 @@ const Index = () => {
       return [];
     }
     const events = eventsQuery?.getElements.filter((event) => {
-      if (!event.data.start?.value && !event.data.end?.value) return false;
+      const startDate = event.data.start?.value
+        ? new Date(event.data.start.value)
+        : MIN_DATE;
 
-      let withinRange = false;
+      const endDate = event.data.end?.value
+        ? new Date(event.data.end.value)
+        : MAX_DATE;
 
       const now = new Date();
 
-      if (event.data.start?.value && !withinRange) {
-        const start = new Date(event.data.start.value);
-        withinRange = start.getTime() < now.getTime() + EVENTS_LOOKAHEAD_MS;
-      }
+      let withinRange = false;
 
-      if (event.data.end?.value && !withinRange) {
-        const end = new Date(event.data.end.value);
-        withinRange = end.getTime() > now.getTime();
-      }
+      // Check the event does not start futher than EVENTS_LOOKAHEAD_DAYS days in the future
+      withinRange = startDate.getTime() - now.getTime() < EVENTS_LOOKAHEAD_MS;
+
+      // Check the event does not end before now
+      withinRange = withinRange && endDate.getTime() > now.getTime();
 
       return withinRange;
     });
 
     return events.sort((a, b) => {
-      const aDate = new Date(a.data.start?.value || a.data.end?.value);
-      const bDate = new Date(b.data.start?.value || b.data.end?.value);
+      const aDate = a.data.start?.value
+        ? new Date(a.data.start?.value)
+        : MIN_DATE;
+
+      const bDate = b.data.start?.value
+        ? new Date(b.data.start?.value)
+        : MAX_DATE;
+
       return aDate.getTime() - bDate.getTime();
     });
   }, [eventsQuery?.getElements]);
@@ -111,6 +122,7 @@ const Index = () => {
                 bg="#202225"
                 fontFamily="ABC Ginto Normal,Helvetica Neue,Helvetica,Arial,sans-serif"
                 fontSize="14px"
+                width="full"
               >
                 <Flex
                   bg="hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%)"

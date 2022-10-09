@@ -32,7 +32,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  @UseMiddleware(isAuth, isAdmin)
+  @UseMiddleware(isAuth, isExec)
   async getUsers(): Promise<User[]> {
     return await User.find({ relations: ["groups"] });
   }

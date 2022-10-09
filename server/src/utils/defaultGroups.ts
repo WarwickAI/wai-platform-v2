@@ -2,12 +2,16 @@ import { Group } from "../entities/Group";
 import { User } from "../entities/User";
 
 export const getDefaultGroups = async () => {
-  var adminGroup = await Group.findOneOrFail({
+  var adminGroup = await Group.findOne({
     where: { name: "Admin" },
   });
 
-  var allGroup = await Group.findOneOrFail({
+  var allGroup = await Group.findOne({
     where: { name: "All" },
+  });
+
+  var execGroup = await Group.findOne({
+    where: { name: "Exec" },
   });
 
   if (!adminGroup) {
@@ -20,7 +24,12 @@ export const getDefaultGroups = async () => {
     await allGroup.save();
   }
 
-  return { adminGroup, allGroup };
+  if (!execGroup) {
+    execGroup = Group.create({ name: "Exec", users: [] });
+    await execGroup.save();
+  }
+
+  return { adminGroup, allGroup, execGroup };
 };
 
 export const getUserGroup = async (user: User) => {
