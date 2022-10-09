@@ -91,7 +91,7 @@ const TableView: React.FC<TableViewProps> = (props) => {
           }}
           isEdit={props.isEdit}
         />
-        {isUserDatabase && (
+        {isUserDatabase && props.isEdit && (
           <Button variant={"admin"} size={"sm"} onClick={copyEmails}>
             <Tooltip label="Copy User Emails (CSV)">📋</Tooltip>
           </Button>
