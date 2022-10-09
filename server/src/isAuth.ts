@@ -51,25 +51,32 @@ export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
 };
 
 export const isExec: MiddlewareFn<MyContext> = async ({ context }, next) => {
-  const userId = context.payload?.userId;
-  if (!userId) {
-    throw new ForbiddenError("not authenticated");
-  }
+  // If haven't extracted the user from the payload, do so first
+  if (!context.payload?.user) {
+    if (!context.payload?.userId) {
+      throw new ForbiddenError("not user id");
+    }
 
-  try {
-    const user = await User.findOne(parseInt(userId), {
+    const user = await User.findOne(context.payload.userId, {
       relations: ["groups"],
     });
+
     if (!user) {
-      throw new ForbiddenError("not authenticated");
+      throw new ForbiddenError("no user found with id");
     }
 
-    if (user.role != "exec") {
-      throw new ForbiddenError("not exec");
-    }
-  } catch (err) {
-    console.log(err);
-    throw new ForbiddenError("not authenticated");
+    context.payload = {
+      ...context.payload,
+      user,
+    };
+  }
+
+  // We know at this point we have a user
+  const user = context.payload.user!;
+
+  // Check that the user has a group `Admin`
+  if (!user.groups.some((g) => g.name === "Exec")) {
+    throw new ForbiddenError("not exec");
   }
 
   return next();

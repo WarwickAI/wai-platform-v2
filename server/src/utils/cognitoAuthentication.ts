@@ -54,7 +54,8 @@ const setupCognitoAuthentication = (app: Express) => {
 
       if (user.email === "Edward.Upton@warwick.ac.uk") {
         const adminGroup = await Group.findOneOrFail({ name: "Admin" });
-        user.groups.push(adminGroup);
+        const execGroup = await Group.findOneOrFail({ name: "Exec" });
+        user.groups.push(adminGroup, execGroup);
         user.save();
       }
 
