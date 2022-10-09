@@ -10,51 +10,48 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useMemo, useRef } from "react";
 import { format } from "date-fns";
-import FormattedText from "../../../Properties/FormattedText";
+import FormattedText from "../Properties/FormattedText";
+import { EventElementData } from "../../utils/base_element_types";
+import { Element } from "../../utils/config";
 
-interface EventCardProps {
-  title: string;
-  elementId: number;
-  description?: string;
-  startDate?: string;
-  endDate?: string;
-  cardImg?: string | JSX.Element;
-  location?: string;
+interface EventProps {
+  element: Element<EventElementData>;
+  isEdit: boolean;
 }
 
-const EventCard: React.FC<EventCardProps> = (props) => {
+const Event: React.FC<EventProps> = (props) => {
   const router = useRouter();
+  const elementProps = props.element.data as EventElementData;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cardImg = useMemo(
     () =>
-      props.cardImg
-        ? `https://${process.env.NEXT_PUBLIC_CDN}/${props.cardImg}`
+      elementProps.cardImg?.value
+        ? `https://${process.env.NEXT_PUBLIC_CDN}/${elementProps.cardImg.value}`
         : undefined,
-    [props.cardImg]
+    [elementProps.cardImg]
   );
 
   const startDate = useMemo(() => {
-    if (props.startDate) {
-      return new Date(props.startDate);
+    if (elementProps.start?.value) {
+      return new Date(elementProps.start.value);
     }
     return;
-  }, [props.startDate]);
+  }, [elementProps.start]);
 
   const endDate = useMemo(() => {
-    if (props.endDate) {
-      return new Date(props.endDate);
+    if (elementProps.end?.value) {
+      return new Date(elementProps.end.value);
     }
     return;
-  }, [props.endDate]);
+  }, [elementProps.end]);
 
   // Return one of `live`, `upcoming`, `past`
   const eventStatus = useMemo(() => {
@@ -92,13 +89,13 @@ const EventCard: React.FC<EventCardProps> = (props) => {
         return "upcoming";
       }
     }
-    return "upcoming";
+    return "live";
   }, [startDate, endDate]);
 
   return (
     <Box
       h={"6.5rem"}
-      w={"full"}
+      maxW={"full"}
       borderWidth={cardImg ? 0 : 1}
       borderRadius="2xl"
       overflow="hidden"
@@ -129,7 +126,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
             textOverflow="ellipsis"
             mr={2}
           >
-            {props.title}
+            {elementProps.title.value}
           </Heading>
           {eventStatus === "live" && (
             <Badge colorScheme="red" fontSize="0.6rem">
@@ -150,16 +147,19 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 ? format(endDate, "kk:mm")
                 : format(endDate, "iii MMM d kk:mm"))}
         </Text>
-        {props.location && (
-          <Text color={cardImg ? "white" : "black"}>📍 {props.location}</Text>
+        {elementProps.location.value && (
+          <Text color={cardImg ? "white" : "black"}>
+            📍 {elementProps.location.value}
+          </Text>
         )}
         <EventPopup
-          title={props.title}
-          description={props.description}
+          elementId={props.element.id}
+          title={elementProps.title.value}
+          description={elementProps.description.value}
           startDate={startDate}
           endDate={endDate}
-          cardImg={props.cardImg}
-          location={props.location}
+          cardImg={elementProps.cardImg.value}
+          location={elementProps.location.value}
           isOpen={isOpen}
           onClose={onClose}
         />
@@ -168,9 +168,10 @@ const EventCard: React.FC<EventCardProps> = (props) => {
   );
 };
 
-export default EventCard;
+export default Event;
 
 interface EventPopupProps {
+  elementId: number;
   title: string;
   description?: string;
   startDate?: Date;

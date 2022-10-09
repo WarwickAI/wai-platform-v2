@@ -35,7 +35,6 @@ export const ElementTypesToNotShowInAdd: ElementTypeKeys[] = [
   "Database",
   "Template",
   "User",
-  "Event",
 ];
 
 export const DatabaseBaseTypes: ElementTypeKeys[] = [
