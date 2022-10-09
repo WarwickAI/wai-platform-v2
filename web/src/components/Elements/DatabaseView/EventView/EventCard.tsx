@@ -127,6 +127,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
+            mr={2}
           >
             {props.title}
           </Heading>

@@ -122,6 +122,7 @@ const Index = () => {
                 bg="#202225"
                 fontFamily="ABC Ginto Normal,Helvetica Neue,Helvetica,Arial,sans-serif"
                 fontSize="14px"
+                width="full"
               >
                 <Flex
                   bg="hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%)"
