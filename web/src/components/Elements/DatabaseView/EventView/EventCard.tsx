@@ -56,22 +56,43 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     return;
   }, [props.endDate]);
 
-  const eventLive = useMemo(() => {
+  // Return one of `live`, `upcoming`, `past`
+  const eventStatus = useMemo(() => {
     const now = new Date();
 
     if (startDate && endDate) {
-      return (
-        now.getTime() > startDate.getTime() && now.getTime() < endDate.getTime()
-      );
-    }
-    if (startDate) {
-      return now.getTime() > startDate.getTime();
-    }
-    if (endDate) {
-      return now.getTime() < endDate.getTime();
+      if (
+        now.getTime() > startDate.getTime() &&
+        now.getTime() < endDate.getTime()
+      ) {
+        return "live";
+      } else if (now.getTime() < startDate.getTime()) {
+        return "upcoming";
+      } else {
+        return "past";
+      }
     }
 
-    return false;
+    if (startDate) {
+      if (now.getTime() > startDate.getTime()) {
+        return "live";
+      } else if (now.getTime() < startDate.getTime()) {
+        return "upcoming";
+      } else {
+        return "past";
+      }
+    }
+
+    if (endDate) {
+      if (now.getTime() < endDate.getTime()) {
+        return "live";
+      } else if (now.getTime() > endDate.getTime()) {
+        return "past";
+      } else {
+        return "upcoming";
+      }
+    }
+    return "upcoming";
   }, [startDate, endDate]);
 
   return (
@@ -109,9 +130,14 @@ const EventCard: React.FC<EventCardProps> = (props) => {
           >
             {props.title}
           </Heading>
-          {eventLive && (
+          {eventStatus === "live" && (
             <Badge colorScheme="red" fontSize="0.6rem">
               LIVE
+            </Badge>
+          )}
+          {eventStatus === "past" && (
+            <Badge colorScheme="gray" fontSize="0.6rem">
+              FINISHED
             </Badge>
           )}
         </Flex>
