@@ -36,6 +36,7 @@ const CardView: React.FC<CardViewProps> = (props) => {
                 row.data.cardImg.value ? row.data.cardImg.value : undefined
               }
               tags={selectedTags}
+              route={row.route ? row.route : undefined}
               //   description={
               //     <Flex flexWrap="wrap">
               //       {tags.map((tag) => (

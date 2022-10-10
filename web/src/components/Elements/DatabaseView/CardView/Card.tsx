@@ -11,6 +11,7 @@ interface CardProps {
   extraInfo?: string | JSX.Element;
   cardImg?: string | JSX.Element;
   tags?: Tag[];
+  route?: string;
 }
 
 const Card: React.FC<CardProps> = (props) => {
@@ -40,7 +41,13 @@ const Card: React.FC<CardProps> = (props) => {
       backgroundRepeat={cardImg ? "no-repeat" : ""}
       backgroundSize={cardImg ? "cover" : ""}
       _hover={{ cursor: "pointer" }}
-      onClick={() => router.push(`/generic/${props.elementId}`)}
+      onClick={() => {
+        if (props.route) {
+          router.push(props.route);
+        } else {
+          router.push(`/generic/${props.elementId}`);
+        }
+      }}
     >
       <Flex p={5} h="100%" justifyContent="flex-end" direction="column">
         {props.extraInfo && (
