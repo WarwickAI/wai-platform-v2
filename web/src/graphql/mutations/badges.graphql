@@ -1,0 +1,13 @@
+mutation CreateBadge(
+  $name: String!
+  $color: String!
+  $description: String
+) {
+  createBadge(
+    name: $name
+    color: $color
+    description: $description
+  ) {
+    ...FullBadge
+  }
+}

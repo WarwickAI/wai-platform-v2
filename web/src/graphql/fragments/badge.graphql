@@ -1,0 +1,10 @@
+fragment FullBadge on Badge {
+  id
+  name
+  description
+  color
+  createdAt
+  updatedAt
+  canClaim
+  claimUntil
+}

@@ -26,6 +26,8 @@ import { Tag } from "./entities/Tag";
 import { TagResolver } from "./resolvers/tags";
 
 import * as auth from "./auth";
+import { Badge } from "./entities/Badge";
+import { BadgeResolver } from "./resolvers/badges";
 
 const main = async () => {
   // Connect to DB
@@ -53,7 +55,7 @@ const main = async () => {
     logging: false,
     synchronize: true,
     migrations: [],
-    entities: [User, Element, Group, File, Tag],
+    entities: [User, Element, Group, File, Tag, Badge],
   });
   // await User.delete((await User.find()).map((user) => user.id));
   await conn.runMigrations();
@@ -131,6 +133,7 @@ const main = async () => {
         GroupResolver,
         FileResolver,
         TagResolver,
+        BadgeResolver,
       ],
       validate: false,
     }),

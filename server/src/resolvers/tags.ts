@@ -1,5 +1,6 @@
 import { Tag } from "../entities/Tag";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { isAuth, isExec } from "../isAuth";
 
 @Resolver()
 export class TagResolver {
@@ -14,6 +15,7 @@ export class TagResolver {
   }
 
   @Mutation(() => Tag)
+  @UseMiddleware(isAuth, isExec)
   createTag(
     @Arg("name") name: string,
     @Arg("color") color: string,

@@ -134,7 +134,11 @@ const Page: React.FC<PageProps> = (props) => {
       <Button
         colorScheme={"blue"}
         onClick={() => {
-          router.push(`/generic/${props.element.id}`);
+          if (props.element.route) {
+            router.push(props.element.route);
+          } else {
+            router.push(`/generic/${props.element.id}`);
+          }
         }}
       >
         {elementProps.title.value}

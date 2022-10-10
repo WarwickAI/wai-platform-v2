@@ -1,0 +1,11 @@
+query GetBadges {
+  getBadges {
+    ...FullBadge
+  }
+}
+
+query GetBadge($id: String!) {
+  getBadge(id: $id) {
+    ...FullBadge
+  }
+}

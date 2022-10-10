@@ -14,6 +14,7 @@ import {
 import { Element } from "./Element";
 import { Group } from "./Group";
 import { File } from "./File";
+import { Badge } from "./Badge";
 
 @ObjectType() // Is now an Object Type also for GraphQL
 @Entity() // Is a DB table
@@ -82,4 +83,8 @@ export class User extends BaseEntity {
   @Field(() => Element, { nullable: true })
   @OneToMany(() => Element, (page) => page.user, { nullable: true })
   files: File;
+
+  @Field(() => [Badge], { defaultValue: [] })
+  @ManyToMany(() => Badge, (badge) => badge.users)
+  badges: Badge[];
 }

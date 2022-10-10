@@ -26,6 +26,8 @@ import {
   CreateTagMutation,
   GetTagsQuery,
   GetTagsDocument,
+  CreateBadgeMutation,
+  GetBadgesQuery,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -243,6 +245,19 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
                 _result,
                 (result, query) => {
                   query.getTags.push(result.createTag);
+                  return query;
+                }
+              );
+            },
+            createBadge: (_result, args, cache, info) => {
+              const res = _result as CreateBadgeMutation;
+
+              betterUpdateQuery<CreateBadgeMutation, GetBadgesQuery>(
+                cache,
+                { query: GetTagsDocument },
+                _result,
+                (result, query) => {
+                  query.getBadges.push(result.createBadge);
                   return query;
                 }
               );
