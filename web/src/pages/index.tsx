@@ -202,17 +202,17 @@ const Index = () => {
               </Button>
 
               <Heading pt={12} as="h4" size="md">
-                Courses
+                Become a Researcher
               </Heading>
               <Text size="sm" color="gray.600">
-                Find more information here
+                Apply for the Researcher role here!
               </Text>
               <Button
                 mt={1}
                 size="lg"
                 variant="primary"
                 onClick={() => {
-                  router.push("/courses");
+                  router.push("/research-apply-22");
                 }}
               >
                 <ArrowForwardIcon width={22} height={22} />
