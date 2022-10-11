@@ -18,8 +18,8 @@ mutation EditDatabaseAttributeName(
   }
 }
 
-mutation EditElementIndex($index: Float!, $elementId: Float!) {
-  editElementIndex(index: $index, elementId: $elementId) {
+mutation EditElementIndices($elementId: Float!, $newOrder: [Float!]!) {
+  editElementIndices(elementId: $elementId, newOrder: $newOrder) {
     ...FullElement
   }
 }

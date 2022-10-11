@@ -337,10 +337,10 @@ export class ElementResolver {
 
   @Mutation(() => Element)
   @UseMiddleware(isAuth, getUser)
-  async editElementIndex(
+  async editElementIndices(
     @Ctx() { payload }: MyContext,
     @Arg("elementId") elementId: number,
-    @Arg("index") index: number
+    @Arg("newOrder", () => [Number]) newOrder: number[]
   ): Promise<Element> {
     const element = await Element.findOneOrFail(elementId, {
       relations: ALL_RELATIONS_AND_CHILD_RELATIONS,
@@ -350,24 +350,14 @@ export class ElementResolver {
       throw new Error("Not authorized");
     }
 
-    const parent = await Element.findOneOrFail(
-      element.parent ? element.parent.id : -1,
-      {
-        relations: ["canEditGroups"],
+    newOrder.forEach((id, index) => {
+      const child = element.children.find((child) => child.id === id);
+      if (!child) {
+        throw new Error("Child not found");
       }
-    );
-
-    if (parent) {
-      if (!checkPermissions(parent.canEditGroups, payload?.user)) {
-        throw new Error("Not authorized");
-      }
-    } else {
-      throw new Error("Parent does not exist");
-    }
-
-    element.index = index;
-
-    await element.save();
+      child.index = index;
+      child.save();
+    });
 
     // Now filter out the elements that the user can't see
     element.children = element.children.filter((child) =>

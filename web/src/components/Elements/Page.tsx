@@ -1,16 +1,21 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import {
   useCreateElementMutation,
   useEditElementDataMutation,
-  useEditElementIndexMutation,
+  useEditElementIndicesMutation,
   useGetTagsQuery,
   useInheritDatabaseAttributesMutation,
   useMeQuery,
   User,
   useRemoveElementMutation,
 } from "../../generated/graphql";
-import { Reorder } from "framer-motion";
 import PageItem from "../Utils/PageItem";
 import AddElementPopover from "../Utils/AddElementPopover";
 import ElementSettingsPopover from "../Utils/ElementSettingsPopover";
@@ -45,7 +50,6 @@ const Page: React.FC<PageProps> = (props) => {
   const [{ data: meData }, meQuery] = useMeQuery();
 
   const [items, setItems] = useState<Element<any>[]>([]);
-  const [oldItems, setOldItems] = useState<Element<any>[]>([]);
   const { isEdit } = useContext(EditContext);
 
   const isTemplate = useMemo(() => {
@@ -64,6 +68,7 @@ const Page: React.FC<PageProps> = (props) => {
     if (!props.isFullPage) {
       return;
     }
+
     const contentSorted = (props.element.children as Element<any>[]).sort(
       (a, b) => a.index! - b.index!
     );
@@ -72,46 +77,38 @@ const Page: React.FC<PageProps> = (props) => {
       checkPermissions(item.canViewGroups, meData?.me as User | undefined)
     );
 
+    // Set index correctly for all elements
+    contentFiltered.forEach((item, index) => {
+      item.index = index;
+    });
+
     setItems(contentFiltered);
-    setOldItems(contentFiltered);
   }, [props.element.children, meData?.me, props.isFullPage]);
 
   const [, createElement] = useCreateElementMutation();
   const [, editElement] = useEditElementDataMutation();
-  const [, editElementIndex] = useEditElementIndexMutation();
+  const [, editElementIndices] = useEditElementIndicesMutation();
   const [, deleteElement] = useRemoveElementMutation();
   const [, inheritDatabaseAttributes] = useInheritDatabaseAttributesMutation();
 
-  const updateIndex = (oldOrder: Element<any>[], newOrder: Element<any>[]) => {
-    newOrder.forEach((item, index) => {
-      if (oldOrder[index] !== item) {
-        editElementIndex({ elementId: item.id, index: index });
-      }
-    });
-  };
+  const addElement = useCallback(
+    async (type: ElementTypeKeys, index: number) => {
+      await createElement({
+        index,
+        type,
+        data: createDefaultElementData(type),
+        parent: props.element.id,
+      });
+    },
+    [props.element.id, createElement]
+  );
 
-  const onDragStart = (e: MouseEvent | TouchEvent | PointerEvent) => {
-    e.preventDefault();
-    setOldItems(items);
-  };
-
-  const onDragEnd = (e: MouseEvent | TouchEvent | PointerEvent) => {
-    e.preventDefault();
-    updateIndex(oldItems, items);
-  };
-
-  const addElement = async (type: ElementTypeKeys, index: number) => {
-    await createElement({
-      index,
-      type,
-      data: createDefaultElementData(type),
-      parent: props.element.id,
-    });
-  };
-
-  const removeElement = async (id: number) => {
-    await deleteElement({ elementId: id });
-  };
+  const removeElement = useCallback(
+    async (id: number) => {
+      await deleteElement({ elementId: id });
+    },
+    [deleteElement]
+  );
 
   const coverImg = useMemo(
     () =>
@@ -127,6 +124,44 @@ const Page: React.FC<PageProps> = (props) => {
         ? `https://${process.env.NEXT_PUBLIC_CDN}/${elementProps.iconImg.value}`
         : undefined,
     [elementProps.iconImg.value]
+  );
+
+  const moveCard = useCallback(
+    async (dragIndex: number, hoverIndex: number) => {
+      let tmpItems = [...items];
+
+      tmpItems.splice(dragIndex, 1);
+      tmpItems.splice(hoverIndex, 0, items[dragIndex]);
+
+      // Update item index
+      tmpItems.forEach((item, index) => {
+        item.index = index;
+      });
+      setItems(tmpItems);
+
+      editElementIndices({
+        elementId: props.element.id,
+        newOrder: tmpItems.map((item) => item.id),
+      });
+    },
+    [items, editElementIndices, props.element.id]
+  );
+
+  const renderCard = useCallback(
+    (item: Element<any>, index: number) => {
+      return (
+        <PageItem
+          key={item.id}
+          element={item}
+          addElement={addElement}
+          removeElement={removeElement}
+          isEdit={isEdit}
+          moveCard={moveCard}
+          index={index}
+        />
+      );
+    },
+    [addElement, removeElement, isEdit, moveCard]
   );
 
   if (!props.isFullPage) {
@@ -185,20 +220,9 @@ const Page: React.FC<PageProps> = (props) => {
           />
         }
       >
-        <Reorder.Group axis="y" values={items} onReorder={setItems} as="div">
-          {items.map((item) => {
-            return (
-              <PageItem
-                key={item.id}
-                element={item}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-                addElement={addElement}
-                removeElement={removeElement}
-                isEdit={isEdit}
-              />
-            );
-          })}
+        <div>
+          {items.map((item, index) => renderCard(item, index))}
+
           {items.length === 0 && isEdit && (
             <Box position="relative" p={2} my={2}>
               <Flex
@@ -218,7 +242,7 @@ const Page: React.FC<PageProps> = (props) => {
               </Flex>
             </Box>
           )}
-        </Reorder.Group>
+        </div>
       </ElementPage>
     );
   }

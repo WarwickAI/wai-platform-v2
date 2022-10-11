@@ -28,6 +28,7 @@ import {
   GetTagsDocument,
   CreateBadgeMutation,
   GetBadgesQuery,
+  EditElementIndicesMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -132,6 +133,17 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
                 return;
               }
               const newElement = res.editElementRoute;
+              const elementId = newElement.id;
+
+              // Update element
+              updateElement(cache, elementId, newElement as Element<any>);
+            },
+            editElementIndices: (_result, args, cache, info) => {
+              const res = _result as EditElementIndicesMutation;
+              if (!res.editElementIndices) {
+                return;
+              }
+              const newElement = res.editElementIndices;
               const elementId = newElement.id;
 
               // Update element
