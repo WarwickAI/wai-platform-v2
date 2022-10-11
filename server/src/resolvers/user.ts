@@ -21,6 +21,10 @@ class FieldError {
   message: string;
 }
 
+export const USER_RELATIONS = ["badges", "groups", "page"];
+
+export const USER_RELATIONS_WITH_ELEMENTS = [...USER_RELATIONS, "elements"];
+
 @Resolver()
 export class UserResolver {
   // Add functions here, can be queries or mutatations

@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -47,5 +48,6 @@ export class Badge extends BaseEntity {
 
   @Field(() => [User], { defaultValue: [] })
   @ManyToMany(() => User, (user) => user.badges)
+  @JoinTable()
   users: User[];
 }

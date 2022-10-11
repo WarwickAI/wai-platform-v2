@@ -1,13 +1,27 @@
-mutation CreateBadge(
-  $name: String!
-  $color: String!
-  $description: String
-) {
-  createBadge(
-    name: $name
-    color: $color
-    description: $description
-  ) {
+mutation CreateBadge($name: String!, $color: String!, $description: String) {
+  createBadge(name: $name, color: $color, description: $description) {
     ...FullBadge
   }
+}
+
+mutation UpdateBadge($properties: BadgeUpdateProperties!, $id: String!) {
+  updateBadge(properties: $properties, id: $id) {
+    ...FullBadge
+  }
+}
+
+mutation AddBadgeUser($id: String!, $userId: Float!) {
+  addBadgeUser(id: $id, userId: $userId) {
+    ...RegularUser
+  }
+}
+
+mutation RemoveBadgeUser($id: String!, $userId: Float!) {
+  removeBadgeUser(id: $id, userId: $userId) {
+    ...RegularUser
+  }
+}
+
+mutation ClaimBadge($id: String!) {
+  claimBadge(id: $id)
 }

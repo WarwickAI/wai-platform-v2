@@ -13,13 +13,17 @@ import {
   Button,
   useDisclosure,
   Tooltip,
+  Switch,
+  VStack,
 } from "@chakra-ui/react";
 import { GroupBase, Select } from "chakra-react-select";
+import { format } from "date-fns";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Badge,
   useCreateBadgeMutation,
   useGetBadgesQuery,
+  useUpdateBadgeMutation,
 } from "../../../generated/graphql";
 
 interface BadgesPropertyProps {
@@ -116,6 +120,8 @@ const BadgesProperty: React.FC<BadgesPropertyProps> = (props) => {
 
 interface BadgeCardProps {
   badge: Badge;
+  onClick?: () => void;
+  selected?: boolean;
 }
 
 export const BadgeCard: React.FC<BadgeCardProps> = (props) => {
@@ -126,6 +132,10 @@ export const BadgeCard: React.FC<BadgeCardProps> = (props) => {
       borderRadius={"lg"}
       mr={2}
       mb={2}
+      onClick={props.onClick}
+      borderWidth={props.selected ? 4 : 0}
+      borderColor={"gray"}
+      cursor={props.onClick ? "pointer" : "default"}
     >
       <Tooltip label={props.badge.description} hasArrow>
         {props.badge.name}
@@ -139,16 +149,53 @@ interface AddBadgePopupProps {
   onOpen: () => void;
   onClose: () => void;
   onAddBadge: (v: Badge) => void;
+  editBadge?: Badge;
 }
 
 export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
   const cancelAddRef = useRef<HTMLButtonElement | undefined>();
 
-  const [badgeName, setBadgeName] = useState("");
-  const [badgeColor, setBadgeColor] = useState("#000000");
-  const [badgeDescription, setBadgeDescription] = useState("");
+  const [badgeName, setBadgeName] = useState(props.editBadge?.name || "");
+  const [badgeColor, setBadgeColor] = useState(
+    props.editBadge?.color || "#000000"
+  );
+  const [badgeDescription, setBadgeDescription] = useState(
+    props.editBadge?.description || ""
+  );
+  const [canClaim, setCanClaim] = useState(props.editBadge?.canClaim || false);
+  const [claimUntil, setClaimUntil] = useState<Date | undefined>(
+    props.editBadge?.claimUntil
+      ? new Date(props.editBadge?.claimUntil)
+      : undefined
+  );
 
   const [, createBadge] = useCreateBadgeMutation();
+  const [, editBadge] = useUpdateBadgeMutation();
+
+  // Update tag properties if editBadge passed in
+  useEffect(() => {
+    if (!props.editBadge) {
+      resetFields();
+      return;
+    }
+    setBadgeName(props.editBadge.name);
+    setBadgeColor(props.editBadge.color);
+    setBadgeDescription(props.editBadge.description || "");
+    setCanClaim(props.editBadge.canClaim || false);
+    setClaimUntil(
+      props.editBadge.claimUntil
+        ? new Date(props.editBadge.claimUntil)
+        : undefined
+    );
+  }, [props.editBadge]);
+
+  const resetFields = () => {
+    setBadgeName("");
+    setBadgeColor("#000000");
+    setBadgeDescription("");
+    setCanClaim(false);
+    setClaimUntil(undefined);
+  };
 
   return (
     <AlertDialog
@@ -160,10 +207,10 @@ export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Create New Badge -{" "}
+            {props.editBadge ? "Edit" : "Create"} Badge -{" "}
             <BadgeCard
               badge={{
-                id: "9999",
+                id: props.editBadge?.id || "9999",
                 name: badgeName,
                 description: badgeDescription,
                 color: badgeColor,
@@ -209,6 +256,36 @@ export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
                 value={badgeColor}
               />
             </Flex>
+            <Flex direction={"row"} alignItems="center" mb={2}>
+              <Text mr={2} whiteSpace="nowrap">
+                Can Claim:
+              </Text>
+              <Switch
+                isChecked={canClaim}
+                onChange={(e) => {
+                  setCanClaim(e.target.checked);
+                }}
+              />
+            </Flex>
+            {canClaim && (
+              <Flex direction={"row"} alignItems="center" mb={2}>
+                <Text mr={2} whiteSpace="nowrap">
+                  Claim Until:
+                </Text>
+                <VStack>
+                  <Text>
+                    {claimUntil && format(claimUntil, "iii MMM d kk:mm")}
+                  </Text>
+                  <Input
+                    type="datetime-local"
+                    onChange={(e) => {
+                      const newDate = new Date(e.target.value);
+                      setClaimUntil(newDate);
+                    }}
+                  />
+                </VStack>
+              </Flex>
+            )}
           </AlertDialogBody>
 
           <AlertDialogFooter>
@@ -224,25 +301,55 @@ export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
               variant="primary"
               ml={3}
               onClick={async () => {
-                // Create new tag
-                const newBadge = await createBadge({
-                  name: badgeName,
-                  color: badgeColor,
-                  description: badgeDescription,
-                });
-                console.log(newBadge);
-                if (newBadge.data?.createBadge) {
-                  props.onAddBadge(newBadge.data?.createBadge);
-                  // Reset fields
-                  setBadgeName("");
-                  setBadgeColor("");
-                  setBadgeDescription("");
+                // Create/edit badge
+                if (props.editBadge) {
+                  // Only update badge properties that have changed
+                  const editedBadge = await editBadge({
+                    id: props.editBadge.id,
+                    properties: {
+                      name:
+                        badgeName !== props.editBadge.name
+                          ? badgeName
+                          : undefined,
+                      description:
+                        badgeDescription !== props.editBadge.description
+                          ? badgeDescription
+                          : undefined,
+                      color:
+                        badgeColor !== props.editBadge.color
+                          ? badgeColor
+                          : undefined,
+                      canClaim:
+                        canClaim !== props.editBadge.canClaim
+                          ? canClaim
+                          : undefined,
+                      claimUntil:
+                        claimUntil !== props.editBadge.claimUntil
+                          ? claimUntil?.toISOString()
+                          : undefined,
+                    },
+                  });
 
-                  props.onClose();
+                  if (!editedBadge.error) {
+                    resetFields();
+                    props.onClose();
+                  }
+                } else {
+                  const newBadge = await createBadge({
+                    name: badgeName,
+                    color: badgeColor,
+                    description: badgeDescription,
+                  });
+
+                  if (!newBadge.error && newBadge.data) {
+                    props.onAddBadge(newBadge.data.createBadge);
+                    resetFields();
+                    props.onClose();
+                  }
                 }
               }}
             >
-              Create
+              {props.editBadge ? "Edit" : "Create"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -3,6 +3,7 @@ import { verify } from "jsonwebtoken";
 import { MyContext } from "./types";
 import { ForbiddenError } from "apollo-server-express";
 import { User } from "./entities/User";
+import { USER_RELATIONS } from "./resolvers/user";
 
 export const getAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
@@ -24,7 +25,7 @@ export const getUser: MiddlewareFn<MyContext> = async ({ context }, next) => {
     ? {
         ...context.payload,
         user: await User.findOne(context.payload.userId, {
-          relations: ["groups"],
+          relations: USER_RELATIONS,
         }),
       }
     : { ...context.payload, user: undefined };

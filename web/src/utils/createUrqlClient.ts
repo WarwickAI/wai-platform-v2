@@ -29,6 +29,21 @@ import {
   CreateBadgeMutation,
   GetBadgesQuery,
   EditElementIndicesMutation,
+  UpdateBadgeMutation,
+  GetBadgeDocument,
+  GetBadgesDocument,
+  GetBadgeQuery,
+  UpdateBadgeMutationVariables,
+  AddBadgeUserMutation,
+  AddBadgeUserMutationVariables,
+  GetBadgeUsersQuery,
+  GetBadgeUsersDocument,
+  RemoveBadgeUserMutation,
+  RemoveBadgeUserMutationVariables,
+  ClaimBadgeMutation,
+  ClaimBadgeMutationVariables,
+  HasBadgeQuery,
+  HasBadgeDocument,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
@@ -266,10 +281,103 @@ export const createUrqlClient: NextUrqlClientConfig = (ssrExchange: any) => {
 
               betterUpdateQuery<CreateBadgeMutation, GetBadgesQuery>(
                 cache,
-                { query: GetTagsDocument },
+                { query: GetBadgesDocument },
                 _result,
                 (result, query) => {
                   query.getBadges.push(result.createBadge);
+                  return query;
+                }
+              );
+            },
+            updateBadge: (_result, args, cache, info) => {
+              const res = _result as UpdateBadgeMutation;
+
+              const badgeId = (args as UpdateBadgeMutationVariables).id;
+
+              // Update the badge in the badges' cache
+              betterUpdateQuery<UpdateBadgeMutation, GetBadgesQuery>(
+                cache,
+                { query: GetBadgesDocument },
+                _result,
+                (result, query) => {
+                  const badgeIndex = query.getBadges.findIndex(
+                    (val) => val.id === badgeId
+                  );
+                  if (badgeIndex !== -1) {
+                    query.getBadges[badgeIndex] = result.updateBadge;
+                  }
+                  return query;
+                }
+              );
+
+              // Update the badge in the badge's cache
+              betterUpdateQuery<UpdateBadgeMutation, GetBadgeQuery>(
+                cache,
+                {
+                  query: GetBadgeDocument,
+                  variables: { id: badgeId },
+                },
+                _result,
+                (result, query) => {
+                  if (!query) {
+                    return query;
+                  }
+                  query.getBadge = result.updateBadge;
+                  return query;
+                }
+              );
+            },
+            addBadgeUser: (_result, args, cache, info) => {
+              const badgeId = (args as AddBadgeUserMutationVariables).id;
+
+              // Update the badge in the badges' cache
+              betterUpdateQuery<AddBadgeUserMutation, GetBadgeUsersQuery>(
+                cache,
+                { query: GetBadgeUsersDocument, variables: { id: badgeId } },
+                _result,
+                (result, query) => {
+                  if (!query) {
+                    return query;
+                  }
+                  query.getBadgeUsers = result.addBadgeUser;
+                  return query;
+                }
+              );
+            },
+            removeBadgeUser: (_result, args, cache, info) => {
+              const badgeId = (args as RemoveBadgeUserMutationVariables).id;
+
+              // Update the badge in the badges' cache
+              betterUpdateQuery<RemoveBadgeUserMutation, GetBadgeUsersQuery>(
+                cache,
+                { query: GetBadgeUsersDocument, variables: { id: badgeId } },
+                _result,
+                (result, query) => {
+                  if (!query) {
+                    return query;
+                  }
+                  query.getBadgeUsers = result.removeBadgeUser;
+                  return query;
+                }
+              );
+            },
+            claimBadge: (_result, args, cache, info) => {
+              const badgeId = (args as ClaimBadgeMutationVariables).id;
+
+              if (!_result.claimBadge) {
+                return;
+              }
+
+              // Update the badge in the badges' cache
+              betterUpdateQuery<ClaimBadgeMutation, HasBadgeQuery>(
+                cache,
+                { query: HasBadgeDocument, variables: { id: badgeId } },
+                _result,
+                (result, query) => {
+                  if (!query) {
+                    return query;
+                  }
+                  query.hasBadge = result.claimBadge;
                   return query;
                 }
               );

@@ -29,6 +29,14 @@ export type Badge = {
   users?: Maybe<Array<User>>;
 };
 
+export type BadgeUpdateProperties = {
+  canClaim?: InputMaybe<Scalars['Boolean']>;
+  claimUntil?: InputMaybe<Scalars['String']>;
+  color?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type Element = {
   __typename?: 'Element';
   canEditGroups: Array<Group>;
@@ -89,10 +97,12 @@ export type MemberInfoInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addBadgeUser: Array<User>;
   addMemberInfo: Scalars['Boolean'];
   addUserToGroup: Group;
   addUsersToGroup: Group;
   assignUserPage?: Maybe<Element>;
+  claimBadge: Scalars['Boolean'];
   createBadge: Badge;
   createElement?: Maybe<Element>;
   createGroup: Group;
@@ -107,13 +117,21 @@ export type Mutation = {
   handleAction: Element;
   inheritDatabaseAttributes: Element;
   logout: Scalars['Boolean'];
+  removeBadgeUser: Array<User>;
   removeElement: Element;
   removeUserFromGroup: Group;
   revokeRefreshTokensForUser: Scalars['Boolean'];
+  updateBadge: Badge;
   updateMembership: Scalars['Boolean'];
   updatePermissions: Element;
   updateUserRole?: Maybe<User>;
   verifyLogin?: Maybe<User>;
+};
+
+
+export type MutationAddBadgeUserArgs = {
+  id: Scalars['String'];
+  userId: Scalars['Float'];
 };
 
 
@@ -137,6 +155,11 @@ export type MutationAddUsersToGroupArgs = {
 export type MutationAssignUserPageArgs = {
   pageId: Scalars['Float'];
   uniId: Scalars['Float'];
+};
+
+
+export type MutationClaimBadgeArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -220,6 +243,12 @@ export type MutationInheritDatabaseAttributesArgs = {
 };
 
 
+export type MutationRemoveBadgeUserArgs = {
+  id: Scalars['String'];
+  userId: Scalars['Float'];
+};
+
+
 export type MutationRemoveElementArgs = {
   elementId: Scalars['Float'];
 };
@@ -233,6 +262,12 @@ export type MutationRemoveUserFromGroupArgs = {
 
 export type MutationRevokeRefreshTokensForUserArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationUpdateBadgeArgs = {
+  id: Scalars['String'];
+  properties: BadgeUpdateProperties;
 };
 
 
@@ -253,6 +288,7 @@ export type MutationUpdateUserRoleArgs = {
 export type Query = {
   __typename?: 'Query';
   getBadge: Badge;
+  getBadgeUsers: Array<User>;
   getBadges: Array<Badge>;
   getElement: Element;
   getElements: Array<Element>;
@@ -266,6 +302,7 @@ export type Query = {
   getUsersGroups?: Maybe<Array<Group>>;
   groups: Array<Group>;
   groupsWithUsers: Array<Group>;
+  hasBadge: Scalars['Boolean'];
   me?: Maybe<User>;
   testJWT: Scalars['String'];
   users: Array<User>;
@@ -273,6 +310,11 @@ export type Query = {
 
 
 export type QueryGetBadgeArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryGetBadgeUsersArgs = {
   id: Scalars['String'];
 };
 
@@ -308,6 +350,11 @@ export type QueryGetUserArgs = {
 
 export type QueryGetUserPageArgs = {
   uniId: Scalars['Float'];
+};
+
+
+export type QueryHasBadgeArgs = {
+  id: Scalars['String'];
 };
 
 export type Tag = {
@@ -396,6 +443,37 @@ export type CreateBadgeMutationVariables = Exact<{
 
 
 export type CreateBadgeMutation = { __typename?: 'Mutation', createBadge: { __typename?: 'Badge', id: string, name: string, description?: string | null, color: string, createdAt: string, updatedAt: string, canClaim?: boolean | null, claimUntil?: string | null } };
+
+export type UpdateBadgeMutationVariables = Exact<{
+  properties: BadgeUpdateProperties;
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateBadgeMutation = { __typename?: 'Mutation', updateBadge: { __typename?: 'Badge', id: string, name: string, description?: string | null, color: string, createdAt: string, updatedAt: string, canClaim?: boolean | null, claimUntil?: string | null } };
+
+export type AddBadgeUserMutationVariables = Exact<{
+  id: Scalars['String'];
+  userId: Scalars['Float'];
+}>;
+
+
+export type AddBadgeUserMutation = { __typename?: 'Mutation', addBadgeUser: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+
+export type RemoveBadgeUserMutationVariables = Exact<{
+  id: Scalars['String'];
+  userId: Scalars['Float'];
+}>;
+
+
+export type RemoveBadgeUserMutation = { __typename?: 'Mutation', removeBadgeUser: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+
+export type ClaimBadgeMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ClaimBadgeMutation = { __typename?: 'Mutation', claimBadge: boolean };
 
 export type EditElementDataMutationVariables = Exact<{
   data: Scalars['JSONObject'];
@@ -563,6 +641,20 @@ export type GetBadgeQueryVariables = Exact<{
 
 
 export type GetBadgeQuery = { __typename?: 'Query', getBadge: { __typename?: 'Badge', id: string, name: string, description?: string | null, color: string, createdAt: string, updatedAt: string, canClaim?: boolean | null, claimUntil?: string | null } };
+
+export type GetBadgeUsersQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetBadgeUsersQuery = { __typename?: 'Query', getBadgeUsers: Array<{ __typename?: 'User', id: number, uniId?: number | null, firstName: string, lastName: string, email: string, role: string, memberFromDate?: string | null, isMember?: boolean | null, groups: Array<{ __typename?: 'Group', id: number, name: string }> }> };
+
+export type HasBadgeQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type HasBadgeQuery = { __typename?: 'Query', hasBadge: boolean };
 
 export type GetElementsQueryVariables = Exact<{
   type?: InputMaybe<Scalars['String']>;
@@ -865,6 +957,48 @@ export const CreateBadgeDocument = gql`
 export function useCreateBadgeMutation() {
   return Urql.useMutation<CreateBadgeMutation, CreateBadgeMutationVariables>(CreateBadgeDocument);
 };
+export const UpdateBadgeDocument = gql`
+    mutation UpdateBadge($properties: BadgeUpdateProperties!, $id: String!) {
+  updateBadge(properties: $properties, id: $id) {
+    ...FullBadge
+  }
+}
+    ${FullBadgeFragmentDoc}`;
+
+export function useUpdateBadgeMutation() {
+  return Urql.useMutation<UpdateBadgeMutation, UpdateBadgeMutationVariables>(UpdateBadgeDocument);
+};
+export const AddBadgeUserDocument = gql`
+    mutation AddBadgeUser($id: String!, $userId: Float!) {
+  addBadgeUser(id: $id, userId: $userId) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useAddBadgeUserMutation() {
+  return Urql.useMutation<AddBadgeUserMutation, AddBadgeUserMutationVariables>(AddBadgeUserDocument);
+};
+export const RemoveBadgeUserDocument = gql`
+    mutation RemoveBadgeUser($id: String!, $userId: Float!) {
+  removeBadgeUser(id: $id, userId: $userId) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useRemoveBadgeUserMutation() {
+  return Urql.useMutation<RemoveBadgeUserMutation, RemoveBadgeUserMutationVariables>(RemoveBadgeUserDocument);
+};
+export const ClaimBadgeDocument = gql`
+    mutation ClaimBadge($id: String!) {
+  claimBadge(id: $id)
+}
+    `;
+
+export function useClaimBadgeMutation() {
+  return Urql.useMutation<ClaimBadgeMutation, ClaimBadgeMutationVariables>(ClaimBadgeDocument);
+};
 export const EditElementDataDocument = gql`
     mutation EditElementData($data: JSONObject!, $elementId: Float!) {
   editElementData(data: $data, elementId: $elementId) {
@@ -1125,6 +1259,26 @@ export const GetBadgeDocument = gql`
 
 export function useGetBadgeQuery(options: Omit<Urql.UseQueryArgs<GetBadgeQueryVariables>, 'query'>) {
   return Urql.useQuery<GetBadgeQuery, GetBadgeQueryVariables>({ query: GetBadgeDocument, ...options });
+};
+export const GetBadgeUsersDocument = gql`
+    query GetBadgeUsers($id: String!) {
+  getBadgeUsers(id: $id) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useGetBadgeUsersQuery(options: Omit<Urql.UseQueryArgs<GetBadgeUsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetBadgeUsersQuery, GetBadgeUsersQueryVariables>({ query: GetBadgeUsersDocument, ...options });
+};
+export const HasBadgeDocument = gql`
+    query HasBadge($id: String!) {
+  hasBadge(id: $id)
+}
+    `;
+
+export function useHasBadgeQuery(options: Omit<Urql.UseQueryArgs<HasBadgeQueryVariables>, 'query'>) {
+  return Urql.useQuery<HasBadgeQuery, HasBadgeQueryVariables>({ query: HasBadgeDocument, ...options });
 };
 export const GetElementsDocument = gql`
     query GetElements($type: String, $parentId: Float, $children: Boolean) {

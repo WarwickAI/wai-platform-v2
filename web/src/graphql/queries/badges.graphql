@@ -9,3 +9,13 @@ query GetBadge($id: String!) {
     ...FullBadge
   }
 }
+
+query GetBadgeUsers($id: String!) {
+  getBadgeUsers(id: $id) {
+    ...RegularUser
+  }
+}
+
+query HasBadge($id: String!) {
+  hasBadge(id: $id)
+}
