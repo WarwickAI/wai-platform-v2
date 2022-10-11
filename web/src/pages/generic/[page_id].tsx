@@ -10,6 +10,7 @@ import { Element } from "../../utils/config";
 import { PageElementData } from "../../utils/base_element_types";
 import { EditContext } from "../../utils/EditContext";
 import { checkPermissions } from "../../utils/isAuth";
+import Head from "next/head";
 
 interface GenericProps {}
 
@@ -70,16 +71,21 @@ const Generic: React.FC<GenericProps> = ({}) => {
     );
   } else {
     return (
-      <EditContext.Provider value={editContextValue}>
-        <ElementPageWrapper showEditToggle={showEditToggle}>
-          <Page
-            key={element.id}
-            element={element}
-            isFullPage={true}
-            isEdit={isEditMode}
-          />
-        </ElementPageWrapper>
-      </EditContext.Provider>
+      <>
+        <Head>
+          <title>{element.data.title.value}</title>
+        </Head>
+        <EditContext.Provider value={editContextValue}>
+          <ElementPageWrapper showEditToggle={showEditToggle}>
+            <Page
+              key={element.id}
+              element={element}
+              isFullPage={true}
+              isEdit={isEditMode}
+            />
+          </ElementPageWrapper>
+        </EditContext.Provider>
+      </>
     );
   }
 };
