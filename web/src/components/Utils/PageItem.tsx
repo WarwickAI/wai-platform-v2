@@ -109,6 +109,9 @@ const PageItem: React.FC<PageItemProps> = (props) => {
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
+    canDrag: (monitor: any) => {
+      return props.isEdit;
+    },
   });
 
   const opacity = isDragging ? 0 : 1;
