@@ -182,11 +182,15 @@ export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
     setBadgeColor(props.editBadge.color);
     setBadgeDescription(props.editBadge.description || "");
     setCanClaim(props.editBadge.canClaim || false);
-    setClaimUntil(
-      props.editBadge.claimUntil
-        ? new Date(props.editBadge.claimUntil)
-        : undefined
-    );
+    if (props.editBadge.claimUntil) {
+      const claimUntilDate = new Date(0);
+      claimUntilDate.setMilliseconds(
+        parseInt(props.editBadge.claimUntil as string)
+      );
+      setClaimUntil(claimUntilDate);
+    } else {
+      setClaimUntil(undefined);
+    }
   }, [props.editBadge]);
 
   const resetFields = () => {
@@ -339,6 +343,8 @@ export const AddBadgePopup: React.FC<AddBadgePopupProps> = (props) => {
                     name: badgeName,
                     color: badgeColor,
                     description: badgeDescription,
+                    canClaim: canClaim || false,
+                    claimUntil: claimUntil?.toISOString(),
                   });
 
                   if (!newBadge.error && newBadge.data) {

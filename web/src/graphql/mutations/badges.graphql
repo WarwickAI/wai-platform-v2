@@ -1,5 +1,17 @@
-mutation CreateBadge($name: String!, $color: String!, $description: String) {
-  createBadge(name: $name, color: $color, description: $description) {
+mutation CreateBadge(
+  $name: String!
+  $color: String!
+  $description: String
+  $canClaim: Boolean!
+  $claimUntil: DateTime
+) {
+  createBadge(
+    name: $name
+    color: $color
+    description: $description
+    canClaim: $canClaim
+    claimUntil: $claimUntil
+  ) {
     ...FullBadge
   }
 }

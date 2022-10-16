@@ -54,9 +54,17 @@ export class BadgeResolver {
   createBadge(
     @Arg("name") name: string,
     @Arg("color") color: string,
-    @Arg("description", { nullable: true }) description?: string
+    @Arg("canClaim") canClaim: boolean,
+    @Arg("description", { nullable: true }) description?: string,
+    @Arg("claimUntil", { nullable: true }) claimUntil?: Date
   ) {
-    return Badge.create({ name, description, color }).save();
+    return Badge.create({
+      name,
+      description,
+      color,
+      canClaim,
+      claimUntil,
+    }).save();
   }
 
   @Mutation(() => Badge)
