@@ -112,8 +112,8 @@ const Index = () => {
                 <EventView
                   rows={events as Element<EventElementData>[]}
                   isEdit={false}
-                  addRow={() => {}}
-                  removeRow={() => {}}
+                  addRow={() => { }}
+                  removeRow={() => { }}
                   oneColumn={true}
                 />
               </Box>
@@ -202,17 +202,17 @@ const Index = () => {
               </Button>
 
               <Heading pt={12} as="h4" size="md">
-                Become a Researcher
+                Join Our Team!
               </Heading>
               <Text size="sm" color="gray.600">
-                Apply for the Researcher role here!
+                Sign up to be a project exec
               </Text>
               <Button
                 mt={1}
                 size="lg"
                 variant="primary"
                 onClick={() => {
-                  router.push("/research-apply-22");
+                  router.push("https://forms.gle/DPuiUXSm33NrQjko9");
                 }}
               >
                 <ArrowForwardIcon width={22} height={22} />
