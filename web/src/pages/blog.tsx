@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 
 const Blog = () => {
   const [posts, setPosts] = useState<any[]>([]);
-  const router = useRouter();
 
   //  post schema: { cover, title, view, comment, share, author, createdAt }
   useEffect(() => {
@@ -45,26 +44,6 @@ const Blog = () => {
 
   return (
     <Dashboard title="Blog">
-      <Flex
-        my={4}
-        p={2}
-        bg="gray.100"
-        borderRadius={"lg"}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Text fontWeight={700} mr={4} fontSize={"1.2rem"}>
-          Interested in working on research?
-        </Text>
-        <Button
-          onClick={() => router.push("/research-apply-22")}
-          variant={"primary"}
-          px={8}
-        >
-          Apply Here
-        </Button>
-      </Flex>
-
       <ItemGrid>
         {posts.map(
           ({ title, cover, categories, id, link, createdAt, author }) => {
