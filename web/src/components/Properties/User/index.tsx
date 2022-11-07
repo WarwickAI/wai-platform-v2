@@ -1,4 +1,4 @@
-import { Flex, Input, Select, Text } from "@chakra-ui/react";
+import { Flex, Input, Select, Text, Tooltip } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
@@ -51,17 +51,19 @@ const UserProperty: React.FC<UserPropertyProps> = (props) => {
         borderWidth={1}
         borderRadius="md"
         borderColor="white"
+        onClick={() => navigator.clipboard.writeText(userSelected?.email || "")}
       >
-        <Text
-          fontWeight={props.isTitle ? "bold" : "normal"}
-          fontSize={props.isTitle ? "2xl" : "md"}
-          noOfLines={1}
-          wordBreak={"break-word"}
-        >
-          {userSelected
-            ? userSelected.firstName + " " + userSelected.lastName
-            : "No user to show"}
-        </Text>
+        <Tooltip label={userSelected?.email}>
+          <Text
+            fontWeight={props.isTitle ? "bold" : "normal"}
+            fontSize={props.isTitle ? "2xl" : "md"}
+            wordBreak={"break-word"}
+          >
+            {userSelected
+              ? userSelected.firstName + " " + userSelected.lastName
+              : "No user to show"}
+          </Text>
+        </Tooltip>
       </Flex>
     );
   } else {
