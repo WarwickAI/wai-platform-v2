@@ -56,11 +56,38 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ element, isEdit }) => {
 
   const rows: Element<any>[] = useMemo(() => {
     if (database) {
-      return (database.children as Element<any>[])
-        .sort((a, b) => a.index - b.index)
-        .filter((item) =>
-          checkPermissions(item.canViewGroups, meData?.me as User | undefined)
-        );
+      // Check if database has a date attribute
+
+      var dateAttribute: string | undefined = undefined;
+
+      for (const attribute of Object.keys(database.data.attributes.value)) {
+        if (database.data.attributes.value[attribute].type === "Date") {
+          dateAttribute = attribute;
+          break;
+        }
+      }
+
+      if (dateAttribute) {
+        // Sort by date
+        return (database.children as Element<any>[])
+          .sort((a, b) => {
+            const aDate = a.data[dateAttribute!].value;
+            const bDate = b.data[dateAttribute!].value;
+            if (aDate && bDate) {
+              return new Date(bDate).getTime() - new Date(aDate).getTime();
+            }
+            return 0;
+          })
+          .filter((item) =>
+            checkPermissions(item.canViewGroups, meData?.me as User | undefined)
+          );
+      } else {
+        return (database.children as Element<any>[])
+          .sort((a, b) => a.index - b.index)
+          .filter((item) =>
+            checkPermissions(item.canViewGroups, meData?.me as User | undefined)
+          );
+      }
     }
     return [];
   }, [database, meData]);
