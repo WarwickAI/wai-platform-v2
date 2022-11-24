@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
   JSONObject: any;
 };
 
@@ -164,6 +165,8 @@ export type MutationClaimBadgeArgs = {
 
 
 export type MutationCreateBadgeArgs = {
+  canClaim: Scalars['Boolean'];
+  claimUntil?: InputMaybe<Scalars['DateTime']>;
   color: Scalars['String'];
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
@@ -439,6 +442,8 @@ export type CreateBadgeMutationVariables = Exact<{
   name: Scalars['String'];
   color: Scalars['String'];
   description?: InputMaybe<Scalars['String']>;
+  canClaim: Scalars['Boolean'];
+  claimUntil?: InputMaybe<Scalars['DateTime']>;
 }>;
 
 
@@ -947,8 +952,14 @@ export function useUpdateMembershipMutation() {
   return Urql.useMutation<UpdateMembershipMutation, UpdateMembershipMutationVariables>(UpdateMembershipDocument);
 };
 export const CreateBadgeDocument = gql`
-    mutation CreateBadge($name: String!, $color: String!, $description: String) {
-  createBadge(name: $name, color: $color, description: $description) {
+    mutation CreateBadge($name: String!, $color: String!, $description: String, $canClaim: Boolean!, $claimUntil: DateTime) {
+  createBadge(
+    name: $name
+    color: $color
+    description: $description
+    canClaim: $canClaim
+    claimUntil: $claimUntil
+  ) {
     ...FullBadge
   }
 }

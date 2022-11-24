@@ -55,7 +55,6 @@ const ClaimBadge: React.FC<ClaimBadgeProps> = ({}) => {
 
     const claimUntilDate = new Date(0);
     claimUntilDate.setMilliseconds(parseInt(badge.claimUntil as string));
-    console.log(claimUntilDate);
 
     return !badge.claimUntil || claimUntilDate > new Date();
   }, [badge]);

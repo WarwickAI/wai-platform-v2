@@ -120,7 +120,8 @@ const PageItem: React.FC<PageItemProps> = (props) => {
   return (
     <Box
       key={props.element.id}
-      ref={ref}
+      // conditional add drag ref (only if edit mode)
+      ref={props.isEdit ? ref : null}
       data-handler-id={handlerId}
       opacity={opacity}
       onMouseOver={() => setShowControls(true)}
