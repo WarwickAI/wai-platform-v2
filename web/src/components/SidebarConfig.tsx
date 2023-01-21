@@ -24,8 +24,8 @@ const sidebarConfig = [
     icon: getIcon(calendarFill),
   },
   {
-    title: "Blog",
-    path: "/blog",
+    title: "Research",
+    path: "/research",
     icon: getIcon(messageSquareFill),
   },
   {
